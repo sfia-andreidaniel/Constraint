@@ -1,0 +1,61 @@
+@application Main {
+	
+	// declare a color
+	$declare backgroundColor: red;
+	
+	// declare an int
+	$declare width: 100;
+
+	// declare a float
+	$declare aFloat: 1.300;
+
+	// declare a boolean
+	$declare aBoolean: true;
+
+	// declare a boolean also
+	$declare anotherBoolean: no;
+
+	// declare a pointer to the $backgroundColor
+	$declare aliasColor: $backgroundColor;
+
+	// declare a color
+	$declare buttonColor: red;
+
+	// declare a string
+	$declare aString: 'This is a string';
+
+	// properties declaration. the properties cannot begin with $ or @
+	width: 400;
+	height: 200;
+
+	@button Btn1 {
+		
+		left: 10;
+		top: 10;
+		width: 100;
+		max-width: 150;
+
+		text: {
+			align: left;
+			bold: yes;
+			italic: yes;
+			underline: yes;
+			color: red;
+			size: 5;
+		};
+
+		background: {
+			color: $backgroundColor;
+		};
+
+	};
+
+	@button Btn2 {
+
+		left: @Btn1 left 20;
+		top: @Btn1 center;
+		width: 100;
+
+	};
+
+};
