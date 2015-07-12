@@ -13,7 +13,7 @@ class Constraint_Type {
 			case 'type_color_rgba':
 			case 'type_color_rgb':
 			case 'type_color_named':
-				return from.result.replace( /[\s]+/g, '' );
+				return UI_Color.create( from.result.replace( /[\s]+/g, '' ) );
 				break;
 			
 			case 'type_string':

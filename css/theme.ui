@@ -3,13 +3,13 @@
 
 @Theme UI {
 	
-	$declare fontSize   : '12px';
+	$declare fontSize   : 12;
 	$declare fontFamily : 'Arial';
 	$declare fontColor  : black;
 
 	// Form styling
 	@Theme Form {
-		
+
 	}
 
 }

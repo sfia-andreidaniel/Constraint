@@ -1,26 +1,37 @@
 class UI extends UI_Event {
 
+	// the logical parent of this UI element (has nothing to do with dom)
 	protected _owner  : UI;
 
+	// constraints / anchors.
 	protected _top    : UI_Anchor = null;
 	protected _left   : UI_Anchor = null;
 	protected _right  : UI_Anchor = null;
 	protected _bottom : UI_Anchor = null;
 
+	// dimensions
 	protected _width  : number = null;
 	protected _height : number = null;
 
+	// inside padding of the UI element (nothing to do with dom). 
+	// Useful if the element contains other elements at loglcal level.
 	protected _padding: UI_Padding = null;
+
+	// the children of the UI element.
+	protected _children: UI[] = [];
+
+	// if the element is represented in DOM, this is it's root element.
+	protected _root   : HTMLDivElement = null;
 
 	constructor( owner: UI ) {
 		super();
 
 		this._owner = owner;
 
-		this._top     = new UI_Anchor( this );
-		this._left    = new UI_Anchor( this );
-		this._right   = new UI_Anchor( this );
-		this._bottom  = new UI_Anchor( this );
+		this._top     = new UI_Anchor( this, EAlignment.TOP );
+		this._left    = new UI_Anchor( this, EAlignment.LEFT );
+		this._right   = new UI_Anchor( this, EAlignment.RIGHT );
+		this._bottom  = new UI_Anchor( this, EAlignment.BOTTOM );
 
 		this._padding = new UI_Padding( this );
 	}
@@ -53,20 +64,49 @@ class UI extends UI_Event {
 		return this._padding;
 	}
 
-	get paddingLeft(): number {
-		return this._padding.left;
+	// form is the current "dialog" in which this element is inserted.
+	get form(): UI_Form {
+		return this._owner
+			? this._owner.form
+			: <UI_Form>this;
 	}
 
-	get paddingRight(): number {
-		return this._padding.right;
+	// owner is the "parent" of the current UI element.
+	get owner(): UI {
+		return this._owner;
 	}
 
-	get paddingTop(): number {
-		return this._padding.top;
+	set owner( owner: UI ) {
+		this._owner = owner;
 	}
 
-	get paddingBottom(): number {
-		return this._padding.bottom;
+	// removes the UI element from it's parent.
+	public remove(): UI {
+		if ( this._owner ) {
+			for ( var i=0, len = this._owner._children.length; i<len; i++ ) {
+				if ( this._owner._children[i] == this ) {
+					this._owner._children.splice( i, 1 );
+				}
+			}
+		}
+		return this;
+	}
+
+	// inserts an UI element inside the current UI element
+	public insert( child: UI ): UI {
+
+		if ( !child )
+			throw Error( 'Cannot insert a NULL element.' );
+
+		child.remove();
+		child.owner = this;
+		this._children.push( child );
+
+		return child;
+	}
+
+	public onRepaint() {
+		// this is called each time the element needs to be repainted.
 	}
 
 }
@@ -118,22 +158,6 @@ Constraint.registerClass( {
 		},
 		{
 			"name": "padding.bottom",
-			"type": "number"
-		},
-		{
-			"name": "paddingLeft",
-			"type": "number"
-		},
-		{
-			"name": "paddingRight",
-			"type": "number"
-		},
-		{
-			"name": "paddingTop",
-			"type": "number"
-		},
-		{
-			"name": "paddingBottom",
 			"type": "number"
 		}
 	]

@@ -1,0 +1,27 @@
+@UI_Form DemoForm {
+	width: 200;
+	height: 400;
+
+	@UI_Button Btn1 {
+		caption: 'Hello';
+		left: 100;
+		top: 100;
+		width: 50;
+	};
+
+	@UI_Button Btn2 {
+		caption: 'Button 2';
+		left: 100;
+		top: 130;
+		width: 50;
+	};
+
+	@UI_Panel Panel1 {
+
+		@UI_Button Btn3 {
+			left: 100;
+			top: 20;
+		};
+
+	};
+};

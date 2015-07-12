@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<script type="text/javascript" src="salvage.js"></script>
+</head>
+<body onload="doParse()">
+
+	<div id="out"></div>
+
+	<script type="text/salvage-template" id="test">
+
+		<div class="author">
+			<h3>{{name | upper}}</h3> <!-- escaped string -->
+			
+			{{ #if grades }}
+				<p>{{name}}'s grades</p>
+				<ul>
+				{{ #each key in grades }}
+					<li>Grade {{key}} => {{this:2 | upper}} was taken by {{../name}}</li>
+				{{ #end }}
+				</ul>
+			{{ #else }}
+				<p>No grades yet for {{ name }}</p>
+				{{!-- this is a comment that won't be parsed --}}
+			{{ #end }}
+			{{ #if with }}
+
+			<p>With test:</p>
+			{{ #with with}}
+				<b>a</b> is: {{name}}<br />
+			{{ #end }}
+		</div>
+		<p>some changes here</p>
+	</script>
+	<script>
+		function doParse() {
+			( window.salvage = ( new Salvage( document.getElementById('test').textContent ) ) );
+			document.getElementById( 'out' ).innerHTML = salvage.parse( { "name": "Gigi", "grades": { "first": null, "second": 3.87612 }, "with": { "a": 2, "b": 3 } } );
+
+		}
+	</script>
+</body>
+</html>

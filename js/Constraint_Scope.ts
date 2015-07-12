@@ -217,6 +217,8 @@ class Constraint_Scope {
 		}
 	}
 
+	// represents this scope together with it's child scopes to a
+	// more friendly JSON representation
 	public toJSON(): any {
 		var result = {
 			"name": this._name,
@@ -249,6 +251,7 @@ class Constraint_Scope {
 		return result;
 	}
 
+	// check if a scope exists or not.
 	public UIElementExists( scopeName: string ): boolean {
 		
 		if ( scopeName === '$parent' || scopeName === null ) {
@@ -261,6 +264,8 @@ class Constraint_Scope {
 
 	}
 
+	// checks if a scopeName is this one, or if scopeName is a direct
+	// child of this one.
 	public UINestingOk( scopeName: string ): boolean {
 		if ( scopeName == '$parent' || scopeName === null ) {
 			return this.parent !== null;
@@ -278,6 +283,7 @@ class Constraint_Scope {
 		}
 	}
 
+	// returns the value of a property from this scope.
 	public $property( propertyName: string ): any {
 		for ( var i=0, len = this.properties.length; i<len; i++ ) {
 			if ( this.properties[i].name == propertyName ) {
@@ -285,6 +291,59 @@ class Constraint_Scope {
 			}
 		}
 		return null;
+	}
+
+	// returns the name of the scope without it's dotted notation.
+	get $name(): string {
+		return this._name;
+	}
+
+	// returns the type name of the scope
+	get $type(): string {
+		return this.type;
+	}
+
+	get $parentName(): string {
+		if ( this.parent ) {
+			return this.parent.$name;
+		} else {
+			return '';
+		}
+	}
+
+	// returns all the sub-scopes from this scope.
+	get $scopes(): Constraint_Scope[] {
+		var out: Constraint_Scope[] = [],
+		    sub: Constraint_Scope[] = [];
+		for ( var i=0, len = this.children.length; i<len; i++ ) {
+			out.push( this.children[i] );
+			sub = this.children[i].$scopes;
+			for ( var j=0, n = sub.length; j<n; j++ ) {
+				out.push( sub[j] );
+			}
+		}
+
+		return out;
+	}
+
+	get $properties(): IProperty[] {
+		var out = [];
+		for ( var i=0, len = this.properties.length; i<len; i++ ) {
+			if ( this.properties[i].value && this.properties[i].value.toLiteral ) {
+				out.push( {
+					"name": this.properties[i].name,
+					"value": this.properties[i].value.toLiteral(),
+					"literal": true
+				});
+			} else {
+				out.push( {
+					"name": this.properties[i].name,
+					"value": this.properties[i].value,
+					"valueJSON": JSON.stringify( this.properties[i].value )
+				} );
+			}
+		}
+		return out;
 	}
 
 }

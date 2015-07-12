@@ -1,0 +1,42 @@
+/* $hint: compile */
+
+@date:     {{compileDate}}
+@hostname: {{userName}}
+@nodejs:   {{version}}
+
+/* $hint: end */
+
+class {{name}} extends UI_Form {
+	
+{{#if properties}}
+    /* $hint: properties */
+{{#each properties}}
+    public {{name}}: {{type}} = null;{{#end}}
+
+    /* $hint: end */
+{{#else}}
+{{#end}}
+
+    constructor() {
+        super();
+{{#if properties}}
+        /* $hint: properties */
+{{#each properties}}
+        this.{{name}} = new {{type}}( {{#if in}}this.{{in}}{{#else}}this{{#end}} );{{#end}}
+
+        /* $hint: end */
+{{#end}}
+    }
+
+    /* Initializes the form properties */
+    protected onInitialize() {
+{{#if properties}}
+        /* $hint: properties */
+{{#each properties}}
+{{#each properties}}        this.{{../name}}.{{name}} = {{#if literal}}{{{value}}}{{#else}}{{{valueJSON}}};{{#end}}
+{{#end}}{{#end}}
+        /* $hint: end */
+{{#end}}
+    }
+
+}
