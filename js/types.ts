@@ -32,3 +32,14 @@ interface IAnchor {
 	alignment: EAlignment;
 	distance?: number;
 }
+
+interface IClassProperty {
+	name: string;
+	type: string;
+}
+
+interface IClass {
+	name: string;
+	extends?: string;
+	properties: IClassProperty[];
+}

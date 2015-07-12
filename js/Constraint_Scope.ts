@@ -14,8 +14,10 @@ class Constraint_Scope {
 	protected global: any = null;
 
 	protected arrayStack: string[] = [];
+	protected strict: boolean = false;
 
-	constructor( parentScope: Constraint_Scope = null, name: string = '', type: string = '' ) {
+	constructor( parentScope: Constraint_Scope = null, name: string = '', type: string = '', strict: boolean = false ) {
+		this.strict = strict;
 		this.parent = parentScope;
 
 		this.root = parentScope === null
@@ -113,7 +115,7 @@ class Constraint_Scope {
 			throw Error( 'UI Element "' + name + '" cannot be declared twice!' );
 		}
 
-		var result = new Constraint_Scope( this, name, type );
+		var result = new Constraint_Scope( this, name, type, this.strict );
 		this.children.push( result );
 
 		this.root.global[ name ] = result;

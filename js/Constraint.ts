@@ -1,5 +1,4 @@
 // Main library file.
-
 class Constraint {
 
 	public static tokens = {
@@ -251,14 +250,68 @@ class Constraint {
 		}
 	}
 
+	public static defs: IClass[] = [];
+
+	public static classRegistered( className: string ): boolean {
+		for ( var i=0, len = Constraint.defs.length; i<len; i++ ) {
+			if ( Constraint.defs[i].name == className ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public static registerClass( def: IClass ) {
+		if ( Constraint.classRegistered( def.name ) ) {
+			throw Error( 'Class "' + def.name + '" is allready registered!' );
+		}
+		if ( def.extends ) {
+			if ( !Constraint.classRegistered( def.extends ) ) {
+				throw Error( 'Class "' + def.name + '" extends class "' + def.extends + '", but such class was not registered!' );
+			}
+		}
+		Constraint.defs.push( def );
+	}
+
+	public static getClassByName( className: string ): IClass {
+		for ( var i=0, len = Constraint.defs.length; i<len; i++ ) {
+			if ( Constraint.defs[i].name == className ) {
+				return Constraint.defs[i];
+			}
+		}
+		return null;
+	}
+
+	public static getClassPropertyType( className: string, propertyName: string ): string {
+		var def: IClass = Constraint.getClassByName( className );
+
+		if ( !def ) {
+			return null;
+		}
+
+		for ( var i=0, len = def.properties.length; i<len; i++ ) {
+			if ( def.properties[i].name == propertyName ) {
+				return def.properties[i].type;
+			}
+		}
+
+		if ( def.extends ) {
+			return Constraint.getClassPropertyType( def.extends, propertyName );
+		} else {
+			return null;
+		}
+	}
+
 	// should be null after parse.
 	// if non null, returns the line on which compiler encountered error.
 	public line: number = null;
 	public buffer: string = '';
 	public scope: Constraint_Scope = null;
 	public error: string = '';
+	public strict: boolean = false;
 
-	constructor( buffer: string ) {
+	constructor( buffer: string, strict: boolean = false ) {
 		this.buffer = buffer;
 	}
 
@@ -321,7 +374,7 @@ class Constraint {
 
 	public compile(): Constraint_Scope {
 
-		this.scope = new Constraint_Scope( null, 'resource', 'document' );
+		this.scope = new Constraint_Scope( null, 'resource', 'document', this.strict );
 		this.line = 1;
 		this.error = null;
 		
