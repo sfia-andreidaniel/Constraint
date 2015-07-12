@@ -1,61 +1,35 @@
-@application Main {
+@form Main {
 	
 	// declare a color
-	$declare backgroundColor: red;
-	
 	// declare an int
-	$declare width: 100;
+	$declare backgroundColor: red;
+	i: 3;
+	x: #fff;
+	y: rgba(233,233,233,14);
+	z: rgb(14,   12, 2   ) ;
 
-	// declare a float
-	$declare aFloat: 1.300;
+	// the title of the dialog
+	title: 'how are you doing?';
 
-	// declare a boolean
-	$declare aBoolean: true;
-
-	// declare a boolean also
-	$declare anotherBoolean: no;
-
-	// declare a pointer to the $backgroundColor
-	$declare aliasColor: $backgroundColor;
-
-	// declare a color
-	$declare buttonColor: red;
-
-	// declare a string
-	$declare aString: 'This is a string';
-
-	// properties declaration. the properties cannot begin with $ or @
-	width: 400;
-	height: 200;
-
-	@button Btn1 {
-		
-		left: 10;
-		top: 10;
-		width: 100;
-		max-width: 150;
-
-		text: {
-			align: left;
-			bold: yes;
-			italic: yes;
-			underline: yes;
-			color: red;
-			size: 5;
-		};
-
-		background: {
-			color: $backgroundColor;
-		};
-
+	left: {
+		align: $backgroundColor;
 	};
 
-	@button Btn2 {
+	right: Main left 50;
+	bottom: $parent top 100;
 
-		left: @Btn1 left 20;
-		top: @Btn1 center;
-		width: 100;
+	choice: yes;
 
+	array: [ 1, 2, 3, #fff ];
+
+	objarr: {
+		foo: [ 1, 2 ];
+		bar: [ '3', '4' ];
 	};
 
+	nullval: null;
+
+	@Button Btn1 {
+		caption: 'Take care of ''rself';
+	};
 };
