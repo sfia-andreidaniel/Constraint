@@ -4,6 +4,7 @@ class Constraint_Scope {
 	protected root: Constraint_Scope;
 
 	protected _name: string = null;
+
 	protected type: string = null;
 	protected properties: IProperty[] = [];
 
@@ -11,7 +12,7 @@ class Constraint_Scope {
 	protected constants: IProperty[] = [];
 	protected objectPath: string[] = [];
 
-	protected global: any = null;
+	public    global: any = null;
 
 	protected arrayStack: string[] = [];
 	protected strict: boolean = false;
@@ -275,6 +276,15 @@ class Constraint_Scope {
 				return false;
 			}
 		}
+	}
+
+	public $property( propertyName: string ): any {
+		for ( var i=0, len = this.properties.length; i<len; i++ ) {
+			if ( this.properties[i].name == propertyName ) {
+				return this.properties[i].value;
+			}
+		}
+		return null;
 	}
 
 }

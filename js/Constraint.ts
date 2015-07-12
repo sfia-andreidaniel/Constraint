@@ -388,13 +388,29 @@ class Constraint {
 			if ( this.buffer )
 				throw Error( 'Unexpected remaining buffer!' );
 
-			return masterScope;
+			return this.scope = masterScope;
 		} catch ( err ) {
 			this.error = '@line: ' + this.line + ': ' + err;
 			console.error( err );
 			throw SyntaxError( this.error );
 		}
 
+	}
+
+	public $scope( scopeName: string ): Constraint_Scope {
+		return typeof this.scope.global[ scopeName ] == 'undefined'
+			? null
+			: this.scope.global[ scopeName ];
+	}
+
+	get $scopes(): string[] {
+		var out = [];
+		for ( var k in this.scope.global ) {
+			if ( this.scope.global.hasOwnProperty(k) ) {
+				out.push( k );
+			}
+		}
+		return out;
 	}
 
 }

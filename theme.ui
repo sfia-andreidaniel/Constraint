@@ -1,0 +1,15 @@
+// User interface styling file.
+// All the UI elements are taking their defaults from this file
+
+@Theme UI {
+	
+	$declare fontSize   : '12px';
+	$declare fontFamily : 'Arial';
+	$declare fontColor  : black;
+
+	// Form styling
+	@Theme Form {
+		
+	}
+
+}
