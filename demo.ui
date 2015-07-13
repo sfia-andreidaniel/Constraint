@@ -2,8 +2,3 @@
 	width: 200;
 	height: 400;
 };
-
-@UI_Form OtherForm {
-	width: 400;
-	height: 200;
-};

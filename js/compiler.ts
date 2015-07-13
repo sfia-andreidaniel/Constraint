@@ -76,7 +76,8 @@ try {
 				"userName": os.hostname(),
 				"version": process.version,
 				"constraintLibPath": constraintLibPath,
-				"fileName": form.$name + '.ts'
+				"fileName": form.$name + '.ts',
+				"childProperties": form.$properties
 			};
 
 			if ( justForm && form._name != justForm ) {

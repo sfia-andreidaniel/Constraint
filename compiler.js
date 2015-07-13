@@ -9,9 +9,9 @@ var EAlignment;
 // A Form can be in these 5 states
 var EFormState;
 (function (EFormState) {
-    EFormState[EFormState["MINIMIZED"] = 0] = "MINIMIZED";
-    EFormState[EFormState["MAXIMIZED"] = 1] = "MAXIMIZED";
-    EFormState[EFormState["NORMAL"] = 2] = "NORMAL";
+    EFormState[EFormState["NORMAL"] = 0] = "NORMAL";
+    EFormState[EFormState["MINIMIZED"] = 1] = "MINIMIZED";
+    EFormState[EFormState["MAXIMIZED"] = 2] = "MAXIMIZED";
     EFormState[EFormState["FULLSCREEN"] = 3] = "FULLSCREEN";
     EFormState[EFormState["CLOSED"] = 4] = "CLOSED";
 })(EFormState || (EFormState = {}));
@@ -29,11 +29,11 @@ var EFormStyle;
     EFormStyle[EFormStyle["MDI"] = 1] = "MDI"; // MDI doesn't allow the form to be resized.
 })(EFormStyle || (EFormStyle = {}));
 // moveable or not?
-var EFormPosition;
-(function (EFormPosition) {
-    EFormPosition[EFormPosition["AUTO"] = 0] = "AUTO";
-    EFormPosition[EFormPosition["CENTER"] = 1] = "CENTER"; // centered, not moveable
-})(EFormPosition || (EFormPosition = {}));
+var EFormPlacement;
+(function (EFormPlacement) {
+    EFormPlacement[EFormPlacement["AUTO"] = 0] = "AUTO";
+    EFormPlacement[EFormPlacement["CENTER"] = 1] = "CENTER"; // centered, not moveable
+})(EFormPlacement || (EFormPlacement = {}));
 // Main library file.
 var Constraint = (function () {
     function Constraint(buffer, strict) {
@@ -1001,6 +1001,149 @@ var Constraint_Type = (function () {
     };
     return Constraint_Type;
 })();
+/* The class $I is used to link the framework theme ui file inside the
+   generated javascript code with typescript.
+
+   A post-compile process is made inside the make file, which replaces all
+   the INC.{type} with the values parsed from the file.
+
+*/
+/// <reference path="Constraint.ts" />
+/// <reference path="Constraint_Token.ts" />
+/// <reference path="Constraint_Token_Or.ts" />
+/// <reference path="Constraint_Flow.ts" />
+/// <reference path="Constraint_Scope.ts" />
+/// <reference path="Constraint_Type.ts" />
+var $I = (function () {
+    function $I() {
+    }
+    $I._get_ = function (path, defVal) {
+        if (defVal === void 0) { defVal = 'null'; }
+        /* The path is in format Scope/Scope/Scope/PropertyName */
+        var match = /^(.*)\/([^\/])+$/.exec(path);
+        if (!match) {
+            throw Error('Bad $I (nclude) path ' + JSON.stringify(path) + '!');
+        }
+        var seg = match[1], prop = match[2], scope = $I._root_.$scope(seg);
+        if (scope === null)
+            throw Error('Scope ' + JSON.stringify(seg) + ' was not found in "css/constraint.ui" file.');
+        // fetch through scope properties, and if any property name
+        // matches the "prop" name, return it.
+        // otherwise, return the defVal.
+        var properties = scope.$properties;
+        for (var i = 0, len = properties.length; i < len; i++) {
+            if (properties[i].name == prop) {
+                return properties[i]['literal'] ? properties[i].value : properties[i]['valueJSON'];
+            }
+        }
+        return defVal;
+    };
+    $I.number = function (path) {
+        return $I._get_(path, 'null');
+    };
+    $I.string = function (path) {
+        return $I._get_(path, 'null');
+    };
+    $I.color = function (path) {
+        return $I._get_(path, 'null');
+    };
+    $I._parse_ = function (str) {
+        return str['replace'](/\$I\.(number|string|color)\(\'([^\']+)\'\)/g, function (substr) {
+            var matches = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                matches[_i - 1] = arguments[_i];
+            }
+            switch (matches[0]) {
+                case 'number':
+                    return $I.number(matches[1]) + ' /* ' + matches[1] + ' */';
+                    break;
+                case 'string':
+                    return $I.string(matches[1]) + ' /* ' + matches[1] + ' */';
+                    break;
+                case 'color':
+                    return $I.color(matches[1]) + ' /* ' + matches[1] + ' */';
+                    break;
+            }
+        });
+    };
+    $I._root_ = null;
+    return $I;
+})();
+/* Minimal JQuery like interface */
+var UI_Dom = (function () {
+    function UI_Dom() {
+    }
+    UI_Dom._selector_ = function (element) {
+        return typeof element == 'string' ? document.querySelector(element) : element;
+    };
+    UI_Dom.hasClass = function (element, className) {
+        element = UI_Dom._selector_(element);
+        if (!className || !element) {
+            return false;
+        }
+        var classes = element.className.split(' '), i = 0, len = classes.length;
+        for (i = 0; i < len; i++) {
+            if (classes[i] == className) {
+                return true;
+            }
+        }
+        return false;
+    };
+    UI_Dom.addClass = function (element, className) {
+        element = UI_Dom._selector_(element);
+        if (!element || !className) {
+            return;
+        }
+        var classes = String(element.className || '').split(' '), outclasses = [], i = 0, len = classes.length;
+        for (i = 0; i < len; i++) {
+            if (classes[i] == className) {
+                return;
+            }
+            else if (classes[i]) {
+                outclasses.push(classes[i]);
+            }
+        }
+        outclasses.push(className);
+        element.className = outclasses.join(' ');
+    };
+    UI_Dom.removeClass = function (element, className) {
+        element = UI_Dom._selector_(element);
+        if (!element || !className || !element.className) {
+            return;
+        }
+        var classes = String(element.className).split(' '), i = 0, len = classes.length, f = false;
+        for (i = 0; i < len; i++) {
+            if (classes[i] == className) {
+                classes.splice(i, 1);
+                f = true;
+                break;
+            }
+        }
+        if (f) {
+            element.className = classes.length ? classes.join(' ') : null;
+        }
+    };
+    UI_Dom.removeClasses = function (element, classes) {
+        element = UI_Dom._selector_(element);
+        if (!element || !element.className || !classes.length) {
+            return;
+        }
+        var elClasses = String(element.className).split(' '), i = 0, len = classes.length, pos = 0, f = false;
+        for (i = 0; i < len; i++) {
+            if ((pos = elClasses.indexOf(classes[i])) >= 0) {
+                elClasses.splice(pos, 1);
+                f = true;
+            }
+        }
+        if (f) {
+            element.className = elClasses.length ? elClasses.join(' ') : null;
+        }
+    };
+    UI_Dom.create = function (tagName) {
+        return document.createElement(tagName);
+    };
+    return UI_Dom;
+})();
 var UI_Color = (function () {
     function UI_Color(red, green, blue, alpha) {
         if (alpha === void 0) { alpha = 255; }
@@ -1279,8 +1422,8 @@ var UI = (function (_super) {
         this._right = null;
         this._bottom = null;
         // dimensions
-        this._width = null;
-        this._height = null;
+        this._width = 0;
+        this._height = 0;
         // inside padding of the UI element (nothing to do with dom). 
         // Useful if the element contains other elements at loglcal level.
         this._padding = null;
@@ -1327,12 +1470,26 @@ var UI = (function (_super) {
         get: function () {
             return this._width;
         },
+        set: function (value) {
+            value = ~~value;
+            if (value != this._width) {
+                this._width = value;
+                this.onRepaint();
+            }
+        },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(UI.prototype, "height", {
         get: function () {
             return this._height;
+        },
+        set: function (value) {
+            value = ~~value;
+            if (value != this._height) {
+                this._height = value;
+                this.onRepaint();
+            }
         },
         enumerable: true,
         configurable: true
@@ -1385,7 +1542,87 @@ var UI = (function (_super) {
     };
     UI.prototype.onRepaint = function () {
         // this is called each time the element needs to be repainted.
+        console.warn('UI.onRepaint: not implemented');
     };
+    Object.defineProperty(UI.prototype, "offsetRect", {
+        // returns the exterior width and height of the UI element.
+        get: function () {
+            return {
+                "width": this.offsetWidth,
+                "height": this.offsetHeight
+            };
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UI.prototype, "clientRect", {
+        // retrieves this UI element interior width and height
+        get: function () {
+            var outer = this.offsetRect;
+            if (!outer) {
+                return {
+                    "width": 0,
+                    "height": 0
+                };
+            }
+            else {
+                return {
+                    "width": outer.width - this._padding.left - this._padding.right,
+                    "height": outer.height - this._padding.top - this._padding.bottom
+                };
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UI.prototype, "parentClientRect", {
+        // retrieves the parent width and height.
+        get: function () {
+            if (this._owner) {
+                return this._owner.clientRect;
+            }
+            else {
+                return {
+                    "width": 0,
+                    "height": 0
+                };
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UI.prototype, "offsetWidth", {
+        // returns the exterior width of the UI element
+        get: function () {
+            var clientRect = this.parentClientRect;
+            switch (true) {
+                case this._left.active && this._right.active:
+                    return clientRect.width - this._left.value - this._right.value;
+                    break;
+                default:
+                    return this._width;
+                    break;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UI.prototype, "offsetHeight", {
+        // returns the exterior height of the UI element
+        get: function () {
+            var clientRect = this.parentClientRect;
+            switch (true) {
+                case this._top.active && this._bottom.active:
+                    return clientRect.height - this._top.value - this._bottom.value;
+                    break;
+                default:
+                    return this._height;
+                    break;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
     return UI;
 })(UI_Event);
 Constraint.registerClass({
@@ -1408,11 +1645,11 @@ Constraint.registerClass({
             "type": "UI_Anchor"
         },
         {
-            "name": "x",
+            "name": "width",
             "type": "number"
         },
         {
-            "name": "y",
+            "name": "height",
             "type": "number"
         },
         {
@@ -1575,6 +1812,13 @@ var UI_Anchor = (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(UI_Anchor.prototype, "value", {
+        get: function () {
+            return 0;
+        },
+        enumerable: true,
+        configurable: true
+    });
     UI_Anchor.prototype.requestRepaint = function () {
         if (this._owner) {
             this._owner.onRepaint();
@@ -1629,17 +1873,19 @@ var UI_Padding = (function () {
  */
 var UI_Form = (function (_super) {
     __extends(UI_Form, _super);
+    // Form constructor.
     function UI_Form() {
         _super.call(this, null);
         // MINIMIZED, MAXIMIZED, CLOSED, NORMAL
-        this._state = 2 /* NORMAL */;
+        this._state = 0 /* NORMAL */;
         // Weather it has a titlebar or not
         this._borderStyle = 0 /* NORMAL */;
         // Weather it is resizable or not
         this._formStyle = 0 /* FORM */;
         // Moveable or not?
-        this._position = 0 /* AUTO */;
-        this._root = document.createElement('div');
+        this._placement = 0 /* AUTO */;
+        this._root = UI_Dom.create('div');
+        UI_Dom.addClass(this._root, 'ui UI_Form state-normal border-normal style-form placement-auto');
     }
     // returns an element defined on this instance.
     // the element must extend the UI interface
@@ -1658,8 +1904,139 @@ var UI_Form = (function (_super) {
         enumerable: true,
         configurable: true
     });
+    // Makes the root element of the form a child of a DOM element.
+    // This is needed in order to make the form available to the browser.
+    UI_Form.prototype.show = function (inElement) {
+        UI_Dom._selector_(inElement).appendChild(this._root);
+    };
+    Object.defineProperty(UI_Form.prototype, "state", {
+        get: function () {
+            return this._state;
+        },
+        set: function (state) {
+            if (state != this._state) {
+                UI_Dom.removeClasses(this._root, ['state-normal', 'state-minimized', 'state-maximized', 'state-fullscreen', 'state-closed']);
+                switch (state) {
+                    case 0 /* NORMAL */:
+                        UI_Dom.addClass(this._root, 'state-normal');
+                        this._state = 0 /* NORMAL */;
+                        break;
+                    case 1 /* MINIMIZED */:
+                        UI_Dom.addClass(this._root, 'state-minimized');
+                        this._state = 1 /* MINIMIZED */;
+                        break;
+                    case 2 /* MAXIMIZED */:
+                        UI_Dom.addClass(this._root, 'state-maximized');
+                        this._state = 2 /* MAXIMIZED */;
+                        break;
+                    case 3 /* FULLSCREEN */:
+                        UI_Dom.addClass(this._root, 'state-fullscreen');
+                        this._state = 3 /* FULLSCREEN */;
+                        break;
+                    case 4 /* CLOSED */:
+                    default:
+                        UI_Dom.addClass(this._root, 'state-closed');
+                        this._state = 4 /* CLOSED */;
+                        break;
+                }
+                this.onRepaint();
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UI_Form.prototype, "borderStyle", {
+        get: function () {
+            return this._borderStyle;
+        },
+        set: function (bStyle) {
+            if (bStyle != this._borderStyle) {
+                UI_Dom.removeClasses(this._root, ['border-normal', 'border-none']);
+                switch (bStyle) {
+                    case 0 /* NORMAL */:
+                        UI_Dom.addClass(this._root, 'border-normal');
+                        this._borderStyle = 0 /* NORMAL */;
+                        break;
+                    case 1 /* NONE */:
+                    default:
+                        UI_Dom.addClass(this._root, 'border-none');
+                        this._borderStyle = 1 /* NONE */;
+                        break;
+                }
+                this.onRepaint();
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UI_Form.prototype, "formStyle", {
+        get: function () {
+            return this._formStyle;
+        },
+        set: function (fStyle) {
+            if (fStyle != this._formStyle) {
+                UI_Dom.removeClasses(this._root, ['style-form', 'style-mdi']);
+                switch (fStyle) {
+                    case 0 /* FORM */:
+                        UI_Dom.addClass(this._root, 'style-form');
+                        this._formStyle = 0 /* FORM */;
+                        break;
+                    case 1 /* MDI */:
+                    default:
+                        UI_Dom.addClass(this._root, 'style-mdi');
+                        this._formStyle = 1 /* MDI */;
+                        break;
+                }
+                this.onRepaint();
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(UI_Form.prototype, "placement", {
+        get: function () {
+            return this._placement;
+        },
+        set: function (fPlacement) {
+            if (fPlacement != this._placement) {
+                UI_Dom.removeClasses(this._root, ['placement-auto', 'placement-center']);
+                switch (fPlacement) {
+                    case 0 /* AUTO */:
+                        UI_Dom.addClass(this._root, 'placement-auto');
+                        this._placement = 0 /* AUTO */;
+                        break;
+                    case 1 /* CENTER */:
+                    default:
+                        UI_Dom.addClass(this._root, 'placement-center');
+                        this._placement = 1 /* CENTER */;
+                        break;
+                }
+                this.onRepaint();
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
     return UI_Form;
 })(UI);
+/// <reference path="types.ts" />
+/// <reference path="Constraint.ts" />
+/// <reference path="Constraint_Token.ts" />
+/// <reference path="Constraint_Token_Or.ts" />
+/// <reference path="Constraint_Flow.ts" />
+/// <reference path="Constraint_Scope.ts" />
+/// <reference path="Constraint_Type.ts" />
+/// <reference path="$I.ts" />
+/// <reference path="UI_Dom.ts" />
+/// <reference path="UI_Color.ts" />
+/// <reference path="UI_Event.ts" />
+/// <reference path="UI_Throttler.ts" />
+/// <reference path="UI.ts" />
+/// <reference path="UI_Anchor.ts" />
+/// <reference path="UI_Padding.ts" />
+/// <reference path="UI_Form.ts" />
+// Delimiter to remove the constraint runtime from it's makefiles.
+var ____END_OF_STUB____ = undefined;
 var Salvage = (function () {
     function Salvage(contents) {
         // Parse all blocks.
@@ -2387,7 +2764,8 @@ try {
                 "userName": os.hostname(),
                 "version": process.version,
                 "constraintLibPath": constraintLibPath,
-                "fileName": form.$name + '.ts'
+                "fileName": form.$name + '.ts',
+                "childProperties": form.$properties
             };
             if (justForm && form._name != justForm) {
                 writeFiles.push({

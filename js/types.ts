@@ -59,9 +59,9 @@ interface IRect {
 
 // A Form can be in these 5 states
 enum EFormState {
+	NORMAL,
 	MINIMIZED,
 	MAXIMIZED,
-	NORMAL,
 	FULLSCREEN,
 	CLOSED
 }
@@ -80,7 +80,7 @@ enum EFormStyle {
 }
 
 // moveable or not?
-enum EFormPosition {
+enum EFormPlacement {
 	AUTO,      // moveable
 	CENTER     // centered, not moveable
 }

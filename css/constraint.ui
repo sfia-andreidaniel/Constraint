@@ -8,8 +8,8 @@
 	$declare fontColor  : black;
 
 	// Form styling
-	@Theme Form {
-
+	@Theme UI_Form {
+		width: 200;
 	}
 
 }

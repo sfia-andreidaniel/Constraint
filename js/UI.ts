@@ -10,8 +10,8 @@ class UI extends UI_Event {
 	protected _bottom : UI_Anchor = null;
 
 	// dimensions
-	protected _width  : number = null;
-	protected _height : number = null;
+	protected _width  : number = 0;
+	protected _height : number = 0;
 
 	// inside padding of the UI element (nothing to do with dom). 
 	// Useful if the element contains other elements at loglcal level.
@@ -56,8 +56,24 @@ class UI extends UI_Event {
 		return this._width;
 	}
 
+	set width( value: number ) {
+		value = ~~value;
+		if ( value != this._width ) {
+			this._width = value;
+			this.onRepaint();
+		}
+	}
+
 	get height(): number {
 		return this._height;
+	}
+
+	set height( value: number ) {
+		value = ~~value;
+		if ( value != this._height ) {
+			this._height = value;
+			this.onRepaint();
+		}
 	}
 
 	get padding(): UI_Padding {
@@ -107,6 +123,71 @@ class UI extends UI_Event {
 
 	public onRepaint() {
 		// this is called each time the element needs to be repainted.
+		console.warn( 'UI.onRepaint: not implemented' );
+	}
+
+	// returns the exterior width and height of the UI element.
+	get offsetRect(): IRect {
+		return {
+			"width": this.offsetWidth,
+			"height": this.offsetHeight
+		}
+	}
+
+	// retrieves this UI element interior width and height
+	get clientRect(): IRect {
+		var outer: IRect = this.offsetRect;
+		if ( !outer ) {
+			return {
+				"width": 0,
+				"height": 0
+			};
+		} else {
+			return {
+				"width": outer.width - this._padding.left - this._padding.right,
+				"height": outer.height - this._padding.top - this._padding.bottom
+			}
+		}
+	}
+
+	// retrieves the parent width and height.
+	get parentClientRect(): IRect {
+		if ( this._owner ) {
+			return this._owner.clientRect;
+		} else {
+			return {
+				"width": 0,
+				"height": 0
+			}
+		}
+	}
+
+	// returns the exterior width of the UI element
+	get offsetWidth(): number {
+		var clientRect: IRect = this.parentClientRect;
+
+		switch ( true ) {
+			case this._left.active && this._right.active:
+				return clientRect.width - this._left.value - this._right.value;
+				break;
+			default:
+				return this._width;
+				break;
+		}
+	}
+
+	// returns the exterior height of the UI element
+	get offsetHeight(): number {
+		var clientRect: IRect = this.parentClientRect;
+
+		switch ( true ) {
+			case this._top.active && this._bottom.active:
+				return clientRect.height - this._top.value - this._bottom.value;
+				break;
+			default:
+				return this._height;
+				break;
+		}
 	}
 
 }
@@ -115,7 +196,7 @@ Constraint.registerClass( {
 	"name": "UI",
 	"properties": [
 
-		// CONSTRAINTS
+		// CONSTRAINTS / ANCHORS
 		{
 			"name": "top",
 			"type": "UI_Anchor"
@@ -133,13 +214,13 @@ Constraint.registerClass( {
 			"type": "UI_Anchor"
 		},
 		
-		// X,Y COORDS
+		// DIMENSIONS
 		{
-			"name": "x",
+			"name": "width",
 			"type": "number"
 		},
 		{
-			"name": "y",
+			"name": "height",
 			"type": "number"
 		},
 

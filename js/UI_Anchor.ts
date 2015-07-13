@@ -137,6 +137,10 @@ class UI_Anchor {
 		}
 	}
 
+	get value(): number {
+		return 0;
+	}
+
 	protected requestRepaint() {
 		if ( this._owner ) {
 			this._owner.onRepaint();
