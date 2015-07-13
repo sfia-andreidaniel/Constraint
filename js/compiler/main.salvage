@@ -1,0 +1,4 @@
+/// <reference path={{{constraintLibPath}}} />
+
+{{#each files}}/// <reference path={{{name}}} />
+{{#end}}

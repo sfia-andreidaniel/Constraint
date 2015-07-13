@@ -4,17 +4,16 @@
 //            By doing so, constraint compiler will fail to 
 //            patch your files, and you will loose data.
 
-// @date:     {{compileDate}}
-// @hostname: {{userName}}
-// @nodejs:   {{version}}
+// @date:     Mon Jul 13 2015 21:28:28 GMT+0300 (GTB Daylight Time)
+// @hostname: web01
+// @nodejs:   v0.10.26
 
 /* $hint: end */
 
-class {{name}} extends UI_Form {
+class OtherForm extends UI_Form {
 	
     /* $hint: class-properties */
-{{#if properties}}{{#each properties}}
-    public {{name}}: {{type}} = null;{{#end}}{{#else}}{{#end}}
+
 
     /* $hint: end */
 
@@ -22,8 +21,7 @@ class {{name}} extends UI_Form {
         super();
 
         /* $hint: constructor-properties */
-{{#if properties}}{{#each properties}}
-        this.{{name}} = new {{type}}( {{#if in}}this.{{in}}{{#else}}this{{#end}} );{{#end}}{{#end}}
+
 
         /* $hint: end */
     }
@@ -32,9 +30,7 @@ class {{name}} extends UI_Form {
     protected onInitialize() {
         
         /* $hint: initialization-properties */
-{{#if properties}}{{#each properties}}{{#each properties}}
-        this.{{../name}}.{{name}} = {{#if literal}}{{{value}}}{{#else}}{{{valueJSON}}};{{#end}}{{#end}}
-        {{#end}}{{#end}}
+
         /* $hint: end */
     
     }
