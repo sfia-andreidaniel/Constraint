@@ -5,4 +5,5 @@
 	top: 200;
 
 	caption: 'Demo form';
+	placement: CENTER;
 };

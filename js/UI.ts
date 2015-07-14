@@ -12,6 +12,8 @@ class UI extends UI_Event {
 	// dimensions
 	protected _width  : number = 0;
 	protected _height : number = 0;
+	protected _minWidth: number = 0;
+	protected _minHeight: number = 0;
 
 	// inside padding of the UI element (nothing to do with dom). 
 	// Useful if the element contains other elements at loglcal level.
@@ -22,6 +24,8 @@ class UI extends UI_Event {
 
 	// if the element is represented in DOM, this is it's root element.
 	protected _root   : HTMLDivElement = null;
+	protected _paintable: boolean = true;
+	private   _needPaint: boolean = false;
 
 	constructor( owner: UI ) {
 		super();
@@ -92,6 +96,36 @@ class UI extends UI_Event {
 		}
 	}
 
+	get minWidth(): number {
+		return this._minWidth;
+	}
+
+	set minWidth( w: number) {
+		w = ~~w;
+		if ( w != this._minWidth ) {
+			this._minWidth = w;
+			if ( this._width < this._minWidth ) {
+				this._width = this._minWidth;
+				this.onRepaint();
+			}
+		}
+	}
+
+	get minHeight(): number {
+		return this._minHeight;
+	}
+
+	set minHeight( h: number ) {
+		h = ~~h;
+		if ( h != this._minHeight ) {
+			this._minHeight = h;
+			if ( this._height < this._minHeight ) {
+				this._height = this._minHeight;
+				this.onRepaint();
+			}
+		}
+	}
+
 	get padding(): UI_Padding {
 		return this._padding;
 	}
@@ -140,15 +174,53 @@ class UI extends UI_Event {
 	// this is called each time the element needs to be repainted.
 	public onRepaint() {
 
-		if ( this._root && this._root.parentNode ) {
+		if ( !this._paintable ) {
+		
+			this._needPaint = true;
+		
+		} else {
+			
+			if ( this._root ) {
 
-			this._root.style.width = this.width + "px";
-			this._root.style.height= this.height + "px";
+				if ( this._left.valid && this._right.valid ) {
+					this._root.style.left = this._left.distance + "px";
+					this._root.style.right = this._right.distance + "px";
+					this._root.style.width = 'auto';
+				} else {
 
-			if ( this instanceof UI_Form ) {
-				this._root.style.left = this._left.distance + "px";
-				this._root.style.top  = this._top.distance + "px";
+					if ( this._left.valid ) {
+						this._root.style.left = this._left.distance + "px";
+					}
+
+					if ( this._right.valid ) {
+						this._root.style.right = this._right.distance + "px";
+					}
+
+					this._root.style.width = this.width + "px";	
+				}
+				
+				if ( this._top.valid && this._bottom.valid ) {
+					this._root.style.top = this._top.distance + "px";
+					this._root.style.bottom = this._bottom.distance + "px";
+					this._root.style.height = 'auto';
+				} else {
+
+					if ( this._top.valid ) {
+						this._root.style.top = this._top.distance + "px";
+					}
+
+					if ( this._bottom.valid ) {
+						this._root.style.bottom = this._bottom.distance + "px";
+					}
+
+					this._root.style.height= this.height + "px";
+
+				}
+
 			}
+
+			this._needPaint = false;
+
 		}
 	}
 
@@ -216,6 +288,24 @@ class UI extends UI_Event {
 		}
 	}
 
+	get paintable(): boolean {
+		return this._paintable;
+	}
+
+	set paintable( mode: boolean ) {
+		mode = !!mode;
+		if ( mode != this._paintable ) {
+			this._paintable = mode;
+			if ( mode ) {
+				if ( this._needPaint ) {
+					this.onRepaint();
+				}
+			} else {
+				this._needPaint = false;
+			}
+		}
+	}
+
 }
 
 Constraint.registerClass( {
@@ -249,6 +339,14 @@ Constraint.registerClass( {
 			"name": "height",
 			"type": "number"
 		},
+		{
+			"name": "minWidth",
+			"type": "number"
+		},
+		{
+			"name": "minHeight",
+			"type": "number"
+		},
 
 		// INSIDE PADDING COORDS
 		{
@@ -266,6 +364,12 @@ Constraint.registerClass( {
 		{
 			"name": "padding.bottom",
 			"type": "number"
+		},
+
+		// OTHER PROPERTIES
+		{
+			"name": "paintable",
+			"type": "boolean"
 		}
 	]
 } );

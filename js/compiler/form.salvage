@@ -13,14 +13,18 @@
 
 class {{name}} extends UI_Form {
 	
-    /* $hint: class-properties */{{#if properties}}{{#each properties}}
+    /* $hint: class-properties */
+    // WARNING: Any code written inside of this hint is overrided by constraint compiler!
+{{#if properties}}{{#each properties}}
     public {{name}}: {{type}} = null;{{#end}}{{#else}}{{#end}}
     /* $hint: end */
 
     constructor() {
         super();
 
-        /* $hint: constructor-properties */{{#if properties}}{{#each properties}}
+        /* $hint: constructor-properties */
+        // WARNING: Any code written inside of this hint is overrided by constraint compiler!
+{{#if properties}}{{#each properties}}
         this.{{name}} = new {{type}}( {{#if in}}this.{{in}}{{#else}}this{{#end}} );{{#end}}{{#end}}
         /* $hint: end */
 
@@ -30,12 +34,16 @@ class {{name}} extends UI_Form {
     // Initializes the form UI element properties
     protected onInitialize() {
         
-        /* $hint: child-properties */{{#each childProperties}}
-        this.{{name}} = {{#if literal}}{{{value}}}{{#else}}{{{valueJSON}}};{{#end}}{{#end}}
+        /* $hint: child-properties */
+        // WARNING: Any code written inside of this hint is overrided by constraint compiler!
+{{#each childProperties}}
+        this.{{name}} = {{#if literal}}{{{value}}};{{#else}}{{{valueJSON}}};{{#end}}{{#end}}
          /* $hint: end */
 
-        /* $hint: initialization-properties */{{#if properties}}{{#each properties}}{{#each properties}}
-        this.{{../name}}.{{name}} = {{#if literal}}{{{value}}}{{#else}}{{{valueJSON}}};{{#end}}{{#end}}
+        /* $hint: initialization-properties */
+        // WARNING: Any code written inside of this hint is overrided by constraint compiler!
+{{#if properties}}{{#each properties}}{{#each properties}}
+        this.{{../name}}.{{name}} = {{#if literal}}{{{value}}};{{#else}}{{{valueJSON}}};{{#end}}{{#end}}
         {{#end}}{{#end}}
         /* $hint: end */
     

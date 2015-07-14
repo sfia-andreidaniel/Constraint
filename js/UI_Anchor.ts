@@ -154,14 +154,12 @@ class UI_Anchor {
 			case typeof anotherAnchor == 'number':
 				this._distance = ~~anotherAnchor;
 				this._target = null;
-				this._owner = null;
 				this._alignment = this._type;
 				break;
 
 			case !!!( anotherAnchor ):
 				this._distance = 0;
 				this._target = null;
-				this._owner = null;
 				this._alignment = this._type;
 
 				break;

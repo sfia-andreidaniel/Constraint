@@ -54,6 +54,12 @@ class Constraint {
 			"regex": /^('[^'\n\r]+')+/,
 			"return": 0
 		},
+		// this matches an enum type. Enum types should be written in uppercase, and contain only uppercase letters
+		// and eventually underscores.
+		"type_enum": {
+			"regex": /^[A-Z\_]+/,
+			"return": 0
+		},
 		// this matches a white space.
 		"tok_white_space": {
 			"regex": /^[\s]+/,
@@ -145,7 +151,7 @@ class Constraint {
 				"tok_white_space_opt",
 				"tok_attrib",
 				"tok_white_space_opt",
-				"type_color_named|type_color_hex|type_color_rgba|type_color_rgb|type_string|type_number|type_boolean|type_anchor|type_null",
+				"type_color_named|type_color_hex|type_color_rgba|type_color_rgb|type_string|type_number|type_boolean|type_anchor|type_null|type_enum",
 				"tok_instruction_end"
 			]
 		},
@@ -156,7 +162,7 @@ class Constraint {
 				"tok_white_space_opt",
 				"tok_attrib",
 				"tok_white_space_opt",
-				"type_color_named|type_color_hex|type_color_rgba|type_color_rgb|type_string|type_number|type_boolean|type_anchor|type_subst|type_null",
+				"type_color_named|type_color_hex|type_color_rgba|type_color_rgb|type_string|type_number|type_boolean|type_anchor|type_subst|type_null|type_enum",
 				"tok_white_space_opt",
 				"tok_instruction_end"
 			]
@@ -184,7 +190,7 @@ class Constraint {
 
 		"array_literal": {
 			"flow": [
-				"type_color_named|type_color_hex|type_color_rgba|type_color_rgb|type_string|type_number|type_boolean|type_anchor|type_null"
+				"type_color_named|type_color_hex|type_color_rgba|type_color_rgb|type_string|type_number|type_boolean|type_anchor|type_null|type_enum"
 			]
 		},
 
@@ -313,6 +319,7 @@ class Constraint {
 
 	constructor( buffer: string, strict: boolean = false ) {
 		this.buffer = buffer;
+		this.strict = strict;
 	}
 
 	public getBuffer( startingFrom: number = 0 ): string {
@@ -391,7 +398,6 @@ class Constraint {
 			return this.scope = masterScope;
 		} catch ( err ) {
 			this.error = '@line: ' + this.line + ': ' + err;
-			console.error( err );
 			throw SyntaxError( this.error );
 		}
 

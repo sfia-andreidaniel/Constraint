@@ -1,6 +1,11 @@
+/// <reference path="node.d.ts" />
+/// <reference path="./Constraint_Enum.ts" />
+
 class Constraint_Type {
 
-	public static create( from: ITokenResult, inContext: Constraint_Scope ): any {
+	public static create( from: ITokenResult, inContext: Constraint_Scope, inPropertyType: string = null, strict: boolean = false ): any {
+		var matches: string[];
+
 		switch ( from.type ) {
 			
 			case 'type_number':
@@ -40,6 +45,43 @@ class Constraint_Type {
 
 			case 'type_null':
 				return null;
+				break;
+
+			case 'type_enum':
+				if ( inPropertyType == 'constant' ) {
+					throw Error( 'You are not allowed to use the enum type on declarations' );
+				} else {
+					if ( matches = /^enum\:([a-zA-Z_\$]([a-zA-Z_\$\d]+)?)$/.exec( inPropertyType ) ) {
+						
+						var enumType: any = eval( matches[1] );
+
+						if ( typeof enumType != 'undefined' && enumType ) {
+							
+							if ( typeof enumType[ from.result ] == 'undefined' ) {
+								throw Error( 'Enum value "' + from.result + '" is not declared in enum type "' + matches[1] + '"' );
+							} else {
+								return Constraint_Enum.create( enumType[ from.result ], matches[1] + '.' + from.result );
+							}
+
+						} else {
+							// enum type not found
+							if ( !strict ) {
+								console.warn( 'Enum type "' + matches[1] + '" is not declared! Returning NULL for value ' + from.result );
+							} else {
+								throw Error( 'STRICT MODE: Enum type "' + matches[1] + '" is not declared!' );
+							}
+
+						}
+
+					} else {
+						if ( !strict ) {
+							console.warn('WARNING: Mapping enum value "' + from.result + '" to NULL!' );
+							return null;
+						} else {
+							throw Error( 'STRICT MODE: You declared a property which points to an undefined enum type!' );
+						}
+					}
+				}
 				break;
 
 			default:

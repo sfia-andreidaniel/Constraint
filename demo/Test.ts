@@ -4,14 +4,14 @@
 //            By doing so, constraint compiler will fail to 
 //            patch your files, and you will loose data.
 
-// @date:      Wed Jul 15 2015 00:05:01 GMT+0300 (GTB Daylight Time)
+// @date:      Tue Jul 14 2015 21:04:18 GMT+0300 (GTB Daylight Time)
 // @hostname:  web01
 // @nodejs:    v0.10.26
 // @generator: Constraint compiler ( https://github.com/sfia-andreidaniel/Constraint )
 
 /* $hint: end */
 
-class DemoForm extends UI_Form {
+class Test extends UI_Form {
 	
     /* $hint: class-properties */
     // WARNING: Any code written inside of this hint is overrided by constraint compiler!
@@ -35,12 +35,7 @@ class DemoForm extends UI_Form {
         /* $hint: child-properties */
         // WARNING: Any code written inside of this hint is overrided by constraint compiler!
 
-        this.width = 200;
-        this.height = 400;
-        this.left = 300;
-        this.top = 200;
-        this.caption = "Demo form";
-        this.placement = EFormPlacement.CENTER;
+        this.x = 2;
          /* $hint: end */
 
         /* $hint: initialization-properties */

@@ -4,12 +4,32 @@ class UI_DialogManager extends UI_Event {
 
 	public  windows: UI_Form[] = [];
 	public  desktop: any = null;
+	public  _desktopWidth: number = null;
+	public  _desktopHeight: number = null;
 
 	private _activeWindow: UI_Form = null;
 
 	constructor() {
 		super();
 		this._setupEvents_();
+	}
+
+	get desktopWidth(): number {
+		if ( this._desktopWidth === null ) {
+			if ( this.desktop ) {
+				this._desktopWidth = this.desktop.offsetWidth;
+			}
+		}
+		return ~~this._desktopWidth;
+	}
+
+	get desktopHeight(): number {
+		if ( this._desktopHeight === null ) {
+			if ( this.desktop ) {
+				this._desktopHeight = this.desktop.offsetHeight;
+			}
+		}
+		return ~~this._desktopHeight;
 	}
 
 	public onWindowOpened( win: UI_Form ) {
@@ -106,6 +126,25 @@ class UI_DialogManager extends UI_Event {
 					}, true );
 
 				}, true );
+
+				window.addEventListener( 'resize', function() {
+
+					if ( manager.desktop ) {
+						manager._desktopHeight = manager.desktop.offsetHeight;
+						manager._desktopWidth = manager.desktop.offsetWidth;
+					}
+
+					for ( var i=0, len = manager.windows.length; i<len; i++ ) {
+						if ( manager.windows[i].placement == EFormPlacement.CENTER 
+							|| manager.windows[i].state == EFormState.FULLSCREEN 
+							|| manager.windows[i].state == EFormState.MAXIMIZED 
+						) {
+							manager.windows[i].onRepaint();
+						}
+					}
+
+				}, true );
+
 			}
 
 		} )( this );

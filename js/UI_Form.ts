@@ -47,6 +47,11 @@ class UI_Form extends UI {
 	constructor( ) {
 		super( null );
 
+		this._top     = new UI_Anchor_Form( this, EAlignment.TOP );
+		this._left    = new UI_Anchor_Form( this, EAlignment.LEFT );
+		this._right   = new UI_Anchor_Form( this, EAlignment.RIGHT );
+		this._bottom  = new UI_Anchor_Form( this, EAlignment.BOTTOM );
+
 		this._root = UI_Dom.create( 'div', 'ui UI_Form state-normal border-normal style-form placement-auto' );
 		this._root.tabIndex = 0; // make the window focusable.
 
@@ -64,6 +69,8 @@ class UI_Form extends UI {
 		this._dom.titlebar.appendChild( this._dom.caption );
 		this._dom.titlebar.appendChild( this._dom.buttons );
 
+		this._padding.top = UI_Form._theme.titlebarHeight;
+
 		this.caption = this._caption;
 
 		UI_Form._autoID++;
@@ -72,6 +79,8 @@ class UI_Form extends UI {
 
 		this._root.setAttribute( 'data-role', 'UI_Form' );
 		this._root.setAttribute( 'data-form-id', String( this._id ) );
+
+		this._setupEvents_();
 
 	}
 
@@ -155,11 +164,13 @@ class UI_Form extends UI {
 				case EBorderStyle.NORMAL:
 					UI_Dom.addClass( this._root, 'border-normal' );
 					this._borderStyle = EBorderStyle.NORMAL;
+					this._padding.top = UI_Form._theme.titlebarHeight;
 					break;
 				case EBorderStyle.NONE:
 				default:
 					UI_Dom.addClass( this._root, 'border-none' );
 					this._borderStyle = EBorderStyle.NONE;
+					this._padding.top = 0;
 					break;
 			}
 			this.onRepaint();
@@ -249,8 +260,8 @@ class UI_Form extends UI {
 	get parentClientRect(): IRect {
 		return this._root.parentNode
 			? {
-				"width": document.body.offsetWidth,
-				"height": document.body.offsetHeight
+				"width": UI_DialogManager.get().desktop.offsetWidth,
+				"height": UI_DialogManager.get().desktop.offsetHeight
 			}
 			: {
 				"width": 0,
@@ -258,11 +269,214 @@ class UI_Form extends UI {
 			}
 	}
 
+	/* Sets up the DOM events of the form */
 	private _setupEvents_() {
 		( function( form ) {
 			
+			console.log( 'setup events' );
+
+			// SETUP FOCUSING
 			form._root.addEventListener( 'mousedown', function() {
 				form.focused = true; 
+			}, true );
+
+			// SETUP RESIZING
+			var handleNames: string[] = ['n', 's', 'w', 'e', 'nw', 'ne', 'sw', 'se' ],
+				handleMappings = {
+					"n": EResizeType.N,
+					"s": EResizeType.S,
+					"w": EResizeType.W,
+					"e": EResizeType.E,
+					"nw": EResizeType.NW,
+					"ne": EResizeType.NE,
+					"sw": EResizeType.SW,
+					"se": EResizeType.SE
+				},
+			    i: number = 0,
+			    len: number = 8,
+			    resize = {
+			    	"type": EResizeType.NONE,
+			    	"prevPoint": {
+			    		"x": 0,
+			    		"y": 0
+			    	}
+			    };
+
+			function onResizeRun( evt ) {
+				var newX = evt.clientX || evt.pageX,
+				    newY = evt.clientY || evt.pageY,
+				    deltaX = resize.prevPoint.x - newX,
+				    deltaY = resize.prevPoint.y - newY,
+				    width = form.width,
+				    height= form.height,
+				    top: number = form.top.distance,
+				    left: number = form.left.distance;
+
+				if ( deltaX != 0 || deltaY != 0 ) {
+					switch ( resize.type ) {
+						case EResizeType.N:
+							top -= deltaY;
+							height += deltaY;
+							break;
+						case EResizeType.S:
+							height -= deltaY;
+							break;
+						case EResizeType.W:
+							left -= deltaX;
+							width += deltaX;
+							break;
+						case EResizeType.E:
+							width -= deltaX;
+							break;
+						case EResizeType.NW:
+							top -= deltaY;
+							left -= deltaX;
+							width += deltaX;
+							height += deltaY;
+							break;
+						case EResizeType.NE:
+							top -= deltaY;
+							height += deltaY;
+							width -= deltaX;
+							break;
+						case EResizeType.SW:
+							left -= deltaX;
+							width += deltaX;
+							height -= deltaY;
+							break;
+						case EResizeType.SE:
+							width -= deltaX;
+							height -= deltaY;
+							break;
+					}
+				}
+
+				form.paintable = false;
+
+				if ( ( width != form._width || left != form._left.distance  ) && width >= form._minWidth ) {
+					if ( width != form._width ) {
+						form.width = width;
+					}
+					if ( left != form._left.distance ) {
+						form.left.distance = left;
+					}
+
+					resize.prevPoint.x = newX;
+				}
+
+				if ( ( height != form._height || top != form._top.distance ) && ( height >= form._minHeight ) ) {
+					if ( height != form._height ) {
+						form.height = height;
+					}
+
+					if ( top != form._top.distance ) {
+						form.top = top;
+					}
+
+					resize.prevPoint.y = newY;
+				}
+
+				form.paintable = true;
+
+			}
+
+			function onResizeEnd( evt ) {
+				document.body.removeEventListener( 'mousemove', onResizeRun, true );
+				document.body.removeEventListener( 'mouseup',   onResizeEnd, true );
+			}
+
+			for ( i=0; i<len; i++ ) {
+				( function( handleName: string ) {
+
+					var handle: any = form._dom[ handleName ];
+
+					handle.addEventListener( 'mousedown', function( evt ) {
+						
+						if ( form.formStyle != EFormStyle.FORM || form.state != EFormState.NORMAL /* || form.placement != EFormPlacement.AUTO */ ) {
+							// Invalid resize states.
+							return;
+						}
+
+						resize.type = handleMappings[ handleName ];
+						resize.prevPoint.x = evt.clientX || evt.pageX;
+						resize.prevPoint.y = evt.clientY || evt.pageY;
+
+						document.body.addEventListener( 'mousemove', onResizeRun, true );
+						document.body.addEventListener( 'mouseup',   onResizeEnd, true );
+
+					}, true );
+
+				} )( handleNames[i] );
+			}
+
+			// SETUP MOVING ( DRAGGING )
+
+			var move: IPoint = {
+				"x": 0,
+				"y": 0
+			};
+
+			function onMoveRun( evt ) {
+
+				var left: number = form._left.distance,
+				    top : number = form._top.distance,
+				    newX: number = evt.clientX || evt.pageX,
+				    newY: number = evt.clientY || evt.pageY,
+				    deltaX: number = move.x - newX,
+				    deltaY: number = move.y - newY;
+
+				if ( deltaX != 0 || deltaY != 0 ) {
+					
+					left -= deltaX;
+					top  -= deltaY;
+
+					form.paintable = false;
+
+					form.left.distance = left;
+					form.top.distance = top;
+
+					form.paintable = true;
+
+					form.onRepaint();
+
+					move.x = newX;
+					move.y = newY;
+				}
+			}
+
+			function onMoveEnd( evt ) {
+				document.body.removeEventListener( 'mousemove', onMoveRun, true );
+				document.body.removeEventListener( 'mouseup',   onMoveEnd, true );
+			}
+
+			form._dom.titlebar.addEventListener( 'mousedown', function( evt ) {
+				if ( form.state != EFormState.NORMAL || form.placement != EFormPlacement.AUTO ) {
+					// invalid move states
+					return;
+				}
+
+				move.x = evt.clientX || evt.pageX;
+				move.y = evt.clientY || evt.pageY;
+
+				document.body.addEventListener( 'mousemove', onMoveRun, true );
+				document.body.addEventListener( 'mouseup',   onMoveEnd, true );
+
+			}, true );
+
+			// SETUP MAXIMIZATION ON CAPTION DOUBLECLICK
+			form._dom.caption.addEventListener( 'dblclick', function( evt ) {
+
+				if ( form.formStyle == EFormStyle.FORM ) {
+
+					if ( form.state == EFormState.NORMAL ) {
+						form.state = EFormState.MAXIMIZED;
+					} else
+					if ( form.state == EFormState.MAXIMIZED ) {
+						form.state = EFormState.NORMAL;
+					}
+
+				}
+
 			}, true );
 
 		} )( this );
@@ -270,3 +484,29 @@ class UI_Form extends UI {
 
 }
 
+Constraint.registerClass({
+	"name": "UI_Form",
+	"extends": "UI",
+	"properties": [
+		{
+			"name": "state",
+			"type": "enum:EFormState"
+		},
+		{
+			"name": "borderStyle",
+			"type": "enum:EBorderStyle"
+		},
+		{
+			"name": "placement",
+			"type": "enum:EFormPlacement"
+		},
+		{
+			"name": "caption",
+			"type": "string"
+		},
+		{
+			"name": "focused",
+			"type": "boolean"
+		}
+	]
+});

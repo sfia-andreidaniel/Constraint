@@ -7,20 +7,24 @@
 	// Form styling
 	@Theme UI_Form {
 		
-		backgroundColor: #ddd;
+		backgroundColor: white;
 		
 		inactiveCaptionColor: #ddd;
-		activeCaptionColor: white;
+		activeCaptionColor: black;
 
 		titlebar: {
 			height: 30;
-			activeBgColor: blue;
+			activeBgColor: #69c1f0;
 			inactiveBgColor: black;
+			activeColor: black;
+			inactiveColor: white;
+			captionPadding: 4;
+			captionFontSize: 16;
 		};
 
 		border: {
 			width: 5;
-			activeColor: blue;
+			activeColor: #69c1f0;
 			inactiveColor: black;
 		};
 

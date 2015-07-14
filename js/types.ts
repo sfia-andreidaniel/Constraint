@@ -84,3 +84,16 @@ enum EFormPlacement {
 	AUTO,      // moveable
 	CENTER     // centered, not moveable
 }
+
+// type of resizing
+enum EResizeType {
+	N,
+	S,
+	W,
+	E,
+	NW,
+	NE,
+	SW,
+	SE,
+	NONE
+}

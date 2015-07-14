@@ -18,6 +18,7 @@ class Constraint_Scope {
 	protected strict: boolean = false;
 
 	constructor( parentScope: Constraint_Scope = null, name: string = '', type: string = '', strict: boolean = false ) {
+		
 		this.strict = strict;
 		this.parent = parentScope;
 
@@ -27,6 +28,16 @@ class Constraint_Scope {
 
 		if ( !parentScope ) {
 			this.global = {};
+		} else {
+
+			if ( strict ) {
+
+				// Don't allow @UI_Form > ... > @UI_Form scopes nesting
+				if ( this.isNestedInsideScopeType( 'UI_Form', true ) ) {
+					throw Error( 'STRICT: Type UI_Form cannot be nested inside type UI_Form' );
+				}
+			}
+
 		}
 
 		this._name = name;
@@ -65,7 +76,7 @@ class Constraint_Scope {
 
 		this.properties.push({
 			"name": k,
-			"value": Constraint_Type.create( value, this )
+			"value": Constraint_Type.create( value, this, this.getPropertyType( k ), this.strict )
 		});
 	}
 
@@ -98,7 +109,7 @@ class Constraint_Scope {
 
 		for ( var i=0, len = this.properties.length; i<len; i++ ) {
 			if ( this.properties[i].name == keyName ) {
-				this.properties[i].value.push( Constraint_Type.create( value, this ) );
+				this.properties[i].value.push( Constraint_Type.create( value, this, this.getPropertyType( keyName ), this.strict ) );
 			}
 		}
 	}
@@ -150,7 +161,7 @@ class Constraint_Scope {
 						throw Error( 'Failed to declare alias const "' + constant + ": The constant is not declared at this point." );
 					}
 				} else {
-					return Constraint_Type.create( v, scope );
+					return Constraint_Type.create( v, scope, 'constant', this.strict );
 				}
 			} )( substitute, this )
 		} );
@@ -279,6 +290,22 @@ class Constraint_Scope {
 				return false;
 			} else {
 				return false;
+			}
+		}
+	}
+
+	public getPropertyType( propertyName: string ): string {
+		return Constraint.getClassPropertyType( this.type, propertyName );
+	}
+
+	public isNestedInsideScopeType( typeName: string, recursive: boolean = false ) {
+		if ( !this.parent ) {
+			return false;
+		} else {
+			if ( recursive ) {
+				return this.parent.type == typeName || this.parent.isNestedInsideScopeType( typeName, true );
+			} else {
+				return this.parent.type == typeName;
 			}
 		}
 	}

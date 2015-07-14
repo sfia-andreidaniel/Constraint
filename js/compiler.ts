@@ -21,7 +21,7 @@ try {
 		throw Error( "File empty, non-existent or non-readable: " + srcFile );
 	}
 
-	var constraint = new Constraint( buffer + '' );
+	var constraint = new Constraint( buffer + '', true );
 
 	constraint.compile();
 
