@@ -2,4 +2,214 @@ html, body {
 	padding: 0;
 	margin: 0;
 	background-color: #333;
+	width: 100%;
+	height: 100%;
+}
+
+/* dialog */
+{$N UI.UI_Form}
+.ui {
+	position: absolute;
+	display: block;
+	padding: 0;
+	margin: 0;
+	border: none;
+	outline: none;
+}
+
+.ui.UI_Form {
+
+}
+
+.ui.UI_Form > .inner {
+	display: block;
+	padding: 0;
+	margin: 0;
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.ui.UI_Form > .inner > .titlebar {
+	position: relative;
+	display: block;
+	height: ${titlebar.height}px;
+	width: 100%;
+	background-color: ${titlebar.inactiveBgColor};
+	top: -${titlebar.height}px;
+	cursor: default;
+	-webkit-user-select: none;
+}
+
+.ui.UI_Form.border-none > .inner > .titlebar {
+	display: none;
+}
+
+.ui.UI_Form > .inner > .titlebar > .caption {
+	position: absolute;
+	display: block;
+	overflow: hidden;
+	color: ${inactiveCaptionColor};
+	left: 2px;
+	bottom: 2px;
+	right: 40px;
+	top: 2px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-family: ${font.family}
+}
+
+.ui.UI_Form > .inner > .resizer {
+	position: absolute;
+	display: block;
+	background-color: ${border.inactiveColor};
+	width: ${border.width}px;
+	height: ${border.width}px;
+	z-index: 100;
+}
+
+.ui.UI_Form.border-none > .inner > .resizer.nw {
+	left: -${border.width}px;
+	top: -${border.width}px;
+}
+
+.ui.UI_Form.border-none > .inner > .resizer.ne {
+	right: -${border.width}px;
+	top: -${border.width}px;
+}
+
+.ui.UI_Form.border-none > .inner > .resizer.sw {
+	left: -${border.width}px;
+	bottom: -${border.width}px;
+}
+
+.ui.UI_Form.border-none > .inner > .resizer.se {
+	right: -${border.width}px;
+	bottom: -${border.width}px;
+}
+
+.ui.UI_Form.border-none > .inner > .resizer.n {
+	left: 0px;
+	right: 0px;
+	width: auto;
+	top: -${border.width}px;
+}
+
+.ui.UI_Form.border-none > .inner > .resizer.s {
+	left: 0px;
+	right: 0px;
+	width: auto;
+	bottom: -${border.width}px;
+}
+
+.ui.UI_Form.border-none > .inner > .resizer.w {
+	top: 0px;
+	bottom: 0px;
+	left: -${border.width}px;
+	height: auto;
+}
+
+.ui.UI_Form.border-none > .inner > .resizer.e {
+	top: 0px;
+	bottom: 0px;
+	right: -${border.width}px;
+	height: auto;
+}
+
+/* Border normal */
+.ui.UI_Form.border-normal > .inner > .resizer.nw {
+	left: -${border.width}px;
+	top: calc( -${border.width}px - ${titlebar.height}px);
+}
+
+.ui.UI_Form.border-normal > .inner > .resizer.ne {
+	right: -${border.width}px;
+	top: calc( -${border.width}px - ${titlebar.height}px);
+}
+
+.ui.UI_Form.border-normal > .inner > .resizer.sw {
+	left: -${border.width}px;
+	bottom: -${border.width}px;
+}
+
+.ui.UI_Form.border-normal > .inner > .resizer.se {
+	right: -${border.width}px;
+	bottom: -${border.width}px;
+}
+
+.ui.UI_Form.border-normal > .inner > .resizer.n {
+	left: 0px;
+	right: 0px;
+	width: auto;
+	top: calc( -${border.width}px - ${titlebar.height}px);
+}
+
+.ui.UI_Form.border-normal > .inner > .resizer.s {
+	left: 0px;
+	right: 0px;
+	width: auto;
+	bottom: -${border.width}px;
+}
+
+.ui.UI_Form.border-normal > .inner > .resizer.w {
+	top: -${titlebar.height}px;
+	bottom: 0px;
+	left: -${border.width}px;
+	height: auto;
+}
+
+.ui.UI_Form.border-normal > .inner > .resizer.e {
+	top: -${titlebar.height}px;
+	bottom: 0px;
+	right: -${border.width}px;
+	height: auto;
+}
+
+.ui.UI_Form > .inner > .body {
+	width: 100%;
+	position: relative;
+	height: 100%;
+	display: block;
+	padding: 0;
+	margin: 0;
+	top: -${titlebar.height}px;
+	background-color: ${backgroundColor};
+}
+
+.ui.UI_Form.border-none > .inner > .body {
+	top: 0px;
+}
+
+.ui.UI_Form > .inner > .resizer.n {
+	cursor: n-resize;
+}
+.ui.UI_Form > .inner > .resizer.s {
+	cursor: s-resize;
+}
+.ui.UI_Form > .inner > .resizer.w {
+	cursor: w-resize;
+}
+.ui.UI_Form > .inner > .resizer.e {
+	cursor: e-resize;
+}
+.ui.UI_Form > .inner > .resizer.nw {
+	cursor: nw-resize;
+}
+.ui.UI_Form > .inner > .resizer.ne {
+	cursor: ne-resize;
+}
+.ui.UI_Form > .inner > .resizer.sw {
+	cursor: sw-resize;
+}
+.ui.UI_Form > .inner > .resizer.se {
+	cursor: se-resize;
+}
+
+.ui.UI_Form.focused > .inner > .resizer {
+	background-color: ${border.activeColor};
+	z-index: 1000;
+}
+
+.ui.UI_Form.focused > .inner > .titlebar {
+	background-color: ${titlebar.activeBgColor};
 }

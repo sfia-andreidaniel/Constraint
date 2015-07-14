@@ -2,6 +2,13 @@
  */
 class UI_Form extends UI {
 	
+	public static _autoID: number = 0;
+
+	public static _theme = {
+		"borderWidth": $I.number('UI.UI_Form/border.width'),
+		"titlebarHeight": $I.number('UI.UI_Form/titlebar.height')
+	};
+
 	// MINIMIZED, MAXIMIZED, CLOSED, NORMAL
 	protected _state: EFormState = EFormState.NORMAL;
 	
@@ -14,11 +21,58 @@ class UI_Form extends UI {
 	// Moveable or not?
 	protected _placement: EFormPlacement = EFormPlacement.AUTO;
 
+	protected _caption: string = '';
+
+	protected _focused: boolean = false;
+
+	protected _id: number = 0;
+
+	private   _dom = {
+		"inner": UI_Dom.create( 'div', 'inner' ),
+		"body": UI_Dom.create('div', 'body'),
+		"titlebar": UI_Dom.create('div', 'titlebar'),
+		"caption": UI_Dom.create('div', 'caption' ),
+		"buttons": UI_Dom.create( 'div', 'buttons' ),
+		"n": UI_Dom.create('div', 'resizer n' ),
+		"s": UI_Dom.create('div', 'resizer s' ),
+		"w": UI_Dom.create('div', 'resizer w' ),
+		"e": UI_Dom.create('div', 'resizer e' ),
+		"nw": UI_Dom.create( 'div', 'resizer nw' ),
+		"ne": UI_Dom.create( 'div', 'resizer ne' ),
+		"sw": UI_Dom.create( 'div', 'resizer sw' ),
+		"se": UI_Dom.create( 'div', 'resizer se' )
+	};
+
 	// Form constructor.
 	constructor( ) {
 		super( null );
-		this._root = UI_Dom.create( 'div' );
-		UI_Dom.addClass( this._root, 'ui UI_Form state-normal border-normal style-form placement-auto' );
+
+		this._root = UI_Dom.create( 'div', 'ui UI_Form state-normal border-normal style-form placement-auto' );
+		this._root.tabIndex = 0; // make the window focusable.
+
+		this._root.appendChild( this._dom.inner );
+		this._dom.inner.appendChild( this._dom.n );
+		this._dom.inner.appendChild( this._dom.s );
+		this._dom.inner.appendChild( this._dom.w );
+		this._dom.inner.appendChild( this._dom.e );
+		this._dom.inner.appendChild( this._dom.nw );
+		this._dom.inner.appendChild( this._dom.ne );
+		this._dom.inner.appendChild( this._dom.sw );
+		this._dom.inner.appendChild( this._dom.se );
+		this._dom.inner.appendChild( this._dom.titlebar );
+		this._dom.inner.appendChild( this._dom.body );
+		this._dom.titlebar.appendChild( this._dom.caption );
+		this._dom.titlebar.appendChild( this._dom.buttons );
+
+		this.caption = this._caption;
+
+		UI_Form._autoID++;
+
+		this._id = UI_Form._autoID;
+
+		this._root.setAttribute( 'data-role', 'UI_Form' );
+		this._root.setAttribute( 'data-form-id', String( this._id ) );
+
 	}
 
 	// returns an element defined on this instance.
@@ -37,8 +91,20 @@ class UI_Form extends UI {
 
 	// Makes the root element of the form a child of a DOM element.
 	// This is needed in order to make the form available to the browser.
-	public show( inElement: any ) {
-		UI_Dom._selector_( inElement ).appendChild( this._root );
+	public open( ) {
+		UI_DialogManager.get().desktop.appendChild( this._root );
+		this.onRepaint();
+		UI_DialogManager.get().onWindowOpened( this );
+	}
+
+	// Closes the window. Removes it from DOM and from DialogManager.
+	public close() {
+		
+		if ( this._root.parentNode ) {
+			this._root.parentNode.removeChild( this._root );
+		}
+
+		UI_DialogManager.get().onWindowClosed( this );
 	}
 
 	get state(): EFormState {
@@ -143,5 +209,64 @@ class UI_Form extends UI {
 			this.onRepaint();
 		}
 	}
+
+	get caption(): string {
+		return this._caption;
+	}
+
+	set caption( cap: string ) {
+		if ( cap != this._caption ) {
+			this._caption = String( cap || '' );
+			this._dom.caption.innerHTML = '';
+			this._dom.caption.appendChild( document.createTextNode( this._caption ) );
+		}
+	}
+
+	get focused(): boolean {
+		return this._focused;
+	}
+
+	set focused( on: boolean ) {
+		on = !!on;
+		if ( on != this._focused ) {
+			this._focused = on;
+			if ( this._focused ) {
+				UI_Dom.addClass( this._root, 'focused' );
+			} else {
+				UI_Dom.removeClass( this._root, 'focused' );
+			}
+		}
+
+		if ( this._focused ) {
+			UI_DialogManager.get().activeWindow = this;
+		}
+	}
+
+	get id(): number {
+		return this._id;
+	}
+
+	get parentClientRect(): IRect {
+		return this._root.parentNode
+			? {
+				"width": document.body.offsetWidth,
+				"height": document.body.offsetHeight
+			}
+			: {
+				"width": 0,
+				"height": 0
+			}
+	}
+
+	private _setupEvents_() {
+		( function( form ) {
+			
+			form._root.addEventListener( 'mousedown', function() {
+				form.focused = true; 
+			}, true );
+
+		} )( this );
+	}
+
 }
 

@@ -36,20 +36,36 @@ class UI extends UI_Event {
 		this._padding = new UI_Padding( this );
 	}
 
-	get top(): UI_Anchor {
+	get top(): any {
 		return this._top;
 	}
 
-	get left(): UI_Anchor {
+	set top( value: any ) {
+		this._top.load( value );
+	}
+
+	get left(): any {
 		return this._left;
 	}
 
-	get right(): UI_Anchor {
+	set left( value: any ) {
+		this._left.load( value );
+	}
+
+	get right(): any {
 		return this._right;
 	}
 
-	get bottom(): UI_Anchor {
+	set right( value: any ) {
+		this._right.load( value );
+	}
+
+	get bottom(): any {
 		return this._bottom;
+	}
+
+	set bottom( value: any ) {
+		this._bottom.load( value );
 	}
 
 	get width(): number {
@@ -121,9 +137,19 @@ class UI extends UI_Event {
 		return child;
 	}
 
+	// this is called each time the element needs to be repainted.
 	public onRepaint() {
-		// this is called each time the element needs to be repainted.
-		console.warn( 'UI.onRepaint: not implemented' );
+
+		if ( this._root && this._root.parentNode ) {
+
+			this._root.style.width = this.width + "px";
+			this._root.style.height= this.height + "px";
+
+			if ( this instanceof UI_Form ) {
+				this._root.style.left = this._left.distance + "px";
+				this._root.style.top  = this._top.distance + "px";
+			}
+		}
 	}
 
 	// returns the exterior width and height of the UI element.

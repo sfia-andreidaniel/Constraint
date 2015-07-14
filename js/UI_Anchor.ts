@@ -3,7 +3,7 @@ class UI_Anchor {
 	protected _owner: UI = null;
 
 	protected _alignment: EAlignment = null;
-	protected _distance: number;
+	protected _distance: number = 0;
 	
 	// anchor type. weather if it's LEFT, RIGHT, TOP or BOTTOM.
 	protected _type: EAlignment;
@@ -145,6 +145,36 @@ class UI_Anchor {
 		if ( this._owner ) {
 			this._owner.onRepaint();
 		}
+	}
+
+	public load( anotherAnchor: any ) {
+
+		switch ( true ) {
+
+			case typeof anotherAnchor == 'number':
+				this._distance = ~~anotherAnchor;
+				this._target = null;
+				this._owner = null;
+				this._alignment = this._type;
+				break;
+
+			case !!!( anotherAnchor ):
+				this._distance = 0;
+				this._target = null;
+				this._owner = null;
+				this._alignment = this._type;
+
+				break;
+
+			case anotherAnchor instanceof UI_Anchor:
+				this._distance = anotherAnchor._distance;
+				this._target   = anotherAnchor._target;
+				this._alignment = anotherAnchor._alignment;
+				break;
+
+		}
+
+		this.requestRepaint();
 	}
 
 	public static create( from: IAnchor ): UI_Anchor {

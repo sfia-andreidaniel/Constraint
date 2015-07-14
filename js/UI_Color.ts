@@ -165,6 +165,10 @@ class UI_Color {
 			: 'rgb(' + this.red + ',' + this.green + ',' + this.blue + ')';
 	}
 
+	public toLiteral(): string {
+		return this.toString();
+	}
+
 	public static create( str: string ): UI_Color {
 
 		var matches: string[];

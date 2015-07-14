@@ -6,7 +6,28 @@
 
 	// Form styling
 	@Theme UI_Form {
-		width: 200;
+		
+		backgroundColor: #ddd;
+		
+		inactiveCaptionColor: #ddd;
+		activeCaptionColor: white;
+
+		titlebar: {
+			height: 30;
+			activeBgColor: blue;
+			inactiveBgColor: black;
+		};
+
+		border: {
+			width: 5;
+			activeColor: blue;
+			inactiveColor: black;
+		};
+
+		font: {
+			family: 'Arial';
+		};
+
 	};
 
 };

@@ -18,6 +18,7 @@ try {
 	if ( !contents )
 		throw Error("File empty or error reading " + JSON.stringify( srcFile ) );
 
+	$I._offline_ = false;
 	$I._root_ = new Constraint( fs.readFileSync( uiFile ) + '', false );
 
 	try {

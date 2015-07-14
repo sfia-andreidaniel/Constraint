@@ -16,8 +16,15 @@
 class $I {
 
 	public static _root_: Constraint = null;
+	public static _offline_: boolean = true;
+	public static _namespace_: string = '';
 
 	public static _get_( path: string ): any {
+
+		if ( $I._offline_ ) {
+			return null;
+		}
+
 		/* The path is in format Scope/Scope/Scope/PropertyName */
 		var match: string[] = /^(.*)\/([^\/]+)$/.exec( path );
 		if ( !match ) {
@@ -73,26 +80,38 @@ class $I {
 
 		var resolved: any = {};
 
-		return str['replace']( /\$I\.(number|string|color)\(\'([^\']+)\'\)/g, function( substr: string, ...matches: any[] ): string {
+		return str.replace( /\$I\.(number|string|color)\(\'([^\']+)\'\)/g, function( substr: string, ...matches: any[] ): string {
 			
 			var result: string,
 			    subst: any;
 
 			switch ( matches[ 0 ] ) {
 				case 'number':
-					result = ( subst = resolved[ matches[1] ] || ( resolved[ matches[1] ] = $I.number( matches[1] ) ) ) + ' /* ' + matches[1] + ' */';
+					result = ( subst = resolved[ matches[1] ] || ( resolved[ matches[1] ] = $I.number( matches[1] ) ) );
 					break;
 				case 'string':
-					result = ( subst = resolved[ matches[1] ] || ( resolved[ matches[1] ] = $I.string( matches[1] ) ) ) + ' /* ' + matches[1] + ' */';
+					result = ( subst = resolved[ matches[1] ] || ( resolved[ matches[1] ] = $I.string( matches[1] ) ) );
 					break;
 				case 'color':
-					result = ( subst = resolved[ matches[1] ] || ( resolved[ matches[1] ] = $I.color( matches[1] ) ) ) + ' /* ' + matches[1] + ' */';
+					result = ( subst = resolved[ matches[1] ] || ( resolved[ matches[1] ] = $I.color( matches[1] ) ) );
 					break;
 			}
 
 			console.log( '$I ' + JSON.stringify( matches[1] ) + ' as ' + subst );
 
 			return result;
+		}).replace( /((\$\{([a-zA-Z_\d\.]+)\})|(\{\$N ([a-zA-Z_\d\.]+)\}))/g, function( substr: string, ...matches: any[] ): string {
+
+			if ( matches[4] ) {
+				// namespace command
+				$I._namespace_ = matches[4];
+				console.log( '* Using namespace: ' + matches[4] );
+				return '/* Namespace: ' + matches[4] + '*/';
+			} else {
+				//console.log( matches );
+				return $I._get_( $I._namespace_ + '/' + matches[2] );
+			}
+
 		});
 
 	}

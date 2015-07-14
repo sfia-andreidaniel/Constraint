@@ -86,6 +86,7 @@ class UI_Dom {
 
 	}
 
+	/* Removes a list of classes from a DOM element */
 	public static removeClasses( element: any, classes: string[] ) {
 		element = UI_Dom._selector_( element );
 
@@ -113,8 +114,12 @@ class UI_Dom {
 		}
 	}
 
-	public static create( tagName: string ): any {
-		return document.createElement( tagName );
+	/* Creates a DOM element, and optionally set it's class attribute */
+	public static create( tagName: string, className: string = null ): any {
+		var result: any = document.createElement( tagName );
+		if ( className )
+			result.className = className;
+		return result;
 	}
 
 }

@@ -1,4 +1,8 @@
 @UI_Form DemoForm {
 	width: 200;
 	height: 400;
+	left: 300;
+	top: 200;
+
+	caption: 'Demo form';
 };
