@@ -36,7 +36,7 @@ class Constraint_Scope {
 	get name(): string {
 		return this.parent === null
 			? this._name
-			: this.parent._name + '.' + this._name;
+			: ( this.parent.name ? ( this.parent._name + '.' + this._name ) : this._name );
 	}
 
 	public pushObjectKey( key: string ) {

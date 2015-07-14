@@ -374,7 +374,7 @@ class Constraint {
 
 	public compile(): Constraint_Scope {
 
-		this.scope = new Constraint_Scope( null, 'resource', 'document', this.strict );
+		this.scope = new Constraint_Scope( null, '', 'document', this.strict );
 		this.line = 1;
 		this.error = null;
 		

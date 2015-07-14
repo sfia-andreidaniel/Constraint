@@ -186,9 +186,14 @@ try {
 		"fileName": "main.ts"
 	});
 
+	salvage = new Salvage( fs.readFileSync( 'js/compiler/Makefile.salvage' ) + '' );
+
 	writeFiles.push({
 		"path": destDir + '/Makefile',
-		"data": fs.readFileSync( 'js/compiler/Makefile.salvage' ) + '',
+		"data": salvage.parse( {
+			"postcompiler": '"' + fs.realpathSync( 'js/postcompiler.ts' ).replace(/(["\s'$`\\])/g,'\\$1')+'"',
+			'uifile'      : '"' + fs.realpathSync( 'css/constraint.ui' ).replace(/(["\s'$`\\])/g,'\\$1')+'"'
+		} ),
 		"method": "create",
 		"fileName": "Makefile"
 	});

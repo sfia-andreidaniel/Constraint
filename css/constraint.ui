@@ -1,6 +1,3 @@
-// User interface styling file.
-// All the UI elements are taking their defaults from this file
-
 @Theme UI {
 	
 	$declare fontSize   : 12;
@@ -10,6 +7,6 @@
 	// Form styling
 	@Theme UI_Form {
 		width: 200;
-	}
+	};
 
-}
+};

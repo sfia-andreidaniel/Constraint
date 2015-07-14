@@ -2,6 +2,8 @@ SHELL := /bin/bash
 
 build:: clean
 	tsc main.ts --target es5 --out main.js
+	tsc {{{postcompiler}}} --target es5 --out postcompiler.js
+	node postcompiler.js main.js {{{uifile}}} --nostub
 
 clean::
 	rm -f main.js js/*.js

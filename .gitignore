@@ -1,6 +1,8 @@
 # Typescript generated files
 main.js
 constraint.js
+compiler.js
+postcompiler.js
 
 # Windows image file caches
 Thumbs.db
