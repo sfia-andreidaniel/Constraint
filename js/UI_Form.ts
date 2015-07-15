@@ -76,7 +76,10 @@ class UI_Form extends UI {
 		this._dom.buttons.appendChild( this._dom.btnMaximize ).innerHTML = '<div class="ui icon btn-maximize"></div>';
 		this._dom.buttons.appendChild( this._dom.btnClose ).innerHTML = '<div class="ui icon btn-close"></div>';
 
-		this._padding.top = UI_Form._theme.titlebarHeight;
+		this._padding.top = UI_Form._theme.titlebarHeight + UI_Form._theme.borderWidth;
+			this._padding.left = 
+			this._padding.right = 
+			this._padding.bottom = UI_Form._theme.borderWidth;
 
 		this.caption = this._caption;
 
@@ -514,10 +517,33 @@ class UI_Form extends UI {
 		} )( this );
 	}
 
+	get clientRect(): IRect {
+		// if seems that for the UI_Form it's better to rely on browser
+		// info, even if it's more CPU demanding.
+		return {
+			"width": this._dom.body.offsetWidth,
+			"height": this._dom.body.offsetHeight
+		}
+	}
+
+	get translateLeft(): number {
+		return this.padding.left;
+	}
+
+	get translateTop(): number {
+		return this.padding.top;
+	}
+
 	public onClose(): boolean {
 		return true;
 	}
 
+	public insertDOMNode( node: UI ): UI {
+		if ( node._root ) {
+			this._dom.body.appendChild( node._root );
+		}
+		return node;
+	}
 }
 
 Constraint.registerClass({

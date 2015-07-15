@@ -17,6 +17,7 @@
 /// <reference path="UI_Padding.ts" />
 /// <reference path="UI_Form.ts" />
 /// <reference path="UI_DialogManager.ts" />
+/// <reference path="UI_Label.ts" />
 
 // Delimiter to remove the constraint runtime from it's makefiles.
 var ____END_OF_STUB____ = undefined;

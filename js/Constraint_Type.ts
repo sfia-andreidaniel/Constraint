@@ -1,6 +1,6 @@
 /// <reference path="node.d.ts" />
 /// <reference path="./Constraint_Enum.ts" />
-
+/// <reference path="./UI_Anchor_Literal.ts" />
 class Constraint_Type {
 
 	public static create( from: ITokenResult, inContext: Constraint_Scope, inPropertyType: string = null, strict: boolean = false ): any {
@@ -137,6 +137,6 @@ class Constraint_Type {
 			throw Error( 'UI Element called ' + JSON.stringify( result.target ) + " is referencing an element outside it's UI scope!" );
 		}
 
-		return result;
+		return UI_Anchor_Literal.create( result );
 	}
 }

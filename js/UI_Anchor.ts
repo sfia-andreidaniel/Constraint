@@ -4,6 +4,7 @@ class UI_Anchor {
 
 	protected _alignment: EAlignment = null;
 	protected _distance: number = 0;
+	protected _loaded: boolean = false;
 	
 	// anchor type. weather if it's LEFT, RIGHT, TOP or BOTTOM.
 	protected _type: EAlignment;
@@ -48,7 +49,40 @@ class UI_Anchor {
 	// the distance from the target.
 	// if the alignment is CENTER, this value is ignored.
 	get distance(): number {
-		return this._distance;
+
+		var rect: IRect,
+		    parentSize: number,
+		    mySize: number;
+
+		switch ( this._alignment ) {
+			case EAlignment.CENTER:
+				
+				if ( this._target === null || this._target === this._owner ) {
+
+					// compute center inside of parent.
+					rect = this._owner.parentClientRect;
+
+					if ( this._type == EAlignment.TOP || this._type == EAlignment.BOTTOM ){
+						parentSize = ~~( rect.height / 2 );
+						mySize = ~~( this._owner.height / 2 );
+					} else {
+						parentSize = ~~( rect.width / 2 );
+						mySize = ~~( this._owner.width / 2 );
+					}
+
+					return parentSize - mySize;
+				
+				} else {
+				
+					throw Error( 'Anchoring relative to sibling not implemented!' );
+				
+				}
+
+				break;
+			default:
+				return this._distance;
+		}
+
 	}
 
 	set distance( d: number ) {
@@ -83,7 +117,7 @@ class UI_Anchor {
 
 	// weather the anchor has all the needed data to be considered a valid one or not.
 	get valid(): boolean {
-		if ( !this._target || !this._owner || !this._type || this._type == EAlignment.CENTER ) {
+		if ( !this._loaded || !this._owner || this._type === null || this._type == EAlignment.CENTER ) {
 			return false;
 		} else {
 			return true;
@@ -148,6 +182,8 @@ class UI_Anchor {
 	}
 
 	public load( anotherAnchor: any ) {
+		
+		var def: IAnchor;
 
 		switch ( true ) {
 
@@ -155,12 +191,14 @@ class UI_Anchor {
 				this._distance = ~~anotherAnchor;
 				this._target = null;
 				this._alignment = this._type;
+				this._loaded = true;
 				break;
 
 			case !!!( anotherAnchor ):
 				this._distance = 0;
 				this._target = null;
 				this._alignment = this._type;
+				this._loaded = false;
 
 				break;
 
@@ -168,6 +206,18 @@ class UI_Anchor {
 				this._distance = anotherAnchor._distance;
 				this._target   = anotherAnchor._target;
 				this._alignment = anotherAnchor._alignment;
+				this._loaded = true;
+				break;
+
+			case anotherAnchor instanceof UI_Anchor_Literal:
+				def = anotherAnchor.def;
+				console.warn( 'Load from literal: ', def );
+				this._distance = def.distance || 0;
+				this._alignment = def.alignment;
+				this._target = def.target === null
+					? null
+					: this._owner.form[ def.target ];
+				this._loaded = true;
 				break;
 
 		}

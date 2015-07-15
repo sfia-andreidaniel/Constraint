@@ -31,7 +31,6 @@ html, body {
 
 {$N UI.UI_Form}
 .ui.UI_Form {
-
 }
 
 .ui.UI_Form > .inner {
@@ -325,4 +324,19 @@ html, body {
 .ui.UI_Form.style-mdi > .inner > .titlebar > .buttons > .button.minimize,
 .ui.UI_Form.style-mdi > .inner > .titlebar > .buttons > .button.maximize {
 	display: none;
+}
+
+{$N UI.UI_Label}
+.ui.UI_Label {
+	display: block;
+	position: absolute;
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+	font-family: ${font.family};
+	font-size: ${font.size}px;
+	color: ${font.color};
+	cursor: default;
+	text-overflow: ellipsis;
+	white-space: pre;
 }

@@ -23,7 +23,7 @@ class UI extends UI_Event {
 	protected _children: UI[] = [];
 
 	// if the element is represented in DOM, this is it's root element.
-	protected _root   : HTMLDivElement = null;
+	public    _root   : HTMLDivElement = null;
 	protected _paintable: boolean = true;
 	private   _needPaint: boolean = false;
 
@@ -38,6 +38,11 @@ class UI extends UI_Event {
 		this._bottom  = new UI_Anchor( this, EAlignment.BOTTOM );
 
 		this._padding = new UI_Padding( this );
+
+		if ( this._owner ) {
+			this._owner.insert( this );
+		}
+
 	}
 
 	get top(): any {
@@ -168,19 +173,33 @@ class UI extends UI_Event {
 		child.owner = this;
 		this._children.push( child );
 
+		this.insertDOMNode( child );
+
 		return child;
 	}
 
+	public insertDOMNode( node: UI ): UI {
+		if ( this._root && node._root ) {
+			this._root.appendChild( node._root );
+		}
+		return node;
+	}
+
 	// this is called each time the element needs to be repainted.
-	public onRepaint() {
+	public onRepaint(): boolean {
 
 		if ( !this._paintable ) {
 		
 			this._needPaint = true;
+			return false;
 		
 		} else {
 			
 			if ( this._root ) {
+
+				if ( this._owner && this._owner._root && this._owner._root != this._root ) {
+					this._owner.insertDOMNode( this );
+				}
 
 				if ( this._left.valid && this._right.valid ) {
 					this._root.style.left = this._left.distance + "px";
@@ -189,7 +208,7 @@ class UI extends UI_Event {
 				} else {
 
 					if ( this._left.valid ) {
-						this._root.style.left = this._left.distance + "px";
+						this._root.style.left = this._left.distance + this.translateLeft + "px";
 					}
 
 					if ( this._right.valid ) {
@@ -206,7 +225,7 @@ class UI extends UI_Event {
 				} else {
 
 					if ( this._top.valid ) {
-						this._root.style.top = this._top.distance + "px";
+						this._root.style.top = this._top.distance + this.translateTop + "px";
 					}
 
 					if ( this._bottom.valid ) {
@@ -217,9 +236,15 @@ class UI extends UI_Event {
 
 				}
 
+				// If the widget has child nodes, paint them
+				for ( var i=0, len = this._children.length; i<len; i++ ) {
+					this._children[i].onRepaint();
+				}
+
 			}
 
 			this._needPaint = false;
+			return true;
 
 		}
 	}
@@ -235,17 +260,10 @@ class UI extends UI_Event {
 	// retrieves this UI element interior width and height
 	get clientRect(): IRect {
 		var outer: IRect = this.offsetRect;
-		if ( !outer ) {
-			return {
-				"width": 0,
-				"height": 0
-			};
-		} else {
-			return {
-				"width": outer.width - this._padding.left - this._padding.right,
-				"height": outer.height - this._padding.top - this._padding.bottom
-			}
-		}
+		return {
+			"width": outer.width - this._padding.left - this._padding.right,
+			"height": outer.height - this._padding.top - this._padding.bottom
+		};
 	}
 
 	// retrieves the parent width and height.
@@ -304,6 +322,14 @@ class UI extends UI_Event {
 				this._needPaint = false;
 			}
 		}
+	}
+
+	get translateLeft(): number {
+		return 0;
+	}
+
+	get translateTop(): number {
+		return 0;
 	}
 
 }

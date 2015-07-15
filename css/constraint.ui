@@ -1,6 +1,6 @@
 @Theme UI {
 	
-	$declare fontSize   : 12;
+	$declare fontSize   : 14;
 	$declare fontFamily : 'Arial';
 	$declare fontColor  : black;
 
@@ -28,9 +28,22 @@
 		};
 
 		font: {
-			family: 'Arial';
+			family: $fontFamily;
+			size: $fontSize;
+			color: $fontColor;
 		};
 
+	};
+
+	@Theme UI_Label {
+		width: 100;
+		height: 20;
+
+		font: {
+			size: $fontSize;
+			family: $fontFamily;
+			color: $fontColor;
+		};
 	};
 
 };

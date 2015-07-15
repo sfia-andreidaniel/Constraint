@@ -1,15 +1,16 @@
 @UI_Form DemoForm {
 	width: 400;
 	height: 400;
-	left: 300;
-	top: 200;
+
+	left: 10;
+	top: 10;
 
 	caption: 'Demo form';
-	placement: CENTER;
 
-};
+	@UI_Label Label1 {
+		caption: 'Test label widget';
+		top: $parent center;
+		left: $parent center;
+	};
 
-@UI_Form LoginForm {
-	width: 100;
-	height: 100;
 };
