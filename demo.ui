@@ -5,5 +5,15 @@
 	top: 200;
 
 	caption: 'Demo form';
-	placement: CENTER;
+	placement: AUTO;
+
+};
+
+@UI_Form LoginForm {
+	width: 100;
+	height: 100;
+
+	@UI Foo {
+
+	};
 };

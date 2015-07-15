@@ -30,7 +30,7 @@ class Constraint_Scope {
 			this.global = {};
 		} else {
 
-			if ( strict ) {
+			if ( strict && type == 'UI_Form') {
 
 				// Don't allow @UI_Form > ... > @UI_Form scopes nesting
 				if ( this.isNestedInsideScopeType( 'UI_Form', true ) ) {

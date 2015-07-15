@@ -3,6 +3,7 @@ main.js
 constraint.js
 compiler.js
 postcompiler.js
+demo/*
 
 # Windows image file caches
 Thumbs.db
