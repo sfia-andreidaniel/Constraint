@@ -40,7 +40,10 @@ class UI_Form extends UI {
 		"nw": UI_Dom.create( 'div', 'resizer nw' ),
 		"ne": UI_Dom.create( 'div', 'resizer ne' ),
 		"sw": UI_Dom.create( 'div', 'resizer sw' ),
-		"se": UI_Dom.create( 'div', 'resizer se' )
+		"se": UI_Dom.create( 'div', 'resizer se' ),
+		"btnClose": UI_Dom.create('div', 'button close' ),
+		"btnMinimize": UI_Dom.create( 'div', 'button minimize' ),
+		"btnMaximize": UI_Dom.create( 'div', 'button maximize' )
 	};
 
 	// Form constructor.
@@ -68,6 +71,10 @@ class UI_Form extends UI {
 		this._dom.inner.appendChild( this._dom.body );
 		this._dom.titlebar.appendChild( this._dom.caption );
 		this._dom.titlebar.appendChild( this._dom.buttons );
+
+		this._dom.buttons.appendChild( this._dom.btnMinimize ).innerHTML = '<div class="ui icon btn-minimize"></div>';
+		this._dom.buttons.appendChild( this._dom.btnMaximize ).innerHTML = '<div class="ui icon btn-maximize"></div>';
+		this._dom.buttons.appendChild( this._dom.btnClose ).innerHTML = '<div class="ui icon btn-close"></div>';
 
 		this._padding.top = UI_Form._theme.titlebarHeight;
 
@@ -449,7 +456,7 @@ class UI_Form extends UI {
 				document.body.removeEventListener( 'mouseup',   onMoveEnd, true );
 			}
 
-			form._dom.titlebar.addEventListener( 'mousedown', function( evt ) {
+			form._dom.caption.addEventListener( 'mousedown', function( evt ) {
 				if ( form.state != EFormState.NORMAL || form.placement != EFormPlacement.AUTO ) {
 					// invalid move states
 					return;
@@ -479,7 +486,36 @@ class UI_Form extends UI {
 
 			}, true );
 
+			form._dom.btnMinimize.addEventListener( 'click', function() {
+				if ( form.formStyle != EFormStyle.MDI && form.state != EFormState.MINIMIZED ) {
+					form.state = EFormState.MINIMIZED;
+				}
+			}, true );
+
+			form._dom.btnMaximize.addEventListener( 'click', function() {
+				if ( form.formStyle != EFormStyle.MDI ) {
+					switch ( form.state ) {
+						case EFormState.MAXIMIZED:
+							form.state = EFormState.NORMAL;
+							break;
+						case EFormState.NORMAL:
+							form.state = EFormState.MAXIMIZED;
+							break;
+					}
+				}
+			}, true );
+
+			form._dom.btnClose.addEventListener( 'click', function() {
+				if ( form.onClose() ) {
+					form.close();
+				}
+			}, true );
+
 		} )( this );
+	}
+
+	public onClose(): boolean {
+		return true;
 	}
 
 }
@@ -499,6 +535,10 @@ Constraint.registerClass({
 		{
 			"name": "placement",
 			"type": "enum:EFormPlacement"
+		},
+		{
+			"name": "formStyle",
+			"type": "enum:EFormStyle"
 		},
 		{
 			"name": "caption",

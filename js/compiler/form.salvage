@@ -16,7 +16,7 @@ class {{name}} extends UI_Form {
     /* $hint: class-properties */
     // WARNING: Any code written inside of this hint is overrided by constraint compiler!
 {{#if properties}}{{#each properties}}
-    public {{name}}: {{type}} = null;{{#end}}{{#else}}{{#end}}
+    public {{name}}: {{type}};{{#end}}{{#else}}{{#end}}
     /* $hint: end */
 
     constructor() {

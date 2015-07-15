@@ -1,19 +1,15 @@
 @UI_Form DemoForm {
-	width: 200;
+	width: 400;
 	height: 400;
 	left: 300;
 	top: 200;
 
 	caption: 'Demo form';
-	placement: AUTO;
+	placement: CENTER;
 
 };
 
 @UI_Form LoginForm {
 	width: 100;
 	height: 100;
-
-	@UI Foo {
-
-	};
 };

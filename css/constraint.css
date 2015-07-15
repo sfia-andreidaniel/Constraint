@@ -7,8 +7,7 @@ html, body {
 	overflow: hidden;
 }
 
-/* dialog */
-{$N UI.UI_Form}
+/* core */
 .ui {
 	position: absolute;
 	display: block;
@@ -18,6 +17,19 @@ html, body {
 	outline: none;
 }
 
+/* icon */
+.ui.icon {
+	background-image: url(icons.png);
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	padding: 0;
+	margin: 0;
+	background-repeat: no-repeat;
+	position: relative;
+}
+
+{$N UI.UI_Form}
 .ui.UI_Form {
 
 }
@@ -40,6 +52,7 @@ html, body {
 	top: -${titlebar.height}px;
 	cursor: default;
 	-webkit-user-select: none;
+	z-index: 1002;
 }
 
 .ui.UI_Form.border-none > .inner > .titlebar {
@@ -51,16 +64,15 @@ html, body {
 	display: block;
 	overflow: hidden;
 	color: ${titlebar.inactiveColor};
-	left: 2px;
-	bottom: 2px;
-	right: 40px;
-	top: 2px;
+	left: 0px;
+	right: 83px;
+	top: 0px;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	font-family: ${font.family};
 	font-size: ${titlebar.captionFontSize}px;
 	-webkit-user-select: none;
-	padding-top: ${titlebar.captionPadding}px;
+	height: ${titlebar.height}px;
 }
 
 .ui.UI_Form.focused > .inner > .titlebar > .caption {
@@ -216,7 +228,7 @@ html, body {
 
 .ui.UI_Form.focused > .inner > .resizer {
 	background-color: ${border.activeColor};
-	z-index: 1000;
+	z-index: 1;
 }
 
 .ui.UI_Form.focused > .inner > .titlebar {
@@ -239,4 +251,78 @@ html, body {
 	top: 0px;
 	right: 0px;
 	height: calc( ${titlebar.height}px - 4px);
+	white-space: nowrap;
+}
+
+.ui.UI_Form > .inner > .titlebar > .buttons > .button {
+	display: inline-block;
+	width: 24px;
+	text-align: center;
+	padding-top: 3px;
+}
+
+.ui.UI_Form > .inner > .titlebar > .buttons > .button.close {
+	width: 34px;
+	background-color: #333;
+}
+
+.ui.UI_Form > .inner > .titlebar > .buttons > .button.minimize > .icon,
+.ui.UI_Form.focused > .inner > .titlebar > .buttons > .button.minimize:hover > .icon {
+	background-position: -34px -20px;
+}
+
+.ui.UI_Form > .inner > .titlebar > .buttons > .button.maximize > .icon,
+.ui.UI_Form.focused > .inner > .titlebar > .buttons > .button.maximize:hover > .icon {
+	background-position: -34px -40px;
+}
+
+.ui.UI_Form.state-maximized > .inner > .titlebar > .buttons > .button.maximize > .icon,
+.ui.UI_Form.state-maximized.focused > .inner > .titlebar > .buttons > .button.maximize:hover > .icon {
+	background-position: -34px -57px;
+}
+
+.ui.UI_Form > .inner > .titlebar > .buttons > .button.restore > .icon,
+.ui.UI_Form.focused > .inner > .titlebar > .buttons > .button.restore:hover > .icon {
+	background-position: -34px -57px;
+}
+
+.ui.UI_Form > .inner > .titlebar > .buttons > .button.close > .icon,
+.ui.UI_Form.focused > .inner > .titlebar > .buttons > .button.close:hover > .icon {
+	background-position: -34px -5px;
+}
+
+.ui.UI_Form.focused > .inner > .titlebar > .buttons > .button.close {
+	background-color: #C6504F;
+}
+.ui.UI_Form.focused > .inner > .titlebar > .buttons > .button.close:active {
+	background-color: #964C4C;
+}
+
+.ui.UI_Form.focused > .inner > .titlebar > .buttons > .button.minimize > .icon {
+	background-position: -10px -20px;
+}
+
+.ui.UI_Form.focused > .inner > .titlebar > .buttons > .button.maximize > .icon {
+	background-position: -10px -40px;
+}
+
+.ui.UI_Form.state-maximized.focused > .inner > .titlebar > .buttons > .button.maximize > .icon {
+	background-position: -10px -57px;
+}
+
+.ui.UI_Form.focused > .inner > .titlebar > .buttons > .button.restore > .icon {
+	background-position: -10px -57px;
+}
+
+.ui.UI_Form.focused > .inner > .titlebar > .buttons > .button.close > .icon {
+	background-position: -10px -5px;
+}
+
+.ui.UI_Form.style-mdi > .inner > .titlebar > .caption {
+	right: 34px;
+}
+
+.ui.UI_Form.style-mdi > .inner > .titlebar > .buttons > .button.minimize,
+.ui.UI_Form.style-mdi > .inner > .titlebar > .buttons > .button.maximize {
+	display: none;
 }

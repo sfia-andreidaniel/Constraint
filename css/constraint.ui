@@ -13,12 +13,11 @@
 		activeCaptionColor: black;
 
 		titlebar: {
-			height: 30;
+			height: 25;
 			activeBgColor: #69c1f0;
 			inactiveBgColor: black;
 			activeColor: black;
 			inactiveColor: white;
-			captionPadding: 4;
 			captionFontSize: 16;
 		};
 
