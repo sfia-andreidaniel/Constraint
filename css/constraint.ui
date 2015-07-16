@@ -46,4 +46,17 @@
 		};
 	};
 
+	@Theme UI_Button {
+		width: 100;
+		height: 30;
+
+		backgroundColor: #69c1f0;
+
+		font: {
+			size: $fontSize;
+			family: $fontFamily;
+			color: $fontColor;
+		};
+	};
+
 };

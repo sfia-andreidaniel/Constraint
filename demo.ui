@@ -7,10 +7,25 @@
 
 	caption: 'Demo form';
 
+	@UI_Button Btn1 {
+		caption: 'Hello world';
+		bottom: 100;
+		left: 100;
+	};
+
 	@UI_Label Label1 {
 		caption: 'Test label widget';
-		top: $parent center;
-		left: $parent center;
+		top: Btn1 center;
+		left: Btn1 right 20;
+		right: 20;
 	};
+
+	@UI_Label Label2 {
+		caption: 'Test label widget';
+		top: 20;
+		bottom: Btn1 top 20;
+		left: Btn1 left 0;
+		right: Btn1 right 0;
+	}
 
 };

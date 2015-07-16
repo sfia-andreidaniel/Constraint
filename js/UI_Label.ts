@@ -32,6 +32,7 @@ class UI_Label extends UI {
 
 Constraint.registerClass( {
 	"name": "UI_Label",
+	"extends": "UI",
 	"properties": [
 		{
 			"name": "caption",

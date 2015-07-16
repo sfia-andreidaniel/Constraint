@@ -278,6 +278,72 @@ class UI extends UI_Event {
 		}
 	}
 
+	get boundingBox(): IBoundingBox {
+		var rect: IRect,
+		    out: IBoundingBox = {
+		    	"left": 0, "top": 0, "right": 0, "bottom": 0, "width": 0, "height": 0
+		    },
+		    lValid: boolean,
+		    rValid: boolean,
+		    tValid: boolean,
+		    bValid: boolean;
+
+		if ( this._owner ) {
+
+			 rect = this._owner.clientRect;
+
+			 lValid = this._left.valid;
+			 rValid = this._right.valid;
+
+			 if ( lValid && rValid ) {
+			 	out.left = this._left.distance;
+			 	out.right = this._right.distance;
+			 	out.width = rect.width - out.left - out.right;
+			 } else
+			 if ( lValid ) {
+			 	out.left = this._left.distance;
+			 	out.width = this._width;
+			 	out.right = rect.width - out.left - out.width;
+			 } else
+			 if ( rValid ) {
+			 	out.right = this._right.distance;
+			 	out.width = this._width;
+			 	out.left  = rect.width - out.width - out.left;
+			 } else
+			 if ( !lValid && !rValid ) {
+			 	out.left = 0;
+			 	out.width = this._width;
+			 	out.right = rect.width - out.width;
+			 }
+
+			 tValid = this._top.valid;
+			 bValid = this._bottom.valid;
+
+			 if ( tValid && bValid ) {
+			 	out.top = this._top.distance;
+			 	out.bottom = this._bottom.distance;
+			 	out.height = rect.height - out.top - out.bottom;
+			 } else
+			 if ( tValid ) {
+			 	out.top = this._top.distance;
+			 	out.height = this._height;
+			 	out.bottom = rect.height - out.top - out.height;
+			 } else
+			 if ( bValid ) {
+			 	out.bottom = this._bottom.distance;
+			 	out.height = this._height;
+			 	out.top = rect.height - out.bottom - out.height;
+			 } else
+			 if ( !tValid && !bValid ) {
+			 	out.top = 0;
+			 	out.height = this._height;
+			 	out.bottom = rect.height - out.height;
+			 }
+		}
+
+		return out;
+	}
+
 	// returns the exterior width of the UI element
 	get offsetWidth(): number {
 		var clientRect: IRect = this.parentClientRect;

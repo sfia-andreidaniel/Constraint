@@ -51,10 +51,12 @@ class UI_Anchor {
 	get distance(): number {
 
 		var rect: IRect,
+			bBox: IBoundingBox,
 		    parentSize: number,
 		    mySize: number;
 
 		switch ( this._alignment ) {
+
 			case EAlignment.CENTER:
 				
 				if ( this._target === null || this._target === this._owner ) {
@@ -73,12 +75,186 @@ class UI_Anchor {
 					return parentSize - mySize;
 				
 				} else {
-				
-					throw Error( 'Anchoring relative to sibling not implemented!' );
-				
+					
+					bBox = this._target.boundingBox;
+
+					switch ( this._type ) {
+
+						case EAlignment.TOP:
+
+							return ~~( bBox.top + ( bBox.height / 2 ) - ( this._owner.height / 2 ) );
+
+							break;
+
+						case EAlignment.LEFT:
+
+							return ~~( bBox.left + ( bBox.width / 2 ) - ( this._owner.width / 2 ) );
+
+							break;
+
+						case EAlignment.BOTTOM:
+
+							return ~~( bBox.bottom + ( bBox.height / 2 ) - ( this._owner.height / 2 ) );
+
+							break;
+
+						case EAlignment.RIGHT:
+
+							return ~~( bBox.right + ( bBox.width / 2 ) - ( this._owner.width / 2 ) );
+
+							break;
+
+					}
+
 				}
 
 				break;
+
+			case EAlignment.LEFT:
+				// target edge: "left"
+
+				if ( this._target === null || this._target === this._owner ) {
+					
+					switch ( this._type ) {
+						case EAlignment.LEFT:
+							// anchor type: "left"
+							return this._distance;
+							break;
+						case EAlignment.RIGHT:
+							// anchor type: right
+							return this._owner.offsetWidth - this._distance;
+							break;
+						default:
+							throw Error( 'Invalid anchor target edge' );
+							break;
+					}
+				
+				} else {
+
+					bBox = this._target.boundingBox;
+
+					switch ( this._type ) {
+						case EAlignment.LEFT:
+							return bBox.left + this._distance;
+							break;
+
+						case EAlignment.RIGHT:
+							return bBox.right + bBox.width + this._distance;
+							break;
+
+						default:
+							throw Error( 'Invalid anchor target edge' );
+							break;
+					}
+
+				}
+
+				break;
+
+			case EAlignment.RIGHT:
+				// target edge: "right"
+
+				if ( this._target === null || this._target === this._owner) {
+
+					switch ( this._type ) {
+						case EAlignment.LEFT:
+							return this._owner.offsetWidth - this._distance;
+							break;
+
+						case EAlignment.RIGHT:
+							return this._distance;
+							break;
+
+						default:
+							throw Error( 'Invalid anchor target edge' );
+							break;
+					}
+
+				} else {
+
+					bBox = this._target.boundingBox;
+
+					switch ( this._type ) {
+							
+						case EAlignment.LEFT:
+							return bBox.left + bBox.width + this._distance;
+							break;
+
+						case EAlignment.RIGHT:
+							return bBox.right + this._distance;
+							break;
+
+						default:
+							throw Error( 'Invalid anchor target edge' );
+							break;
+
+					}
+
+				}
+
+				break;
+
+			case EAlignment.TOP:
+				// target edge "top":
+
+				if ( this._target === null || this._target === this._owner ) {
+
+					switch ( this._type ) {
+						case EAlignment.TOP:
+							return this._distance;
+							break;
+						case EAlignment.BOTTOM:
+							return this._owner.offsetHeight - this._distance;
+							break;
+						default:
+							throw Error( 'Invalid anchor target edge' );
+							break;
+					}
+
+				} else {
+
+					bBox = this._target.boundingBox;
+
+					switch ( this._type ) {
+
+						case EAlignment.TOP:
+							return bBox.top + this._distance;
+							break;
+
+						case EAlignment.BOTTOM:
+							return bBox.bottom + bBox.height + this._distance;
+							break;
+
+						default:
+							throw Error( 'Invalid anchor target edge' );
+							break;
+
+					}
+
+				}
+
+				break;
+
+			case EAlignment.BOTTOM:
+				
+				throw Error( 'Here!' );
+
+				// target edge: "bottom"
+
+				if ( this._target === null || this._target === this._owner) {
+
+					switch ( this._type ) {
+						case EAlignment.TOP:
+							break;
+						case EAlignment.BOTTOM:
+							break;
+						default:
+							throw Error( 'Invalid anchor target edge' );
+							break;
+					}
+
+				}
+
 			default:
 				return this._distance;
 		}

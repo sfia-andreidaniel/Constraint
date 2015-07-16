@@ -326,6 +326,7 @@ html, body {
 	display: none;
 }
 
+
 {$N UI.UI_Label}
 .ui.UI_Label {
 	display: block;
@@ -339,4 +340,48 @@ html, body {
 	cursor: default;
 	text-overflow: ellipsis;
 	white-space: pre;
+
+	background-color: red;
+}
+
+
+{$N UI.UI_Button}
+.ui.UI_Button {
+	display: block;
+	position: absolute;
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+	cursor: default;
+
+	box-sizing: border-box;
+
+	background-color: ${backgroundColor};
+	-webkit-user-select: none;
+}
+
+.ui.UI_Button > .caption {
+	white-space: pre;
+	text-overflow: ellipsis;
+	font-family: ${font.family};
+	font-size: ${font.size}px;
+	color: ${font.color};
+	width: calc( 100% - 10px );
+	height: ${font.size}px;
+	margin-top: calc( ( ${height}px - ${font.size}px ) / 2 );
+	margin-left: 5px;
+	display: block;
+	padding: 0;
+}
+
+.ui.UI_Button > .icon {
+	display: none;
+}
+
+.ui.UI_Button.ta-center > .caption {
+	text-align: center;
+}
+
+.ui.UI_Button.ta-right > .caption {
+	text-align: right;
 }
