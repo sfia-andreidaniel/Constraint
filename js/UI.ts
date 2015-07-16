@@ -27,6 +27,9 @@ class UI extends UI_Event {
 	protected _paintable: boolean = true;
 	private   _needPaint: boolean = false;
 
+	// text
+	protected _textAlign: EAlignment = EAlignment.LEFT;
+	
 	constructor( owner: UI ) {
 		super();
 
@@ -398,6 +401,33 @@ class UI extends UI_Event {
 		return 0;
 	}
 
+
+	get textAlign(): EAlignment {
+		return this._textAlign;
+	}
+
+	set textAlign( ta: EAlignment ) {
+		if ( ta != this._textAlign ) {
+			switch ( ta ) {
+				case EAlignment.LEFT:
+					this._textAlign = ta;
+					UI_Dom.removeClasses( this._root, [ 'ta-right', 'ta-center' ] );
+					UI_Dom.addClass( this._root, 'ta-left' );
+					break;
+				case EAlignment.RIGHT:
+					UI_Dom.removeClasses( this._root, [ 'ta-left', 'ta-center' ] );
+					UI_Dom.addClass( this._root, 'ta-right' );
+					this._textAlign = ta;
+					break;
+				default:
+					UI_Dom.removeClasses( this._root, [ 'ta-left', 'ta-right' ] );
+					UI_Dom.addClass( this._root, 'ta-center' );
+					this._textAlign = EAlignment.CENTER;
+					break;
+			}
+		}
+	}
+
 }
 
 Constraint.registerClass( {
@@ -462,6 +492,10 @@ Constraint.registerClass( {
 		{
 			"name": "paintable",
 			"type": "boolean"
+		},
+		{
+			"name": "textAlign",
+			"type": "enum:EAlignment"
 		}
 	]
 } );

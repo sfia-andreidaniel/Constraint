@@ -9,7 +9,7 @@ class UI_Label extends UI {
 	
 	constructor( owner: UI ) {
 		super( owner );
-	    this._root = UI_Dom.create( 'div', 'ui UI_Label' );
+	    this._root = UI_Dom.create( 'div', 'ui UI_Label ta-left' );
 		this._root.appendChild( document.createTextNode( this._caption ) );
 
 		this._width = UI_Label._theme.defaultWidth;
@@ -23,7 +23,7 @@ class UI_Label extends UI {
 	set caption( cap: string ) {
 		cap = String( cap || '' );
 		if ( cap != this._caption ) {
-			cap = this._caption;
+			this._caption = cap;
 			this._root.innerHTML = '';
 			this._root.appendChild( document.createTextNode( cap ) );
 		}

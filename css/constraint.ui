@@ -9,7 +9,7 @@
 		
 		backgroundColor: white;
 		
-		inactiveCaptionColor: #ddd;
+		inactiveCaptionColor: #f0f0f0;
 		activeCaptionColor: black;
 
 		titlebar: {
@@ -50,7 +50,8 @@
 		width: 100;
 		height: 30;
 
-		backgroundColor: #69c1f0;
+		backgroundColor: #f0f0f0;
+		borderColor: #acacac;
 
 		font: {
 			size: $fontSize;

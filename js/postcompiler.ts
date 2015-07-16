@@ -37,8 +37,6 @@ try {
 
 	fs.writeFileSync( srcFile, contents );
 
-	console.log( '* Postcompiled: ', srcFile );
-
 } catch (Error) {
 
 	console.log( "Error: " + Error + "\n" );

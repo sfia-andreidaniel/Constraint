@@ -12,6 +12,7 @@
 /// <reference path="Constraint_Flow.ts" />
 /// <reference path="Constraint_Scope.ts" />
 /// <reference path="Constraint_Type.ts" />
+/// <reference path="FS_File.ts" />
 
 class $I {
 
@@ -78,41 +79,45 @@ class $I {
 
 	public static _parse_( str: string ) {
 
-		var resolved: any = {};
+		var resolved: any = {},
+		    files: any = {};
 
-		return str.replace( /\$I\.(number|string|color)\(\'([^\']+)\'\)/g, function( substr: string, ...matches: any[] ): string {
+		return str
+			.replace( /\{\$R[\s]+([a-zA-Z\/\\\.\-_\$\s]+)([\s]+)?\}/g, function( substr: string, ...matches: any[] ): string {
+				return files[ matches[0] ] || ( files[ matches[0] ] = FS_File.create( matches[0] ).open().contents );
+			} )
+			.replace( /\$I\.(number|string|color)\(\'([^\']+)\'\)/g, function( substr: string, ...matches: any[] ): string {
+				
+				var result: string,
+				    subst: any;
+
+				switch ( matches[ 0 ] ) {
+					case 'number':
+						result = ( subst = resolved[ matches[1] ] || ( resolved[ matches[1] ] = $I.number( matches[1] ) ) );
+						break;
+					case 'string':
+						result = ( subst = resolved[ matches[1] ] || ( resolved[ matches[1] ] = $I.string( matches[1] ) ) );
+						break;
+					case 'color':
+						result = ( subst = resolved[ matches[1] ] || ( resolved[ matches[1] ] = $I.color( matches[1] ) ) );
+						break;
+				}
+
+				return result;
+			})
 			
-			var result: string,
-			    subst: any;
+			.replace( /((\$\{([a-zA-Z_\d\.]+)\})|(\{\$N ([a-zA-Z_\d\.]+)\}))/g, function( substr: string, ...matches: any[] ): string {
 
-			switch ( matches[ 0 ] ) {
-				case 'number':
-					result = ( subst = resolved[ matches[1] ] || ( resolved[ matches[1] ] = $I.number( matches[1] ) ) );
-					break;
-				case 'string':
-					result = ( subst = resolved[ matches[1] ] || ( resolved[ matches[1] ] = $I.string( matches[1] ) ) );
-					break;
-				case 'color':
-					result = ( subst = resolved[ matches[1] ] || ( resolved[ matches[1] ] = $I.color( matches[1] ) ) );
-					break;
-			}
+				if ( matches[4] ) {
+					// namespace command
+					$I._namespace_ = matches[4];
+					return '/* Namespace: ' + matches[4] + '*/';
+				} else {
+					//console.log( matches );
+					return $I._get_( $I._namespace_ + '/' + matches[2] );
+				}
 
-			console.log( '$I ' + JSON.stringify( matches[1] ) + ' as ' + subst );
-
-			return result;
-		}).replace( /((\$\{([a-zA-Z_\d\.]+)\})|(\{\$N ([a-zA-Z_\d\.]+)\}))/g, function( substr: string, ...matches: any[] ): string {
-
-			if ( matches[4] ) {
-				// namespace command
-				$I._namespace_ = matches[4];
-				console.log( '* Using namespace: ' + matches[4] );
-				return '/* Namespace: ' + matches[4] + '*/';
-			} else {
-				//console.log( matches );
-				return $I._get_( $I._namespace_ + '/' + matches[2] );
-			}
-
-		});
+			});
 
 	}
 

@@ -1,0 +1,28 @@
+{$N UI.UI_Label}
+.ui.UI_Label {
+	display: block;
+	position: absolute;
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+	font-family: ${font.family};
+	font-size: ${font.size}px;
+	color: ${font.color};
+	cursor: default;
+	text-overflow: ellipsis;
+	white-space: pre;
+
+	-webkit-user-select: none;
+}
+
+.ui.UI_Label.ta-left {
+	text-align: left;
+}
+
+.ui.UI_Label.ta-right {
+	text-align: right;
+}
+
+.ui.UI_Label.ta-center {
+	text-align: center;
+}

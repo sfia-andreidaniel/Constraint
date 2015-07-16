@@ -9,23 +9,47 @@
 
 	@UI_Button Btn1 {
 		caption: 'Hello world';
-		bottom: 100;
-		left: 100;
+		bottom: $parent center;
+		left: $parent center;
 	};
 
-	@UI_Label Label1 {
-		caption: 'Test label widget';
+	@UI_Label Right {
+		caption: 'Right';
 		top: Btn1 center;
 		left: Btn1 right 20;
 		right: 20;
+
+		textAlign: RIGHT;
 	};
 
-	@UI_Label Label2 {
-		caption: 'Test label widget';
+	@UI_Label Top {
+		caption: 'Top';
 		top: 20;
 		bottom: Btn1 top 20;
 		left: Btn1 left 0;
 		right: Btn1 right 0;
-	}
+
+		textAlign: CENTER;
+	};
+
+	@UI_Label Left {
+		caption: 'Left';
+		top: Btn1 center;
+		right: Btn1 left 20;
+		left: 20;
+
+		textAlign: LEFT;
+	};
+
+	@UI_Label Bottom {
+		caption: 'Bottom';
+		top: Btn1 bottom 20;
+		bottom: 20;
+		left: Btn1 center;
+		width: 40;
+
+		textAlign: CENTER;
+		
+	};
 
 };

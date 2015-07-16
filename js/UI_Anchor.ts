@@ -236,20 +236,35 @@ class UI_Anchor {
 				break;
 
 			case EAlignment.BOTTOM:
-				
-				throw Error( 'Here!' );
-
 				// target edge: "bottom"
 
 				if ( this._target === null || this._target === this._owner) {
 
 					switch ( this._type ) {
 						case EAlignment.TOP:
+							return this._owner.offsetHeight - this._distance;
 							break;
 						case EAlignment.BOTTOM:
+							return this._distance;
 							break;
 						default:
 							throw Error( 'Invalid anchor target edge' );
+							break;
+					}
+
+				} else {
+
+					bBox = this._target.boundingBox;
+
+					switch ( this._type ) {
+						case EAlignment.TOP:
+							return bBox.bottom + bBox.height + this._distance;
+							break;
+						case EAlignment.BOTTOM:
+							return bBox.bottom + this._distance;
+							break;
+						default:
+							throw Error( 'Invalid anchor target edge!' );
 							break;
 					}
 
@@ -387,7 +402,6 @@ class UI_Anchor {
 
 			case anotherAnchor instanceof UI_Anchor_Literal:
 				def = anotherAnchor.def;
-				console.warn( 'Load from literal: ', def );
 				this._distance = def.distance || 0;
 				this._alignment = def.alignment;
 				this._target = def.target === null

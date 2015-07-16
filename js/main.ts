@@ -12,11 +12,13 @@
 /// <reference path="UI_Event.ts" />
 /// <reference path="UI_Throttler.ts" />
 /// <reference path="UI.ts" />
+
 /// <reference path="UI_Anchor.ts" />
 /// <reference path="UI_Anchor_Form.ts" />
 /// <reference path="UI_Padding.ts" />
-/// <reference path="UI_Form.ts" />
 /// <reference path="UI_DialogManager.ts" />
+
+/// <reference path="UI_Form.ts" />
 /// <reference path="UI_Label.ts" />
 /// <reference path="UI_Button" />
 

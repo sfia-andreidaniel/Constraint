@@ -103,3 +103,9 @@ enum EResizeType {
 	SE,
 	NONE
 }
+
+// File open modes.
+enum EFileSyncMode {
+	SYNC,
+	ASYNC
+}

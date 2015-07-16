@@ -12,19 +12,22 @@ class UI_Form extends UI {
 	// MINIMIZED, MAXIMIZED, CLOSED, NORMAL
 	protected _state: EFormState = EFormState.NORMAL;
 	
-	// Weather it has a titlebar or not
+	// Weather it has a titlebar or not. NONE: window decorations aren't displayed.
 	protected _borderStyle: EBorderStyle = EBorderStyle.NORMAL;
 
-	// Weather it is resizable or not
+	// Weather it is a FORM or a MDI form. MDI Forms aren't minimizable, maximizable or resizable.
 	protected _formStyle: EFormStyle = EFormStyle.FORM;
 
-	// Moveable or not?
+	// Form placement on desktop. If CENTER, also the form is not "drag'n droppable".
 	protected _placement: EFormPlacement = EFormPlacement.AUTO;
 
+	// Form title
 	protected _caption: string = '';
 
+	// Weather form is focused or not
 	protected _focused: boolean = false;
 
+	// Internal, representing the ID of the form
 	protected _id: number = 0;
 
 	private   _dom = {
@@ -71,7 +74,6 @@ class UI_Form extends UI {
 		this._dom.inner.appendChild( this._dom.body );
 		this._dom.titlebar.appendChild( this._dom.caption );
 		this._dom.titlebar.appendChild( this._dom.buttons );
-
 		this._dom.buttons.appendChild( this._dom.btnMinimize ).innerHTML = '<div class="ui icon btn-minimize"></div>';
 		this._dom.buttons.appendChild( this._dom.btnMaximize ).innerHTML = '<div class="ui icon btn-maximize"></div>';
 		this._dom.buttons.appendChild( this._dom.btnClose ).innerHTML = '<div class="ui icon btn-close"></div>';
@@ -104,28 +106,36 @@ class UI_Form extends UI {
 		}
 	}
 
+	// @ UI.form
 	get form(): UI_Form {
 		return this;
 	}
 
-	// Makes the root element of the form a child of a DOM element.
-	// This is needed in order to make the form available to the browser.
+	/* The open method appends the form's element into the DialogManager desktop ( which by
+	   default is document.body ) in order to make the form visible.
+	 */
 	public open( ) {
 		UI_DialogManager.get().desktop.appendChild( this._root );
 		this.onRepaint();
 		UI_DialogManager.get().onWindowOpened( this );
 	}
 
-	// Closes the window. Removes it from DOM and from DialogManager.
+	/* Closes the form  (removes it from Dialog Manager's desktop)
+	 */
 	public close() {
 		
 		if ( this._root.parentNode ) {
 			this._root.parentNode.removeChild( this._root );
 		}
 
+		this._state = EFormState.CLOSED;
+
 		UI_DialogManager.get().onWindowClosed( this );
 	}
 
+	/* Returns the state of the form, which can be: MINIMIZED, MAXIMIZED, CLOSED, 
+	   or FULLSCREEN 
+	 */
 	get state(): EFormState {
 		return this._state;
 	}
@@ -163,6 +173,10 @@ class UI_Form extends UI {
 		}
 	}
 
+	/* Sets weather the form has a titlebar or not.
+	   NORMAL: Form has a titlebar.
+	   NONE: Form doesn't have a titlebar
+	 */
 	get borderStyle(): EBorderStyle {
 		return this._borderStyle;
 	}
@@ -187,6 +201,10 @@ class UI_Form extends UI {
 		}
 	}
 
+	/* Sets weather this form is a normal one, or a MDI form.
+	   MDI forms are typically child forms of other forms, and usually are not
+	   displayed on OS taskbars.
+	 */
 	get formStyle(): EFormStyle {
 		return this._formStyle;
 	}
@@ -209,6 +227,11 @@ class UI_Form extends UI {
 		}
 	}
 
+	/* Returns the form placement on the desktop.
+	   AUTO - The form is placed by it's "left" and "top" anchors.
+	   CENTER - The form stays always in the center of it's desktop, and it
+	            cannot be dragged from there.
+	 */
 	get placement(): EFormPlacement {
 		return this._placement;
 	}
@@ -231,6 +254,8 @@ class UI_Form extends UI {
 		}
 	}
 
+	/* Sets the caption ( text displayed as title in the titlebar ) of the form.
+	 */
 	get caption(): string {
 		return this._caption;
 	}
@@ -243,6 +268,8 @@ class UI_Form extends UI {
 		}
 	}
 
+	/* Weather this form is the "active" form on it's desktop or not
+	 */
 	get focused(): boolean {
 		return this._focused;
 	}
@@ -263,10 +290,14 @@ class UI_Form extends UI {
 		}
 	}
 
+	/* Read-Only. An auto-increment value, used to unique identify each window
+	 */
 	get id(): number {
 		return this._id;
 	}
 
+	/* @UI.parentClientRect
+	 */
 	get parentClientRect(): IRect {
 		return this._root.parentNode
 			? {
@@ -279,12 +310,10 @@ class UI_Form extends UI {
 			}
 	}
 
-	/* Sets up the DOM events of the form */
+	/* Private. Setup up the DOM events of the form */
 	private _setupEvents_() {
 		( function( form ) {
 			
-			console.log( 'setup events' );
-
 			// SETUP FOCUSING
 			form._root.addEventListener( 'mousedown', function() {
 				form.focused = true; 
@@ -517,6 +546,7 @@ class UI_Form extends UI {
 		} )( this );
 	}
 
+	/* @UI.clientRect */
 	get clientRect(): IRect {
 		// if seems that for the UI_Form it's better to rely on browser
 		// info, even if it's more CPU demanding.
@@ -526,24 +556,31 @@ class UI_Form extends UI {
 		}
 	}
 
+	/* @UI.translateLeft */
 	get translateLeft(): number {
 		return this.padding.left;
 	}
 
+	/* @UI.translateTop */
 	get translateTop(): number {
 		return this.padding.top;
 	}
 
+	/* Function that, when the "close" button of the form is pressed, returns
+	   true for closing the form, or false for canceling the closing of the form.
+	 */
 	public onClose(): boolean {
 		return true;
 	}
 
+	/* @UI.insertDOMNode */
 	public insertDOMNode( node: UI ): UI {
 		if ( node._root ) {
 			this._dom.body.appendChild( node._root );
 		}
 		return node;
 	}
+
 }
 
 Constraint.registerClass({

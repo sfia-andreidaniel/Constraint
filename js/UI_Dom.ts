@@ -5,7 +5,7 @@ class UI_Dom {
 	public static _selector_( element: any ): any {
 		return typeof element == 'string'
 			? document.querySelector( element )
-			: element;
+			: element ? element : null;
 	}
 
 	public static hasClass( element: any, className: string ): boolean {

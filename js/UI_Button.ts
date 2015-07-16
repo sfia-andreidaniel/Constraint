@@ -16,6 +16,7 @@ class UI_Button extends UI {
 
 	constructor ( owner: UI ) {
 		super( owner );
+
 		this._root = UI_Dom.create( 'div', 'ui UI_Button ta-center' );
 		this._root.appendChild( this._dom.caption );
 		this._dom.caption.appendChild( document.createTextNode( this._caption ) );
@@ -49,32 +50,6 @@ class UI_Button extends UI {
 		}
 	}
 
-	get textAlign(): EAlignment {
-		return this._textAlign;
-	}
-
-	set textAlign( ta: EAlignment ) {
-		if ( ta != this._textAlign ) {
-			switch ( ta ) {
-				case EAlignment.LEFT:
-					this._textAlign = ta;
-					UI_Dom.removeClasses( this._root, [ 'ta-right', 'ta-center' ] );
-					UI_Dom.addClass( this._root, 'ta-left' );
-					break;
-				case EAlignment.RIGHT:
-					UI_Dom.removeClasses( this._root, [ 'ta-left', 'ta-center' ] );
-					UI_Dom.addClass( this._root, 'ta-left' );
-					this._textAlign = ta;
-					break;
-				default:
-					UI_Dom.removeClasses( this._root, [ 'ta-left', 'ta-right' ] );
-					UI_Dom.addClass( this._root, 'ta-center' );
-					this._textAlign = EAlignment.CENTER;
-					break;
-			}
-		}
-	}
-
 }
 
 Constraint.registerClass( {
@@ -88,10 +63,6 @@ Constraint.registerClass( {
 		{
 			"name": "icon",
 			"type": "string"
-		},
-		{
-			"name": "textAlign",
-			"type": "enum:EAlignment"
 		}
 	]
 } );
