@@ -76,12 +76,12 @@ class UI_DialogManager extends UI_Event {
 	set activeWindow( form: UI_Form ) {
 		if ( form != this._activeWindow ) {
 			if ( this._activeWindow ) {
-				this._activeWindow.focused = false;
+				this._activeWindow.active = false;
 			}
 			this._activeWindow = form || null;
 		}
-		if ( this._activeWindow && !this.activeWindow.focused ) {
-			this._activeWindow.focused = true;
+		if ( this._activeWindow && !this.activeWindow.active ) {
+			this._activeWindow.active = true;
 		}
 	}
 

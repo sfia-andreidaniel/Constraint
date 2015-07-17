@@ -1,0 +1,3 @@
+interface IFocusable {
+	active: boolean;
+}

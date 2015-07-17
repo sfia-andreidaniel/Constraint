@@ -1,6 +1,6 @@
 /* A form is a dialog in UI Concepts.
  */
-class UI_Form extends UI {
+class UI_Form extends UI implements IFocusable {
 	
 	public static _autoID: number = 0;
 
@@ -25,10 +25,17 @@ class UI_Form extends UI {
 	protected _caption: string = '';
 
 	// Weather form is focused or not
-	protected _focused: boolean = false;
+	protected _active: boolean = false;
 
 	// Internal, representing the ID of the form
 	protected _id: number = 0;
+
+	// each object that embraces the IFocusable interface that is child of this form
+	// is stored here, in order to implement the tab focusing.
+	protected _focusComponents: UI[] = [];
+
+	// the current element that's active in a form at a single time.
+	protected _activeElement: UI = null;
 
 	private   _dom = {
 		"inner": UI_Dom.create( 'div', 'inner' ),
@@ -93,6 +100,14 @@ class UI_Form extends UI {
 		this._root.setAttribute( 'data-form-id', String( this._id ) );
 
 		this._setupEvents_();
+
+		( function( self ) {
+
+			self.on( 'child-inserted', function( node: UI ) {
+				self.onChildInserted( node );
+			} );
+
+		} )( this );
 
 	}
 
@@ -270,22 +285,22 @@ class UI_Form extends UI {
 
 	/* Weather this form is the "active" form on it's desktop or not
 	 */
-	get focused(): boolean {
-		return this._focused;
+	get active(): boolean {
+		return this._active;
 	}
 
-	set focused( on: boolean ) {
+	set active( on: boolean ) {
 		on = !!on;
-		if ( on != this._focused ) {
-			this._focused = on;
-			if ( this._focused ) {
-				UI_Dom.addClass( this._root, 'focused' );
+		if ( on != this._active ) {
+			this._active = on;
+			if ( this._active ) {
+				UI_Dom.addClass( this._root, 'focus-active' );
 			} else {
-				UI_Dom.removeClass( this._root, 'focused' );
+				UI_Dom.removeClass( this._root, 'focus-active' );
 			}
 		}
 
-		if ( this._focused ) {
+		if ( this._active ) {
 			UI_DialogManager.get().activeWindow = this;
 		}
 	}
@@ -574,11 +589,36 @@ class UI_Form extends UI {
 	}
 
 	/* @UI.insertDOMNode */
-	public insertDOMNode( node: UI ): UI {
+	protected insertDOMNode( node: UI ): UI {
 		if ( node._root ) {
 			this._dom.body.appendChild( node._root );
 		}
 		return node;
+	}
+
+	get activeElement(): UI {
+		return this._activeElement;
+	}
+
+	set activeElement( node: UI ) {
+		this._activeElement = node || null;
+	}
+
+	protected onChildInserted( node: UI ) {
+
+		var found: boolean = false;
+
+		if ( node ) {
+
+			if ( node.implements( 'IFocusable' ) ) {
+
+				if ( this._focusComponents.indexOf( node ) == -1 ) {
+					this._focusComponents.push( node );
+				}
+
+			}
+		}
+
 	}
 
 }
@@ -608,7 +648,7 @@ Constraint.registerClass({
 			"type": "string"
 		},
 		{
-			"name": "focused",
+			"name": "active",
 			"type": "boolean"
 		}
 	]

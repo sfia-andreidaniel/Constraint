@@ -7,12 +7,12 @@
 */
 
 /// <reference path="Constraint.ts" />
-/// <reference path="Constraint_Token.ts" />
-/// <reference path="Constraint_Token_Or.ts" />
-/// <reference path="Constraint_Flow.ts" />
-/// <reference path="Constraint_Scope.ts" />
-/// <reference path="Constraint_Type.ts" />
-/// <reference path="FS_File.ts" />
+/// <reference path="Constraint/Token.ts" />
+/// <reference path="Constraint/Token/Or.ts" />
+/// <reference path="Constraint/Flow.ts" />
+/// <reference path="Constraint/Scope.ts" />
+/// <reference path="Constraint/Type.ts" />
+/// <reference path="FS/File.ts" />
 
 class $I {
 

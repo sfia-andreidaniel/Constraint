@@ -1,6 +1,6 @@
-/// <reference path="node.d.ts" />
-/// <reference path="./Constraint_Enum.ts" />
-/// <reference path="./UI_Anchor_Literal.ts" />
+/// <reference path="../node.d.ts" />
+/// <reference path="Enum.ts" />
+/// <reference path="../UI/Anchor/Literal.ts" />
 class Constraint_Type {
 
 	public static create( from: ITokenResult, inContext: Constraint_Scope, inPropertyType: string = null, strict: boolean = false ): any {

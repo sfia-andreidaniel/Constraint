@@ -39,3 +39,8 @@
 .ui.UI_Button.ta-right > .caption {
 	text-align: right;
 }
+
+.ui.UI_Button.focused {
+	outline: 1px dotted black;
+  	outline-offset: -3px;
+}

@@ -30,8 +30,20 @@ class UI extends UI_Event {
 	// text
 	protected _textAlign: EAlignment = EAlignment.LEFT;
 	
-	constructor( owner: UI ) {
+	// The interface names this element is embracing.
+	private   _embrace: any;
+
+	protected _disabled: boolean = false;
+	protected _parentsDisabled: number = 0;
+	
+	constructor( owner: UI, mixins: string[] = [] ) {
 		super();
+
+		if ( mixins ) {
+			for ( var i=0, len = mixins.length; i<len; i++ ) {
+				this.embrace( mixins[i] );
+			}
+		}
 
 		this._owner = owner;
 
@@ -162,6 +174,9 @@ class UI extends UI_Event {
 					this._owner._children.splice( i, 1 );
 				}
 			}
+
+			// flush parents disabled states.
+			this.onParentDisableStateChange( null );
 		}
 		return this;
 	}
@@ -178,10 +193,15 @@ class UI extends UI_Event {
 
 		this.insertDOMNode( child );
 
+		this.form.fire( 'child-inserted', child );
+
+		// set the disabled state
+		child.onParentDisableStateChange( this._parentsDisabled + ~~this._disabled );
+
 		return child;
 	}
 
-	public insertDOMNode( node: UI ): UI {
+	protected insertDOMNode( node: UI ): UI {
 		if ( this._root && node._root ) {
 			this._root.appendChild( node._root );
 		}
@@ -426,6 +446,71 @@ class UI extends UI_Event {
 					break;
 			}
 		}
+	}
+
+	get disabled(): boolean {
+		return this._disabled || this._parentsDisabled > 0;
+	}
+
+	set disabled( on: boolean ) {
+		on = !!on;
+		if ( on != this._disabled ) {
+			this._disabled = on;
+
+			if ( this._root ) {
+				if ( this.disabled ){
+					UI_Dom.addClass( this, 'disabled' );
+				} else {
+					UI_Dom.removeClass( this, 'disabled' );
+				}
+			}
+
+			if ( this._children ) {
+				for ( var i=0, len = this._children.length; i<len; i++ ) {
+					this._children[i].onParentDisableStateChange( ~~on );
+				}
+			}
+		}
+	}
+
+	protected onParentDisableStateChange( amount: number = 1 ) {
+		if ( amount === 0 ) {
+			return;
+		}
+
+		if ( amount === null ) {
+			amount = this._parentsDisabled;
+		}
+
+		var previousDisabledState: boolean = this.disabled,
+		    actualDisabledState: boolean;
+
+		this._parentsDisabled += amount;
+
+		if ( this._parentsDisabled < 0 ) {
+			this._parentsDisabled = 0;
+		}
+
+		actualDisabledState = this.disabled;
+
+		if ( actualDisabledState != previousDisabledState && this._root ) {
+			if ( actualDisabledState ) {
+				UI_Dom.addClass( this._root, 'disabled' );
+			} else {
+				UI_Dom.removeClass( this._root, 'disabled' );
+			}
+		}
+
+	}
+
+
+	protected embrace( interface: string ) {
+		this._embrace = this._embrace || {};
+		this._embrace[ interface ] = true;
+	}
+
+	public implements( interface: string ): boolean {
+		return this._embrace && this._embrace[ interface ] === true;
 	}
 
 }

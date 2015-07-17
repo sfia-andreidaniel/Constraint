@@ -1,6 +1,6 @@
 /// <reference path="node.d.ts" />
 /// <reference path="types.ts" />
-/// <reference path="UI_Color.ts" />
+/// <reference path="UI/Color.ts" />
 /// <reference path="$I.ts" />
 
 var fs = require( 'fs' ),

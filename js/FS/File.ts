@@ -1,5 +1,5 @@
-/// <reference path="node.d.ts" />
-/// <reference path="UI_Event.ts" />
+/// <reference path="../node.d.ts" />
+/// <reference path="../UI/Event.ts" />
 
 class FS_File extends UI_Event {
 
