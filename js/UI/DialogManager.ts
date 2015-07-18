@@ -1,3 +1,9 @@
+/*  DialogManager role is the following:
+	- maintains a list with opened dialog
+	- provides a "desktop" DOM element, where the dialogs are opened
+	- handles the "focusing" by keyboard in the current active dialog.
+*/
+
 class UI_DialogManager extends UI_Event {
 
 	public static instance: UI_DialogManager = null;
@@ -94,6 +100,67 @@ class UI_DialogManager extends UI_Event {
 		return null;
 	}
 
+	protected handleTabKey (ev) {
+
+		var components: UI[],
+		    index: number,
+		    cancel: boolean = true;
+
+		if ( this._activeWindow ) {
+
+			if ( this._activeWindow.activeElement && this._activeWindow.activeElement['wantTabs'] ) {
+				
+				cancel = false;
+			
+			} else {
+
+				components = this._activeWindow.focusGroup;
+
+				if ( components.length > 1) {
+
+					index = components.indexOf( this._activeWindow.activeElement );
+					
+					if ( index >= 0 ) {
+
+						// reverse tabbing
+						if ( ev.shiftKey ) {
+							if ( index == 0 ) {
+								index = components.length - 1;
+							} else {
+								index--;
+							}
+						} else {
+							if ( index < components.length - 1 ) {
+								index++;
+							} else {
+								index = 0;
+							}
+						}
+
+					} else {
+
+						if ( ev.shiftKey ) {
+							index = components.length - 1;
+						} else {
+							index = 0;
+						}
+
+					}
+
+					(<MFocusable>components[index]).active = true;
+
+				}
+
+			}
+
+			if ( cancel ) {
+				ev.preventDefault();
+				ev.stopPropagation();
+			}
+		}
+
+	}
+
 	private _setupEvents_() {
 		( function( manager ) {
 
@@ -104,7 +171,7 @@ class UI_DialogManager extends UI_Event {
 					// setup the default manager.
 					manager.desktop = document.body;
 
-					document.body.addEventListener( 'mousedown', function( evt ) {
+					manager.desktop.addEventListener( 'mousedown', function( evt ) {
 
 						var target: any = evt.target || evt.srcElement;
 
@@ -124,6 +191,15 @@ class UI_DialogManager extends UI_Event {
 						manager.activeWindow = null;
 
 					}, true );
+
+					manager.desktop.addEventListener( 'keydown', function( ev ) {
+						var code = ev.keyCode || ev.charCode;
+						if ( code == 9 ) {
+							manager.handleTabKey( ev );
+						}
+					}, true );
+
+
 
 				}, true );
 

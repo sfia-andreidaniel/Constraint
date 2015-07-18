@@ -9,7 +9,7 @@
 
 	box-sizing: border-box;
 
-	background-color: ${backgroundColor};
+	background-color: ${background.normal};
 	-webkit-user-select: none;
 	border: 1px solid ${borderColor};
 }
@@ -19,13 +19,18 @@
 	text-overflow: ellipsis;
 	font-family: ${font.family};
 	font-size: ${font.size}px;
-	color: ${font.color};
+	color: ${color.normal};
 	width: calc( 100% - 10px );
-	height: ${font.size}px;
-	margin-top: calc( ( ${height}px - 2px - ${font.size}px ) / 2 );
 	margin-left: 5px;
 	display: block;
 	padding: 0;
+
+
+	position: relative;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	-ms-transform: translateY(-50%);
+	transform: translateY(-50%);
 }
 
 .ui.UI_Button > .icon {
@@ -43,4 +48,24 @@
 .ui.UI_Button.focused {
 	outline: 1px dotted black;
   	outline-offset: -3px;
+}
+
+.ui.UI_Form:not(.focus-active) .ui.UI_Button.focused {
+	outline: none;
+}
+
+.ui.UI_Button.disabled {
+	background-color: ${background.disabled};
+}
+
+.ui.UI_Button.disabled > .caption {
+	color: ${color.disabled};
+}
+
+.ui.UI_Button:not(.disabled):active {
+	background-color: ${background.pressed};
+}
+
+.ui.UI_Button:not(.disabled):active > .caption {
+	color: ${color.pressed};
 }

@@ -9,8 +9,8 @@
 
 	@UI_Button Btn1 {
 		caption: 'Hello world';
-		bottom: $parent center;
-		left: $parent center;
+		bottom: center;
+		left: center;
 	};
 
 	@UI_Label Right {
@@ -44,12 +44,36 @@
 	@UI_Label Bottom {
 		caption: 'Bottom';
 		top: Btn1 bottom 20;
-		bottom: 20;
+		bottom: bottom 20;
 		left: Btn1 center;
 		width: 40;
 
 		textAlign: CENTER;
 		
+	};
+
+	@UI_Button NW {
+		caption: 'North west';
+		left: 20;
+		top: 20;
+		right: Top left 20;
+		bottom: Left top 20;
+	};
+
+	@UI_Button NE {
+		caption: 'North east';
+		left: Top right 20;
+		top: 20;
+		bottom: Right top 20;
+		right: 20;
+	};
+
+	@UI_Button SW {
+		caption: 'South west';
+		left: 20;
+		bottom: 20;
+		top: Left bottom 20;
+		right: Bottom left 20;
 	};
 
 };

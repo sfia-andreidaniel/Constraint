@@ -4,6 +4,8 @@
 	$declare fontFamily : 'Arial';
 	$declare fontColor  : black;
 
+	$declare disabledFontColor: #a6a6a6;
+
 	// Form styling
 	@Theme UI_Form {
 		
@@ -43,6 +45,7 @@
 			size: $fontSize;
 			family: $fontFamily;
 			color: $fontColor;
+			disabled: $disabledFontColor;
 		};
 	};
 
@@ -50,13 +53,23 @@
 		width: 100;
 		height: 30;
 
-		backgroundColor: #f0f0f0;
+		background: {
+			normal: #f0f0f0;
+			pressed: #e8e8e8;
+			disabled: #f0f0f0;
+		};
+
+		color: {
+			normal: $fontColor;
+			disabled: $disabledFontColor;
+			pressed: $fontColor;
+		};
+
 		borderColor: #acacac;
 
 		font: {
 			size: $fontSize;
 			family: $fontFamily;
-			color: $fontColor;
 		};
 	};
 

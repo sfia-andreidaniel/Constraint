@@ -28,7 +28,7 @@ class Constraint {
 			"return": 0
 		},
 		"type_anchor": {
-			"regex": /^([a-z\$_]([a-z\$_\d]+)?)[\s]+(center|middle|((top|bottom|left|right)[\s]+[\d]+))/i,
+			"regex": /^((([a-zA-Z_\$]([a-zA-Z_\$\d]+)?)([\s]+))?(center|middle)|((([a-zA-Z_\$]([a-zA-Z_\$\d]+)?)[\s]+)?(top|left|right|bottom)[\s]+((\-)?[\d]+)))/,
 			"return": 0
 		},
 		// matches yes, no, true, false

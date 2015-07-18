@@ -2,6 +2,30 @@ class MFocusable extends UI implements IFocusable {
 
 	public static isMixin: boolean = true;
 
+	// this will be called when a node is embracing this interface.
+	public static initialize( node: UI ) {
+		node.on( 'disabled', function( state: boolean ) {
+			if ( state && (<MFocusable>node).active ) {
+				(<MFocusable>node).active = false;
+			}
+		} );
+
+		node._root.addEventListener( 'mousedown', function(evt) {
+			if ( !node.disabled )
+				(<MFocusable>node).active = true;
+		}, true );
+
+		node.on( 'blur', function() {
+			if ( node._root ) {
+				UI_Dom.removeClass( this._root, 'focused' );
+			}
+		} );
+
+	}
+
+	public wantTabs: boolean;
+	public tabIndex: number;
+
 	get active(): boolean {
 		return this.form.activeElement == this;
 	}

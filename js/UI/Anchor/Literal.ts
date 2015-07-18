@@ -6,7 +6,7 @@ class UI_Anchor_Literal {
 		this._literal = anchorDef;
 	}
 
-	public static create( def: IAnchor ) {
+	public static create( def: IAnchor ): UI_Anchor_Literal {
 		return new UI_Anchor_Literal( def );
 	}
 

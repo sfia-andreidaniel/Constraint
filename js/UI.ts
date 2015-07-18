@@ -36,8 +36,12 @@ class UI extends UI_Event {
 	protected _disabled: boolean = false;
 	protected _parentsDisabled: number = 0;
 	
-	constructor( owner: UI, mixins: string[] = [] ) {
+	constructor( owner: UI, mixins: string[] = [], rootNode: HTMLDivElement = null ) {
 		super();
+
+		if ( rootNode ) {
+			this._root = rootNode;
+		}
 
 		if ( mixins ) {
 			for ( var i=0, len = mixins.length; i<len; i++ ) {
@@ -195,8 +199,10 @@ class UI extends UI_Event {
 
 		this.form.fire( 'child-inserted', child );
 
-		// set the disabled state
-		child.onParentDisableStateChange( this._parentsDisabled + ~~this._disabled );
+		if ( this._parentsDisabled + ~~this._disabled ) {
+			// set the disabled state
+			child.onParentDisableStateChange( this._parentsDisabled + ~~this._disabled );
+		}
 
 		return child;
 	}
@@ -218,6 +224,12 @@ class UI extends UI_Event {
 		
 		} else {
 			
+			var rect: IRect,
+			    a: number,
+			    b: number,
+			    c: number = 1,
+			    d: number = 1;
+
 			if ( this._root ) {
 
 				if ( this._owner && this._owner._root && this._owner._root != this._root ) {
@@ -225,9 +237,10 @@ class UI extends UI_Event {
 				}
 
 				if ( this._left.valid && this._right.valid ) {
-					this._root.style.left = this._left.distance + "px";
-					this._root.style.right = this._right.distance + "px";
-					this._root.style.width = 'auto';
+					rect = this.parentClientRect;
+					this._root.style.left = ( a = this._left.distance ) + "px";
+					this._root.style.right = ( b = this._right.distance ) + "px";
+					this._root.style.width = ( c = rect.width - a - b ) + "px";
 				} else {
 
 					if ( this._left.valid ) {
@@ -242,9 +255,10 @@ class UI extends UI_Event {
 				}
 				
 				if ( this._top.valid && this._bottom.valid ) {
-					this._root.style.top = this._top.distance + "px";
-					this._root.style.bottom = this._bottom.distance + "px";
-					this._root.style.height = 'auto';
+					rect = rect || this.parentClientRect;
+					this._root.style.top = ( a = this._top.distance ) + "px";
+					this._root.style.bottom = ( b = this._bottom.distance ) + "px";
+					this._root.style.height = ( d = rect.height - a - b ) + "px";
 				} else {
 
 					if ( this._top.valid ) {
@@ -257,6 +271,12 @@ class UI extends UI_Event {
 
 					this._root.style.height= this.height + "px";
 
+				}
+
+				if ( c <= 0 || d <= 0 ) {
+					this._root.style.display = 'none';
+				} else {
+					this._root.style.display = '';
 				}
 
 				// If the widget has child nodes, paint them
@@ -454,22 +474,27 @@ class UI extends UI_Event {
 
 	set disabled( on: boolean ) {
 		on = !!on;
+
 		if ( on != this._disabled ) {
 			this._disabled = on;
 
 			if ( this._root ) {
 				if ( this.disabled ){
-					UI_Dom.addClass( this, 'disabled' );
+					UI_Dom.addClass( this._root, 'disabled' );
 				} else {
-					UI_Dom.removeClass( this, 'disabled' );
+					UI_Dom.removeClass( this._root, 'disabled' );
 				}
 			}
 
 			if ( this._children ) {
 				for ( var i=0, len = this._children.length; i<len; i++ ) {
-					this._children[i].onParentDisableStateChange( ~~on );
+					this._children[i].onParentDisableStateChange( on ? 1 : -1 );
 				}
 			}
+
+			// fire a disabled event, that might be treated by the mixins this
+			// object is embracing.
+			this.fire( 'disabled', on );
 		}
 	}
 
@@ -499,6 +524,8 @@ class UI extends UI_Event {
 			} else {
 				UI_Dom.removeClass( this._root, 'disabled' );
 			}
+
+			this.fire( 'disabled', actualDisabledState );
 		}
 
 	}
@@ -506,7 +533,19 @@ class UI extends UI_Event {
 
 	protected embrace( interface: string ) {
 		this._embrace = this._embrace || {};
-		this._embrace[ interface ] = true;
+		
+		if ( typeof this._embrace[ interface ] == 'undefined' ) {
+			
+			this._embrace[ interface ] = true;
+
+			// if the interface has an associated mixin ( IFocusable => MFocusable )
+			// call the static mixin initializer on the event.
+			var mixin: any = Global.env[ interface.replace( /^I/, 'M' ) ];
+
+			if ( mixin && mixin.initialize ) {
+				mixin.initialize( this );
+			}
+		}
 	}
 
 	public implements( interface: string ): boolean {
@@ -571,6 +610,12 @@ Constraint.registerClass( {
 		{
 			"name": "padding.bottom",
 			"type": "number"
+		},
+
+		// STATES
+		{
+			"name": "disabled",
+			"type": "boolean"
 		},
 
 		// OTHER PROPERTIES

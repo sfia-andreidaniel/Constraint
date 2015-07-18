@@ -114,7 +114,7 @@ class $I {
 					return '/* Namespace: ' + matches[4] + '*/';
 				} else {
 					//console.log( matches );
-					return $I._get_( $I._namespace_ + '/' + matches[2] );
+					return $I._get_( $I._namespace_ + '/' + matches[2] ).replace(/^"(.*)"$/, '$1' );
 				}
 
 			});

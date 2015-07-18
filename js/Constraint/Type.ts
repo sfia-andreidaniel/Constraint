@@ -90,44 +90,55 @@ class Constraint_Type {
 		}
 	}
 
-	public static createAnchorDef( from: ITokenResult, inContext: Constraint_Scope ) {
-		var parts = from.result.split( ' ' ),
+	public static createAnchorDef( from: ITokenResult, inContext: Constraint_Scope ): UI_Anchor_Literal {
+		var str: string = from.result,
 		    result: IAnchor = {
-		    	"target": parts[0],
-		    	"alignment": ( function( str ) {
-		    		switch ( str ) {
-		    			case 'top':
-		    				return EAlignment.TOP;
-		    				break;
-		    			case 'left':
-		    				return EAlignment.LEFT;
-		    				break;
-		    			case 'right':
-		    				return EAlignment.RIGHT;
-		    				break;
-		    			case 'bottom':
-		    				return EAlignment.BOTTOM;
-		    				break;
-		    			case 'center':
-		    			case 'middle':
-		    				return EAlignment.CENTER;
-		    				break;
-		    			default:
-		    				throw Error( 'Bad alignment: ' + str );
-		    				break;
-		    		}
-		    	})( parts[1].toLowerCase() )
-		    };
+		    	"alignment": null,
+		    	"target": null
+		    },
+		    matches: string[];
 
-		if ( result.target == '$parent' ) {
-			result.target = null;
+		if ( str == 'center' || str == 'middle' ) {
+			result.alignment = EAlignment.CENTER;
+			return UI_Anchor_Literal.create( result );
+		} else {
+
+		    matches = Constraint.tokens.type_anchor.regex.exec( str );
+
+		    switch ( true ) {
+		    	case (matches[6] == 'center' || matches[6] == 'middle') &&
+		    	     ( !!matches[3] ):
+		    	     result.alignment = EAlignment.CENTER;
+		    	     result.target    = matches[3];
+
+		    	     break;
+
+		    	case ( !!matches[11] && [ 'left', 'right', 'top', 'bottom' ].indexOf( matches[11] ) >= 0 && !isNaN( parseInt(matches[12]) )):
+		    		 result.distance = parseInt(matches[12]);
+		    		 result.target = !!matches[9] ? matches[9] : null;
+		    		 switch ( matches[11] ) {
+		    		 	case 'left':
+		    		 		result.alignment = EAlignment.LEFT;
+		    		 		break;
+		    		 	case 'right':
+		    		 		result.alignment = EAlignment.RIGHT;
+		    		 		break;
+		    		 	case 'top':
+		    		 		result.alignment = EAlignment.TOP;
+		    		 		break;
+		    		 	case 'bottom':
+		    		 		result.alignment = EAlignment.BOTTOM;
+		    		 		break;
+		    		 }
+
+		    		 break;
+
+		    	default:
+		    		throw Error( JSON.stringify( matches, undefined, 4 ) );
+		    		break;
+		    }
+
 		}
-
-		if ( result.alignment != EAlignment.CENTER ) {
-			result.distance = parseInt( parts[2] );
-		}
-
-		result['align'] = parts[1].toLowerCase();
 
 		if ( !inContext.UIElementExists( result.target ) ) {
 			throw Error( "UI Element called " + JSON.stringify( result.target ) + " doesn't exist or is not accessible from this element!") ;

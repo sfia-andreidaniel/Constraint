@@ -37,6 +37,10 @@ class UI_Form extends UI implements IFocusable {
 	// the current element that's active in a form at a single time.
 	protected _activeElement: UI = null;
 
+	// these are not considered but declared for the sake of IFocusable
+	public wantTabs: boolean;
+	public tabIndex: number;
+
 	private   _dom = {
 		"inner": UI_Dom.create( 'div', 'inner' ),
 		"body": UI_Dom.create('div', 'body'),
@@ -601,7 +605,30 @@ class UI_Form extends UI implements IFocusable {
 	}
 
 	set activeElement( node: UI ) {
-		this._activeElement = node || null;
+		if ( ( node || null ) != this._activeElement ) {
+			
+			if ( this._activeElement ) {
+				this._activeElement.fire( 'blur' );
+			}
+
+			this._activeElement = node || null;
+		}
+	}
+
+	/* Returns the registered to focus components, sorted by their tabIndex property */
+	get focusGroup(): UI[] {
+		var result: UI[] = [];
+		for ( var i=0, len = this._focusComponents.length; i<len; i++ ) {
+			if ( !this._focusComponents[i].disabled ) {
+				result.push( this._focusComponents[i] );
+			}
+		}
+
+		result.sort( function( a, b ) {
+			return ~~a['tabIndex'] - ~~b['tabIndex'];
+		} );
+
+		return result;
 	}
 
 	protected onChildInserted( node: UI ) {

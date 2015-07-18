@@ -14,13 +14,14 @@ class UI_Button extends UI implements IFocusable {
 	protected _icon: string = null;
 	protected _textAlign: EAlignment = EAlignment.CENTER;
 
-	public    active: boolean;
+	public    active: boolean; // the active is overrided by the MFocusable mixin
+	public    wantTabs: boolean = false;
+	public    tabIndex: number = 0;
 
 	constructor ( owner: UI ) {
 		
-		super( owner, [ 'IFocusable' ] );
+		super( owner, [ 'IFocusable' ], UI_Dom.create( 'div', 'ui UI_Button ta-center' ) );
 
-		this._root = UI_Dom.create( 'div', 'ui UI_Button ta-center' );
 		this._root.appendChild( this._dom.caption );
 		this._dom.caption.appendChild( document.createTextNode( this._caption ) );
 		this._root.appendChild( this._dom.icon );
@@ -28,7 +29,6 @@ class UI_Button extends UI implements IFocusable {
 		this.width = UI_Button._theme.defaultWidth;
 		this.height = UI_Button._theme.defaultHeight;
 
-		this._setupEvents_();
 	}
 
 	get caption(): string {
@@ -55,15 +55,6 @@ class UI_Button extends UI implements IFocusable {
 		}
 	}
 
-	private _setupEvents_() {
-		( function( self ) {
-
-			self._root.addEventListener( 'mousedown', function(evt) {
-				self.active = true;
-			}, true );
-
-		} )( this );
-	}
 }
 
 Mixin.extend( 'UI_Button', 'MFocusable' );
@@ -81,6 +72,14 @@ Constraint.registerClass( {
 		{
 			"name": "icon",
 			"type": "string"
+		},
+		{
+			"name": "active",
+			"type": "boolean"
+		},
+		{
+			"name": "tabIndex",
+			"type": "number"
 		},
 		{
 			"name": "active",
