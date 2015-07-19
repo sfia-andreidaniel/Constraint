@@ -29,6 +29,7 @@ class UI_Button extends UI implements IFocusable {
 		this.width = UI_Button._theme.defaultWidth;
 		this.height = UI_Button._theme.defaultHeight;
 
+		this._initDom_();
 	}
 
 	get caption(): string {
@@ -55,11 +56,19 @@ class UI_Button extends UI implements IFocusable {
 		}
 	}
 
+	protected _initDom_() {
+		( function( me ) {
+			me._root.addEventListener( 'click', function( e ){
+				if ( !me.disabled ) {
+					me.fire( 'click' );
+				}
+			}, false );
+		} )( this );
+	}
+
 }
 
 Mixin.extend( 'UI_Button', 'MFocusable' );
-
-//Mixin.extend( 'UI_Button', 'IFocusable' );
 
 Constraint.registerClass( {
 	"name": "UI_Button",
@@ -68,11 +77,11 @@ Constraint.registerClass( {
 		{
 			"name": "caption",
 			"type": "string"
-		},
+		},/* 
 		{
 			"name": "icon",
 			"type": "string"
-		},
+		}, */
 		{
 			"name": "active",
 			"type": "boolean"

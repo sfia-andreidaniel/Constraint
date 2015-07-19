@@ -13,67 +13,10 @@
 		left: center;
 	};
 
-	@UI_Label Right {
-		caption: 'Right';
-		top: Btn1 center;
-		left: Btn1 right 20;
-		right: 20;
-
-		textAlign: RIGHT;
-	};
-
-	@UI_Label Top {
-		caption: 'Top';
+	@UI_CheckBox Check1 {
+		caption: 'I''m a checkbox';
+		left: 20;
 		top: 20;
-		bottom: Btn1 top 20;
-		left: Btn1 left 0;
 		right: Btn1 right 0;
-
-		textAlign: CENTER;
 	};
-
-	@UI_Label Left {
-		caption: 'Left';
-		top: Btn1 center;
-		right: Btn1 left 20;
-		left: 20;
-
-		textAlign: LEFT;
-	};
-
-	@UI_Label Bottom {
-		caption: 'Bottom';
-		top: Btn1 bottom 20;
-		bottom: bottom 20;
-		left: Btn1 center;
-		width: 40;
-
-		textAlign: CENTER;
-		
-	};
-
-	@UI_Button NW {
-		caption: 'North west';
-		left: 20;
-		top: 20;
-		right: Top left 20;
-		bottom: Left top 20;
-	};
-
-	@UI_Button NE {
-		caption: 'North east';
-		left: Top right 20;
-		top: 20;
-		bottom: Right top 20;
-		right: 20;
-	};
-
-	@UI_Button SW {
-		caption: 'South west';
-		left: 20;
-		bottom: 20;
-		top: Left bottom 20;
-		right: Bottom left 20;
-	};
-
 };

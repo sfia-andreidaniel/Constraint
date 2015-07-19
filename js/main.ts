@@ -29,7 +29,8 @@
 
 /// <reference path="UI/Form.ts" />
 /// <reference path="UI/Label.ts" />
-/// <reference path="UI/Button" />
+/// <reference path="UI/Button.ts" />
+/// <reference path="UI/Checkbox.ts" />
 
 // Delimiter to remove the constraint runtime from it's makefiles.
 var ____END_OF_STUB____ = undefined;

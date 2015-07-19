@@ -110,8 +110,8 @@ class UI_DialogManager extends UI_Event {
 
 			if ( this._activeWindow.activeElement && this._activeWindow.activeElement['wantTabs'] ) {
 				
-				cancel = false;
-			
+				this.handleRegularKey( ev );
+
 			} else {
 
 				components = this._activeWindow.focusGroup;
@@ -153,12 +153,18 @@ class UI_DialogManager extends UI_Event {
 
 			}
 
-			if ( cancel ) {
-				ev.preventDefault();
-				ev.stopPropagation();
-			}
+			ev.preventDefault();
+			ev.stopPropagation();
+
 		}
 
+	}
+
+	// sends the key to activeForm.activeElement
+	protected handleRegularKey( ev ) {
+		if ( this._activeWindow && this._activeWindow.activeElement ) {
+			this._activeWindow.activeElement.fire( 'keydown', ev );
+		}
 	}
 
 	private _setupEvents_() {
@@ -196,6 +202,8 @@ class UI_DialogManager extends UI_Event {
 						var code = ev.keyCode || ev.charCode;
 						if ( code == 9 ) {
 							manager.handleTabKey( ev );
+						} else {
+							manager.handleRegularKey( ev );
 						}
 					}, true );
 
