@@ -258,7 +258,7 @@ class UI_Anchor {
 
 					switch ( this._type ) {
 						case EAlignment.TOP:
-							return bBox.bottom + bBox.height + this._distance;
+							return bBox.top + bBox.height + this._distance;
 							break;
 						case EAlignment.BOTTOM:
 							return bBox.bottom + this._distance;

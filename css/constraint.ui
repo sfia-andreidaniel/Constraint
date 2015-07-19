@@ -88,4 +88,19 @@
 		};
 	};
 
+	@Theme UI_RadioBox {
+		width: 100;
+		height: 24;
+
+		color: {
+			normal: $fontColor;
+			disabled: $disabledFontColor;
+		};
+
+		font: {
+			size: $fontSize;
+			family: $fontFamily;
+		};
+	};
+
 };

@@ -19,4 +19,28 @@
 		top: 20;
 		right: Btn1 right 0;
 	};
+
+	@UI_RadioBox Radio1 {
+		caption: 'I''m a radiobox';
+		left: 20;
+		top: Check1 bottom 20;
+		right: Btn1 right 0;
+	};
+
+	@UI_RadioBox Radio2 {
+		caption: 'I''m a radiobox too';
+		left: 20;
+		top: Radio1 bottom 20;
+		right: Btn1 right 0;
+	};
+
+	@UI_RadioBox Radio3 {
+		caption: 'I''m a disabled radiobox';
+		left: 20;
+		top: Radio2 bottom 20;
+		right: Btn1 right 0;
+
+		disabled: true;
+		value: true;
+	};
 };

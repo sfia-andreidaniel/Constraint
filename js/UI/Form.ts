@@ -631,6 +631,11 @@ class UI_Form extends UI implements IFocusable {
 		return result;
 	}
 
+	// Returns the registered to focus components, without any sorting.
+	get focusComponents(): UI[] {
+		return this._focusComponents;
+	}
+
 	protected onChildInserted( node: UI ) {
 
 		var found: boolean = false;
