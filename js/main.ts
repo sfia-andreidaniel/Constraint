@@ -22,6 +22,9 @@
 
 /// <reference path="Mixins/MFocusable.ts" />
 
+/// <reference path="Store.ts" />
+/// <reference path="Store/Item.ts" />
+
 /// <reference path="UI/Anchor.ts" />
 /// <reference path="UI/Anchor/Form.ts" />
 /// <reference path="UI/Padding.ts" />
