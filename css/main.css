@@ -420,7 +420,7 @@ html, body {
 
 .ui.UI_Button.focused {
 	outline: 1px dotted black;
-  	outline-offset: -3px;
+  	outline-offset: 1px;
 }
 
 .ui.UI_Form:not(.focus-active) .ui.UI_Button.focused {
@@ -515,7 +515,7 @@ html, body {
 
 .ui.UI_CheckBox.focused {
 	outline: 1px dotted black;
-  	outline-offset: -3px;
+  	outline-offset: 1px;
 }
 
 .ui.UI_Form:not(.focus-active) .ui.UI_CheckBox.focused {
@@ -586,9 +586,59 @@ html, body {
 
 .ui.UI_RadioBox.focused {
 	outline: 1px dotted black;
-  	outline-offset: -3px;
+  	outline-offset: 1px;
 }
 
 .ui.UI_Form:not(.focus-active) .ui.UI_RadioBox.focused {
 	outline: none;
 }
+/* Namespace: UI.UI_Canvas*/
+.ui.UI_Canvas {
+	position: absolute;
+	padding: 0;
+	margin: 0;
+	display: block;
+	background-color: white;
+	overflow: hidden;
+	border: 1px solid rgb(172,172,172);
+}
+
+.ui.UI_Canvas > canvas {
+	display: block;
+	position: relative;
+	z-index: 1;
+}
+
+.ui.UI_Canvas > .viewport {
+	display: block;
+	overflow: hidden;
+	padding: 0;
+	margin: 0;
+	z-index: 2;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	overflow: auto;
+}
+
+.ui.UI_Canvas > .viewport > .canvas-size {
+	display: block;
+	position: relative;
+	padding: 0;
+	margin: 0;
+	width: 0px;
+	height: 0px;
+}
+
+.ui.UI_Canvas.disabled > .viewport {
+	pointer-events: none;
+}
+
+.ui.UI_Canvas.focused:not(.disabled) {
+	outline: 1px dotted black;
+	outline-offset: 1px;
+}
+/* Namespace: UI.UI_Label*/
+

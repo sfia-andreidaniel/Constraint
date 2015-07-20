@@ -3,6 +3,7 @@ class Store_Item {
 	protected _data: any;
 	protected _id: any;
 	protected _owner: Store;
+	protected _dead: boolean;
 
 	constructor( payload: any, _id: any, owner: Store ) {
 		this._data = payload;
@@ -20,10 +21,17 @@ class Store_Item {
 	}
 
 	set data( payload: any ) {
+
 		this._data = payload;
-		this._owner.fire( 'update', this._id );
-		this._owner.fire( 'change' );
+
+		if ( !this._dead ) {
+			this._owner.fire( 'update', this._id );
+			this._owner.onChange();
+		}
 	}
 
+	public die() {
+		this._dead = true;
+	}
 
 }

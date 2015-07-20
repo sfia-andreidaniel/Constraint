@@ -13,13 +13,48 @@
  */
 class Store extends UI_Event {
 	
-	private _autoId: number = 0;
-	private _items: Store_Item[] = [];
-	private _length: number = 0;
+	private   _autoId: number = 0;
+	protected _items: Store_Item[] = [];
+	protected _length: number = 0;
+	protected _allowDuplicates: boolean = true;
+	protected _sorted: boolean = false;
+
+	private   _changeThrottler: UI_Throttler;
 
 	constructor( values: any[] = null ) {
 		super();
+
+		( function( me ) {
+			
+			me._changeThrottler = new UI_Throttler( function() {
+				me.fire( 'change' );
+			}, 100 );
+
+			me.on( 'insert', function() {
+				if ( me._sorted ) {
+					me.ensureSorted();
+				}
+			} );
+
+			me.on( 'update', function() {
+				if ( me._sorted ) {
+					me.ensureSorted();
+				}
+			} );
+
+			me.on( 'ready', function() {
+				if ( me._sorted ) {
+					me.ensureSorted();
+				}
+			} );
+
+		} )( this );
+
 		this.setItems( values || [] );
+	}
+
+	public onChange() {
+		this._changeThrottler.run();
 	}
 
 	get autoIncrement(): number {
@@ -40,7 +75,7 @@ class Store extends UI_Event {
 		}
 
 		this.fire( 'ready' );
-		this.fire( 'change' );
+		this.onChange();
 	}
 
 	get length(): number {
@@ -64,7 +99,7 @@ class Store extends UI_Event {
 			if ( this._items[i].id == id ) {
 				this._items[i].data = payload;
 				this.fire( 'update', id );
-				this.fire( 'change' );
+				this.onChange();
 				return;
 			}
 		}
@@ -76,7 +111,7 @@ class Store extends UI_Event {
 				this._items.splice( i, 1 );
 				this._length--;
 				this.fire( 'remove', id );
-				this.fire( 'change' );
+				this.onChange();
 				return;
 			}
 		}
@@ -100,7 +135,7 @@ class Store extends UI_Event {
 			this._items.splice( index, 1 );
 			this._length--;
 			this.fire( 'remove', ptr.id );
-			this.fire( 'change' );
+			this.onChange();
 			return ptr.id;
 		} else {
 			throw new Error( 'Index out of bounds: ' + index );
@@ -122,9 +157,84 @@ class Store extends UI_Event {
 			this._length++;
 			this._items.splice( index, 0, item = this.create( payload ) );
 			this.fire( 'insert', item.id );
-			this.fire( 'change' );
+			this.onChange();
 		} else {
 			throw new Error( 'Index out of bounds: ' + index );
+		}
+	}
+
+	public compare( a: Store_Item, b: Store_Item ): number {
+		return -1;
+	}
+
+	public ensureNoDuplicates() {
+		var i: number,
+		    j: number;
+		
+		if  ( this._length > 1 ) {
+
+			for ( i=0; i < this._length; i++ ) {
+				for ( j=0; j < this._length; j++ ) {
+					if ( i != j && this.compare( this._items[i].data, this._items[j].data ) == 0 ) {
+						throw new Error( 'Duplicate items not allowed in this store!' );
+					}
+				}
+			}
+		}
+	}
+
+	// Ensures the store stays sorted always.
+	public ensureSorted() {
+		if ( this._sorted && this._length > 1 ) {
+			
+			var oldIdList: any[] = [],
+			    i: number;
+
+			for ( i = 0; i < this._length; i++ ) {
+				oldIdList.push( this._items[i].id );
+			}
+
+			this._items.sort( this.compare );
+
+			for ( i = 0; i < this._length; i++ ) {
+				if ( oldIdList[i] != this._items[i].id ) {
+					this.onChange();
+					return;
+				}
+			}
+
+		}
+	}
+
+	// Weather the store allows duplicates or not
+	get allowDuplicates(): boolean {
+		return this._allowDuplicates;
+	}
+
+	set allowDuplicates( allow: boolean ) {
+
+		allow = !!allow;
+		
+		if ( allow != this._allowDuplicates ) {
+			
+			if ( !allow ) {
+				this.ensureNoDuplicates();
+			}
+
+			this._allowDuplicates = allow;
+		}
+	}
+
+	// Getter setter for setting the "always sorted" flag.
+	get sorted(): boolean {
+		return this._sorted;
+	}
+
+	set sorted( sorted: boolean ) {
+		sorted = !!sorted;
+		if ( sorted != this._sorted ) {
+			this._sorted = sorted;
+			this.ensureSorted();
 		}
 	}
 

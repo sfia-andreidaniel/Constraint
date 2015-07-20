@@ -23,7 +23,14 @@
 /// <reference path="Mixins/MFocusable.ts" />
 
 /// <reference path="Store.ts" />
+/// <reference path="Store/Strings.ts" />
+/// <reference path="Store/Objects.ts" />
+/// <reference path="Store/NamedObjects.ts" />
+
 /// <reference path="Store/Item.ts" />
+/// <reference path="Store/Item/String.ts" />
+/// <reference path="Store/Item/Object.ts" />
+/// <reference path="Store/Item/NamedObject.ts" />
 
 /// <reference path="UI/Anchor.ts" />
 /// <reference path="UI/Anchor/Form.ts" />
@@ -35,6 +42,8 @@
 /// <reference path="UI/Button.ts" />
 /// <reference path="UI/CheckBox.ts" />
 /// <reference path="UI/RadioBox.ts" />
+/// <reference path="UI/Canvas.ts" />
+/// <reference path="UI/ListBox.ts" />
 
 
 // Delimiter to remove the constraint runtime from it's makefiles.

@@ -56,3 +56,10 @@ interface IBoundingBox {
 	height: number;
 }
 
+interface IIdentifiable {
+	id: any;
+}
+
+interface INameable extends IIdentifiable {
+	name: string;
+}

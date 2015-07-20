@@ -206,3 +206,11 @@ class UI_Color {
 		}
 	}
 }
+
+function rgb( red: number, green: number, blue: number ): string {
+	return 'rgb(' + ~~red + ',' + ~~green + ',' + ~~blue + ')';
+}
+
+function rgba( red: number, green: number, blue: number, alpha: number ): string {
+	return 'rgba(' + ~~red + ',' + ~~green + ',' + ~~blue + ',' + ~~alpha + ')';
+}

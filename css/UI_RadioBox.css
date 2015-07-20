@@ -63,7 +63,7 @@
 
 .ui.UI_RadioBox.focused {
 	outline: 1px dotted black;
-  	outline-offset: -3px;
+  	outline-offset: 1px;
 }
 
 .ui.UI_Form:not(.focus-active) .ui.UI_RadioBox.focused {

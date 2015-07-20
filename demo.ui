@@ -43,4 +43,11 @@
 		disabled: true;
 		value: true;
 	};
+
+	@UI_ListBox List1 {
+		left: Radio3 right 20;
+		top: 20;
+		bottom: Btn1 top 20;
+		right: 20;
+	};
 };

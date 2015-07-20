@@ -36,6 +36,16 @@ class UI extends UI_Event {
 	protected _disabled: boolean = false;
 	protected _parentsDisabled: number = 0;
 	
+	// After we paint the element, it's computed painted size is located here.
+	protected _paintRect: IBoundingBox = {
+		"left"   : 0,
+		"right"  : 0,
+		"width"  : 0,
+		"top"    : 0,
+		"bottom" : 0,
+		"height" : 0
+	};
+	
 	constructor( owner: UI, mixins: string[] = [], rootNode: HTMLDivElement = null ) {
 		super();
 
@@ -238,38 +248,46 @@ class UI extends UI_Event {
 
 				if ( this._left.valid && this._right.valid ) {
 					rect = this.parentClientRect;
-					this._root.style.left = ( a = this._left.distance ) + "px";
-					this._root.style.right = ( b = this._right.distance ) + "px";
-					this._root.style.width = ( c = rect.width - a - b ) + "px";
+					this._root.style.left = ( this._paintRect.left = a = this._left.distance ) + "px";
+					this._root.style.right = ( this._paintRect.right = b = this._right.distance ) + "px";
+					this._root.style.width = ( this._paintRect.width = c = rect.width - a - b ) + "px";
 				} else {
 
 					if ( this._left.valid ) {
-						this._root.style.left = this._left.distance + this.translateLeft + "px";
+						this._root.style.left = ( this._paintRect.left = this._left.distance + this.translateLeft ) + "px";
+					} else {
+						this._paintRect.left = null;
 					}
 
 					if ( this._right.valid ) {
-						this._root.style.right = this._right.distance + "px";
+						this._root.style.right = ( this._paintRect.right = this._right.distance ) + "px";
+					} else {
+						this._paintRect.right = null;
 					}
 
-					this._root.style.width = this.width + "px";	
+					this._root.style.width = ( this._paintRect.width = this.width ) + "px";
 				}
 				
 				if ( this._top.valid && this._bottom.valid ) {
 					rect = rect || this.parentClientRect;
-					this._root.style.top = ( a = this._top.distance ) + "px";
-					this._root.style.bottom = ( b = this._bottom.distance ) + "px";
-					this._root.style.height = ( d = rect.height - a - b ) + "px";
+					this._root.style.top = ( this._paintRect.top = a = this._top.distance ) + "px";
+					this._root.style.bottom = ( this._paintRect.bottom = b = this._bottom.distance ) + "px";
+					this._root.style.height = ( this._paintRect.height = d = rect.height - a - b ) + "px";
 				} else {
 
 					if ( this._top.valid ) {
-						this._root.style.top = this._top.distance + this.translateTop + "px";
+						this._root.style.top = ( this._paintRect.top = this._top.distance + this.translateTop ) + "px";
+					} else {
+						this._paintRect.top = null;
 					}
 
 					if ( this._bottom.valid ) {
-						this._root.style.bottom = this._bottom.distance + "px";
+						this._root.style.bottom = ( this._paintRect.bottom = this._bottom.distance ) + "px";
+					} else {
+						this._paintRect.bottom = null;
 					}
 
-					this._root.style.height= this.height + "px";
+					this._root.style.height= ( this._paintRect.height = this.height ) + "px";
 
 				}
 
@@ -287,6 +305,7 @@ class UI extends UI_Event {
 			}
 
 			this._needPaint = false;
+
 			return true;
 
 		}
