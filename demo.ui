@@ -68,7 +68,26 @@
 		};
 
 		@UI_Tab Tab2 {
-			caption: 'Tab 2';
+			caption: 'Layout';
+
+			@UI_VerticalSplitter Spl1 {
+				minDistance: 30;
+				distance: 150;
+			};
+
+			@UI_HorizontalSplitter Spl2 {
+				left: Spl1 right 0;
+				minDistance: 30;
+			};
+
+			@UI_Button BtnLeft {
+				caption: 'Left button';
+				left: 20;
+				right: Spl1 left 20;
+				top: center;
+			};
+
+
 		};
 		
 	};

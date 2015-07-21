@@ -1,0 +1,34 @@
+{$N UI.UI_Splitter}
+
+.UI_VerticalSplitter {
+	display: block;
+	position: absolute;
+	border-width: 0px 1px 0px 1px;
+	padding: 0;
+	margin: 0;
+	background-color: ${backgroundColor};
+	border-color: ${borderColor};
+	border-style: solid;
+	cursor: col-resize;
+	width: ${size}px;
+	box-sizing: border-box;
+}
+
+.UI_HorizontalSplitter {
+	display: block;
+	position: absolute;
+	border-width: 1px 0px 1px 0px;
+	padding: 0;
+	margin: 0;
+	background-color: ${backgroundColor};
+	border-color: ${borderColor};
+	border-style: solid;
+	cursor: row-resize;
+	height: ${size}px;
+	box-sizing: border-box;
+}
+
+.UI_VerticalSplitter.disabled,
+.UI_HorizontalSplitter.disabled {
+	cursor: default;
+}

@@ -20,6 +20,9 @@
 	$declare enabledControlBorderColor: #acacac;
 
 	$declare formColor: white;
+	
+	$declare object3dColor: #f0f0f0;
+	$declare object3dBorderColor: #acacac;
 
 	// Form styling
 	@Theme UI_Form {
@@ -69,7 +72,7 @@
 		height: 30;
 
 		background: {
-			normal: #f0f0f0;
+			normal: $object3dColor;
 			pressed: #e8e8e8;
 			disabled: $disabledControlBackgroundColor;
 		};
@@ -174,6 +177,12 @@
 			};
 		};
 
+	};
+
+	@Theme UI_Splitter {
+		size: 6;
+		backgroundColor: $object3dColor;
+		borderColor: $object3dBorderColor;
 	};
 
 };

@@ -315,6 +315,13 @@ class UI_Anchor {
 		}
 	}
 
+	public invalidate() {
+		if ( this._loaded ) {
+			this._loaded = false;
+			this.requestRepaint();
+		}
+	}
+
 	get active(): boolean {
 		var opposed: UI_Anchor;
 
