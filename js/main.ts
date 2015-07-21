@@ -45,6 +45,8 @@
 /// <reference path="UI/RadioBox.ts" />
 /// <reference path="UI/Canvas.ts" />
 /// <reference path="UI/ListBox.ts" />
+/// <reference path="UI/TabsPanel.ts" />
+/// <reference path="UI/Tab.ts" />
 
 
 // Delimiter to remove the constraint runtime from it's makefiles.

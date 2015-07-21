@@ -72,7 +72,7 @@ class Constraint {
 		},
 		// this matches a comment
 		"tok_comment": {
-			"regex": /^\/\/[^\n\r]+/,
+			"regex": /^(\/\/[^\n\r]+|\/\*[\s\S\r\n]+?\*\/)/,
 			"return": 0
 		},
 		"tok_at": {
