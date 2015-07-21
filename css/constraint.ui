@@ -7,11 +7,13 @@
 	$declare disabledFontColor: #a6a6a6;
 	$declare normalFontColor: black;
 
-	$declare selectedItemBackgroundColor: #c9c1f0;
+	$declare selectedItemBackgroundColor: #69c1f0;
 	$declare selectedDisabledItemBackgroundColor: #333;
+	$declare inactiveSelectedItemBackgroundColor: #333;
 	
 	$declare selectedItemColor: black;
 	$declare selectedDisabledItemColor: white;
+	$declare selectedInactiveItemColor: white;
 
 	$declare disabledControlBackgroundColor: #f0f0f0;
 	$declare enabledControlBackgroundColor: white;
@@ -130,6 +132,7 @@
 			enabled: $enabledControlBackgroundColor;
 			selected: $selectedItemBackgroundColor;
 			selectedDisabled: $selectedDisabledItemBackgroundColor;
+			inactiveSelected: $inactiveSelectedItemBackgroundColor;
 		};
 
 		option: {
@@ -143,6 +146,8 @@
 			color: $normalFontColor;
 			disabledColor: $disabledFontColor;
 			selectedDisabledColor: $selectedDisabledItemColor;
+			selectedEnabledColor: $selectedItemColor;
+			inactiveSelectedColor: $selectedInactiveItemColor;
 		};
 	};
 

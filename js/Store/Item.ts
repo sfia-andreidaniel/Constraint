@@ -4,6 +4,8 @@ class Store_Item {
 	protected _id: any;
 	protected _owner: Store;
 	protected _dead: boolean;
+	protected _selected: boolean;
+
 
 	constructor( payload: any, _id: any, owner: Store ) {
 		this._data = payload;
@@ -32,6 +34,20 @@ class Store_Item {
 
 	public die() {
 		this._dead = true;
+	}
+
+	get selected(): boolean {
+		return !!this._selected;
+	}
+
+	set selected( selected: boolean ) {
+		selected = !!selected;
+		if ( selected != this._selected ) {
+			this._selected = selected;
+			if ( !this._dead ) {
+				this._owner.fire('meta-changed');
+			}
+		}
 	}
 
 }

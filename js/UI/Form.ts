@@ -302,6 +302,7 @@ class UI_Form extends UI implements IFocusable {
 			} else {
 				UI_Dom.removeClass( this._root, 'focus-active' );
 			}
+			this.onRepaint();
 		}
 
 		if ( this._active ) {
@@ -489,6 +490,7 @@ class UI_Form extends UI implements IFocusable {
 					top  -= deltaY;
 
 					form.paintable = false;
+					form._disableChildPainting = true;
 
 					form.left.distance = left;
 					form.top.distance = top;
@@ -496,6 +498,8 @@ class UI_Form extends UI implements IFocusable {
 					form.paintable = true;
 
 					form.onRepaint();
+
+					form._disableChildPainting = false;
 
 					move.x = newX;
 					move.y = newY;
@@ -607,11 +611,16 @@ class UI_Form extends UI implements IFocusable {
 	set activeElement( node: UI ) {
 		if ( ( node || null ) != this._activeElement ) {
 			
-			if ( this._activeElement ) {
-				this._activeElement.fire( 'blur' );
-			}
+			var prevElement: UI = this._activeElement;
 
 			this._activeElement = node || null;
+
+			if ( prevElement ) {
+				prevElement.fire( 'blur' );
+			}
+
+			if ( this._activeElement )
+				this._activeElement.fire( 'focus' );
 		}
 	}
 

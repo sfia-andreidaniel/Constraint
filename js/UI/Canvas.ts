@@ -35,6 +35,9 @@ class UI_Canvas extends UI {
 	protected _viewportWidth: number = 0;
 	protected _viewportHeight: number = 0;
 
+	protected _scrollLeft: number = 0;
+	protected _scrollTop: number = 0;
+
 	/* We're overriding the repaint of the canvas, in order to optimize it
 	 */
 	public onRepaint(): boolean {
@@ -83,17 +86,17 @@ class UI_Canvas extends UI {
 	}
 
 	get scrollTop(): number {
-		return this._dom.viewport.scrollTop;
+		return this._dom.viewport.scrollTop || this._scrollTop;
 	}
 
 	get scrollLeft(): number {
-		return this._dom.viewport.scrollLeft;
+		return this._dom.viewport.scrollLeft || this._scrollLeft;
 	}
 
 	set scrollTop( top: number ) {
 		top = ~~top;
 		if ( top != this.scrollTop ) {
-			this._dom.viewport.scrollTop = top;
+			this._dom.viewport.scrollTop = this._scrollTop = top;
 			this.render();
 		}
 	}
@@ -101,7 +104,7 @@ class UI_Canvas extends UI {
 	set scrollLeft( left: number ) {
 		left = ~~left;
 		if ( left != this.scrollLeft ) {
-			this._dom.viewport.scrollLeft = left;
+			this._dom.viewport.scrollLeft = this._scrollLeft = left;
 			this.render();
 		}
 	}
@@ -119,6 +122,9 @@ class UI_Canvas extends UI {
 		( function( me ) {
 
 			me._dom.viewport.addEventListener( 'scroll', function( e ) {
+				me._scrollLeft = me.scrollLeft;
+				me._scrollTop = me.scrollTop;
+
 				me.render();
 			}, true );
 

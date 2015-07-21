@@ -35,6 +35,7 @@ class UI extends UI_Event {
 
 	protected _disabled: boolean = false;
 	protected _parentsDisabled: number = 0;
+	protected _disableChildPainting: boolean;
 	
 	// After we paint the element, it's computed painted size is located here.
 	protected _paintRect: IBoundingBox = {
@@ -297,9 +298,11 @@ class UI extends UI_Event {
 					this._root.style.display = '';
 				}
 
-				// If the widget has child nodes, paint them
-				for ( var i=0, len = this._children.length; i<len; i++ ) {
-					this._children[i].onRepaint();
+				if ( !!!this._disableChildPainting ) {
+					// If the widget has child nodes, paint them
+					for ( var i=0, len = this._children.length; i<len; i++ ) {
+						this._children[i].onRepaint();
+					}
 				}
 
 			}

@@ -21,6 +21,7 @@
 /// <reference path="UI.ts" />
 
 /// <reference path="Mixins/MFocusable.ts" />
+/// <reference path="Mixins/MRowInterface.ts" />
 
 /// <reference path="Store.ts" />
 /// <reference path="Store/Strings.ts" />

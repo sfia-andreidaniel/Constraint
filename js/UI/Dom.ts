@@ -8,6 +8,8 @@ class UI_Dom {
 			: element ? element : null;
 	}
 
+	public static scrollbarSize: number = 30;
+
 	public static hasClass( element: any, className: string ): boolean {
 
 		element = UI_Dom._selector_( element );
@@ -122,4 +124,15 @@ class UI_Dom {
 		return result;
 	}
 
+}
+
+if ( Global.isBrowser ) {
+	Global.env.addEventListener( 'load', function() {
+		// measure the scrollbar width
+		var d = UI_Dom.create('div');
+		d.style.cssText = 'overflow:scroll;width:100px;height:40px;';
+		document.body.appendChild(d);
+		UI_Dom.scrollbarSize = 100 - d.clientWidth;
+		d.parentNode.removeChild(d);
+	}, true );
 }
