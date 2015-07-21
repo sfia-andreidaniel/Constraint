@@ -36,6 +36,7 @@ class UI extends UI_Event {
 	protected _disabled: boolean = false;
 	protected _parentsDisabled: number = 0;
 	protected _disableChildPainting: boolean;
+	protected _visible: boolean = true;
 	
 	// After we paint the element, it's computed painted size is located here.
 	protected _paintRect: IBoundingBox = {
@@ -228,6 +229,10 @@ class UI extends UI_Event {
 	// this is called each time the element needs to be repainted.
 	public onRepaint(): boolean {
 
+		if ( !this._visible ) {
+			return false;
+		}
+
 		if ( !this._paintable ) {
 		
 			this._needPaint = true;
@@ -415,7 +420,7 @@ class UI extends UI_Event {
 
 		switch ( true ) {
 			case this._left.active && this._right.active:
-				return clientRect.width - this._left.value - this._right.value;
+				return clientRect.width - this._left.distance - this._right.distance;
 				break;
 			default:
 				return this._width;
@@ -429,7 +434,7 @@ class UI extends UI_Event {
 
 		switch ( true ) {
 			case this._top.active && this._bottom.active:
-				return clientRect.height - this._top.value - this._bottom.value;
+				return clientRect.height - this._top.distance - this._bottom.distance;
 				break;
 			default:
 				return this._height;
@@ -548,6 +553,11 @@ class UI extends UI_Event {
 			}
 
 			this.fire( 'disabled', actualDisabledState );
+
+			// Publish event to child nodes
+			for ( var i=0, len = this._children.length; i<len; i++ ) {
+				this._children[i].onParentDisableStateChange( amount );
+			}
 		}
 
 	}
@@ -566,6 +576,35 @@ class UI extends UI_Event {
 
 			if ( mixin && mixin.initialize ) {
 				mixin.initialize( this );
+			}
+		}
+	}
+
+	get visible(): boolean {
+		if ( !this._visible ) {
+			return false;
+		} else {
+			if ( this._owner ) {
+				return this._owner.visible;
+			} else {
+				return true;
+			}
+		}
+	}
+
+	set visible( on: boolean ) {
+		on = !!on;
+		if ( on != this._visible ) {
+			this._visible = on;
+			if ( this._root ) {
+				if ( on ) {
+					this._root.style.display = '';
+				} else {
+					this._root.style.display = 'none';
+				}
+			}
+			if ( this.owner ) {
+				this.owner.onRepaint();
 			}
 		}
 	}

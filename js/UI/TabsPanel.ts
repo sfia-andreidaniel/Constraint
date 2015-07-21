@@ -30,21 +30,35 @@ class UI_TabsPanel extends UI implements IFocusable {
 		this.width = UI_TabsPanel._theme.defaultWidth;
 		this.height= UI_TabsPanel._theme.defaultHeight;
 		this.padding.top = UI_TabsPanel._theme.tabsBarSize;
+		this.padding.left= 1;
+		this.padding.right= 1;
+
+		this._initDom_();
 	
 	}
 
 	public insert( child: UI ): UI {
+		var result: UI;
+
 		if ( !child || !( child instanceof UI_Tab ) ) {
 			throw new Error('Illegal child type');
 		} else {
-			this._dom.tabsBar.appendChild( (<UI_Tab>child).tabElement );
-
 			child.top    = 0;
 			child.left   = 0;
 			child.right  = 0;
 			child.bottom = 0;
 
-			return super.insert( child );
+			result = super.insert( child );
+			this._dom.tabsBar.appendChild( (<UI_Tab>child).tabElement );
+
+
+			if ( this._activeTab === null ) {
+				this.activeTab = <UI_Tab>child;
+			} else {
+				(<UI_Tab>child).visible = false;
+			}
+
+			return result;
 		}
 	}
 
@@ -54,16 +68,119 @@ class UI_TabsPanel extends UI implements IFocusable {
 			: null;
 	}
 
+	set activeTab( tab: UI_Tab ) {
+		if ( tab != this._activeTab ) {
+			if ( this._activeTab ) {
+				UI_Dom.removeClass( this._activeTab.tabElement, 'active' );
+				this._activeTab.visible = false;
+			}
+			this._activeTab = tab;
+
+			if ( this._activeTab ) {
+				UI_Dom.addClass( this._activeTab.tabElement, 'active' );
+				this._activeTab.visible = true;
+			}
+		}
+	}
+
 	private _initDom_() {
 		( function( me ) {
 
 			me.on( 'tab-removed', function( node ) {
-				if ( node ) {
+				if ( node && node.parentNode ) {
 					node.parentNode.removeChild( node );
 				}
 			} );
 
+			me.on( 'keydown', function( e ) {
+
+				var code: number = e.keyCode || e.charCode;
+
+				switch ( code ) {
+					// LEFT
+					case 37:
+						me.focusTab( -1 );
+						break;
+					// RIGHT
+					case 39:
+						me.focusTab( 1 );
+						break;
+				}
+
+			} );
+
 		} )( this );
+	}
+
+	public focusTab( relative: number ) {
+		
+		if ( this._children.length == 0 || !relative ) {
+			return;
+		}
+
+		var stopper: UI_Tab,
+		    cursor: UI_Tab,
+		    index: number = -1,
+		    i: number,
+		    len: number = this._children.length;
+
+		if ( this.activeTab === null ) {
+			if ( relative < 0 ) {
+				stopper = <UI_Tab>this._children[0];
+			} else {
+				stopper = <UI_Tab>this._children[ len - 1 ];
+			}
+		} else {
+			stopper = this.activeTab;
+		}
+
+		for ( i=0, len = len; i<len; i++ ) {
+			if ( this._children[i] == stopper ) {
+				index = i;
+				break;
+			}
+		}
+
+		if ( index == -1 ) {
+			return;
+		}
+
+		cursor = stopper;
+
+		while ( relative != 0 ) {
+
+			if ( relative > 0 ) {
+				index--;
+				if ( index < 0 ) {
+					index = len - 1;
+				}
+			} else {
+				index++;
+				if ( index >= len ) {
+					index = 0;
+				}
+			}
+
+			cursor = <UI_Tab>this._children[ index ];
+
+			if ( cursor == stopper ) {
+				return; // infinite loop.
+			}
+
+			if ( !cursor.disabled ) {
+
+				if ( relative > 0 ) {
+					relative--;
+				} else {
+					relative++;
+				}
+
+			}
+
+		}
+
+		this.activeTab = cursor;
+
 	}
 
 	/* @UI.insertDOMNode */

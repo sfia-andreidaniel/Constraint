@@ -19,10 +19,12 @@
 	$declare enabledControlBackgroundColor: white;
 	$declare enabledControlBorderColor: #acacac;
 
+	$declare formColor: white;
+
 	// Form styling
 	@Theme UI_Form {
 		
-		backgroundColor: white;
+		backgroundColor: $formColor;
 		
 		inactiveCaptionColor: #f0f0f0;
 		activeCaptionColor: black;
@@ -158,6 +160,18 @@
 
 		tabsBar: {
 			size: 30;
+		};
+
+		tab: {
+			borderColor: $enabledControlBorderColor;
+			backgroundColor: $formColor;
+
+			font: {
+				size: $fontSize;
+				family: $fontFamily;
+				color: $fontColor;
+				disabledColor: $disabledFontColor;
+			};
 		};
 
 	};

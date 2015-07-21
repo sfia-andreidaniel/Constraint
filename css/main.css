@@ -649,4 +649,88 @@ html, body {
 
 /* Namespace: UI.UI_TabsPanel*/
 .ui.UI_TabsPanel {
+	display: block;
+	position: absolute;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+
+	border-width: 0px 0px 1px 0px;
+	border-color: rgb(172,172,172);
+	border-style: solid;
+
+}
+
+.ui.UI_TabsPanel > .inner {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+.ui.UI_TabsPanel > .inner > .tabs {
+	display: block;
+	height: 30px;
+	width: 100%;
+	position: relative;
+	border-bottom: 1px solid rgb(172,172,172);
+	white-space: nowrap;
+
+	-webkit-user-select: none;
+
+	z-index: 2;
+}
+
+.ui.UI_TabsPanel > .inner > .tabs > .UI_Tab {
+	display: inline-block;
+	height: calc( 30px - 1px );
+	border-width: 1px 1px 0px 1px;
+	border-style: solid;
+	border-color: rgb(172,172,172);
+	cursor: default;
+	padding: 0px 5px;
+	background-color: rgb(255,255,255);
+}
+
+.ui.UI_TabsPanel > .inner > .tabs > .UI_Tab.active {
+	height: 30px;
+}
+
+.ui.UI_TabsPanel > .inner > .tabs > .UI_Tab > .caption {
+	display: block;
+	font-size: 14px;
+	font-family: Arial;
+	margin-top: calc( ( 30px - 14px ) / 2 );
+	white-space: nowrap;
+	color: rgb(0,0,0);
+}
+
+.UI_Form.focus-active .UI_TabsPanel.focused > .inner > .tabs > .UI_Tab.active > .caption {
+	outline: 1px dotted black;
+}
+
+.ui.UI_TabsPanel > .inner > .body {
+	display: block;
+	height: calc(100% - 30px - 2px );
+	height: calc(100% - 2px);
+	position: relative;
+	border-width: 0px 1px 0px 1px;
+	border-color: rgb(172,172,172);
+	border-style: solid;
+
+	z-index: 1;
+}
+
+.ui.UI_Tab {
+	padding: 0;
+	margin: 0;
+	display: block;
+	position: relative;
+	background-color: rgb(255,255,255);
+}
+
+.UI_TabsPanel.disabled > .inner > .tabs > .UI_Tab > .caption,
+.UI_TabsPanel > .inner > .tabs > .UI_Tab.disabled > .caption {
+	color: rgb(166,166,166);
 }
