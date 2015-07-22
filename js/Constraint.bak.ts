@@ -188,44 +188,6 @@ class Constraint {
 			]
 		},
 
-		"type_anonymous_primitive": {
-			"flow": [
-				"type_color_named|type_color_hex|type_color_rgba|type_color_rgb|type_string|type_number|type_boolean|type_anchor|type_subst|type_null|type_enum"
-			]
-		},
-
-		"type_anonymous_object_assignment": {
-			"flow": [
-				"tok_white_space_opt",
-				"tok_identifier",
-				"tok_white_space_opt",
-				"tok_attrib",
-				"tok_white_space_opt",
-				"@children",
-				"tok_white_space_opt",
-				"tok_instruction_end"
-			],
-			"children": [
-				"type_anonymous_primitive",
-				"type_anonymous_object"
-			],
-			"childNum": 1
-		},
-
-		"type_anonymous_object": {
-			"flow": [
-				"tok_block_start",
-				"tok_white_space_opt",
-				"@children",
-				"tok_white_space_opt",
-				"tok_block_end",
-				"tok_white_space_opt"
-			],
-			"children": [
-				"type_anonymous_object_assignment"
-			]
-		},
-
 		"array_literal": {
 			"flow": [
 				"type_color_named|type_color_hex|type_color_rgba|type_color_rgb|type_string|type_number|type_boolean|type_anchor|type_null|type_enum"
@@ -251,8 +213,7 @@ class Constraint {
 			],
 			"children": [
 				"array_separator",
-				"array_literal",
-				"type_anonymous_object"
+				"array_literal"
 			]
 		},
 
@@ -414,28 +375,8 @@ class Constraint {
 		this.scope.arrayPush( value );
 	}
 
-	public arpushliteral( value: any ) {
-		this.scope.arrayPushLiteral( value );
-	}
-
 	public arend() {
 		this.scope.arrayEnd();
-	}
-
-	public pushanon() {
-		this.scope.pushAnonymousObject();
-	}
-
-	public popanon(): any {
-		return this.scope.popAnonymousObject();
-	}
-
-	public pushanonprop( propName: string ) {
-		this.scope.pushAnonymousProp( propName );
-	}
-
-	public pushanonprim( token: ITokenResult ) {
-		this.scope.pushAnonymousPrimitive( token );
 	}
 
 	public compile(): Constraint_Scope {

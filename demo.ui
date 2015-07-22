@@ -1,5 +1,5 @@
 @UI_Form DemoForm {
-	width: 400;
+	width: 800;
 	height: 400;
 
 	left: 10;
@@ -14,60 +14,6 @@
 		bottom: 40;
 
 		@UI_Tab Tab1 {
-
-			caption: 'Tab 1';
-
-
-			/*
-			@UI_Button Btn1 {
-				caption: 'Hello world';
-				bottom: center;
-				left: center;
-			};
-
-			@UI_CheckBox Check1 {
-				caption: 'I''m a checkbox';
-				left: 20;
-				top: 20;
-				right: Btn1 right 0;
-			};
-
-			@UI_RadioBox Radio1 {
-				caption: 'I''m a radiobox';
-				left: 20;
-				top: Check1 bottom 20;
-				right: Btn1 right 0;
-			};
-
-			@UI_RadioBox Radio2 {
-				caption: 'I''m a radiobox too';
-				left: 20;
-				top: Radio1 bottom 20;
-				right: Btn1 right 0;
-			};
-
-			@UI_RadioBox Radio3 {
-				caption: 'I''m a disabled radiobox';
-				left: 20;
-				top: Radio2 bottom 20;
-				right: Btn1 right 0;
-
-				disabled: true;
-				value: true;
-			};
-
-			@UI_ListBox List1 {
-				left: Radio3 right 20;
-				top: 20;
-				bottom: Btn1 top 20;
-				right: 20;
-			};
-
-			*/
-
-		};
-
-		@UI_Tab Tab2 {
 			caption: 'Layout';
 
 			@UI_VerticalSplitter Spl1 {
@@ -77,7 +23,7 @@
 
 			@UI_HorizontalSplitter Spl2 {
 				left: Spl1 right 0;
-				minDistance: 30;
+				minDistance: 130;
 			};
 
 			@UI_Button BtnLeft {
@@ -87,9 +33,105 @@
 				top: center;
 			};
 
+			@UI_Panel Panel1 {
+				left: Spl1 right 5;
+				top: 5;
+				right: 5;
+				bottom: Spl2 top 5;
+
+				
+				@UI_Button Btn1 {
+					caption: 'Hello world';
+					bottom: center;
+					left: center;
+				};
+
+			};
 
 		};
 		
+		@UI_Tab Tab2 {
+
+			caption: 'CheckBox, Radio';
+
+
+			@UI_CheckBox Check1 {
+				caption: 'I''m a checkbox';
+				left: 20;
+				top: 20;
+				right: 20;
+			};
+
+			@UI_CheckBox Check2 {
+				caption: 'I''m a disabled checkbox';
+				left: 20;
+				top: Check1 bottom 20;
+				right: 20;
+
+				disabled: true;
+			};
+
+			@UI_CheckBox Check3 {
+				caption: 'I''m a tri-state checkbox';
+				left: 20;
+				top: Check2 bottom 20;
+				right: 20;
+
+				value: null;
+			};
+
+			@UI_RadioBox Radio1 {
+				caption: 'I''m a radiobox';
+				left: 20;
+				top: Check3 bottom 20;
+				right: 20;
+			};
+
+			@UI_RadioBox Radio2 {
+				caption: 'I''m a radiobox too, but I''m disabled';
+				left: 20;
+				top: Radio1 bottom 20;
+				right: 20;
+
+				disabled: true;
+				value: true;
+			};
+
+			@UI_RadioBox Radio3 {
+				caption: 'I''m a radioBox too';
+				left: 20;
+				top: Radio2 bottom 20;
+				right: 20;
+
+				value: false;
+			};
+
+		};
+
+		@UI_Tab Tab3 {
+
+			caption: 'DropDowns';
+
+			@UI_ListBox List1 {
+				left: 20;
+				top: 20;
+				right: 20;
+				height: 100;
+
+				options: [
+					{
+						id: 0;
+						name: 'Option 1';
+					},
+					{
+						id: 1;
+						name: 'Option 2';
+					}
+				];
+			};
+
+		};
+
 	};
 
 

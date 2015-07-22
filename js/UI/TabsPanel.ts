@@ -125,7 +125,7 @@ class UI_TabsPanel extends UI implements IFocusable {
 		    len: number = this._children.length;
 
 		if ( this.activeTab === null ) {
-			if ( relative < 0 ) {
+			if ( relative > 0 ) {
 				stopper = <UI_Tab>this._children[0];
 			} else {
 				stopper = <UI_Tab>this._children[ len - 1 ];
@@ -150,14 +150,14 @@ class UI_TabsPanel extends UI implements IFocusable {
 		while ( relative != 0 ) {
 
 			if ( relative > 0 ) {
-				index--;
-				if ( index < 0 ) {
-					index = len - 1;
-				}
-			} else {
 				index++;
 				if ( index >= len ) {
 					index = 0;
+				}
+			} else {
+				index--;
+				if ( index < 0 ) {
+					index = len - 1;
 				}
 			}
 

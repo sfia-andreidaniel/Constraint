@@ -4,6 +4,7 @@ class Constraint_Flow {
 	protected tokensEnd:   Constraint_Token[] = [];
 	protected children:    string[] = [];
 	protected $children:   Constraint_Flow[] = null;
+	protected childLen:    number = null;
 
 	protected name: string = 'Flow';
 
@@ -45,6 +46,8 @@ class Constraint_Flow {
 			}
 
 		}
+
+		this.childLen = flowDef.childNum || null;
 	}
 
 	public static create( flowName: string ): Constraint_Flow {
@@ -69,7 +72,11 @@ class Constraint_Flow {
 		    dstack: string = stack == '' ? this.name : stack + '.' + this.name,
 
 		    rstart: ITokenResult[] = [],
-		    rend  : ITokenResult[] = [];
+		    rend  : ITokenResult[] = [],
+
+		    childLoops: number = 0,
+		    childBreak: boolean = false,
+		    tmp: any = null;
 
 
 		for ( var i=0, len = this.tokensStart.length; i<len; i++ ) {
@@ -99,6 +106,12 @@ class Constraint_Flow {
 			case 'array_assignment':
 				inConstraint.arstart( rstart[0].result );
 				break;
+			case 'type_anonymous_object':
+				inConstraint.pushanon();
+				break;
+			case 'type_anonymous_object_assignment':
+				inConstraint.pushanonprop( rstart[1].result );
+				break;
 		}
 
 		// PARSE CHILDREN IF ANY
@@ -122,8 +135,14 @@ class Constraint_Flow {
 						buffer = inConstraint.getBuffer( consume );
 						childParsed = true;
 						atLeastOneChildParsed = true;
-
+						childLoops++;
 						//console.log( 'loop_match: ', i, ' => ', this.$children[i].name );
+
+						if ( this.childLen !== null ) {
+							if ( childLoops >= this.childLen ) {
+								childBreak = true;
+							}
+						}
 
 						break;
 					} else {
@@ -131,7 +150,7 @@ class Constraint_Flow {
 					}
 				}
 
-			} while (  childParsed );
+			} while (  childParsed && !childBreak );
 
 			// if ( !atLeastOneChildParsed ) {
 			//	return -1;
@@ -185,6 +204,17 @@ class Constraint_Flow {
 
 			case 'array_assignment':
 				inConstraint.arend();
+				break;
+
+			case 'type_anonymous_object':
+				tmp = inConstraint.popanon();
+				if ( typeof tmp !== null ) {
+					inConstraint.arpushliteral( tmp );
+				}
+				break;
+
+			case 'type_anonymous_primitive':
+				inConstraint.pushanonprim( rstart[0] );
 				break;
 
 			default:

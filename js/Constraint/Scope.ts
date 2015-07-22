@@ -16,6 +16,8 @@ class Constraint_Scope {
 
 	protected arrayStack: string[] = [];
 	protected strict: boolean = false;
+	protected anonObjStack: any[] = [];
+	protected anonObjProps: string[] = [];
 
 	constructor( parentScope: Constraint_Scope = null, name: string = '', type: string = '', strict: boolean = false ) {
 		
@@ -114,6 +116,20 @@ class Constraint_Scope {
 		}
 	}
 
+	public arrayPushLiteral( value: any ) {
+		if ( this.arrayStack.length == 0 ) {
+			throw Error( 'Failed to push value in array stack: Stack is empty!' );
+		}
+
+		var keyName = this.arrayStack[ this.arrayStack.length - 1 ];
+
+		for ( var i=0, len = this.properties.length; i<len; i++ ) {
+			if ( this.properties[i].name == keyName ) {
+				this.properties[i].value.push( value );
+			}
+		}
+	}
+
 	public arrayEnd() {
 		if ( this.arrayStack.length == 0 ) {
 			throw Error('Failed to end current array: Array stack is empty!' );
@@ -140,6 +156,55 @@ class Constraint_Scope {
 			return this.parent;
 		} else {
 			throw Error("Scope request outside bounds in scope \"" + this.name + "\"" );
+		}
+	}
+
+	public pushAnonymousProp( propertyName: string ) {
+		this.anonObjProps.push( propertyName );
+	}
+
+	protected popAnonymousProp() {
+		if ( this.anonObjProps.length ) {
+			
+			var propName: string = this.anonObjProps[ this.anonObjProps.length - 1 ];
+			this.anonObjProps.splice( this.anonObjProps.length - 1, 1 );
+			this.anonObjStack[ this.anonObjStack.length - 2 ][ propName ] = this.anonObjStack[ this.anonObjStack.length - 1 ];
+
+		}
+	}
+
+	public pushAnonymousPrimitive( value: ITokenResult ) {
+		if ( !this.anonObjProps.length )
+			throw new Error( 'Anonymous object props length EQ 0!' );
+
+		if ( !this.anonObjStack.length )
+			throw new Error( 'Anonymous object stack length EQ 0!' );
+
+		var propertyName: string = this.anonObjProps.pop(),
+		    propertyValue: any = Constraint_Type.create( value, this );
+
+		this.anonObjStack[ this.anonObjStack.length - 1 ][ propertyName ] = propertyValue;
+
+		//throw new Error( 'Push Primitive: ' + JSON.stringify( value, undefined, 4 ) + "\nPROPS: " + JSON.stringify( this.anonObjProps, undefined, 4 ) + "\nSTACK" + JSON.stringify( this.anonObjStack, undefined, 4 ) );
+		
+	}
+
+	public pushAnonymousObject( propertyName: string = null ) {
+		this.anonObjStack.push({});
+	}
+
+	public popAnonymousObject(): any {
+		if ( this.anonObjStack.length == 0 ) {
+			throw new Error( 'Nothing in stack' );
+		} else {
+
+			if ( this.anonObjProps.length > 1 ) {
+				this.popAnonymousProp();
+			}
+
+			var result: any = this.anonObjStack[ this.anonObjStack.length - 1 ];
+			this.anonObjStack.splice( this.anonObjStack.length - 1, 1);
+			return this.anonObjStack.length ? null : result;
 		}
 	}
 

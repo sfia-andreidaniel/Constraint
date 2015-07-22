@@ -180,9 +180,13 @@
 	};
 
 	@Theme UI_Splitter {
-		size: 6;
+		size: 8;
 		backgroundColor: $object3dColor;
 		borderColor: $object3dBorderColor;
+	};
+
+	@Theme UI_Panel {
+
 	};
 
 };

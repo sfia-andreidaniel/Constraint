@@ -6,12 +6,13 @@
 	border-width: 0px 1px 0px 1px;
 	padding: 0;
 	margin: 0;
-	background-color: ${backgroundColor};
-	border-color: ${borderColor};
+	background-color: transparent;
+	border-color: transparent;
 	border-style: solid;
 	cursor: col-resize;
 	width: ${size}px;
 	box-sizing: border-box;
+	overflow: hidden;
 }
 
 .UI_HorizontalSplitter {
@@ -20,15 +21,54 @@
 	border-width: 1px 0px 1px 0px;
 	padding: 0;
 	margin: 0;
-	background-color: ${backgroundColor};
-	border-color: ${borderColor};
+	background-color: transparent;
+	border-color: transparent;
 	border-style: solid;
 	cursor: row-resize;
 	height: ${size}px;
 	box-sizing: border-box;
+	overflow: hidden;
 }
 
 .UI_VerticalSplitter.disabled,
 .UI_HorizontalSplitter.disabled {
 	cursor: default;
+}
+
+.UI_VerticalSplitter > .icon {
+	width: 6px;
+	height: 32px;
+	background-position: -91px -78px;
+	display: block;
+	position: relative;
+	margin-left: auto;
+	margin-top: -16px;
+	top: 50%;
+}
+
+.UI_HorizontalSplitter > .icon {
+	width: 32px;
+	height: 6px;
+	background-position: -79px -91px;
+	display: block;
+	position: relative;
+	margin-left: -16px;
+	left: 50%;
+	-webkit-pointer-events: none;
+	-ms-pointer-events: none;
+	-moz-pointer-events: none;
+	pointer-events: none;
+}
+
+.UI_VerticalSplitter.disabled > .icon,
+.UI_HorizontalSplitter.disabled > .icon {
+	display: none;
+}
+
+.UI_VerticalSplitter:hover:not(.disabled),
+.UI_VerticalSplitter.dragging:not(.disabled),
+.UI_HorizontalSplitter:hover:not(.disabled),
+.UI_HorizontalSplitter.dragging:not(.disabled) {
+	background-color: ${backgroundColor};
+	/* border-color: ${borderColor}; */
 }

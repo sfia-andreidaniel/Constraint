@@ -14,7 +14,7 @@
    viewBox="0 0 400 300"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
+   inkscape:version="0.91pre3 r13670"
    sodipodi:docname="icons.svg"
    inkscape:export-filename="C:\Users\andrei\Desktop\Constraint\css\icons.png"
    inkscape:export-xdpi="90"
@@ -29,8 +29,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="11.2"
-     inkscape:cx="32.905029"
-     inkscape:cy="149.84567"
+     inkscape:cx="125.27588"
+     inkscape:cy="207.50049"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -39,8 +39,8 @@
      inkscape:snap-to-guides="true"
      inkscape:snap-grids="true"
      inkscape:snap-object-midpoints="true"
-     inkscape:window-width="1366"
-     inkscape:window-height="706"
+     inkscape:window-width="1920"
+     inkscape:window-height="1018"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1">
@@ -101,7 +101,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -400,11 +400,11 @@
        sodipodi:cy="134.82143"
        sodipodi:rx="2.5892856"
        sodipodi:ry="2.5892856"
-       d="m 40.803572,134.82143 a 2.5892856,2.5892856 0 1 1 -5.178571,0 2.5892856,2.5892856 0 1 1 5.178571,0 z"
+       d="m 40.803572,134.82143 a 2.5892856,2.5892856 0 0 1 -2.589285,2.58928 2.5892856,2.5892856 0 0 1 -2.589286,-2.58928 2.5892856,2.5892856 0 0 1 2.589286,-2.58929 2.5892856,2.5892856 0 0 1 2.589285,2.58929 z"
        transform="matrix(1.1586207,0,0,1.1586207,-6.2758637,730.1553)" />
     <path
        transform="matrix(1.1586207,0,0,1.1586207,-6.2758637,750.1553)"
-       d="m 40.803572,134.82143 a 2.5892856,2.5892856 0 1 1 -5.178571,0 2.5892856,2.5892856 0 1 1 5.178571,0 z"
+       d="m 40.803572,134.82143 a 2.5892856,2.5892856 0 0 1 -2.589285,2.58928 2.5892856,2.5892856 0 0 1 -2.589286,-2.58928 2.5892856,2.5892856 0 0 1 2.589286,-2.58929 2.5892856,2.5892856 0 0 1 2.589285,2.58929 z"
        sodipodi:ry="2.5892856"
        sodipodi:rx="2.5892856"
        sodipodi:cy="134.82143"
@@ -412,5 +412,35 @@
        id="path3063"
        style="fill:#808080;fill-opacity:1;stroke:none"
        sodipodi:type="arc" />
+    <circle
+       cy="838.36218"
+       cx="94"
+       style="fill:#808080;fill-opacity:1;stroke:none"
+       id="circle4209"
+       r="2" />
+    <circle
+       r="2"
+       cy="846.36218"
+       cx="86"
+       style="fill:#808080;fill-opacity:1;stroke:none"
+       id="circle4213" />
+    <circle
+       id="circle4215"
+       style="fill:#808080;fill-opacity:1;stroke:none"
+       cx="94"
+       cy="846.36218"
+       r="2" />
+    <circle
+       r="2"
+       cy="846.36218"
+       cx="102"
+       style="fill:#808080;fill-opacity:1;stroke:none"
+       id="circle4217" />
+    <circle
+       r="2"
+       cy="854.36218"
+       cx="94"
+       style="fill:#808080;fill-opacity:1;stroke:none"
+       id="circle4221" />
   </g>
 </svg>

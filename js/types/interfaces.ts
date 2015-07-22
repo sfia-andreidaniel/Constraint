@@ -13,6 +13,7 @@ interface ITokenResult {
 interface IConstraintFlow {
 	flow: string[];
 	children?: string[];
+	childNum?: number;
 }
 
 interface IProperty {

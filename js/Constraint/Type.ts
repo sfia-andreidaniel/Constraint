@@ -85,7 +85,7 @@ class Constraint_Type {
 				break;
 
 			default:
-				throw Error( 'Unknown type: ' + from.type );
+				throw Error( 'Unknown type: ' + from.type + JSON.stringify( from ) );
 				break;
 		}
 	}

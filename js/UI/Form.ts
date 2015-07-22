@@ -628,7 +628,7 @@ class UI_Form extends UI implements IFocusable {
 	get focusGroup(): UI[] {
 		var result: UI[] = [];
 		for ( var i=0, len = this._focusComponents.length; i<len; i++ ) {
-			if ( !this._focusComponents[i].disabled ) {
+			if ( !this._focusComponents[i].disabled && this._focusComponents[i].visible ) {
 				result.push( this._focusComponents[i] );
 			}
 		}

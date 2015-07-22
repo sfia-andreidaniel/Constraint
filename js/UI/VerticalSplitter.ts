@@ -10,6 +10,7 @@ class UI_VerticalSplitter extends UI {
 	constructor( owner: UI ) {
 		super( owner, null, UI_Dom.create( 'div' ) );
 		this._root.className = this._rootClassName;
+		this._root.appendChild( UI_Dom.create('div', 'ui icon' ) );
 		this._setupEvents_();
 	}
 
@@ -132,6 +133,8 @@ class UI_VerticalSplitter extends UI {
 			function onMouseUp( evt ) {
 				document.body.removeEventListener( 'mousemove', onMouseMove, true );
 				document.body.removeEventListener( 'mouseup',   onMouseUp, true );
+
+				UI_Dom.removeClass( node._root, 'dragging' );
 			}
 
 			node._root.addEventListener( 'mousedown', function( e ) {
@@ -145,6 +148,9 @@ class UI_VerticalSplitter extends UI {
 
 				document.body.addEventListener( 'mousemove', onMouseMove, true );
 				document.body.addEventListener( 'mouseup',   onMouseUp, true );
+
+				UI_Dom.addClass( node._root, 'dragging' );
+
 			}, true );
 
 		} )( this );

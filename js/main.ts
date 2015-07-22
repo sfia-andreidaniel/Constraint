@@ -49,6 +49,7 @@
 /// <reference path="UI/Tab.ts" />
 /// <reference path="UI/VerticalSplitter.ts" />
 /// <reference path="UI/HorizontalSplitter.ts" />
+/// <reference path="UI/Panel.ts" />
 
 
 

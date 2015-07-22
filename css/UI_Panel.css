@@ -1,0 +1,27 @@
+{$N UI.UI_Panel}
+
+.ui.UI_Panel {
+	position: absolute;
+	padding: 0;
+	margin: 0;
+}
+
+.ui.UI_Panel > .inner {
+	position: relative;
+	padding: 0;
+	margin: 0;
+	overflow: auto;
+	width: 100%;
+	height: 100%;
+}
+
+.ui.UI_Panel > .inner > .body {
+	position: relative;
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+	min-width: 100%;
+	min-height: 100%;
+	width: 100%;
+	height: 100%;
+}
