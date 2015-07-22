@@ -525,7 +525,7 @@ class UI extends UI_Event {
 		}
 	}
 
-	protected onParentDisableStateChange( amount: number = 1 ) {
+	public onParentDisableStateChange( amount: number = 1 ) {
 		if ( amount === 0 ) {
 			return;
 		}

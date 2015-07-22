@@ -7,6 +7,31 @@
 
 	caption: 'Demo form';
 
+	@UI_MenuBar {
+
+		@UI_MenuItem {
+			caption: 'File';
+		};
+
+		@UI_MenuItem {
+			caption: 'Edit';
+			disabled: true;
+		};
+
+		@UI_MenuItem {
+			caption: 'View';
+		};
+
+		@UI_MenuItem {
+			caption: 'Insert';
+		};
+
+		@UI_MenuItem {
+			caption: 'Help';
+		};
+
+	};
+
 	@UI_TabsPanel Tabs1 {
 		left: 20;
 		top: 20;

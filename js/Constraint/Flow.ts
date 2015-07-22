@@ -98,7 +98,7 @@ class Constraint_Flow {
 
 		switch ( this.name ) {
 			case 'scope':
-				inConstraint.pushs( rstart[2].result, rstart[4].result );
+				inConstraint.pushs( String( rstart[2].result || '' ) || null, rstart[4].result );
 				break;
 			case 'object_assignment':
 				inConstraint.pusho( rstart[0].result );

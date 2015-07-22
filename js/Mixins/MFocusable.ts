@@ -28,6 +28,7 @@ class MFocusable extends UI implements IFocusable {
 
 	public wantTabs: boolean;
 	public tabIndex: number;
+	public includeInFocus: boolean;
 
 	get active(): boolean {
 		return this.form.activeElement == this;

@@ -1,0 +1,35 @@
+{$N UI.UI_Form}
+
+.ui.UI_Form > .inner > .menubar {
+	background-color: ${titlebar.inactiveBgColor};
+}
+
+.ui.UI_Form.focus-active > .inner > .menubar {
+	background-color: ${titlebar.activeBgColor};
+}
+
+{$N UI.UI_MenuBar}
+.ui.UI_MenuBar {
+	position: relative;
+	padding: 0;
+	margin: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.ui.UI_MenuBar > .UI_MenuItem {
+	display: inline-block;
+	position: relative;
+	height: calc( 100% - 12px );
+	padding: 6px;
+	font-family: ${menuitem.fontFamily};
+	font-size: ${menuitem.fontSize};
+}
+
+.ui.UI_Form.disabled > .inner > .menubar > .UI_MenuBar > .UI_MenuItem,
+.ui.UI_MenuBar > .UI_MenuItem.disabled {
+	color: ${menuitem.disabledColor};
+}

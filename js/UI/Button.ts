@@ -17,6 +17,7 @@ class UI_Button extends UI implements IFocusable {
 	public    active: boolean; // the active is overrided by the MFocusable mixin
 	public    wantTabs: boolean = false;
 	public    tabIndex: number = 0;
+	public    includeInFocus: boolean = true;
 
 	constructor ( owner: UI ) {
 		

@@ -6,7 +6,8 @@ class UI_Form extends UI implements IFocusable {
 
 	public static _theme = {
 		"borderWidth": $I.number('UI.UI_Form/border.width'),
-		"titlebarHeight": $I.number('UI.UI_Form/titlebar.height')
+		"titlebarHeight": $I.number('UI.UI_Form/titlebar.height'),
+		"menubarHeight": $I.number('UI.UI_Form/menuBar.height')
 	};
 
 	// MINIMIZED, MAXIMIZED, CLOSED, NORMAL
@@ -37,9 +38,13 @@ class UI_Form extends UI implements IFocusable {
 	// the current element that's active in a form at a single time.
 	protected _activeElement: UI = null;
 
+	// weather the form has a menubar or not
+	protected _menuBar: UI_MenuBar;
+
 	// these are not considered but declared for the sake of IFocusable
 	public wantTabs: boolean;
 	public tabIndex: number;
+	public includeInFocus: boolean = false;
 
 	private   _dom = {
 		"inner": UI_Dom.create( 'div', 'inner' ),
@@ -57,7 +62,8 @@ class UI_Form extends UI implements IFocusable {
 		"se": UI_Dom.create( 'div', 'resizer se' ),
 		"btnClose": UI_Dom.create('div', 'button close' ),
 		"btnMinimize": UI_Dom.create( 'div', 'button minimize' ),
-		"btnMaximize": UI_Dom.create( 'div', 'button maximize' )
+		"btnMaximize": UI_Dom.create( 'div', 'button maximize' ),
+		"menuBar": null
 	};
 
 	// Form constructor.
@@ -152,6 +158,60 @@ class UI_Form extends UI implements IFocusable {
 		UI_DialogManager.get().onWindowClosed( this );
 	}
 
+	get menuBar(): UI_MenuBar {
+		return this._menuBar || null;
+	}
+
+	set menuBar( bar: UI_MenuBar ) {
+		bar = bar || null;
+		if ( bar != this._menuBar ) {
+
+			if ( bar ) {
+
+				// Set a menubar.
+				if ( !this._dom.menuBar ) {
+					// If we don't have an existing menubar, we create it
+					this._dom.menuBar = UI_Dom.create('div', 'menubar');
+				} else {
+					// If we already have a menuBar, we clear it's dom nodes from the form
+					// menubar holder
+					this._dom.menuBar.innerHTML = '';
+				}
+
+				// and we append the menubar to the dom, of course
+				this._dom.inner.insertBefore( this._dom.menuBar, this._dom.body );
+
+				UI_Dom.addClass( this._root, 'has-menu' );
+
+				this._dom.menuBar.appendChild( bar._root );
+
+				this._menuBar = bar;
+
+				this.padding.top += UI_Form._theme.menubarHeight;
+			
+			} else {
+
+				if ( this._dom.menuBar ) {
+
+					if ( this._dom.menuBar.parentNode ) {
+						this._dom.inner.removeChild( this._dom.menuBar );
+					}
+
+					this._dom.menuBar.innerHTML = '';
+
+					UI_Dom.removeClass( this._root, 'has-menu' );
+
+				}
+
+				this._menuBar = null;
+
+				this.padding.top -= UI_Form._theme.menubarHeight;
+
+			}
+
+		}
+	}
+
 	/* Returns the state of the form, which can be: MINIMIZED, MAXIMIZED, CLOSED, 
 	   or FULLSCREEN 
 	 */
@@ -207,13 +267,13 @@ class UI_Form extends UI implements IFocusable {
 				case EBorderStyle.NORMAL:
 					UI_Dom.addClass( this._root, 'border-normal' );
 					this._borderStyle = EBorderStyle.NORMAL;
-					this._padding.top = UI_Form._theme.titlebarHeight;
+					this._padding.top += UI_Form._theme.titlebarHeight;
 					break;
 				case EBorderStyle.NONE:
 				default:
 					UI_Dom.addClass( this._root, 'border-none' );
 					this._borderStyle = EBorderStyle.NONE;
-					this._padding.top = 0;
+					this._padding.top -= UI_Form._theme.titlebarHeight;
 					break;
 			}
 			this.onRepaint();
@@ -628,7 +688,7 @@ class UI_Form extends UI implements IFocusable {
 	get focusGroup(): UI[] {
 		var result: UI[] = [];
 		for ( var i=0, len = this._focusComponents.length; i<len; i++ ) {
-			if ( !this._focusComponents[i].disabled && this._focusComponents[i].visible ) {
+			if ( !this._focusComponents[i].disabled && this._focusComponents[i].visible && (<MFocusable>this._focusComponents[i]).includeInFocus ) {
 				result.push( this._focusComponents[i] );
 			}
 		}
@@ -661,6 +721,50 @@ class UI_Form extends UI implements IFocusable {
 		}
 
 	}
+
+	// @override the "UI.insert"
+		// inserts an UI element inside the current UI element
+	public insert( child: UI ): UI {
+
+		var i: number,
+		    len: number;
+
+		if ( !child )
+			throw Error( 'Cannot insert a NULL element.' );
+
+		switch ( true ) {
+
+			case child instanceof UI_MenuBar:
+
+				// We make the menubar a component of the form
+				this.menuBar = <UI_MenuBar>child;
+
+				if ( this._parentsDisabled + ~~this._disabled ) {
+					// set the disabled state
+					child.onParentDisableStateChange( this._parentsDisabled + ~~this._disabled );
+				}
+
+				// We DO NOT add this node as a child of the dialog, but we add this to the _focusComponents.
+				for ( i=0, len = this._focusComponents.length; i<len; i++ ) {
+					if ( this._focusComponents[i] instanceof UI_MenuBar ) {
+						this._focusComponents.splice(i,1);
+						break;
+					}
+				}
+
+				this._focusComponents.push( child );
+
+				return child;
+
+				break;
+
+			default:
+				return super.insert( child );
+				break;
+		}
+
+	}
+
 
 }
 

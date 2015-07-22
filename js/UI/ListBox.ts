@@ -33,6 +33,7 @@ class UI_ListBox extends UI_Canvas implements IFocusable, IRowInterface {
 	public    active: boolean; // the active is overrided by the MFocusable mixin
 	public    wantTabs: boolean = false;
 	public    tabIndex: number = 0;
+	public    includeInFocus: boolean = true;
 
 	// MRowInterface properties
 	// public    length: number;

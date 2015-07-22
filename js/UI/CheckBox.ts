@@ -13,6 +13,7 @@ class UI_CheckBox extends UI implements IFocusable {
 	public active: boolean;
 	public wantTabs: boolean = false;
 	public tabIndex: number = 0;
+	public includeInFocus: boolean = true;
 
 	protected _caption: string = 'CheckBox';
 	protected _value: boolean = false;

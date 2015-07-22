@@ -1,5 +1,7 @@
 class Constraint_Scope {
 
+	public static _anonymousId: number = 0;
+
 	protected parent: Constraint_Scope;
 	protected root: Constraint_Scope;
 
@@ -19,8 +21,23 @@ class Constraint_Scope {
 	protected anonObjStack: any[] = [];
 	protected anonObjProps: string[] = [];
 
+	private   _isAnonymous: boolean;
+
 	constructor( parentScope: Constraint_Scope = null, name: string = '', type: string = '', strict: boolean = false ) {
 		
+		this._isAnonymous = parentScope !== null && name == null
+			? true
+			: false;
+
+		if ( this._isAnonymous ) {
+			// generate a temporary name for the scope
+			name = String('__ANON__' + String( Constraint_Scope._anonymousId++ ) );
+		}
+
+		if ( parentScope !== null && this._isAnonymous == false && parentScope.isAnonymous ) {
+			throw new Error( "A named scope cannot be placed inside a non-anonymous scope. You attempted to insert " + JSON.stringify( name ) + " inside an anonymous scope!" );
+		}
+
 		this.strict = strict;
 		this.parent = parentScope;
 
@@ -44,6 +61,10 @@ class Constraint_Scope {
 
 		this._name = name;
 		this.type = type;
+	}
+
+	get isAnonymous(): boolean {
+		return this._isAnonymous; 
 	}
 
 	get name(): string {
@@ -139,7 +160,9 @@ class Constraint_Scope {
 
 	public pushScope( type: string, name: string ) {
 
-		if ( this.UIElementExists( name ) ) {
+		name = name || null;
+
+		if ( name !== null && this.UIElementExists( name ) ) {
 			throw Error( 'UI Element "' + name + '" cannot be declared twice!' );
 		}
 

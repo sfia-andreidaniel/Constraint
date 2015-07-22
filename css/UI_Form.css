@@ -20,9 +20,27 @@
 	top: -${titlebar.height}px;
 	cursor: default;
 	-webkit-user-select: none;
-	z-index: 1002;
+	z-index: 1003;
 	overflow: hidden;
 }
+
+.ui.UI_Form > .inner > .menubar {
+	display: none;
+}
+
+.ui.UI_Form.has-menu > .inner > .menubar {
+	position: relative;
+	display: block;
+	height: ${menuBar.height}px;
+	width: 100%;
+	cursor: default;
+	-webkit-user-select; none;
+	z-index: 1002;
+	overflow: hidden;
+	top: calc( -${menuBar.height}px - ${titlebar.height}px );
+}
+
+
 
 .ui.UI_Form.border-none > .inner > .titlebar {
 	display: none;
@@ -295,4 +313,46 @@
 .ui.UI_Form.style-mdi > .inner > .titlebar > .buttons > .button.minimize,
 .ui.UI_Form.style-mdi > .inner > .titlebar > .buttons > .button.maximize {
 	display: none;
+}
+
+.ui.UI_Form.border-normal.has-menu > .inner > .titlebar {
+	top: calc( -${titlebar.height}px - ${menuBar.height}px );
+}
+
+.ui.UI_Form.border-normal.has-menu > .inner > .body {
+	top: calc( -${titlebar.height}px - ${menuBar.height}px );
+}
+
+.ui.UI_Form.border-normal.has-menu > .inner > .resizer.n,
+.ui.UI_Form.border-normal.has-menu > .inner > .resizer.nw,
+.ui.UI_Form.border-normal.has-menu > .inner > .resizer.ne {
+	top: calc( -${titlebar.height}px - ${menuBar.height}px - ${border.width}px );
+}
+
+.ui.UI_Form.border-normal.has-menu > .inner > .resizer.w,
+.ui.UI_Form.border-normal.has-menu > .inner > .resizer.e {
+	top: calc( -${titlebar.height}px - ${menuBar.height}px );
+}
+
+.ui.UI_Form.border-none.has-menu > .inner > .menubar {
+	top: calc( -${menuBar.height}px );
+}
+
+.ui.UI_Form.border-none.has-menu > .inner > .titlebar {
+	top: -${menuBar.height}px;
+}
+
+.ui.UI_Form.border-none.has-menu > .inner > .body {
+	top: -${menuBar.height}px;
+}
+
+.ui.UI_Form.border-none.has-menu > .inner > .resizer.n,
+.ui.UI_Form.border-none.has-menu > .inner > .resizer.nw,
+.ui.UI_Form.border-none.has-menu > .inner > .resizer.ne {
+	top: calc( -${menuBar.height}px - ${border.width}px );
+}
+
+.ui.UI_Form.border-none.has-menu > .inner > .resizer.w,
+.ui.UI_Form.border-none.has-menu > .inner > .resizer.e {
+	top: -${menuBar.height}px;
 }

@@ -50,6 +50,8 @@
 /// <reference path="UI/VerticalSplitter.ts" />
 /// <reference path="UI/HorizontalSplitter.ts" />
 /// <reference path="UI/Panel.ts" />
+/// <reference path="UI/MenuBar.ts" />
+/// <reference path="UI/MenuItem.ts" />
 
 
 

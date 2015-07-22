@@ -41,6 +41,10 @@
 			captionFontSize: 16;
 		};
 
+		menuBar: {
+			height: 30;
+		};
+
 		border: {
 			width: 5;
 			activeColor: #69c1f0;
@@ -188,5 +192,16 @@
 	@Theme UI_Panel {
 
 	};
+
+	@Theme UI_MenuBar {
+
+		menuitem: {
+			fontFamily: $fontFamily;
+			fontSize: $fontSize;
+
+			disabledColor: $disabledFontColor;
+		};
+
+	}
 
 };

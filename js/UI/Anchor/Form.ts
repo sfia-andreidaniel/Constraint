@@ -56,9 +56,10 @@ class UI_Anchor_Form extends UI_Anchor {
 						return 0;
 						break;
 					case EAlignment.TOP:
-						return owner.borderStyle == EBorderStyle.NONE
-							? 0
-							: UI_Form._theme.titlebarHeight;
+						return ( owner.borderStyle == EBorderStyle.NONE
+								? 0
+								: UI_Form._theme.titlebarHeight 
+							) + ~~( !!owner.menuBar ) * UI_Form._theme.menubarHeight;
 						break;
 				}
 
@@ -69,9 +70,11 @@ class UI_Anchor_Form extends UI_Anchor {
 				switch ( this._type ) {
 					case EAlignment.LEFT:
 					case EAlignment.RIGHT:
-					case EAlignment.TOP:
 					case EAlignment.BOTTOM:
 						return 0;
+						break;
+					case EAlignment.TOP:
+						return ~~( !!owner.menuBar ) * UI_Form._theme.menubarHeight;
 						break;
 				}
 
@@ -92,6 +95,7 @@ class UI_Anchor_Form extends UI_Anchor {
 									( UI_DialogManager.get().desktopHeight / 2 ) - ( owner.offsetRect.height / 2 )
 									+ ( owner.borderStyle == EBorderStyle.NORMAL ? UI_Form._theme.titlebarHeight : 0 )
 									+ UI_Form._theme.borderWidth 
+									+ ~~( !!owner.menuBar ) * UI_Form._theme.menubarHeight
 								);
 								break;
 							default:
