@@ -13,6 +13,8 @@ class UI_DialogManager extends UI_Event {
 	public  _desktopWidth: number = null;
 	public  _desktopHeight: number = null;
 
+	public  screen: UI_Screen;
+
 	private _activeWindow: UI_Form = null;
 
 	constructor() {
@@ -177,6 +179,11 @@ class UI_DialogManager extends UI_Event {
 					// setup the default manager.
 					manager.desktop = document.body;
 
+					manager.screen = new UI_Screen();
+					manager.screen.resize( manager.desktopWidth, manager.desktopHeight );
+
+					manager.screen.open( manager.desktop );
+
 					manager.desktop.addEventListener( 'mousedown', function( evt ) {
 
 						var target: any = evt.target || evt.srcElement;
@@ -216,6 +223,9 @@ class UI_DialogManager extends UI_Event {
 					if ( manager.desktop ) {
 						manager._desktopHeight = manager.desktop.offsetHeight;
 						manager._desktopWidth = manager.desktop.offsetWidth;
+
+						manager.screen.resize( manager._desktopWidth, manager._desktopHeight );
+
 					}
 
 					for ( var i=0, len = manager.windows.length; i<len; i++ ) {

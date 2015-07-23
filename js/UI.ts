@@ -74,6 +74,14 @@ class UI extends UI_Event {
 			this._owner.insert( this );
 		}
 
+		( function( node ) {
+			node.on( 'keydown', function( ev ) {
+				if ( node != node.form ) {
+					node.form.fire( 'child-keydown', ev );
+				}
+			} );
+		} )( this );
+
 	}
 
 	get top(): any {

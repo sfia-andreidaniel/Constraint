@@ -110,15 +110,6 @@ class UI_Form extends UI implements IFocusable {
 		this._root.setAttribute( 'data-form-id', String( this._id ) );
 
 		this._setupEvents_();
-
-		( function( self ) {
-
-			self.on( 'child-inserted', function( node: UI ) {
-				self.onChildInserted( node );
-			} );
-
-		} )( this );
-
 	}
 
 	// returns an element defined on this instance.
@@ -625,6 +616,37 @@ class UI_Form extends UI implements IFocusable {
 					form.close();
 				}
 			}, true );
+
+			form.on( 'child-inserted', function( node: UI ) {
+				form.onChildInserted( node );
+			} );
+
+			form.on( 'child-keydown', function( evt ) {
+				
+				var key = evt.keyCode || evt.charCode,
+				    handled: boolean = false;
+
+				switch ( key ) {
+						// F10:
+						case 121:
+							if ( form.menuBar ) {
+								form.activeElement = form.menuBar;
+								handled = true;
+								break;
+							}
+
+						break;
+
+					default:
+						break;
+				}
+
+				if ( handled ) {
+					evt.preventDefault();
+					evt.stopPropagation();
+				}
+
+			} );
 
 		} )( this );
 	}

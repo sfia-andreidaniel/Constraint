@@ -1,0 +1,442 @@
+class UI_Screen extends UI_Event {
+
+	private _canvas: HTMLCanvasElement;
+	private _width: number = 0;
+	private _height: number = 0;
+
+	private _windows: UI_Screen_Window[] = [];
+	private _repainter: UI_Throttler;
+	private _visible: boolean = false;
+
+	static get get(): UI_Screen {
+		return UI_DialogManager.get().screen || null;
+	}
+
+	constructor() {
+		super();
+		this._canvas = UI_Dom.create( 'canvas', 'UI_Screen' );
+		this._setupEvents_();
+		
+	}
+
+	get width(): number {
+		return this._width;
+	}
+
+	get heigth(): number {
+		return this._height;
+	}
+
+	get visible(): boolean {
+		return this._visible;
+	}
+
+	set visible( visible: boolean ) {
+		
+		visible = !!visible;
+		
+		if ( visible != this._visible ) {
+			this._visible = visible;
+			switch ( visible ) {
+				case true:
+					UI_Dom.addClass( this._canvas, 'visible' );
+					break;
+				case false:
+					UI_Dom.removeClass( this._canvas, 'visible' );
+					break;
+			}
+		}
+	}
+
+	public resize( width: number, height: number ) {
+
+		width = ~~width;
+		height= ~~height;
+
+		if ( width != this._width || height != this._height ) {
+			this._width = width;
+			this._height = height;
+			this._canvas.width = width;
+			this._canvas.height= height;
+			this.render();
+		}
+	}
+
+	public getWinIndex( win: UI_Screen_Window ): number {
+		return this._windows.indexOf( win );
+	}
+
+	public setWinIndex( win: UI_Screen_Window, index: number ) {
+		
+		var oldIndex: number = this.getWinIndex( win );
+		
+		if ( oldIndex != index ) {
+
+			if ( oldIndex == -1 ) {
+				throw new Error( 'Window is not registered in screen' );
+			}
+
+			this._windows.splice( oldIndex, 1 );
+
+			switch ( index ) {
+				
+				case -1:
+					// push backest
+					this._windows.unshift( win );
+					break;
+
+				case null:
+					// push toppest
+					this._windows.push( win );
+					break;
+
+				default:
+					this._windows.splice( index, 0, win );
+					break;
+
+			}
+
+			this.render();
+
+		}
+
+	}
+
+	public closeWindow( win: UI_Screen_Window ) {
+		var oldIndex: number = this.getWinIndex( win );
+		if ( oldIndex > -1 ) {
+			this._windows.splice( oldIndex, 1 );
+			if ( this._windows.length == 0 ) {
+				this.visible = false;
+			}
+		}
+	}
+
+	// repaints all windows
+	public render() {
+
+		// clears the screen
+		var ctx = this._canvas.getContext( '2d' );
+		ctx.clearRect( 0, 0, this._width, this._height );
+
+		for ( var i=0, len = this._windows.length; i<len; i++ ) {
+			this._windows[i].fire( 'render', ctx );
+		}
+	}
+
+	public open( where: any ) {
+		( where || document.body ).appendChild( this._canvas );
+	}
+
+	private _setupEvents_() {
+		( function( self ) {
+			
+			self._repainter = new UI_Throttler( function() {
+				self.render();
+			}, 1 );
+
+			self.on( 'render', function() {
+				self._repainter.run();
+			} );
+
+			self._canvas.addEventListener( 'mousedown', function( ev ) {
+				ev.preventDefault();
+				ev.stopPropagation();
+				
+				var x: number = ev.layerX || ev.offsetX,
+				    y: number = ev.layerY || ev.offsetY,
+				    len: number = self._windows.length,
+				    i: number,
+				    handled: boolean = false;
+
+				for ( i = len-1; i >= 0; i-- ) {
+					if ( self._windows[i].containsAbsolutePoint( x, y ) ) {
+						self._windows[i].fire( 'mousedown', x - self._windows[i].left, y - self._windows[i].top, ev.which );
+						handled = true;
+						break;
+					}
+				}
+
+				if ( !handled ) {
+					self.fire( 'mousedown', x, y, ev.which );
+				}
+
+			}, true );
+
+			self._canvas.addEventListener( 'mousemove', function( ev ) {
+				ev.preventDefault();
+				ev.stopPropagation();
+				
+				var x: number = ev.layerX || ev.offsetX,
+				    y: number = ev.layerY || ev.offsetY,
+				    len: number = self._windows.length,
+				    i: number,
+				    handled: boolean = false;
+
+				for ( i = len-1; i >= 0; i-- ) {
+					if ( self._windows[i].containsAbsolutePoint( x, y ) ) {
+						self._windows[i].fire( 'mousemove', x - self._windows[i].left, y - self._windows[i].top, ev.which );
+						handled = true;
+						break;
+					}
+				}
+
+				if ( !handled ) {
+					self.fire( 'mousemove', x, y, ev.which );
+				}
+
+			}, true );
+
+			self._canvas.addEventListener( 'mouseup', function( ev ) {
+				ev.preventDefault();
+				ev.stopPropagation();
+				
+				var x: number = ev.layerX || ev.offsetX,
+				    y: number = ev.layerY || ev.offsetY,
+				    len: number = self._windows.length,
+				    i: number,
+				    handled: boolean = false;
+
+				for ( i = len-1; i >= 0; i-- ) {
+					if ( self._windows[i].containsAbsolutePoint( x, y ) ) {
+						self._windows[i].fire( 'mouseup', x - self._windows[i].left, y - self._windows[i].top, ev.which );
+						handled = true;
+						break;
+					}
+				}
+
+				if ( !handled ) {
+					self.fire( 'mouseup', x, y, ev.which );
+				}
+
+			}, true );
+
+
+			self._canvas.addEventListener( 'click', function( ev ) {
+				ev.preventDefault();
+				ev.stopPropagation();
+				
+				var x: number = ev.layerX || ev.offsetX,
+				    y: number = ev.layerY || ev.offsetY,
+				    len: number = self._windows.length,
+				    i: number,
+				    handled: boolean = false;
+
+				for ( i = len-1; i >= 0; i-- ) {
+					if ( self._windows[i].containsAbsolutePoint( x, y ) ) {
+						self._windows[i].fire( 'click', x - self._windows[i].left, y - self._windows[i].top, ev.which );
+						handled = true;
+						break;
+					}
+				}
+
+				if ( !handled ) {
+					self.fire( 'click', x, y, ev.which );
+				}
+
+			}, true );
+
+			self._canvas.addEventListener( 'dblclick', function( ev ) {
+
+				ev.preventDefault();
+				ev.stopPropagation();
+				
+				var x: number = ev.layerX || ev.offsetX,
+				    y: number = ev.layerY || ev.offsetY,
+				    len: number = self._windows.length,
+				    i: number,
+				    handled: boolean = false;
+
+				for ( i = len-1; i >= 0; i-- ) {
+					if ( self._windows[i].containsAbsolutePoint( x, y ) ) {
+						self._windows[i].fire( 'dblclick', x - self._windows[i].left, y - self._windows[i].top, ev.which );
+						handled = true;
+						break;
+					}
+				}
+
+				if ( !handled ) {
+					self.fire( 'dblclick', x, y, ev.which );
+				}
+
+			}, true );
+
+			self._canvas.addEventListener( 'contextmenu', function( ev ) {
+				ev.preventDefault();
+				ev.stopPropagation();
+			}, true )
+
+		} )( this );
+
+	}
+
+	public createWindow( x: number, y: number, width: number, height: number ): UI_Screen_Window {
+
+		var result = new UI_Screen_Window( this, x, y, width, height );
+
+		this._windows.push( result );
+
+		this.visible = true;
+
+		this.fire( 'render' );
+
+		return result;
+
+	}
+
+	get context(): CanvasRenderingContext2D {
+		return this._canvas.getContext('2d');
+	}
+
+	public measureText( s: string, font: string ): number {
+		
+
+		var ctx = this._canvas.getContext('2d'),
+		    result: number = 0;
+		
+		ctx.save()
+
+		ctx.font = font;
+
+		result = ctx.measureText( s ).width;
+
+		ctx.restore();
+
+		return result;
+	}
+
+	public canPlaceWindow( XDirection: EAlignment, YDirection: EAlignment, point: IPoint, size: IRect ): boolean {
+
+		var x1: number,
+		    y1: number,
+		    x2: number,
+		    y2: number;
+
+		if ( [ EAlignment.LEFT, EAlignment.RIGHT, EAlignment.CENTER, null ].indexOf( XDirection ) == -1 ) {
+			throw new Error( 'Bad direction on X axis' );
+		}
+
+		if ( [ EAlignment.TOP, EAlignment.BOTTOM, EAlignment.CENTER, null ].indexOf( YDirection ) == -1 ) {
+			throw new Error( 'Bad direction on Y axis' );
+		}
+
+		switch ( XDirection ) {
+			case null:
+				x1 = null;
+				x2 = null;
+				break;
+			case EAlignment.LEFT:
+				x1 = point.x - size.width + 1;
+				x2 = point.x;
+				break;
+			case EAlignment.CENTER:
+				x1 = ~~( point.x - size.width / 2 );
+				x2 = x1 + size.width;
+				break;
+			case EAlignment.RIGHT:
+				x1 = point.x;
+				x2 = point.x + size.width - 1;
+				break;
+		}
+
+		switch ( YDirection ) {
+			case null:
+				y1 = null;
+				y2 = null;
+				break;
+			case EAlignment.TOP:
+				y1 = point.y - size.height + 1;
+				y2 = point.y;
+				break;
+			case EAlignment.CENTER:
+				y1 = ~~( point.y - size.height / 2 );
+				y2 = y1 + size.height;
+				break;
+			case EAlignment.BOTTOM:
+				y1 = point.y;
+				y2 = point.y + size.height - 1;
+				break;
+		}
+
+		return ( x1 === null || ( x1 >= 0 && x2 <= this._width ) ) &&
+		       ( y1 === null || ( y1 >= 0 && y2 <= this._height ) );
+
+	}
+
+	public addMargin( wnd: IWindow, amount: number ): IWindow {
+		
+		var out = {
+			x: wnd.x - amount,
+			y: wnd.y - amount,
+			width: wnd.width + 2 * amount,
+			height: wnd.height + 2 * amount
+		};
+
+		return out;
+	}
+
+	public getBestPlacementMenuStyle( src: IWindow, dest: IRect, margin: number = 0 ): IWindow {
+		
+		var s: IWindow = this.addMargin( src, margin );
+
+		var out = {
+			"x": 0,
+			"y": 0,
+			"width": dest.width,
+			"height": dest.height
+		};
+
+		switch ( true ) {
+			case this.canPlaceWindow( EAlignment.RIGHT, EAlignment.BOTTOM, { "x": s.x + s.width, "y": s.y }, dest ):
+				out.x = s.x + s.width;
+				out.y = s.y;
+				break;
+			case this.canPlaceWindow( EAlignment.RIGHT, EAlignment.TOP, { "x": s.x + s.width, "y": s.y + s.height }, dest ):
+				out.x = s.x + s.width;
+				out.y = s.y + s.height;
+				break;
+			case this.canPlaceWindow( EAlignment.LEFT, EAlignment.BOTTOM, { "x": s.x, "y": s.y }, dest ):
+				out.x = s.x - dest.width;
+				out.y = s.y;
+				break;
+			case this.canPlaceWindow( EAlignment.LEFT, EAlignment.TOP, { "x": s.x, "y": s.y + s.height }, dest ):
+				out.x = s.x - dest.width;
+				out.y = s.y + s.height - dest.height;
+				break;
+			default:
+				out.x = s.x + s.width;
+				out.y = s.y;
+				break;
+
+		}
+
+		return out;
+
+	}
+
+	public getBestPlacementDropDownStyle( src: IWindow, dest: IRect, margin: number = 0 ): IWindow {
+		
+		var out = {
+			"x": 0,
+			"y": 0,
+			"width": dest.width,
+			"height": dest.height
+		};
+
+		switch ( true ) {
+			case this.canPlaceWindow( null, EAlignment.BOTTOM, { "x": src.x, "y": src.y + src.height + margin }, dest ):
+				out.x = src.x;
+				out.y = src.y + src.height + margin;
+				break;
+			default:
+				out.x = src.x;
+				out.y = src.y - dest.height - margin;
+				break;
+		}
+
+		return out;
+
+	}
+
+
+}

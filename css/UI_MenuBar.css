@@ -2,10 +2,12 @@
 
 .ui.UI_Form > .inner > .menubar {
 	background-color: ${titlebar.inactiveBgColor};
+	color: ${titlebar.inactiveColor};
 }
 
 .ui.UI_Form.focus-active > .inner > .menubar {
 	background-color: ${titlebar.activeBgColor};
+	color: ${titlebar.activeColor};
 }
 
 {$N UI.UI_MenuBar}
@@ -32,4 +34,9 @@
 .ui.UI_Form.disabled > .inner > .menubar > .UI_MenuBar > .UI_MenuItem,
 .ui.UI_MenuBar > .UI_MenuItem.disabled {
 	color: ${menuitem.disabledColor};
+}
+
+.ui.UI_Form:not(.disabled).focus-active > .inner > .menubar > .UI_MenuBar:not(.disabled) > .UI_MenuItem:hover:not(.disabled),
+.ui.UI_Form:not(.disabled).focus-active > .inner > .menubar > .UI_MenuBar.focused:not(.disabled) > .UI_MenuItem.focused:not(.disabled) {
+	background-color: white;
 }

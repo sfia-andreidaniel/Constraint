@@ -16,14 +16,24 @@ class UI_Event {
 
 	public off( eventName: string, callback: ( ... args ) => void ) {
 
-		if ( this.$EVENTS_QUEUE && this.$EVENTS_QUEUE[ eventName ] ) {
-			for ( var i=0, len = this.$EVENTS_QUEUE[ eventName ].length; i<len; i++ ) {
-				if ( this.$EVENTS_QUEUE[ eventName ][ i ] == callback ) {
-					this.$EVENTS_QUEUE[ eventName ].splice( i, 1 );
-					return;
+		if ( eventName ) {
+
+			if ( this.$EVENTS_QUEUE && this.$EVENTS_QUEUE[ eventName ] ) {
+				for ( var i=0, len = this.$EVENTS_QUEUE[ eventName ].length; i<len; i++ ) {
+					if ( this.$EVENTS_QUEUE[ eventName ][ i ] == callback ) {
+						this.$EVENTS_QUEUE[ eventName ].splice( i, 1 );
+						return;
+					}
 				}
 			}
+
+		} else {
+
+			// drops the $EVENTS_QUEUE AT ALL
+			this.$EVENTS_QUEUE = undefined;
+
 		}
+
 	}
 
 	public fire( eventName, ...args ) {

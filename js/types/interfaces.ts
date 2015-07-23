@@ -48,6 +48,10 @@ interface IRect {
 	height: number;
 }
 
+interface IWindow extends IPoint, IRect {
+
+}
+
 interface IBoundingBox {
 	left: number;
 	right: number;

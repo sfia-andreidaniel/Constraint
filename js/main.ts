@@ -36,6 +36,8 @@
 /// <reference path="UI/Anchor.ts" />
 /// <reference path="UI/Anchor/Form.ts" />
 /// <reference path="UI/Padding.ts" />
+/// <reference path="UI/Screen.ts" />
+/// <reference path="UI/Screen/Window.ts" />
 /// <reference path="UI/DialogManager.ts" />
 
 /// <reference path="UI/Form.ts" />
