@@ -16,6 +16,7 @@
 
 /// <reference path="$I.ts" />
 
+/// <reference path="UI/Resource.ts" />
 /// <reference path="UI/Dom.ts" />
 /// <reference path="UI/Color.ts" />
 /// <reference path="UI/Event.ts" />

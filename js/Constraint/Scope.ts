@@ -53,7 +53,23 @@ class Constraint_Scope {
 
 				// Don't allow @UI_Form > ... > @UI_Form scopes nesting
 				if ( this.isNestedInsideScopeType( 'UI_Form', true ) ) {
-					throw Error( 'STRICT: Type UI_Form cannot be nested inside type UI_Form' );
+					throw new Error( 'STRICT: Type UI_Form cannot be nested inside type UI_Form' );
+				}
+			}
+
+			if ( strict && type == 'UI_Resource' ) {
+
+				// Dont allow resources to be placed inside forms or other resources
+				if ( this.isNestedInsideScopeType( 'UI_Form', true ) ) {
+					throw new Error( 'STRICT: Type UI_Resource cannot be nested inside type UI_Form' );
+				}
+
+				if ( this.isNestedInsideScopeType( 'UI_Resource', true ) ) {
+					throw new Error( 'STRICT: Type UI_Resource cannot be nested inside type UI_Resource' );
+				}
+
+				if ( this._isAnonymous ) {
+					throw new Error( 'STRICT: Type UI_Resource cannot be declared as anonymous' );
 				}
 			}
 
@@ -101,6 +117,48 @@ class Constraint_Scope {
 			"name": k,
 			"value": Constraint_Type.create( value, this, this.getPropertyType( k ), this.strict )
 		});
+	}
+
+	public addResource( value: ITokenResult ) {
+		if ( this.type != 'UI_Resource' ) {
+			throw new Error( 'resource files can be used only inside "UI_Resource" type. Current scope type is ' + JSON.stringify( this.type ) );
+		}
+
+		var matches: string[] = Constraint.tokens.tok_resource.regex.exec( value.result );
+
+		if ( !matches )
+			throw new Error('Failed to parse resource type! This IS A BUG!' );
+
+		var propName: string = matches[1];
+
+		if ( !propName )
+			throw new Error( 'Resource name could not be parsed!' );
+
+		var propSrc: string = matches[5].replace( /''/g, "'" );
+
+		if ( !propSrc )
+			throw new Error( 'Resource file could not be parsed!' );
+
+		var propVersions: string = String( matches[6] || '' ).replace(/(^[\s]+|[\s]+$)/g, '' ).replace( /[\s]+/g, ' ' );
+
+		var isDisabled = matches[11] == 'disabled';
+
+		// Add resource.
+		for ( var i=0, len = this.properties.length; i < len; i ++ ) {
+			if ( this.properties[i].name == propName ) {
+				throw new Error( 'Duplicate resource file: "' + this.properties[i].name + '"' );
+			}
+		}
+
+		this.properties.push({
+			"name": propName,
+			"value": Constraint_Type.createResourceDef({
+				"file": propSrc,
+				"versions": propVersions ? propVersions.split(' ') : [],
+				"disabled": isDisabled
+			})		
+		});
+
 	}
 
 	public arrayStart( keyName: string ) {

@@ -15,7 +15,7 @@ class UI_Anchor_Literal {
 	}
 
 	public toLiteral(): string {
-		return 'UI_Anchor_Literal.create(' + JSON.stringify( this._literal ) + ')';
+		return 'UI_Anchor_Literal.create(' + this.toString() + ')';
 	}
 
 	public toString(): string {

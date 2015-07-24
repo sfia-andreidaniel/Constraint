@@ -2,3 +2,5 @@
 
 {{#each files}}/// <reference path={{{name}}} />
 {{#end}}
+{{#each resources}}UI_Resource.addResourceFile( {{{name}}}, {{{url}}} );
+{{#end}}

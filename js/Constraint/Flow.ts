@@ -217,6 +217,10 @@ class Constraint_Flow {
 				inConstraint.pushanonprim( rstart[0] );
 				break;
 
+			case 'resource_file':
+				inConstraint.resource( rstart[0] );
+				break;
+
 			default:
 				//console.log( this.name );
 		}

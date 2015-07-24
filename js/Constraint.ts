@@ -65,6 +65,11 @@ class Constraint {
 			"regex": /^[A-Z\_]+/,
 			"return": 0
 		},
+		// matches: 
+		"tok_resource": {
+			"regex": /^(([a-zA-Z\$_]([a-zA-Z\d_\$]+)?)+)[\s]+from[\s]+'(([^']+|'')+)'([\s]+([\d]+(x[\d]+|\:(x|y))([\s]+)?)+)?(disabled)?([\s]+)?;/,
+			"return": 0
+		},
 		// this matches a white space.
 		"tok_white_space": {
 			"regex": /^[\s]+/,
@@ -261,6 +266,12 @@ class Constraint {
 			]
 		},
 
+		"resource_file": {
+			"flow": [
+				"tok_resource"
+			]
+		},
+
 		"scope": {
 			"flow": [
 				"tok_white_space_opt",
@@ -282,7 +293,8 @@ class Constraint {
 				"object_assignment",
 				"array_assignment",
 				"scope",
-				"white_space"
+				"white_space",
+				"resource_file"
 			]
 		},
 
@@ -405,6 +417,10 @@ class Constraint {
 	// @alias of this.scope.assign( k, v )
 	public asgn( k: string, v: ITokenResult ) {
 		this.scope.assign( k, v );
+	}
+
+	public resource( v: ITokenResult ) {
+		this.scope.addResource( v );
 	}
 
 	public decl( prop: string, val: ITokenResult ) {

@@ -6,13 +6,40 @@ try {
 
 	var fs = require( 'fs' ),
 		os = require('os'),
-	    srcFile = process.argv[2],
-	    destDir = process.argv[3] || null,
-	    justForm= process.argv[4] || null,
-	    buffer;
+	    srcFile     = null,
+	    destDir     = null,
+	    justForm    = null,
+	    includePath = null,
+	    make        = false,
+	    spawn       = require('child_process').spawn,
+
+	    buffer,
+	    matches: string[] = [];
+
+	for ( var i=2, len = process.argv.length; i<len; i++ ) {
+		switch ( true ) {
+			case !!( matches = /^\-\-src\:(.*)$/.exec( process.argv[i] ) ):
+				srcFile = matches[1];
+				break;
+			case !!( matches = /^\-\-project\-dir\:(.*)$/.exec( process.argv[i] ) ):
+				destDir = matches[1];
+				break;
+			case !!( matches = /^\-\-form\:(.*)$/.exec( process.argv[i] ) ):
+				justForm = matches[1];
+				break;
+			case !!( matches = /^\-\-http-include-path\:(.*)$/.exec( process.argv[i])):
+				includePath = matches[1];
+				break;
+			case process.argv[i] == '--make':
+				make = true;
+				break;
+			default:
+				throw new Error( 'Invalid argument: ' + JSON.stringify( process.argv[i] ) );
+		}
+	}
 
 	if ( !srcFile ) {
-		throw Error( 'Usage: constraint <constraint_src_file> <app_directory> [<form_name>]' );
+		throw Error( 'Usage: \nconstraint --src:source_file\n\t[--project-dir:project_dir]\n\t[--form:form_name]\n\t[--http-include_path:path]' );
 	}
 
 	buffer = fs.readFileSync( srcFile );
@@ -27,22 +54,27 @@ try {
 
 	// Fetch all the Forms from the compiled file, and dump them.
 	var scopes = constraint.$scopes,
-	    forms = [];
+	    forms = [],
+	    resources = [];
 
 	for ( var i=0, len = scopes.length; i<len; i++ ) {
 		if ( constraint.$scope( scopes[i] ).$type == 'UI_Form' ) {
+			console.log( '* Found form: ' + JSON.stringify( constraint.$scope( scopes[i] ).name ) );
 			forms.push( constraint.$scope( scopes[i] ) );
+		} else
+		if ( constraint.$scope( scopes[i] ).$type == 'UI_Resource' ) {
+			console.log( '* Found resource: ' + JSON.stringify( constraint.$scope( scopes[i] ).name ) );
+			resources.push( constraint.$scope( scopes[i] ) );
 		}
 	}
 
-	console.log( '* Found ', forms.length, ' forms in "' + srcFile + '"' );
+	//console.log( '* Found ', forms.length, ' forms in "' + srcFile + '"' );
 
 	if ( forms.length == 0 ) {
 		process.exit();
 	}
 
 	if ( destDir === null ) {
-		console.log( '* Second argument of the compiler not present. Auto-determining target dir.');
 		destDir = srcFile.replace(/\.[^\.]+$/g, '' );
 		if ( destDir == srcFile ) {
 			destDir = srcFile + "_app";
@@ -58,12 +90,61 @@ try {
 		}
 	}
 
+	if ( !includePath ) {
+		includePath = srcFile.replace( /\.[^\.]+/g, '' );
+	}
+
+	console.log( '* Include path : ' + JSON.stringify( includePath ) );
+	console.log( '* Project dir  : ' + JSON.stringify( destDir ) );
+
 	var app = {
-		"forms": []
+		"forms": [],
+		"resources": []
 	};
 
 	var constraintLibPath = JSON.stringify( fs.realpathSync( './js/main.ts' ) ),
 	    writeFiles = [];
+
+	for ( var i=0, len = resources.length; i<len; i++ ) {
+		( function( resource ) {
+
+			var res = {
+					"name": resource.$name,
+					"files": "",
+					"props": resource.$properties
+				},
+				ext: string[];
+
+			for ( var k=0, n = res.props.length; k<n; k++ ) {
+				res.props[k].file = destDir + '/' + res.props[k].value.file;
+
+				res.props[k].exists = fs.existsSync( res.props[k].file );
+
+				if ( !res.props[k].exists ) {
+					throw new Error( 'Failed to build resource "' + res.name + '.res" : file ' + res.props[k].file + ' was not found' );
+				}
+
+				ext = /\.(png|svg)$/.exec( res.props[k].file );
+				if ( !ext ) {
+					throw new Error( 'Files from resources can have only ".svg" and ".png" extension!')
+				}
+
+				res.props[k].data = fs.readFileSync( res.props[k].file ).toString( 'base64' );
+				res.props[k].data = res.props[k].name + ' ' 
+					+ JSON.stringify( res.props[k].value.versions ) 
+					+ ( res.props[k].value.disabled ? ' disabled' : '' ) 
+					+ ' ' + 'data:' + ( ext[1] == 'png' ? 'image/png' : 'image/svg+xml' ) + ';base64,' + res.props[k].data;
+
+				res.files += ( res.props[k].data + "\n\n");
+
+			}
+
+			res.props = null;
+
+			app.resources.push( res );
+
+		} )( resources[i] );
+	}
 
 	for ( var i=0, len = forms.length; i<len; i++ ) {
 
@@ -164,17 +245,36 @@ try {
 
 	}
 
+	for ( var i=0, len = app.resources.length; i<len; i++ ) {
+		writeFile( destDir + '/' + app.resources[i].name + '.res', app.resources[i].files, app.resources[i].name + '.res' );
+	}
+
 	// Generate a main.ts file.
 
 	var mainTs = {
 			"constraintLibPath": constraintLibPath,
-			"files": []
+			"files": [],
+			"resources": []
 		};
 
 	for ( var i=0, len = writeFiles.length; i < len; i++ ) {
-		mainTs.files.push({
-			"name": JSON.stringify( writeFiles[i].fileName )
-		});
+
+		if ( /\.ts$/.test( writeFiles[i].fileName ) ) {
+
+			mainTs.files.push({
+				"name": JSON.stringify( writeFiles[i].fileName )
+			});
+
+		}
+
+		if ( /\.res$/.test( writeFiles[i].fileName ) ) {
+
+			mainTs.resources.push({
+				"url": JSON.stringify( includePath + '/' + writeFiles[i].fileName ),
+				"name": JSON.stringify( writeFiles[i].fileName.replace( /\.res$/, '' ) )
+			});
+
+		}
 	}
 
 	salvage = new Salvage( fs.readFileSync( 'js/compiler/main.salvage' ) + '' );
@@ -198,7 +298,8 @@ try {
 		"fileName": "Makefile"
 	});
 
-	console.log( "* Placing compiled files in folder '" + destDir + "'" );
+	// BUILD RESOURCES.
+
 
 	// FLUSH FILES.
 	for ( var i=0, len = writeFiles.length; i<len; i++ ) {
@@ -209,10 +310,44 @@ try {
 		}
 	}
 
-	console.log( 'Compilation completed. Type "make" inside the folder "' + destDir + '" to build the project.' );
+	if ( !make ) {
+
+		console.log( 'OK. Type "make" inside the folder "' + destDir + '" to build the project.' );
+		process.exit(0);
+
+	} else {
+
+		process.stdout.write( '* Running "make": ' );
+
+		// Make the project.
+		var makeProcess = spawn( 'make', [], {
+			"cwd": destDir
+		} );
+
+		var stdout: string = '',
+		    stderr: string = '';
+
+		makeProcess.stdout.on( 'data', function( data ) {
+			stdout += data;
+		} );
+
+		makeProcess.stderr.on( 'data', function( data ) {
+			stderr += data;
+			process.stderr.write( data );
+		} );
+
+		makeProcess.on( 'close', function( code ) {
+			if ( code ) {
+				process.stdout.write( 'FAILED\n\n' + stderr + '\n\n' + stdout + '\n\n' );
+			} else {
+				process.stdout.write( 'SUCCESS\n' );
+			}
+		} )
+
+	}
 
 } catch ( err ) {
 
-	console.log( "\nERROR: " + err );
+	console.log( "\nERROR. " + err );
 
 }

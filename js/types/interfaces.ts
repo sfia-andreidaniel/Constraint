@@ -68,3 +68,14 @@ interface IIdentifiable {
 interface INameable extends IIdentifiable {
 	name: string;
 }
+
+interface IResourceDef {
+	file: string;
+	versions: string[];
+	disabled: boolean;
+}
+
+interface IResourceTouple {
+	name: string;
+	resource: string;
+}

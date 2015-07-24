@@ -1,6 +1,7 @@
 /// <reference path="../node.d.ts" />
 /// <reference path="Enum.ts" />
 /// <reference path="../UI/Anchor/Literal.ts" />
+/// <reference path="../UI/Resource/Literal.ts" />
 class Constraint_Type {
 
 	public static create( from: ITokenResult, inContext: Constraint_Scope, inPropertyType: string = null, strict: boolean = false ): any {
@@ -88,6 +89,10 @@ class Constraint_Type {
 				throw Error( 'Unknown type: ' + from.type + JSON.stringify( from ) );
 				break;
 		}
+	}
+
+	public static createResourceDef( from: IResourceDef ): UI_Resource_Literal {
+		return UI_Resource_Literal.create( from );
 	}
 
 	public static createAnchorDef( from: ITokenResult, inContext: Constraint_Scope ): UI_Anchor_Literal {

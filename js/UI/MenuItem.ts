@@ -222,18 +222,13 @@ class UI_MenuItem extends UI {
 	public onRepaint(): boolean {
 		if ( this._owner ) {
 			if ( this._owner instanceof UI_MenuItem ) {
-				return (<UI_MenuItem>this._owner).onRepaintChildren();
+				return true;
 			} else {
 				return false;
 			}
 		} else {
 			return false;
 		}
-	}
-
-	public onRepaintChildren(): boolean {
-		console.log( 'Repaint children: ', this );
-		return true;
 	}
 
 	public computeRenderFlags(): number[] {

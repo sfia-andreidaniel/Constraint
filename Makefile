@@ -9,5 +9,8 @@ build:: clean
 	node ./postcompiler.js css/main.css
 	rm -f ./postcompiler.js
 
+demo:: build
+	constraint --src:demo.ui --http-include-path:demo --make
+
 clean::
-	rm -f *.js js/*.js demo/*.js css/main.css
+	rm -f *.js js/*.js demo/*.js demo/*.res css/main.css
