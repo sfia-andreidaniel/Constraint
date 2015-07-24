@@ -200,6 +200,24 @@
 			fontSize: $fontSize;
 
 			disabledColor: $disabledFontColor;
+
+			height: 25;
+			padding: 5;
+
+			iconSize: 16;
+			inputSize: 16;
+
+			background: {
+
+				color: $object3dColor;
+				selectedColor: $selectedItemBackgroundColor;
+
+			};
+
+			color: {
+				normal: $normalFontColor;
+				disabled: $disabledFontColor;
+			};
 		};
 
 	}

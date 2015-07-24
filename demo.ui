@@ -11,6 +11,23 @@
 
 		@UI_MenuItem {
 			caption: 'File';
+
+			@UI_MenuItem {
+				caption: 'Open';
+
+				@UI_MenuItem {
+					caption: 'File 1';
+				};
+
+				@UI_MenuItem {
+					caption: 'File 2';
+				};
+
+			};
+
+			@UI_MenuItem {
+				caption: 'Exit';
+			};
 		};
 
 		@UI_MenuItem {

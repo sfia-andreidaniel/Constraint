@@ -7,9 +7,10 @@ class UI_Screen extends UI_Event {
 	private _windows: UI_Screen_Window[] = [];
 	private _repainter: UI_Throttler;
 	private _visible: boolean = false;
+	private _pointerEvents: boolean = false;
 
 	static get get(): UI_Screen {
-		return UI_DialogManager.get().screen || null;
+		return UI_DialogManager.get.screen || null;
 	}
 
 	constructor() {
@@ -42,8 +43,28 @@ class UI_Screen extends UI_Event {
 					UI_Dom.addClass( this._canvas, 'visible' );
 					break;
 				case false:
+
+					for ( var i=0, len = this._windows.length; i<len; i++ ) {
+						this._windows[i].close();
+					}
+
 					UI_Dom.removeClass( this._canvas, 'visible' );
+
+					this.render();
+
 					break;
+			}
+		}
+	}
+
+	set pointerEvents( on: boolean ) {
+		on = !!on;
+		if ( on != this._pointerEvents ) {
+			this._pointerEvents = on;
+			if ( !on ) {
+				this._canvas.style.pointerEvents = '';
+			} else {
+				this._canvas.style.pointerEvents = 'all';
 			}
 		}
 	}
@@ -109,6 +130,8 @@ class UI_Screen extends UI_Event {
 			if ( this._windows.length == 0 ) {
 				this.visible = false;
 			}
+			this.updatePointerEventsState();
+			this.render();
 		}
 	}
 
@@ -128,143 +151,175 @@ class UI_Screen extends UI_Event {
 		( where || document.body ).appendChild( this._canvas );
 	}
 
+	public updatePointerEventsState() {
+		if ( this.visible ) {
+			var x: number = UI_DialogManager.get.pointerX,
+			    y: number = UI_DialogManager.get.pointerY,
+			    i: number,
+			    len: number = this._windows.length;
+
+			if ( !len ) {
+				this.pointerEvents = false;
+			} else {
+				for ( i=0; i<len; i++ ) {
+					if ( this._windows[i].containsAbsolutePoint( x, y ) ) {
+						this.pointerEvents = true;
+						return;
+					}
+				}
+				this.pointerEvents = false;
+			}
+		}
+	}
+
+	public handleMouseDown( ev ): boolean {
+
+		var x: number = ev.pageX,
+		    y: number = ev.pageY,
+		    len: number = this._windows.length,
+		    i: number,
+		    handled: boolean = false;
+
+		for ( i = len-1; i >= 0; i-- ) {
+			if ( this._windows[i].containsAbsolutePoint( x, y ) ) {
+				this._windows[i].fire( 'mousedown', x - this._windows[i].left, y - this._windows[i].top, ev.which );
+				handled = true;
+				break;
+			}
+		}
+
+		if ( !handled ) {
+			this.fire( 'mousedown', x, y, ev.which );
+		} else {
+			ev.preventDefault();
+			ev.stopPropagation();
+		}
+
+		return handled;
+	}
+
+	public handleMouseMove( ev ): boolean {
+
+		var x: number = ev.pageX,
+		    y: number = ev.pageY,
+		    len: number = this._windows.length,
+		    i: number,
+		    handled: boolean = false;
+
+		for ( i = len-1; i >= 0; i-- ) {
+			if ( this._windows[i].containsAbsolutePoint( x, y ) ) {
+				this._windows[i].fire( 'mousemove', x - this._windows[i].left, y - this._windows[i].top, ev.which );
+				handled = true;
+				break;
+			}
+		}
+
+		if ( !handled ) {
+			this.fire( 'mousemove', x, y, ev.which );
+		} else {
+			ev.preventDefault();
+			ev.stopPropagation();
+		}
+
+		this.pointerEvents = handled;
+
+		return handled;
+	}
+
+	public handleDoubleClick( ev ): boolean {
+
+		var x: number = ev.pageX,
+		    y: number = ev.pageY,
+		    len: number = this._windows.length,
+		    i: number,
+		    handled: boolean = false;
+
+		for ( i = len-1; i >= 0; i-- ) {
+			if ( this._windows[i].containsAbsolutePoint( x, y ) ) {
+				this._windows[i].fire( 'dblclick', x - this._windows[i].left, y - this._windows[i].top, ev.which );
+				handled = true;
+				break;
+			}
+		}
+
+		if ( !handled ) {
+			this.fire( 'dblclick', x, y, ev.which );
+		} else {
+			ev.preventDefault();
+			ev.stopPropagation();
+		}
+
+		return handled;
+
+	}
+
+	public handleMouseUp( ev ): boolean {
+		
+		var x: number = ev.pageX,
+		    y: number = ev.pageX,
+		    len: number = this._windows.length,
+		    i: number,
+		    handled: boolean = false;
+
+		for ( i = len-1; i >= 0; i-- ) {
+			if ( this._windows[i].containsAbsolutePoint( x, y ) ) {
+				this._windows[i].fire( 'mouseup', x - this._windows[i].left, y - this._windows[i].top, ev.which );
+				handled = true;
+				break;
+			}
+		}
+
+		if ( !handled ) {
+			this.fire( 'mouseup', x, y, ev.which );
+		} else {
+			ev.preventDefault();
+			ev.stopPropagation();
+		}
+
+		return handled;
+
+	}
+
+	public handleMouseClick( ev ): boolean {
+
+		var x: number = ev.pageX,
+		    y: number = ev.pageY,
+		    len: number = this._windows.length,
+		    i: number,
+		    handled: boolean = false;
+
+		for ( i = len-1; i >= 0; i-- ) {
+			if ( this._windows[i].containsAbsolutePoint( x, y ) ) {
+				this._windows[i].fire( 'click', x - this._windows[i].left, y - this._windows[i].top, ev.which );
+				handled = true;
+				break;
+			}
+		}
+
+		if ( !handled ) {
+			this.fire( 'click', x, y, ev.which );
+		} else {
+			ev.preventDefault();
+			ev.stopPropagation();
+		}
+
+		return handled;
+
+	}
+
+	public handleKeyDown( ev ) {
+		if ( this._windows && this._windows.length ) {
+			this._windows[ this._windows.length - 1 ].fire( 'keydown', ev );
+			ev.preventDefault();
+			ev.stopPropagation();
+		}
+	}
+
 	private _setupEvents_() {
 		( function( self ) {
 			
-			self._repainter = new UI_Throttler( function() {
-				self.render();
-			}, 1 );
-
-			self.on( 'render', function() {
-				self._repainter.run();
+			self.on( 'keydown', function( ev ) {
 			} );
-
-			self._canvas.addEventListener( 'mousedown', function( ev ) {
-				ev.preventDefault();
-				ev.stopPropagation();
-				
-				var x: number = ev.layerX || ev.offsetX,
-				    y: number = ev.layerY || ev.offsetY,
-				    len: number = self._windows.length,
-				    i: number,
-				    handled: boolean = false;
-
-				for ( i = len-1; i >= 0; i-- ) {
-					if ( self._windows[i].containsAbsolutePoint( x, y ) ) {
-						self._windows[i].fire( 'mousedown', x - self._windows[i].left, y - self._windows[i].top, ev.which );
-						handled = true;
-						break;
-					}
-				}
-
-				if ( !handled ) {
-					self.fire( 'mousedown', x, y, ev.which );
-				}
-
-			}, true );
-
-			self._canvas.addEventListener( 'mousemove', function( ev ) {
-				ev.preventDefault();
-				ev.stopPropagation();
-				
-				var x: number = ev.layerX || ev.offsetX,
-				    y: number = ev.layerY || ev.offsetY,
-				    len: number = self._windows.length,
-				    i: number,
-				    handled: boolean = false;
-
-				for ( i = len-1; i >= 0; i-- ) {
-					if ( self._windows[i].containsAbsolutePoint( x, y ) ) {
-						self._windows[i].fire( 'mousemove', x - self._windows[i].left, y - self._windows[i].top, ev.which );
-						handled = true;
-						break;
-					}
-				}
-
-				if ( !handled ) {
-					self.fire( 'mousemove', x, y, ev.which );
-				}
-
-			}, true );
-
-			self._canvas.addEventListener( 'mouseup', function( ev ) {
-				ev.preventDefault();
-				ev.stopPropagation();
-				
-				var x: number = ev.layerX || ev.offsetX,
-				    y: number = ev.layerY || ev.offsetY,
-				    len: number = self._windows.length,
-				    i: number,
-				    handled: boolean = false;
-
-				for ( i = len-1; i >= 0; i-- ) {
-					if ( self._windows[i].containsAbsolutePoint( x, y ) ) {
-						self._windows[i].fire( 'mouseup', x - self._windows[i].left, y - self._windows[i].top, ev.which );
-						handled = true;
-						break;
-					}
-				}
-
-				if ( !handled ) {
-					self.fire( 'mouseup', x, y, ev.which );
-				}
-
-			}, true );
-
-
-			self._canvas.addEventListener( 'click', function( ev ) {
-				ev.preventDefault();
-				ev.stopPropagation();
-				
-				var x: number = ev.layerX || ev.offsetX,
-				    y: number = ev.layerY || ev.offsetY,
-				    len: number = self._windows.length,
-				    i: number,
-				    handled: boolean = false;
-
-				for ( i = len-1; i >= 0; i-- ) {
-					if ( self._windows[i].containsAbsolutePoint( x, y ) ) {
-						self._windows[i].fire( 'click', x - self._windows[i].left, y - self._windows[i].top, ev.which );
-						handled = true;
-						break;
-					}
-				}
-
-				if ( !handled ) {
-					self.fire( 'click', x, y, ev.which );
-				}
-
-			}, true );
-
-			self._canvas.addEventListener( 'dblclick', function( ev ) {
-
-				ev.preventDefault();
-				ev.stopPropagation();
-				
-				var x: number = ev.layerX || ev.offsetX,
-				    y: number = ev.layerY || ev.offsetY,
-				    len: number = self._windows.length,
-				    i: number,
-				    handled: boolean = false;
-
-				for ( i = len-1; i >= 0; i-- ) {
-					if ( self._windows[i].containsAbsolutePoint( x, y ) ) {
-						self._windows[i].fire( 'dblclick', x - self._windows[i].left, y - self._windows[i].top, ev.which );
-						handled = true;
-						break;
-					}
-				}
-
-				if ( !handled ) {
-					self.fire( 'dblclick', x, y, ev.which );
-				}
-
-			}, true );
-
-			self._canvas.addEventListener( 'contextmenu', function( ev ) {
-				ev.preventDefault();
-				ev.stopPropagation();
-			}, true )
 
 		} )( this );
 
@@ -275,10 +330,10 @@ class UI_Screen extends UI_Event {
 		var result = new UI_Screen_Window( this, x, y, width, height );
 
 		this._windows.push( result );
-
 		this.visible = true;
-
 		this.fire( 'render' );
+
+		this.updatePointerEventsState();
 
 		return result;
 

@@ -88,6 +88,8 @@ class UI_Screen_Window extends UI_Event {
 	public close() {
 		this._screen.closeWindow( this );
 		
+		this.fire( 'close' );
+
 		// DROP ALL EVENT LISTENERS.
 		this.off(null,null);
 	}
@@ -96,7 +98,7 @@ class UI_Screen_Window extends UI_Event {
 	public beginPaint() {
 		this._ctx.save();
 		this._ctx.beginPath();
-		this._ctx.rect( this._top, this._left, this._width, this._height );
+		this._ctx.rect( this._left, this._top, this._width, this._height );
 		this._ctx.clip();
 	}
 
@@ -127,8 +129,10 @@ class UI_Screen_Window extends UI_Event {
 		this._ctx.strokeRect( this._left + x, this._top + y, width, height );
 	}
 
-	public fillText( text: string, x: number, y: number, maxWidth?: number ) {
-		this._ctx.fillText( text, this._left + x, this._top + y, maxWidth );
+	public fillText( ...args: any[] ) {
+		args[1] += this._left;
+		args[2] += this._top;
+		this._ctx.fillText.apply( this._ctx, args );
 	}
 
 	public strokeText( text: string, x: number, y: number, maxWidth?: number ) {

@@ -84,41 +84,23 @@ class UI extends UI_Event {
 
 	}
 
-	get top(): any {
-		return this._top;
-	}
+	get top(): any 			 	{ return this._top; }
 
-	set top( value: any ) {
-		this._top.load( value );
-	}
+	set top( value: any ) 	 	{ this._top.load( value ); }
 
-	get left(): any {
-		return this._left;
-	}
+	get left(): any 		 	{ return this._left; }
 
-	set left( value: any ) {
-		this._left.load( value );
-	}
+	set left( value: any )   	{ this._left.load( value ); }
 
-	get right(): any {
-		return this._right;
-	}
+	get right(): any 		 	{ return this._right; }
 
-	set right( value: any ) {
-		this._right.load( value );
-	}
+	set right( value: any )  	{ this._right.load( value ); }
 
-	get bottom(): any {
-		return this._bottom;
-	}
+	get bottom(): any 		 	{ return this._bottom; }
 
-	set bottom( value: any ) {
-		this._bottom.load( value );
-	}
+	set bottom( value: any ) 	{ this._bottom.load( value ); }
 
-	get width(): number {
-		return this._width;
-	}
+	get width(): number 	 	{ return this._width; }
 
 	set width( value: number ) {
 		value = ~~value;
@@ -128,9 +110,7 @@ class UI extends UI_Event {
 		}
 	}
 
-	get height(): number {
-		return this._height;
-	}
+	get height(): number 		{ return this._height; }
 
 	set height( value: number ) {
 		value = ~~value;
@@ -140,9 +120,7 @@ class UI extends UI_Event {
 		}
 	}
 
-	get minWidth(): number {
-		return this._minWidth;
-	}
+	get minWidth(): number 		{ return this._minWidth; }
 
 	set minWidth( w: number) {
 		w = ~~w;
@@ -155,9 +133,7 @@ class UI extends UI_Event {
 		}
 	}
 
-	get minHeight(): number {
-		return this._minHeight;
-	}
+	get minHeight(): number 	{ return this._minHeight; }
 
 	set minHeight( h: number ) {
 		h = ~~h;
@@ -170,25 +146,14 @@ class UI extends UI_Event {
 		}
 	}
 
-	get padding(): UI_Padding {
-		return this._padding;
-	}
+	get padding(): UI_Padding 	{ return this._padding; }
 
 	// form is the current "dialog" in which this element is inserted.
-	get form(): UI_Form {
-		return this._owner
-			? this._owner.form
-			: <UI_Form>this;
-	}
+	get form(): UI_Form 		{ return this._owner ? this._owner.form : <UI_Form>this; }
 
 	// owner is the "parent" of the current UI element.
-	get owner(): UI {
-		return this._owner;
-	}
-
-	set owner( owner: UI ) {
-		this._owner = owner;
-	}
+	get owner(): UI 			{ return this._owner; }
+	set owner( owner: UI ) 		{ this._owner = owner; }
 
 	// removes the UI element from it's parent.
 	public remove(): UI {
@@ -615,6 +580,10 @@ class UI extends UI_Event {
 				this.owner.onRepaint();
 			}
 		}
+	}
+
+	get childNodes(): UI[] {
+		return this._children;
 	}
 
 	public implements( interface: string ): boolean {

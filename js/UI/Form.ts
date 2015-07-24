@@ -131,9 +131,9 @@ class UI_Form extends UI implements IFocusable {
 	   default is document.body ) in order to make the form visible.
 	 */
 	public open( ) {
-		UI_DialogManager.get().desktop.appendChild( this._root );
+		UI_DialogManager.get.desktop.appendChild( this._root );
 		this.onRepaint();
-		UI_DialogManager.get().onWindowOpened( this );
+		UI_DialogManager.get.onWindowOpened( this );
 	}
 
 	/* Closes the form  (removes it from Dialog Manager's desktop)
@@ -146,7 +146,7 @@ class UI_Form extends UI implements IFocusable {
 
 		this._state = EFormState.CLOSED;
 
-		UI_DialogManager.get().onWindowClosed( this );
+		UI_DialogManager.get.onWindowClosed( this );
 	}
 
 	get menuBar(): UI_MenuBar {
@@ -357,7 +357,7 @@ class UI_Form extends UI implements IFocusable {
 		}
 
 		if ( this._active ) {
-			UI_DialogManager.get().activeWindow = this;
+			UI_DialogManager.get.activeWindow = this;
 		}
 	}
 
@@ -372,8 +372,8 @@ class UI_Form extends UI implements IFocusable {
 	get parentClientRect(): IRect {
 		return this._root.parentNode
 			? {
-				"width": UI_DialogManager.get().desktop.offsetWidth,
-				"height": UI_DialogManager.get().desktop.offsetHeight
+				"width": UI_DialogManager.get.desktop.offsetWidth,
+				"height": UI_DialogManager.get.desktop.offsetHeight
 			}
 			: {
 				"width": 0,

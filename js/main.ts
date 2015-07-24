@@ -4,6 +4,8 @@
 
 /// <reference path="Mixin.ts" />
 
+/// <reference path="Utils.ts" />
+
 /// <reference path="Constraint.ts" />
 /// <reference path="Constraint/Token.ts" />
 /// <reference path="Constraint/Token/Or.ts" />

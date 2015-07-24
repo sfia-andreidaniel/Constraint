@@ -14,8 +14,4 @@ canvas.UI_Screen {
 }
 
 canvas.UI_Screen.visible {
-	pointer-events: all;
-	-webkit-pointer-events: all;
-	-moz-pointer-events: all;
-	-ms-pointer-events: all;
 }

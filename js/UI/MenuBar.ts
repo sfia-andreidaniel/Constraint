@@ -56,6 +56,7 @@ class UI_MenuBar extends UI implements IFocusable {
 
 			if ( this._focusedItem ) {
 				UI_Dom.removeClass( this._focusedItem.menuBarNode, 'focused' );
+				this._focusedItem.close();
 			}
 
 			this._focusedItem = item;
@@ -156,9 +157,25 @@ class UI_MenuBar extends UI implements IFocusable {
 						menuBar.focusItem( -1 );
 						handled = true;
 						break;
+					// RIGHT:
 					case 39:
 						menuBar.focusItem( 1 );
 						handled = true;
+						break;
+					// ESC:
+					case 27:
+						menuBar.form.activeElement = null;
+						break;
+					// ENTER:
+					case 13:
+						if ( menuBar.focusedItem ) {
+							menuBar.focusedItem.click();
+						}
+						break;
+					case 40: // DOWN
+						if ( menuBar.focusedItem ) {
+							menuBar.focusedItem.open();
+						}
 						break;
 				}
 
@@ -169,6 +186,21 @@ class UI_MenuBar extends UI implements IFocusable {
 				
 				if ( menuBar.focusedItem === null )
 					menuBar.focusItem(1);
+			} );
+
+			menuBar.on( 'blur', function() {
+				console.log( 'blurring' );
+				if ( menuBar.focusedItem ) {
+					menuBar.focusedItem = null;
+				}
+
+			} );
+
+			menuBar.on( 'request-item-focus', function( item: UI_MenuItem ) {
+				if ( !menuBar.disabled && menuBar.active && menuBar.form.active ) {
+					menuBar.focusedItem = item;
+					menuBar.focusedItem.open();
+				}
 			} );
 
 		} )( this );

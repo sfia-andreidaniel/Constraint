@@ -52,3 +52,10 @@ enum EFileSyncMode {
 	SYNC,
 	ASYNC
 }
+
+// MenuItems input types
+enum EMenuItemInputType {
+	NONE,
+	RADIO,
+	CHECKBOX
+}

@@ -13,6 +13,9 @@ class UI_DialogManager extends UI_Event {
 	public  _desktopWidth: number = null;
 	public  _desktopHeight: number = null;
 
+	protected _pointerX: number = 0;
+	protected _pointerY: number = 0;
+
 	public  screen: UI_Screen;
 
 	private _activeWindow: UI_Form = null;
@@ -20,6 +23,14 @@ class UI_DialogManager extends UI_Event {
 	constructor() {
 		super();
 		this._setupEvents_();
+	}
+
+	get pointerX(): number {
+		return this._pointerX;
+	}
+
+	get pointerY(): number {
+		return this._pointerY;
 	}
 
 	get desktopWidth(): number {
@@ -71,7 +82,7 @@ class UI_DialogManager extends UI_Event {
 
 	}
 
-	public static get(): UI_DialogManager {
+	static get get(): UI_DialogManager {
 		return UI_DialogManager.instance
 			? UI_DialogManager.instance
 			: ( UI_DialogManager.instance = new UI_DialogManager() );
@@ -169,6 +180,10 @@ class UI_DialogManager extends UI_Event {
 		}
 	}
 
+	public focusNextElement() {
+		this.handleTabKey({ "keyCode": 8, "charCode": 8, "preventDefault": function() {}, "stopPropagation": function() {} });
+	}
+
 	private _setupEvents_() {
 		( function( manager ) {
 
@@ -188,6 +203,10 @@ class UI_DialogManager extends UI_Event {
 
 						var target: any = evt.target || evt.srcElement;
 
+						if ( manager.screen.visible ) {
+							return;
+						}
+
 						while ( target && target != document.documentElement ) {
 							if ( target.getAttribute('data-role') == 'UI_Form' ) {
 								
@@ -206,15 +225,52 @@ class UI_DialogManager extends UI_Event {
 					}, true );
 
 					manager.desktop.addEventListener( 'keydown', function( ev ) {
-						var code = ev.keyCode || ev.charCode;
-						if ( code == 9 ) {
-							manager.handleTabKey( ev );
+						
+						if ( manager.screen.visible ) {
+							manager.screen.handleKeyDown( ev );
 						} else {
-							manager.handleRegularKey( ev );
+							var code = ev.keyCode || ev.charCode;
+							if ( code == 9 ) {
+								manager.handleTabKey( ev );
+							} else {
+								manager.handleRegularKey( ev );
+							}
 						}
 					}, true );
 
+					manager.desktop.addEventListener( 'mousemove', function( ev ){
+						
+						manager._pointerX = ev.pageX;
+						manager._pointerY = ev.pageY;
 
+						if ( manager.screen.visible ) {
+							manager.screen.handleMouseMove( ev );
+						}
+					}, true );
+
+					manager.desktop.addEventListener( 'mousedown', function( ev ) {
+						if ( manager.screen.visible ) {
+							manager.screen.handleMouseDown( ev );
+						}
+					}, true );
+
+					manager.desktop.addEventListener( 'mouseup', function( ev ) {
+						if ( manager.screen.visible ) {
+							manager.screen.handleMouseUp( ev );
+						}
+					}, true );
+
+					manager.desktop.addEventListener( 'click', function( ev ) {
+						if ( manager.screen.visible ) {
+							manager.screen.handleMouseClick( ev );
+						}
+					}, true );
+
+					manager.desktop.addEventListener( 'dblclick', function( ev ) {
+						if ( manager.screen.visible ) {
+							manager.screen.handleDoubleClick( ev );
+						}
+					}, true );
 
 				}, true );
 
@@ -246,4 +302,4 @@ class UI_DialogManager extends UI_Event {
 
 }
 
-UI_DialogManager.get();
+UI_DialogManager.get;

@@ -42,7 +42,8 @@ class UI_Event {
 
 			if ( this.$EVENTS_QUEUE && this.$EVENTS_QUEUE[ eventName ] ) {
 				for ( var i=0, len = this.$EVENTS_QUEUE[ eventName ].length; i<len; i++ ) {
-					this.$EVENTS_QUEUE[ eventName ][i].apply( this, args );
+					if ( this.$EVENTS_QUEUE && this.$EVENTS_QUEUE[ eventName ] && this.$EVENTS_QUEUE[ eventName ][ i ] )
+						this.$EVENTS_QUEUE[ eventName ][i].apply( this, args );
 				}
 			}
 

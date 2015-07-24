@@ -88,11 +88,11 @@ class UI_Anchor_Form extends UI_Anchor {
 
 						switch ( this._type ) {
 							case EAlignment.LEFT:
-								return ~~( ( UI_DialogManager.get().desktopWidth / 2 ) - ( owner.offsetRect.width / 2 ) + UI_Form._theme.borderWidth );
+								return ~~( ( UI_DialogManager.get.desktopWidth / 2 ) - ( owner.offsetRect.width / 2 ) + UI_Form._theme.borderWidth );
 								break;
 							case EAlignment.TOP:
 								return ~~( 
-									( UI_DialogManager.get().desktopHeight / 2 ) - ( owner.offsetRect.height / 2 )
+									( UI_DialogManager.get.desktopHeight / 2 ) - ( owner.offsetRect.height / 2 )
 									+ ( owner.borderStyle == EBorderStyle.NORMAL ? UI_Form._theme.titlebarHeight : 0 )
 									+ UI_Form._theme.borderWidth 
 									+ ~~( !!owner.menuBar ) * UI_Form._theme.menubarHeight
