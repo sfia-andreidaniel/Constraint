@@ -2,6 +2,8 @@
 
 /// <reference path="types.ts" />
 
+/// <reference path="es6-promise.d.ts" />
+
 /// <reference path="Mixin.ts" />
 
 /// <reference path="Utils.ts" />
@@ -17,6 +19,9 @@
 /// <reference path="$I.ts" />
 
 /// <reference path="UI/Resource.ts" />
+/// <reference path="UI/Resource/File.ts" />
+/// <reference path="UI/Sprite.ts" />
+
 /// <reference path="UI/Dom.ts" />
 /// <reference path="UI/Color.ts" />
 /// <reference path="UI/Event.ts" />

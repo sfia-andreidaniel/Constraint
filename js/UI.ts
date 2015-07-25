@@ -536,16 +536,16 @@ class UI extends UI_Event {
 	}
 
 
-	protected embrace( interface: string ) {
+	protected embrace( interfaceName: string ) {
 		this._embrace = this._embrace || {};
 		
-		if ( typeof this._embrace[ interface ] == 'undefined' ) {
+		if ( typeof this._embrace[ interfaceName ] == 'undefined' ) {
 			
-			this._embrace[ interface ] = true;
+			this._embrace[ interfaceName ] = true;
 
 			// if the interface has an associated mixin ( IFocusable => MFocusable )
 			// call the static mixin initializer on the event.
-			var mixin: any = Global.env[ interface.replace( /^I/, 'M' ) ];
+			var mixin: any = Global.env[ interfaceName.replace( /^I/, 'M' ) ];
 
 			if ( mixin && mixin.initialize ) {
 				mixin.initialize( this );
@@ -586,8 +586,8 @@ class UI extends UI_Event {
 		return this._children;
 	}
 
-	public implements( interface: string ): boolean {
-		return this._embrace && this._embrace[ interface ] === true;
+	public implements( interfaceName: string ): boolean {
+		return this._embrace && this._embrace[ interfaceName ] === true;
 	}
 
 }

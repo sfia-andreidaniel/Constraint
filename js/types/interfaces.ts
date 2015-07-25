@@ -79,3 +79,12 @@ interface IResourceTouple {
 	name: string;
 	resource: string;
 }
+
+interface IResourceFileVersion {
+	width?: number;
+	height?: number;
+	repeatX?: boolean;
+	repeatY?: boolean;
+	disabled?: boolean;
+	window?: IWindow;
+}

@@ -1,9 +1,10 @@
 @UI_Resource Base {
-	file     from      './resources/file.svg'     16x16 32x32 64x64 192x192 32:x disabled ;
-	folder   from      './resources/folder.png'   32x32 48x48 96x96 128x12 32:x 43:y disabled ;
+	file     from      './resources/file.svg'     16x16 disabled ;
+	folder   from      './resources/folder.png'   16x16 disabled ;
 };
 
 @UI_Form DemoForm {
+
 	width: 800;
 	height: 400;
 
