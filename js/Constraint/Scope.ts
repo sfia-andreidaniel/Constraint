@@ -29,6 +29,10 @@ class Constraint_Scope {
 			? true
 			: false;
 
+		if ( strict && type != 'document' && !Constraint.classRegistered( type ) ) {
+			throw new Error( 'STRICT: Unknown class type "' + type + '" is not declared' );
+		}
+
 		if ( this._isAnonymous && strict && type == 'UI_Form' ) {
 			throw new Error( 'STRICT: Type "UI_Form" cannot be introduced as anonymous (without using a name)' );
 		}

@@ -15,8 +15,8 @@ class Store_Item_NamedObject extends Store_Item_Object {
 		payload.name = String(payload.name || '');
 
 		this._data = payload;
-		this._owner.fire( 'update', this._id );
-		this._owner.onChange();
+		this.onUpdate();
+		this.onChange();
 	}
 
 	get name(): string {
@@ -26,8 +26,8 @@ class Store_Item_NamedObject extends Store_Item_Object {
 	set name( name: string ) {
 		if ( name != this._data.name ) {
 			this._data.name = String( name || '' );
-			this._owner.fire( 'update', this._id );
-			this._owner.onChange();
+			this.onUpdate();
+			this.onChange();
 		}
 	}
 

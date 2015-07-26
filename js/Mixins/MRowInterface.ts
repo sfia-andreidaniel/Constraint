@@ -170,6 +170,7 @@ class MRowInterface extends UI implements IRowInterface {
 		}
 	}
 
+	// @Implements on target.
 	public onRowIndexClick( rowIndex: number, shiftKey: boolean = false, ctrlKey: boolean = false ) {
 
 		if ( rowIndex < 0 || rowIndex >= this.length ) {

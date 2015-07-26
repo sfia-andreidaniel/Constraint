@@ -55,3 +55,9 @@ class UI_HorizontalSplitter extends UI_VerticalSplitter {
 
 	}
 }
+
+Constraint.registerClass( {
+	"name": "UI_HorizontalSplitter",
+	"extends": "UI_VerticalSplitter",
+	"properties": []
+} );

@@ -324,10 +324,6 @@ Constraint.registerClass( {
 			"type": "boolean"
 		},
 		{
-			"name": "wantTabs",
-			"type": "boolean"
-		},
-		{
 			"name": "tabIndex",
 			"type": "boolean"
 		},

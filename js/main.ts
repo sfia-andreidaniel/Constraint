@@ -35,11 +35,14 @@
 /// <reference path="Store/Strings.ts" />
 /// <reference path="Store/Objects.ts" />
 /// <reference path="Store/NamedObjects.ts" />
+/// <reference path="Store/NestedObjects.ts" />
+/// <reference path="Store/View.ts" />
 
 /// <reference path="Store/Item.ts" />
 /// <reference path="Store/Item/String.ts" />
 /// <reference path="Store/Item/Object.ts" />
 /// <reference path="Store/Item/NamedObject.ts" />
+/// <reference path="Store/Item/NestableObject.ts" />
 
 /// <reference path="UI/Anchor.ts" />
 /// <reference path="UI/Anchor/Form.ts" />
@@ -62,10 +65,11 @@
 /// <reference path="UI/Panel.ts" />
 /// <reference path="UI/MenuBar.ts" />
 /// <reference path="UI/MenuItem.ts" />
+/// <reference path="UI/Tree.ts" />
 
 // ADD DEFAULT RESOURCE FILES
 
-UI_Resource.addResourceFile( "Constraint", "resources/Constraint.res" );
+UI_Resource.addResourceFile( "Constraint", "/resources/Constraint.res" );
 
 // Delimiter to remove the constraint runtime from it's makefiles.
 var ____END_OF_STUB____ = undefined;

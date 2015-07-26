@@ -68,6 +68,17 @@
 		right: 20;
 		bottom: 40;
 
+		@UI_Tab Tab0 {
+			caption: 'Tree';
+
+			@UI_Tree FS_Tree {
+				left: 20;
+				top: 20;
+				right: 20;
+				bottom: 20;
+			};
+		};
+
 		@UI_Tab Tab1 {
 			caption: 'Layout';
 

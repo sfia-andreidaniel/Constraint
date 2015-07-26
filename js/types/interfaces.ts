@@ -69,6 +69,11 @@ interface INameable extends IIdentifiable {
 	name: string;
 }
 
+interface INestable extends INameable {
+	parent: any;
+	isLeaf?: any;
+}
+
 interface IResourceDef {
 	file: string;
 	versions: string[];

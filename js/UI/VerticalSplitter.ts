@@ -62,7 +62,7 @@ class UI_VerticalSplitter extends UI {
 		}
 	}
 
-	get minDistance() {
+	get minDistance(): number {
 		return this._minDistance;
 	}
 
@@ -174,3 +174,22 @@ class UI_VerticalSplitter extends UI {
 
 	}
 }
+
+Constraint.registerClass( {
+	"name": "UI_VerticalSplitter",
+	"extends": "UI",
+	"properties": [
+		{
+			"name": "anchorType",
+			"type": "enum:EAlignment"
+		},
+		{
+			"name": "minDistance",
+			"type": "number"
+		},
+		{
+			"name": "distance",
+			"type": "number"
+		}
+	]
+} );

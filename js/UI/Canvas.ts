@@ -58,7 +58,6 @@ class UI_Canvas extends UI {
 
 	// renders something on the canvas.
 	public render() {
-		console.log( 'render' );
 	}
 
 	get logicalWidth(): number {

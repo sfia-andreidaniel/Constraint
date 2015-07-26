@@ -53,6 +53,10 @@ class Store extends UI_Event {
 		this.setItems( values || [] );
 	}
 
+	public createQueryView( query: ( item: Store_Item ) => boolean ): Store_View {
+		return new Store_View( this, query );
+	}
+
 	public onChange() {
 		this._changeThrottler.run();
 	}
@@ -82,6 +86,20 @@ class Store extends UI_Event {
 		return this._length;
 	}
 
+	public getElementById( id: any ): Store_Item {
+		
+		if ( id === null ) {
+			return null;
+		} else {
+			for ( var i=0; i< this._length; i++ ) {
+				if ( this._items[i].id == id ) {
+					return this._items[i];
+				}
+			}
+			return null;
+		}
+	}
+
 	public insert( payload: any ): any {
 
 		var item: Store_Item;
@@ -106,12 +124,17 @@ class Store extends UI_Event {
 	}
 
 	public remove( id: any ) {
+		
+		var ptr: Store_Item;
+
 		for ( var i=0; i<this._length; i++ ) {
 			if ( this._items[i].id == id ) {
+				ptr = this._items[i];
 				this._items.splice( i, 1 );
 				this._length--;
 				this.fire( 'remove', id );
 				this.onChange();
+				ptr.onRemove();
 				return;
 			}
 		}
@@ -136,6 +159,7 @@ class Store extends UI_Event {
 			this._length--;
 			this.fire( 'remove', ptr.id );
 			this.onChange();
+			ptr.onRemove();
 			return ptr.id;
 		} else {
 			throw new Error( 'Index out of bounds: ' + index );
@@ -194,7 +218,10 @@ class Store extends UI_Event {
 				oldIdList.push( this._items[i].id );
 			}
 
-			this._items.sort( this.compare );
+			( function( me ) {
+				me._items.sort( function( a,b ) { return me.compare( a, b ); } );
+			} )( this );
+			
 
 			for ( i = 0; i < this._length; i++ ) {
 				if ( oldIdList[i] != this._items[i].id ) {

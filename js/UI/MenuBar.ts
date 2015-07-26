@@ -213,3 +213,22 @@ class UI_MenuBar extends UI implements IFocusable {
 }
 
 Mixin.extend( 'UI_MenuBar', 'MFocusable' );
+
+Constraint.registerClass( {
+	"name": "UI_MenuBar",
+	"extends": "UI",
+	"properties": [
+		{
+			"name": "active",
+			"type": "boolean"
+		},
+		{
+			"name": "tabIndex",
+			"type": "number"
+		},
+		{
+			"name": "active",
+			"type": "boolean"
+		}
+	]
+} );

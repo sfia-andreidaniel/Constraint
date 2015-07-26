@@ -645,3 +645,13 @@ class UI_Resource extends UI_Event {
 	}
 
 }
+
+Constraint.registerClass( {
+	"name": "UI_Resource",
+	"properties": [
+		{
+			"name": "string",
+			"type": "string"
+		}
+	]
+} );

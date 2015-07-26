@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<script type="text/javascript" src="../main.js"></script>
+</head>
+<body>
+
+	<textarea id="parent" style="width: 40%; height: 300px;"></textarea>
+	<textarea id="view" style="width: 40%; height: 300px;"></textarea>
+
+	<script>
+
+		function indent( num ) {
+			var result = '';
+			for ( var i=0; i<num; i++ ) {
+				result += ' ';
+			}
+			return result;
+		}
+
+		var store = new Store_NestedObjects(),
+		    items = [
+		    	{
+		    		"id": 1,
+		    		"parent": null,
+		    		"name": "My Computer"
+		    	},
+		    	{
+		    		"id": 20,
+		    		"parent": null,
+		    		"isLeaf": true,
+		    		"name": "My file"
+		    	},
+		    	{
+		    		"id": 2,
+		    		"parent": 1,
+		    		"name": "C:"
+		    	},
+		    	{
+		    		"id": 3,
+		    		"parent": 1,
+		    		"name": "D:"
+		    	},
+		    	{
+		    		"id": 4,
+		    		"parent": 2,
+		    		"name": "My Documents"
+		    	},
+		    	{
+		    		"id": 5,
+		    		"parent": 4,
+		    		"name": "User"
+		    	},
+		    	{
+		    		"id": 6,
+		    		"parent": 4,
+		    		"name": "My Music"
+		    	}
+		    ];
+
+		function listStore() {
+			
+			var out = [];
+
+			for ( var i=0, len = store.length; i<len; i++ ) {
+				
+				out.push( indent( 4 * store.itemAt(i).depth ) + store.itemAt(i).id + ' => ' + store.itemAt(i).name );
+
+			}
+
+			document.getElementById( 'parent' ).value = out.join( '\n' );
+		}
+
+		store.on( 'ready', function() {
+			console.log( 'store is ready' );
+		} );
+
+		store.on( 'update', function( id ) {
+			console.log( 'updated: ', id );
+		} );
+
+		store.on( 'insert', function( id ) {
+			console.log( 'inserted: ', id );
+		} );
+
+		store.on( 'remove', function( id ) {
+			console.log( 'removed: ', id );
+		} );
+
+		store.on( 'change', function() {
+			console.log( 'something changed in store' );
+			listStore();
+		} );
+
+		var view = store.createQueryView( function( item ) {
+			return item.visible;
+		} );
+
+		function listView() {
+
+			var out = [];
+
+			for ( var i=0, len = view.length; i<len; i++ ) {
+				out.push( indent( 4 * view.itemAt(i).depth ) + view.itemAt(i).id + ' => ' + view.itemAt(i).name );
+			}
+
+			document.getElementById( "view" ).value = out.join( '\n' );
+		}
+
+		view.on( 'ready', function() {
+			console.log( 'view is ready' );
+		} );
+
+		view.on( 'update', function( id ) {
+			console.log( 'view updated: ', id );
+		} );
+
+		view.on( 'insert', function( id ) {
+			console.log( 'view inserted: ', id );
+		} );
+
+		view.on( 'remove', function( id ) {
+			console.log( 'view removed: ', id );
+		} );
+
+		view.on( 'change', function() {
+			console.log( 'something changed in view' );
+			listView();
+		} );
+
+		store.setItems( items );
+
+	</script>
+
+
+</body>
+</html>

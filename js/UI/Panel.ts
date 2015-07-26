@@ -102,3 +102,18 @@ class UI_Panel extends UI {
 
 
 }
+
+Constraint.registerClass( {
+	"name": "UI_Panel",
+	"extends": "UI",
+	"properties": [
+		{
+			"name": "logicalWidth",
+			"type": "number"
+		},
+		{
+			"name": "logicalHeight",
+			"type": "number"
+		}
+	]
+});

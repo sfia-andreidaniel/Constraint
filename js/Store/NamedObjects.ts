@@ -37,6 +37,4 @@ class Store_NamedObjects extends Store_Objects {
 		}
 	}
 
-
-
 }

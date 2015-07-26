@@ -86,3 +86,14 @@ class UI_Tab extends UI {
 	}
 
 }
+
+Constraint.registerClass( {
+	"name": "UI_Tab",
+	"extends": "UI",
+	"properties": [
+		{
+			"name": "caption",
+			"type": "string"
+		}
+	]
+} );

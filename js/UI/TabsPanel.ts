@@ -196,3 +196,26 @@ class UI_TabsPanel extends UI implements IFocusable {
 }
 
 Mixin.extend( 'UI_TabsPanel', 'MFocusable' );
+
+Constraint.registerClass( {
+	"name": "UI_TabsPanel",
+	"extends": "UI",
+	"properties": [
+		{
+			"name": "active",
+			"type": "boolean"
+		},
+		{
+			"name": "tabIndex",
+			"type": "number"
+		},
+		{
+			"name": "active",
+			"type": "boolean"
+		},
+		{
+			"name": "activeTab",
+			"type": "UI_Tab"
+		}
+	]
+} );
