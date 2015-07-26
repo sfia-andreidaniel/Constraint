@@ -92,9 +92,7 @@
 			listStore();
 		} );
 
-		var view = store.createQueryView( function( item ) {
-			return item.visible;
-		} );
+		var view = store.createTreeView();
 
 		function listView() {
 

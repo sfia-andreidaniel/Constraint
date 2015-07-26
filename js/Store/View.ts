@@ -77,8 +77,13 @@ class Store_View extends Store {
 		}
 
 		if ( updated ) {
+			this.onBeforeChange();
 			this.fire('change');
 		}
+
+	}
+
+	protected onBeforeChange() {
 
 	}
 

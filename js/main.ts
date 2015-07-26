@@ -37,6 +37,7 @@
 /// <reference path="Store/NamedObjects.ts" />
 /// <reference path="Store/NestedObjects.ts" />
 /// <reference path="Store/View.ts" />
+/// <reference path="Store/View/Tree.ts" />
 
 /// <reference path="Store/Item.ts" />
 /// <reference path="Store/Item/String.ts" />
