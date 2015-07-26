@@ -13,6 +13,10 @@
 	width: ${size}px;
 	box-sizing: border-box;
 	overflow: hidden;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 .UI_HorizontalSplitter {
@@ -28,6 +32,10 @@
 	height: ${size}px;
 	box-sizing: border-box;
 	overflow: hidden;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 .UI_VerticalSplitter.disabled,

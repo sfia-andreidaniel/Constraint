@@ -33,6 +33,18 @@ class UI_Resource extends UI_Event {
 	    this._setupEvents_();
 	}
 
+	get ready(): boolean {
+
+		for ( var i=0, len = this.files.length; i<len; i++ ) {
+			if ( this.files[i].ready == false ) {
+				return false;
+			}
+		}
+
+		return true;
+
+	}
+
 	public ensureFile( fileName: string, buffer: string ): UI_Resource_File {
 		for ( var i=0, len = this.files.length; i<len; i++ ) {
 			if ( this.files[i].name == fileName ) {
@@ -56,7 +68,6 @@ class UI_Resource extends UI_Event {
 	}
 
 	public updateCSS() {
-		console.log( 'update css.' );
 
 		//document.body.appendChild( this.stage );
 
@@ -405,31 +416,43 @@ class UI_Resource extends UI_Event {
 		( function( me ) {
 
 			me.on( 'load', function( file: UI_Resource_File ) {
-				console.log( 'loaded: ' + me.name + '/' + file.name );
-				//document.body.appendChild( file.image );
+				//console.log( 'loaded: ' + me.name + '/' + file.name );
+				
+				if ( me.ready ) {
+					UI_Resource.onResourceLoaded( me );
+				}
+
 			} );
 
 			me.on( 'error', function( file: UI_Resource_File ) {
+	
 				console.warn( 'error: ' + me.name + '/' + file.name );
+				
+				if ( me.ready ) {
+					UI_Resource.onResourceLoaded( me );
+				}
+				
+				
 			} );
 
 		} )( this );
 	}
 
 
-	public static resources: UI_Resource[] = [];
-	public static loading: number = 0;
-	public static files: any = {};
+	public static resources : UI_Resource[] = [];
+	public static files 	: any = {};
 
 	public static addResourceFile( resourceName: string, fileURI: string ) {
-		console.log( 'addResourceFile: ', resourceName, fileURI );
 
-		UI_Resource.loading++;
+		if ( !Global.isBrowser )
+			return;
+
+		UI_Resource.onResourceQueue( resourceName );
 
 		FS_File.openAsync( fileURI ).then( function( fileData: string ) {
 			UI_Resource.addResource( fileData, resourceName );
 		} )['catch']( function( err: string ) {
-			UI_Resource.loading--;
+			UI_Resource.onResourceFailed( resourceName );
 			console.error( 'Failed to load resource: ' + resourceName + ': ' + err );
 		} );
 
@@ -490,7 +513,8 @@ class UI_Resource extends UI_Event {
 			matches = files[i].split( ' ' );
 
 			if ( matches.length < 2 ) {
-				throw new Error( 'Corrupted resource: ' + resourceName )
+				UI_Resource.onResourceFailed( resourceName );
+				throw new Error( 'Corrupted resource: ' + resourceName );
 			}
 
 			disabled = false;
@@ -515,7 +539,109 @@ class UI_Resource extends UI_Event {
 
 		}
 		
-		UI_Resource.loading--;
+	}
+
+	public static queuedResources: string[] = [];
+	public static loadedResources: string[] = [];
+	public static failedResources: string[] = [];
+	public static subscribers: { requirements: string[]; accept: any; reject: any }[] = [];
+
+	public static onResourceQueue( resourceName: string ) {
+		if ( UI_Resource.queuedResources.indexOf( resourceName ) > -1 ) {
+			UI_Resource.queuedResources.push( resourceName );
+		}
+
+		if ( UI_Resource.failedResources.indexOf( resourceName ) > -1 ) {
+			UI_Resource.failedResources.splice( UI_Resource.failedResources.indexOf( resourceName ) );
+		}
+	}
+
+	public static onResourceStatusChanged( ) {
+
+		var name: string,
+		    subscriber: { requirements: string[]; accept: any; reject: any } = null,
+		    loaded: number = 0;
+
+		for ( var len = UI_Resource.subscribers.length - 1, i=len; i >= 0; i-- ) {
+			
+			subscriber = UI_Resource.subscribers[i];
+
+			for ( var j=0, n = subscriber.requirements.length; j<n; j++ ) {
+				
+				name = subscriber.requirements[ j ];
+
+				// If anything in the error loop, reject.
+				if ( UI_Resource.failedResources.indexOf( name ) > -1 ) {
+
+					console.log( 'UI_RES failed: ' + name );
+
+					// mark for deletion
+					UI_Resource.subscribers.splice( i, 1 );
+
+					subscriber.reject( new Error( 'Failed to load resource: ' + name ) );
+
+					break;
+
+				} else 
+
+				if ( UI_Resource.queuedResources.indexOf( name ) > -1 ) {
+					// still loading
+					break;
+				}
+
+				else
+
+				if ( UI_Resource.loadedResources.indexOf( name ) > -1 ) {
+					loaded++;
+				}
+
+			}
+
+			if ( loaded == n ) {
+				UI_Resource.subscribers.splice( i, 1 );
+				subscriber.accept( true );
+			}
+
+		}
+	}
+
+	public static onResourceLoaded( resource: UI_Resource ) {
+
+		if ( UI_Resource.queuedResources.indexOf( resource.name ) > -1 ) {
+			UI_Resource.queuedResources.splice( UI_Resource.queuedResources.indexOf( resource.name ), 1 );
+		}
+
+		if ( UI_Resource.loadedResources.indexOf( resource.name ) == -1 ) {
+			UI_Resource.loadedResources.push( resource.name );
+			UI_Resource.onResourceStatusChanged();
+		}
+
+	}
+
+	public static onResourceFailed( resourceName: string ) {
+
+		if ( UI_Resource.queuedResources.indexOf( resourceName ) > -1 ) {
+			UI_Resource.queuedResources.splice( UI_Resource.queuedResources.indexOf( resourceName ), 1 );
+		}
+
+		if ( UI_Resource.failedResources.indexOf( resourceName ) == -1 ) {
+			UI_Resource.failedResources.push( resourceName );
+			UI_Resource.onResourceStatusChanged();
+		}
+
+	}
+
+	public static require( resources: string[] ): Thenable<boolean> {
+			
+			var result: Thenable<boolean>;
+
+			result = new Promise( function( accept, reject ) {
+				UI_Resource.subscribers.push( { requirements: resources, accept: accept, reject: reject } );
+			} );
+
+			UI_Resource.onResourceStatusChanged();
+
+			return result;
 	}
 
 }

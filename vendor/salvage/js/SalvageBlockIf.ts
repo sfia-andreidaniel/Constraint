@@ -8,7 +8,7 @@ class SalvageBlockIf extends SalvageBlock {
 	protected ifchildren: SalvageBlock[] = [];
 	protected elsechildren: SalvageBlock[] = [];
 
-	constructor( condition: string[], contents: string ) {
+	constructor( condition: string[], contents: string, private isUnless: boolean = false ) {
 		super( );
 
 		this._condition = condition;
@@ -48,7 +48,12 @@ class SalvageBlockIf extends SalvageBlock {
 		    i: number =0,
 		    len: number;
 
-		if ( ( Salvage.isPrimitive( data ) && !!( data ) ) || ( Salvage.isComplex( data ) && !Salvage.isEMPTY( data ) ) ) {
+		var ifBranchEval: boolean = ( ( Salvage.isPrimitive( data ) && !!( data ) ) || ( Salvage.isComplex( data ) && !Salvage.isEMPTY( data ) ) );
+
+		if ( this.isUnless )
+			ifBranchEval = !ifBranchEval;
+
+		if ( ifBranchEval ) {
 
 			for ( i=0, len = this.ifchildren.length; i<len; i++ ) {
 				out.push( this.ifchildren[i].parse( context ) );

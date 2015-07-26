@@ -9,7 +9,8 @@ class UI_MenuItem extends UI {
 		bgColor: 		 $I.string('UI.UI_MenuBar/menuitem.background.color'),
 		selectedBgColor: $I.string('UI.UI_MenuBar/menuitem.background.selectedColor'),
 		disabledColor:   $I.string('UI.UI_MenuBar/menuitem.color.disabled'),
-		color:           $I.string('UI.UI_MenuBar/menuitem.color.normal')
+		color:           $I.string('UI.UI_MenuBar/menuitem.color.normal'),
+		border:          $I.string('UI.UI_MenuBar/menuitem.borderColor')
 	};
 
 	public static FLAG_ICON     : number = 0;
@@ -28,13 +29,16 @@ class UI_MenuItem extends UI {
 	protected _caption: string = '';
 	protected _inputType: EMenuItemInputType = EMenuItemInputType.NONE;
 	protected _shortcutKey: string = null;
-	protected _icon: string = null;
+	protected _icon: UI_Sprite = null;
+	protected _checked: boolean = false;
+	protected _groupName: string = null;
+	protected _action: string = null;
+	protected _id: string = null;
 
 	protected _overlay: UI_Screen_Window = null;
 	protected _overlayMouseDownHandler: ( x: number, y: number, button: number ) => void;
 
 	protected _menuBarRootNode: any;
-	protected _action: string = null;
 	protected _selectedIndex: number = -1;
 
 	constructor( owner: UI ) {
@@ -80,6 +84,36 @@ class UI_MenuItem extends UI {
 					break;
 			}
 			this.onRepaint();
+		}
+	}
+
+	get checked(): boolean {
+		return this._checked;
+	}
+
+	set checked( on: boolean ) {
+		on = !!on;
+		if ( on != this._checked ) {
+			
+			this._checked = on;
+			
+			if ( this._checked && this._inputType == EMenuItemInputType.RADIO && this._owner ) {
+				this._owner.fire( 'child-checked', this, this.groupName );
+			}
+
+			this.onRepaint();
+		}
+	}
+
+	get groupName(): string {
+		return this._groupName;
+	}
+
+	set groupName( groupName: string ) {
+		groupName = String( groupName || '' ) || null;
+		
+		if ( groupName != this._groupName ) {
+			this._groupName = groupName;
 		}
 	}
 
@@ -135,12 +169,55 @@ class UI_MenuItem extends UI {
 		return this._menuBarRootNode;
 	}
 
+	get target(): UI {
+		switch ( true ) {
+			case this._owner instanceof UI_MenuItem:
+				return (<UI_MenuItem>this._owner).target;
+				break;
+			case this._owner instanceof UI_MenuBar:
+				return (<UI_MenuBar>this._owner).target;
+				break;
+			default:
+				return null;
+		}
+	}
+
+	get id(): string {
+		return this._id;
+	}
+
+	set id( id: string ) {
+		this._id = String( id || '' ) || null;
+	}
+
 	public click() {
 		
 		if ( this.disabled )
 			return;
 
-		console.log( 'clicked: ', this._caption );
+		switch ( this._inputType ) {
+
+			case EMenuItemInputType.RADIO:
+				this.checked = true;
+				break;
+
+			case EMenuItemInputType.CHECKBOX:
+				this.checked = !this.checked;
+				break;
+
+		}
+
+		if ( this.action ) {
+
+			var target: UI = this.target;
+
+			if ( target && !target.disabled ) {
+				target.fire( 'action', this.action, this.id, this.checked, this );
+			}
+
+			this.close( true );
+
+		}
 
 	}
 
@@ -154,12 +231,16 @@ class UI_MenuItem extends UI {
 		( function( menuItem ) {
 
 			menuItem.on( 'disabled', function (on: boolean) {
+				
 				if ( menuItem._menuBarRootNode ) {
 					if ( !on ) {
 						UI_Dom.removeClass( menuItem._menuBarRootNode, 'disabled' );
 					} else {
 						UI_Dom.addClass( menuItem._menuBarRootNode, 'disabled' );
 					}
+					this.render();
+				} else {
+					this.onRepaint();
 				}
 			});
 
@@ -181,6 +262,20 @@ class UI_MenuItem extends UI {
 
 			} );
 
+			menuItem.on( 'child-checked', function( item: UI_MenuItem, groupName: string ) {
+				
+				var cursor: UI_MenuItem;
+
+				for ( var i=0, len = this._children.length; i<len; i++ ) {
+					if ( this._children[i] != item ) {
+						cursor = <UI_MenuItem>this._children[i];
+						if ( cursor.checked && cursor.inputType == EMenuItemInputType.RADIO && cursor.groupName == groupName ) {
+							cursor.checked = false;
+						}
+					}
+				}
+			} );
+
 		} )( this );
 	}
 
@@ -194,15 +289,18 @@ class UI_MenuItem extends UI {
 	}
 
 	get icon(): string {
-		return this._icon;
+		return this._icon ? this._icon.path : null;
 	}
 
 	set icon( icon: string ) {
 		icon = String( icon || '' ) || null;
-		if ( icon != this._icon ) {
-			this._icon = icon;
-			this.onRepaint();
+		
+		if ( icon ) {
+			this._icon = UI_Resource.createSprite(icon + '/' + UI_MenuItem._theme.iconSize + 'x' + UI_MenuItem._theme.iconSize );
+		} else {
+			this._icon = null;
 		}
+
 	}
 
 	get isOpened(): boolean {
@@ -222,6 +320,9 @@ class UI_MenuItem extends UI {
 	public onRepaint(): boolean {
 		if ( this._owner ) {
 			if ( this._owner instanceof UI_MenuItem ) {
+				
+				(<UI_MenuItem>this._owner).render();
+
 				return true;
 			} else {
 				return false;
@@ -259,7 +360,7 @@ class UI_MenuItem extends UI {
 
 				if ( child.shortcutKey ) {
 					keyboard = true;
-					keyboardWidth = Math.max( screen.measureText( child.shortcutKey, UI_MenuItem._theme.font ), keyboardWidth );
+					keyboardWidth = Math.max( screen.measureText( child.shortcutKey, UI_MenuItem._theme.font ) + 20, keyboardWidth );
 				}
 
 				if ( !childNodes && child._children.length ) {
@@ -278,7 +379,7 @@ class UI_MenuItem extends UI {
 			renderFlags[ UI_MenuItem.FLAG_ICON ]  = ~~icon * ( UI_MenuItem._theme.iconSize + padding );
 			renderFlags[ UI_MenuItem.FLAG_LABEL ] = width + padding + padding;
 			renderFlags[ UI_MenuItem.FLAG_KBD ]   = ~~keyboard * ( keyboardWidth + padding );
-			renderFlags[ UI_MenuItem.FLAG_CHILDREN ] = ~~childNodes * 16;
+			renderFlags[ UI_MenuItem.FLAG_CHILDREN ] = ~~childNodes * 30;
 
 			for ( i=0; i<len; i++ ) {
 
@@ -304,18 +405,27 @@ class UI_MenuItem extends UI {
 	}
 
 	get height(): number {
-		return 2 * UI_MenuItem._theme.padding +
+		return 2 +
 			   this._children.length * UI_MenuItem._theme.height;
 	}
 
 	public render() {
+
+		if ( !this._overlay ) {
+			return;
+		}
 
 		this._overlay.beginPaint();
 
 		this._overlay.fillStyle = UI_MenuItem._theme.bgColor;
 		this._overlay.fillRect( 0, 0, this._overlay.width, this._overlay.height );
 
-		var top = UI_MenuItem._theme.padding;
+		this._overlay.strokeStyle = UI_MenuItem._theme.border;
+		this._overlay.lineWidth = 1;
+		this._overlay.rect( .5, .5, this._overlay.width - 1, this._overlay.height - 1 );
+		this._overlay.stroke();
+
+		var top = 1;
 
 		for ( var i=0, len = this._children.length; i<len; i++ ) {
 			(<UI_MenuItem>this._children[i]).paintAt( top, this._overlay, i == this.selectedIndex );
@@ -336,9 +446,9 @@ class UI_MenuItem extends UI {
 			"height": win.height
 		};
 
-		if ( paintActive ) {
+		if ( paintActive && !this.disabled ) {
 			win.fillStyle = UI_MenuItem._theme.selectedBgColor;
-			win.fillRect( UI_MenuItem._theme.padding, top, win.width - 2 * UI_MenuItem._theme.padding, UI_MenuItem._theme.height );
+			win.fillRect( 1, top, win.width - 2, UI_MenuItem._theme.height );
 		}
 
 		win.font = UI_MenuItem._theme.font;
@@ -353,12 +463,32 @@ class UI_MenuItem extends UI {
 
 		if ( this.renderFlags[ UI_MenuItem.FLAG_ICON ] > 0 ) {
 
+			if ( this._icon ) {
+				this._icon.paintWin( win, left, top + ~~( UI_MenuItem._theme.height / 2 - UI_MenuItem._theme.iconSize / 2 ) );
+			}
+
 			left += this.renderFlags[ UI_MenuItem.FLAG_ICON ];
 		}
 
 		// Paint input if any
 
 		if ( this.renderFlags[ UI_MenuItem.FLAG_INPUT ] > 0 ) {
+
+			switch ( this._inputType ) {
+				case EMenuItemInputType.RADIO:
+				case EMenuItemInputType.CHECKBOX:
+
+					if ( this._checked ) {
+						
+						UI_Resource.createSprite( 
+							'Constraint/menuitem_checked/' + ( UI_MenuItem._theme.inputSize + 'x' + UI_MenuItem._theme.inputSize ) + ( this.disabled ? '-disabled' : '' ) 
+						).paintWin( win, left, top + ~~( UI_MenuItem._theme.height / 2 - 10 ) );
+
+					} 
+
+					break;
+					
+			}
 
 			left += this.renderFlags[ UI_MenuItem.FLAG_INPUT ];
 		}
@@ -380,11 +510,27 @@ class UI_MenuItem extends UI {
 		if ( this.renderFlags[ UI_MenuItem.FLAG_KBD ] > 0 ) {
 
 			left += this.renderFlags[ UI_MenuItem.FLAG_KBD ];
+
+			if ( this._shortcutKey ) {
+				win.textBaseline = 'middle';
+				win.textAlign = 'right';
+				win.fillStyle = color;
+				win.fillText( this._shortcutKey, left, top + ~~( UI_MenuItem._theme.height / 2 ) );
+			}
+
 		}
 
 		// Paint the opener sign if have children
 
 		if ( this.renderFlags[ UI_MenuItem.FLAG_CHILDREN ] > 0 ) {
+
+			if ( this._children.length ) {
+				
+				UI_Resource.createSprite( 
+					'Constraint/menuitem_expander' + ( paintActive ? '_hover' : '' ) + '/20x20' + ( this.disabled ? '-disabled' : '' ) 
+				).paintWin( win, left, top + ~~( UI_MenuItem._theme.height / 2 - 10 ) );
+
+			}
 
 			left += this.renderFlags[ UI_MenuItem.FLAG_CHILDREN ];
 		}
@@ -458,12 +604,10 @@ class UI_MenuItem extends UI {
 				break;
 			// UP
 			case 38:
-				console.log( 'UP: in ' + this._caption );
 				this.modifySelectedIndex( -1 );
 				break;
 			// DOWN
 			case 40:
-				console.log( 'DOWN: in ' + this._caption );
 				this.modifySelectedIndex( 1 );
 				break;
 			// LEFT
@@ -492,13 +636,16 @@ class UI_MenuItem extends UI {
 
 				}
 				break;
+			
+			// ENTER, SPACE triggers click
 			case 13:
+			case 32:
 				if ( this._selectedIndex != -1 ) {
 					(<UI_MenuItem>this._children[ this._selectedIndex ]).click();
 				}
 				break;
 			default:
-				console.log( 'got: ', code, 'in: ', this._caption );
+				//console.log( 'got: ', code, 'in: ', this._caption );
 				break;
 		}
 
@@ -682,7 +829,7 @@ class UI_MenuItem extends UI {
 					"height": this.height
 				};
 
-				placement = UI_Screen.get.getBestPlacementMenuStyle( this.renderRect, size );
+				placement = UI_Screen.get.getBestPlacementMenuStyle( this.renderRect, size, 1 );
 
 				this.openAtXY( placement.x, placement.y, { "width": placement.width, "height": placement.height } );
 
@@ -692,3 +839,34 @@ class UI_MenuItem extends UI {
 	}
 
 }
+
+Constraint.registerClass( {
+	"name": "UI_MenuItem",
+	"extends": "UI",
+	"properties": [
+		{
+			"name": "inputType",
+			"type": "enum:EMenuItemInputType"
+		},
+		{
+			"name": "caption",
+			"type": "string"
+		},
+		{
+			"name": "icon",
+			"type": "string"
+		},
+		{
+			"name": "shortcutKey",
+			"type": "string"
+		},
+		{
+			"name": "action",
+			"type": "string"
+		},
+		{
+			"name": "id",
+			"type": "string"
+		}
+	]
+});

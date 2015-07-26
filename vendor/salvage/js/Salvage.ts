@@ -76,6 +76,11 @@ class Salvage {
 			"match": 2
 		},
 		{
+			"type": "unless",
+			"expr": /^\{\{([\s]+)?#unless[\s]+([a-z\d\.\[\]\/_\$]+)([\s]+)?\}\}/i,
+			"match": 2
+		},
+		{
 			"type": "else",
 			"expr": /^\{\{([\s]+)?#else([\s]+)?\}\}/i,
 			"match": 0
@@ -342,8 +347,8 @@ class Salvage {
 
 					case 'end':
 
-						if ( !ownerBlock || [ 'if', 'each', 'with' ].indexOf( ownerBlock.type ) == -1 ) {
-							throw "An 'end' block can be placed only after an 'if', 'each', or 'with' block!";
+						if ( !ownerBlock || [ 'if', 'each', 'with', 'unless' ].indexOf( ownerBlock.type ) == -1 ) {
+							throw "An 'end' block can be placed only after an 'if', 'unless', 'each', or 'with' block!";
 						}
 
 						// flush end
@@ -371,6 +376,13 @@ class Salvage {
 
 						raw = raw.substr( matches[0].length );
 						destination.push( lastBlock = new SalvageBlockIf( SalvageContext.parsePATH( matches[ matchIndex ] ) /* condition */, raw ) );
+						raw = lastBlock.unconsumedRawText;
+
+						break;
+
+					case 'unless':
+						raw = raw.substr( matches[0].length );
+						destination.push( lastBlock = new SalvageBlockIf( SalvageContext.parsePATH( matches[ matchIndex ] ) /* condition */, raw, true ) );
 						raw = lastBlock.unconsumedRawText;
 
 						break;

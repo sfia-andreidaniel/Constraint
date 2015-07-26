@@ -1,0 +1,5 @@
+@UI_Resource Constraint {
+	menuitem_checked    		from '../vendor/self/menuitem-checked.svg'    	  20x20 disabled;
+	menuitem_expander   		from '../vendor/self/menuitem-expander.svg'   	  20x20 disabled;
+	menuitem_expander_hover 	from '../vendor/self/menuitem-expander-hover.svg' 20x20 disabled;
+};

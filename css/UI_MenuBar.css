@@ -3,6 +3,10 @@
 .ui.UI_Form > .inner > .menubar {
 	background-color: ${titlebar.inactiveBgColor};
 	color: ${titlebar.inactiveColor};
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 .ui.UI_Form.focus-active > .inner > .menubar {

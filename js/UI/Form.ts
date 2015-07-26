@@ -787,6 +787,39 @@ class UI_Form extends UI implements IFocusable {
 
 	}
 
+	get disabled(): boolean {
+		return this._disabled || this._parentsDisabled > 0;
+	}
+
+	set disabled( on: boolean ) {
+		on = !!on;
+
+		if ( on != this._disabled ) {
+			this._disabled = on;
+
+			if ( this._root ) {
+				if ( this.disabled ){
+					UI_Dom.addClass( this._root, 'disabled' );
+				} else {
+					UI_Dom.removeClass( this._root, 'disabled' );
+				}
+			}
+
+			if ( this._children ) {
+				for ( var i=0, len = this._children.length; i<len; i++ ) {
+					this._children[i].onParentDisableStateChange( on ? 1 : -1 );
+				}
+			}
+
+			if ( this._menuBar ) {
+				this._menuBar.onParentDisableStateChange( on ? 1 : -1 );
+			}
+
+			// fire a disabled event, that might be treated by the mixins this
+			// object is embracing.
+			this.fire( 'disabled', on );
+		}
+	}
 
 }
 

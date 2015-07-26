@@ -23,16 +23,23 @@
 
 				@UI_MenuItem {
 					caption: 'File 1';
+					icon: 'Base/file';
+					inputType: RADIO;
+					action: 'cmd-open';
 				};
 
 				@UI_MenuItem {
 					caption: 'File 2';
+					icon: 'Base/folder';
+					inputType: RADIO;
 				};
 
 			};
 
 			@UI_MenuItem {
 				caption: 'Exit';
+				shortcutKey: 'Ctrl + X';
+				action: 'cmd-exit';
 			};
 		};
 

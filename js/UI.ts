@@ -518,11 +518,16 @@ class UI extends UI_Event {
 
 		actualDisabledState = this.disabled;
 
-		if ( actualDisabledState != previousDisabledState && this._root ) {
-			if ( actualDisabledState ) {
-				UI_Dom.addClass( this._root, 'disabled' );
-			} else {
-				UI_Dom.removeClass( this._root, 'disabled' );
+		if ( actualDisabledState != previousDisabledState  ) {
+			
+			if ( this._root ) {
+
+				if ( actualDisabledState ) {
+					UI_Dom.addClass( this._root, 'disabled' );
+				} else {
+					UI_Dom.removeClass( this._root, 'disabled' );
+				}
+
 			}
 
 			this.fire( 'disabled', actualDisabledState );

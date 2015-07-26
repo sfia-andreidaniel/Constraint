@@ -70,7 +70,8 @@ try {
 
 	//console.log( '* Found ', forms.length, ' forms in "' + srcFile + '"' );
 
-	if ( forms.length == 0 ) {
+	if ( forms.length == 0 && resources.length == 0 ) {
+		console.log( '* Nothing to build. Exiting now.');
 		process.exit();
 	}
 
@@ -158,7 +159,8 @@ try {
 				"version": process.version,
 				"constraintLibPath": constraintLibPath,
 				"fileName": form.$name + '.ts',
-				"childProperties": form.$properties
+				"childProperties": form.$properties,
+				"anonymousCode": []
 			};
 
 			if ( justForm && form._name != justForm ) {
@@ -180,9 +182,18 @@ try {
 				frm.properties.push({
 					"name": scopes[i].$name,
 					"type": scopes[i].$type,
-					"in":   scopes[i].$parentName == form.$name ? null : scopes[i].$parentName,
-					"properties": scopes[i].$properties
+					"in":   scopes[i].parent == form ? null : scopes[i].$parentName,
+					"properties": scopes[i].$properties,
+					"anonymous": scopes[i].$anonymous
 				});
+			}
+
+			/* BUILD ANONYMOUS CODE */
+
+			for ( var i=0, len = scopes.length; i<len; i++ ) {
+				if ( scopes[i].$anonymous && scopes[i].parentOwnName ) {
+					frm.anonymousCode.push( scopes[i].$anonymousStub( scopes[i].parent === form ? 'this' : 'this.' + scopes[i].parentOwnName, 8 ) );
+				}
 			}
 
 			app.forms.push( frm );

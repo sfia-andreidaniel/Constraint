@@ -8,10 +8,16 @@
 	<script type="text/javascript" src="demo/main.js"></script>
 	
 	<script type="text/javascript">
-		window.addEventListener( 'load', function() {
+		
+		UI_Resource.require( [ 'Constraint', 'Base' ] ).then( function() {
 			window.form = new DemoForm();
 			form.open();
+		})[ 'catch' ]( function( err ) {
+
+			alert( 'Failed to start application: ' + err );
+
 		} );
+
 	</script>
 </head>
 <body>

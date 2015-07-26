@@ -44,6 +44,10 @@ class UI_MenuBar extends UI implements IFocusable {
 		}
 	}
 
+	get target(): UI {
+		return this.form;
+	}
+
 	get focusedItem(): UI_MenuItem {
 		return this._focusedItem || null;
 	}
@@ -189,7 +193,6 @@ class UI_MenuBar extends UI implements IFocusable {
 			} );
 
 			menuBar.on( 'blur', function() {
-				console.log( 'blurring' );
 				if ( menuBar.focusedItem ) {
 					menuBar.focusedItem = null;
 				}

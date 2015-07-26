@@ -2,7 +2,7 @@ class Constraint_Scope {
 
 	public static _anonymousId: number = 0;
 
-	protected parent: Constraint_Scope;
+	public    parent: Constraint_Scope;
 	protected root: Constraint_Scope;
 
 	protected _name: string = null;
@@ -28,6 +28,10 @@ class Constraint_Scope {
 		this._isAnonymous = parentScope !== null && name == null
 			? true
 			: false;
+
+		if ( this._isAnonymous && strict && type == 'UI_Form' ) {
+			throw new Error( 'STRICT: Type "UI_Form" cannot be introduced as anonymous (without using a name)' );
+		}
 
 		if ( this._isAnonymous ) {
 			// generate a temporary name for the scope
@@ -87,6 +91,16 @@ class Constraint_Scope {
 		return this.parent === null
 			? this._name
 			: ( this.parent.name ? ( this.parent._name + '.' + this._name ) : this._name );
+	}
+
+	get ownName(): string {
+		return this._isAnonymous ? null : this._name;
+	}
+
+	get parentOwnName(): string {
+		return this.parent === null
+			? null
+			: this.parent.ownName;
 	}
 
 	public pushObjectKey( key: string ) {
@@ -476,12 +490,64 @@ class Constraint_Scope {
 		return this.type;
 	}
 
+	get $anonymous(): boolean {
+		return this._isAnonymous;
+	}
+
 	get $parentName(): string {
 		if ( this.parent ) {
 			return this.parent.$name;
 		} else {
 			return '';
 		}
+	}
+
+	/* THIS IS USED BY THE CONSTRAINT COMPILER, AND SHOULD NOT BE USED ELSEWHERE */
+	public $anonymousStub( rootName: string, indentation: number ): string {
+
+
+		var includeStart: string = '';
+		var includeEnd  : string = '';
+		var indent: string = '';
+		var i: number = 0, len: number;
+
+		for ( i=0; i<indentation; i++ ) {
+			indent += ' ';
+		}
+
+		if ( !this.properties.length && !this.children.length ) {
+			return indent + 'new ' + this.type + '(' + rootName + ');';
+		}
+
+		includeStart = indent + '(function( _root_ ) { ';
+		includeEnd   = indent + '} )( ' + rootName + ' );';
+
+		var out: string[] = [
+			indent + '// ' + this._name,
+			includeStart
+		];
+
+		out.push( indent + '    var self = new ' + this.$type + '( _root_ );' );
+
+		for ( i=0, len = this.properties.length; i<len; i++ ) {
+			out.push( indent + '    self.' + this.properties[i].name + ' = '
+				+ ( this.properties[i].value && this.properties[i].value.toLiteral
+					? this.properties[i].value.toLiteral()
+					: JSON.stringify( this.properties[i].value )
+				  )
+				+ ';' 
+			);
+		}
+
+		for ( i=0, len = this.children.length; i<len; i++ ) {
+			out.push( '' );
+			out.push( this.children[i].$anonymousStub( 'self', indentation + 4 ) );
+		}
+
+		out.push( includeEnd );
+		out.push( indent );
+
+		return out.join( '\n' );
 	}
 
 	// returns all the sub-scopes from this scope.
@@ -496,6 +562,14 @@ class Constraint_Scope {
 			}
 		}
 
+		return out;
+	}
+
+	get $childScopes(): Constraint_Scope[] {
+		var out: Constraint_Scope[] = [];
+		for ( var i=0, len = this.children.length; i<len; i++ ) {
+			out.push( this.children[i] );
+		}
 		return out;
 	}
 

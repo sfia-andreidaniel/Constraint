@@ -32,7 +32,10 @@ var Salvage = (function () {
         throw "Bad helper name: " + helperName;
     };
     Salvage.isPrimitive = function (value) {
-        return Salvage.isNULL(value) || Salvage.isSTRING(value) || Salvage.isBOOLEAN(value) || Salvage.isNUMBER(value);
+        return Salvage.isNULL(value) ||
+            Salvage.isSTRING(value) ||
+            Salvage.isBOOLEAN(value) ||
+            Salvage.isNUMBER(value);
     };
     Salvage.isNULL = function (value) {
         return value === null || value == void 0;
@@ -92,12 +95,16 @@ var Salvage = (function () {
                 result = !!(value) ? 'true' : 'false';
                 break;
             case Salvage.isNUMBER(value):
-                result = (isFloat = Math.round(value) != value) ? (decimals === null ? String(value) : (decimals === 0 ? String(parseInt(value)) : value.toFixed(decimals))) : String(value);
+                result = (isFloat = Math.round(value) != value)
+                    ? (decimals === null ? String(value) : (decimals === 0 ? String(parseInt(value)) : value.toFixed(decimals))) // is float
+                    : String(value);
                 if (isFloat && (decimalSeparator != '.' || thousandSeparator != '')) {
                     keys = result.split('.');
                     decParts = '';
                     while (matches = /([\d]{3}$)/.exec(keys[0])) {
-                        decParts = keys[0].length > 3 ? thousandSeparator + matches[1] + decParts : matches[1] + decParts;
+                        decParts = keys[0].length > 3
+                            ? thousandSeparator + matches[1] + decParts
+                            : matches[1] + decParts;
                         keys[0] = keys[0].replace(/[\d]{3}$/, '');
                     }
                     if (keys[0].length)
@@ -192,8 +199,8 @@ var Salvage = (function () {
             if (!isText) {
                 switch (entityType) {
                     case 'end':
-                        if (!ownerBlock || ['if', 'each', 'with'].indexOf(ownerBlock.type) == -1) {
-                            throw "An 'end' block can be placed only after an 'if', 'each', or 'with' block!";
+                        if (!ownerBlock || ['if', 'each', 'with', 'unless'].indexOf(ownerBlock.type) == -1) {
+                            throw "An 'end' block can be placed only after an 'if', 'unless', 'each', or 'with' block!";
                         }
                         // flush end
                         raw = raw.substr(matches[0].length);
@@ -201,19 +208,26 @@ var Salvage = (function () {
                         break;
                     case 'var':
                     case 'rawVar':
-                        decimals = (matches[6] || '').length ? ~~matches[6] : null;
+                        decimals = (matches[6] || '').length
+                            ? ~~matches[6]
+                            : null;
                         helpers = Salvage.getHELPERS(matches[8]);
                         raw = raw.substr(matches[0].length);
-                        destination.push(lastBlock = new SalvageBlockVar(matches[matchIndex], entityType == 'var', decimals, helpers));
+                        destination.push(lastBlock = new SalvageBlockVar(matches[matchIndex] /* varname */, entityType == 'var' /* escaped */, decimals, helpers));
                         break;
                     case 'if':
                         raw = raw.substr(matches[0].length);
-                        destination.push(lastBlock = new SalvageBlockIf(SalvageContext.parsePATH(matches[matchIndex]), raw));
+                        destination.push(lastBlock = new SalvageBlockIf(SalvageContext.parsePATH(matches[matchIndex]) /* condition */, raw));
+                        raw = lastBlock.unconsumedRawText;
+                        break;
+                    case 'unless':
+                        raw = raw.substr(matches[0].length);
+                        destination.push(lastBlock = new SalvageBlockIf(SalvageContext.parsePATH(matches[matchIndex]) /* condition */, raw, true));
                         raw = lastBlock.unconsumedRawText;
                         break;
                     case 'with':
                         raw = raw.substr(matches[0].length);
-                        destination.push(lastBlock = new SalvageBlockContext(SalvageContext.parsePATH(matches[matchIndex]), raw));
+                        destination.push(lastBlock = new SalvageBlockContext(SalvageContext.parsePATH(matches[matchIndex]) /* condition */, raw));
                         raw = lastBlock.unconsumedRawText;
                         break;
                     case 'else':
@@ -227,7 +241,7 @@ var Salvage = (function () {
                         break;
                     case 'each':
                         raw = raw.substr(matches[0].length);
-                        destination.push(lastBlock = new SalvageBlockEach(SalvageContext.parsePATH(matches[matchIndex]), raw, matches[4] || null));
+                        destination.push(lastBlock = new SalvageBlockEach(SalvageContext.parsePATH(matches[matchIndex]) /* condition */, raw, matches[4] || null));
                         raw = lastBlock.unconsumedRawText;
                         break;
                     case 'comment':
@@ -250,7 +264,7 @@ var Salvage = (function () {
                     raw = raw.substr(1);
                 }
                 else {
-                    break;
+                    break; // break main loop
                 }
             }
         }
@@ -284,6 +298,11 @@ var Salvage = (function () {
         {
             "type": "if",
             "expr": /^\{\{([\s]+)?#if[\s]+([a-z\d\.\[\]\/_\$]+)([\s]+)?\}\}/i,
+            "match": 2
+        },
+        {
+            "type": "unless",
+            "expr": /^\{\{([\s]+)?#unless[\s]+([a-z\d\.\[\]\/_\$]+)([\s]+)?\}\}/i,
             "match": 2
         },
         {
@@ -338,7 +357,7 @@ var SalvageBlock = (function () {
     };
     return SalvageBlock;
 })();
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
@@ -398,8 +417,10 @@ var SalvageBlockText = (function (_super) {
 })(SalvageBlock);
 var SalvageBlockIf = (function (_super) {
     __extends(SalvageBlockIf, _super);
-    function SalvageBlockIf(condition, contents) {
+    function SalvageBlockIf(condition, contents, isUnless) {
+        if (isUnless === void 0) { isUnless = false; }
         _super.call(this);
+        this.isUnless = isUnless;
         this._condition = null;
         this._raw = '';
         this._else = false;
@@ -440,8 +461,10 @@ var SalvageBlockIf = (function (_super) {
     });
     SalvageBlockIf.prototype.parse = function (context) {
         var out = [], data = context.get(this._condition), i = 0, len;
-        if ((Salvage.isPrimitive(data) && !!(data)) || (Salvage.isComplex(data) && !Salvage.isEMPTY(data))) {
-            console.log('evalTRUE: ', JSON.stringify(data, undefined, 4));
+        var ifBranchEval = ((Salvage.isPrimitive(data) && !!(data)) || (Salvage.isComplex(data) && !Salvage.isEMPTY(data)));
+        if (this.isUnless)
+            ifBranchEval = !ifBranchEval;
+        if (ifBranchEval) {
             for (i = 0, len = this.ifchildren.length; i < len; i++) {
                 out.push(this.ifchildren[i].parse(context));
             }
@@ -495,7 +518,9 @@ var SalvageBlockEach = (function (_super) {
             keys = Salvage.keys(root);
             len = keys.length;
             for (i = 0; i < len; i++) {
-                item = this.keyName === null ? new SalvageContext(root[keys[i]], ctx.cd(['..'])) : new SalvageContext(root[keys[i]], ctx.cd(['..']), this.makeKey(keys[i]));
+                item = this.keyName === null
+                    ? new SalvageContext(root[keys[i]], ctx.cd(['..']))
+                    : new SalvageContext(root[keys[i]], ctx.cd(['..']), this.makeKey(keys[i]));
                 for (j = 0; j < n; j++) {
                     out.push(this.children[j].parse(item));
                 }
@@ -596,7 +621,11 @@ var SalvageContext = (function () {
                     return this.assigned[propertyName[0]];
                 }
                 else {
-                    return Salvage.isComplex(this.root) ? this.root[propertyName[0]] : (propertyName[0] == 'this' ? this.root : '');
+                    return Salvage.isComplex(this.root)
+                        ? this.root[propertyName[0]]
+                        : (propertyName[0] == 'this'
+                            ? this.root
+                            : '');
                 }
             }
         }
@@ -644,6 +673,7 @@ var SalvageContext = (function () {
                 return null;
             }
         }
+        /* Optimize ... */
         do {
             optimized = true;
             for (i = 1, len = parts.length; i < len; i++) {
@@ -678,3 +708,12 @@ var SalvageContext = (function () {
     ];
     return SalvageContext;
 })();
+/// <reference path="Salvage.ts" />
+/// <reference path="SalvageBlock.ts" />
+/// <reference path="SalvageBlock.ts" />
+/// <reference path="SalvageBlockVar.ts" />
+/// <reference path="SalvageBlockText.ts" />
+/// <reference path="SalvageBlockIf.ts" />
+/// <reference path="SalvageBlockEach.ts" />
+/// <reference path="SalvageBlockContext.ts" />
+/// <reference path="SalvageContext.ts" /> 

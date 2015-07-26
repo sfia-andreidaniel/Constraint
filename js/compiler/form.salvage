@@ -15,8 +15,8 @@ class {{name}} extends UI_Form {
 	
     /* $hint: class-properties */
     // WARNING: Any code written inside of this hint is overrided by constraint compiler!
-{{#if properties}}{{#each properties}}
-    public {{name}}: {{type}};{{#end}}{{#else}}{{#end}}
+{{#if properties}}{{#each properties}}{{#unless anonymous}}
+    public {{name}}: {{type}};{{#end}}{{#end}}{{#else}}{{#end}}
     /* $hint: end */
 
     constructor() {
@@ -24,8 +24,8 @@ class {{name}} extends UI_Form {
 
         /* $hint: constructor-properties */
         // WARNING: Any code written inside of this hint is overrided by constraint compiler!
-{{#if properties}}{{#each properties}}
-        this.{{name}} = new {{type}}( {{#if in}}this.{{in}}{{#else}}this{{#end}} );{{#end}}{{#end}}
+{{#if properties}}{{#each properties}}{{#unless anonymous}}
+        this.{{name}} = new {{type}}( {{#if in}}this.{{in}}{{#else}}this{{#end}} );{{#end}}{{#end}}{{#end}}
         /* $hint: end */
 
         this.onInitialize();
@@ -42,10 +42,16 @@ class {{name}} extends UI_Form {
 
         /* $hint: initialization-properties */
         // WARNING: Any code written inside of this hint is overrided by constraint compiler!
-{{#if properties}}{{#each properties}}{{#each properties}}
+{{#if properties}}{{#each properties}}{{#unless anonymous}}{{#each properties}}
         this.{{../name}}.{{name}} = {{#if literal}}{{{value}}};{{#else}}{{{valueJSON}}};{{#end}}{{#end}}
-        {{#end}}{{#end}}
+        {{#end}}{{#end}}{{#end}}
         /* $hint: end */
+
+        /* $hint: anonymous-properties */
+        // WARNING: Any code written inside of this hint is overrided by constraint compiler!
+{{#if anonymousCode}}{{#each anonymousCode}}
+{{{this}}}
+{{#end}}{{#end}}        /* $hint: end */
     
     }
 

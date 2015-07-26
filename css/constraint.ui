@@ -205,11 +205,13 @@
 			padding: 5;
 
 			iconSize: 16;
-			inputSize: 16;
+			inputSize: 20;
+
+			borderColor: $object3dBorderColor;
 
 			background: {
 
-				color: $object3dColor;
+				color: $formColor;
 				selectedColor: $selectedItemBackgroundColor;
 
 			};

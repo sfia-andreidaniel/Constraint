@@ -169,6 +169,8 @@ class UI_Screen extends UI_Event {
 				}
 				this.pointerEvents = false;
 			}
+		} else {
+			this.pointerEvents = false;
 		}
 	}
 

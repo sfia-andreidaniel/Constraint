@@ -827,6 +827,10 @@ canvas.UI_Screen.visible {
 	width: 8px;
 	box-sizing: border-box;
 	overflow: hidden;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 .UI_HorizontalSplitter {
@@ -842,6 +846,10 @@ canvas.UI_Screen.visible {
 	height: 8px;
 	box-sizing: border-box;
 	overflow: hidden;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 .UI_VerticalSplitter.disabled,
@@ -918,6 +926,10 @@ canvas.UI_Screen.visible {
 .ui.UI_Form > .inner > .menubar {
 	background-color: rgb(0,0,0);
 	color: rgb(255,255,255);
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 .ui.UI_Form.focus-active > .inner > .menubar {
