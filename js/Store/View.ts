@@ -3,6 +3,7 @@ class Store_View extends Store {
 	protected _query: ( item: Store_Item ) => boolean;
 	protected _owner: Store;
 	private   _updater: UI_Throttler;
+	private   _metaChanged: UI_Throttler;
 
 	constructor( owner: Store, query: ( item: Store_Item ) => boolean ) {
 	    super( null );
@@ -47,7 +48,12 @@ class Store_View extends Store {
 		this._updater.run();
 	}
 
+	private requestMetaChange() {
+		this._metaChanged.run();
+	}
+
 	private updateItems() {
+
 		var diff: Store_Item[] = [],
 		       i: number = 0,
 		       len: number = this._owner.length,
@@ -63,12 +69,14 @@ class Store_View extends Store {
 		}
 
 		if ( thisLen != this._length ) {
+			this.fire( 'before-change' );
 			this._items = diff;
 			this._length = thisLen;
 			updated = true;
 		} else {
 			for ( i=0; i<thisLen; i++ ) {
 				if ( this._items[i] != diff[i] ) {
+					this.fire( 'before-change' );
 					this._items = diff;
 					updated = true;
 					break;
@@ -83,7 +91,16 @@ class Store_View extends Store {
 
 	}
 
+	private updateMetaChangeItems() {
+		this.onBeforeMetaChange();
+		this.fire( 'meta-changed' );
+	}
+
 	protected onBeforeChange() {
+
+	}
+
+	protected onBeforeMetaChange() {
 
 	}
 
@@ -92,6 +109,10 @@ class Store_View extends Store {
 
 			me._updater = new UI_Throttler( function() {
 				me.updateItems();
+			}, 20 );
+
+			me._metaChanged = new UI_Throttler( function() {
+				me.updateMetaChangeItems();
 			}, 20 );
 
 			master.on( 'change', function() {
@@ -117,6 +138,10 @@ class Store_View extends Store {
 
 			master.on( 'change', function() {
 				me.requestUpdate();
+			} );
+
+			master.on( 'meta-changed', function() {
+				me.requestMetaChange();
 			} );
 
 		})( this._owner, this );

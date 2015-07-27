@@ -71,7 +71,9 @@ class Store extends UI_Event {
 	}
 
 	public setItems( values: any[] ) {
-		this._items = [];
+
+		this.clear();
+
 		this._length = values.length;
 
 		for ( var i=0, len = values.length; i<len; i++ ) {
@@ -94,6 +96,19 @@ class Store extends UI_Event {
 			for ( var i=0; i< this._length; i++ ) {
 				if ( this._items[i].id == id ) {
 					return this._items[i];
+				}
+			}
+			return null;
+		}
+	}
+
+	public getItemIndexById( id: any ): number {
+		if ( id === null ) {
+			return null;
+		} else {
+			for ( var i=0; i<this._length; i++ ) {
+				if ( this._items[i].id == id ) {
+					return i;
 				}
 			}
 			return null;
@@ -263,6 +278,24 @@ class Store extends UI_Event {
 			this._sorted = sorted;
 			this.ensureSorted();
 		}
+	}
+
+	public clear() {
+		
+		if ( this._length > 0 ) {
+
+			for ( var i=0, len = this._length; i<len; i++ ) {
+				this._items[i].die();
+			}
+			
+			this._items.splice( 0, this._length );
+
+			this._length = 0;
+
+			this.onChange();
+
+		}
+
 	}
 
 }

@@ -1,3 +1,13 @@
+/* Additional events the "Store_NestedObjects" collection is emitting:
+
+   before-collapse
+   before-expand
+
+   collapse          ( node: Store_Item_NestableObject )
+   expand            ( node: Store_Item_NestableObject )
+ 
+ */
+
 class Store_NestedObjects extends Store_NamedObjects {
 	
 	constructor( values: INestable[] ) {
@@ -32,7 +42,7 @@ class Store_NestedObjects extends Store_NamedObjects {
 		}
 	}
 
-	public createTreeView( query: ( item: Store_Item ) => boolean ): Store_View_Tree {
-		return new Store_View_Tree( this );
+	public createTreeView( query?: ( item: Store_Item ) => boolean ): Store_View_Tree {
+		return new Store_View_Tree( this, query );
 	}
 }

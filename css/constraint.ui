@@ -145,7 +145,7 @@
 		};
 
 		option: {
-			height: 20;
+			height: 25;
 		};
 
 		font: {
@@ -158,6 +158,33 @@
 			selectedEnabledColor: $selectedItemColor;
 			inactiveSelectedColor: $selectedInactiveItemColor;
 		};
+	};
+
+	@Theme UI_Tree {
+		
+		background: {
+			disabled: $disabledControlBackgroundColor;
+			enabled:  $enabledControlBackgroundColor;
+			selected: $selectedItemBackgroundColor;
+			selectedDisabled: $selectedDisabledItemBackgroundColor;
+			inactiveSelected: $inactiveSelectedItemBackgroundColor;
+		};
+
+		option: {
+			height: 25;
+		};
+
+		font: {
+			family: $fontFamily;
+			size: $fontSize;
+
+			color: $normalFontColor;
+			disabledColor: $disabledFontColor;
+			selectedDisabledColor: $selectedDisabledItemColor;
+			selectedEnabledColor: $selectedItemColor;
+			inactiveSelectedColor: $selectedInactiveItemColor;
+		};
+
 	};
 
 	@Theme UI_TabsPanel {

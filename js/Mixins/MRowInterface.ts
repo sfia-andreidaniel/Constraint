@@ -242,7 +242,7 @@ class MRowInterface extends UI implements IRowInterface {
 	}
 
 	get selectedIndex(): number {
-		return this._selectedIndex;
+		return this._selectedIndex === undefined ? -1 : this._selectedIndex;
 	}
 
 	set selectedIndex( index: number ) {

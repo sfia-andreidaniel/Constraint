@@ -25,6 +25,12 @@ class Store_Item {
 		}
 	}
 
+	public onMetaChanged() {
+		if ( !this._dead ) {
+			this._owner.fire( 'meta-changed' );
+		}
+	}
+
 	public onRemove() {
 		this.die();
 	}
@@ -60,9 +66,7 @@ class Store_Item {
 		selected = !!selected;
 		if ( selected != this._selected ) {
 			this._selected = selected;
-			if ( !this._dead ) {
-				this._owner.fire('meta-changed');
-			}
+			this.onMetaChanged();
 		}
 	}
 

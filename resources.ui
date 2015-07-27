@@ -1,5 +1,25 @@
 @UI_Resource Constraint {
+	
+	/* MENU ITEMS */
+
 	menuitem_checked    		from '../vendor/self/menuitem-checked.svg'    	  20x20 disabled;
 	menuitem_expander   		from '../vendor/self/menuitem-expander.svg'   	  20x20 disabled;
 	menuitem_expander_hover 	from '../vendor/self/menuitem-expander-hover.svg' 20x20 disabled;
+
+	/* TREE CONNECTORS */
+
+	tree_connector_0            from '../vendor/self/tree-connectors/pen_0.png'   25x25 disabled;
+	tree_connector_1            from '../vendor/self/tree-connectors/pen_1.png'   25x25 disabled;
+	tree_connector_2            from '../vendor/self/tree-connectors/pen_2.png'   25x25 disabled;
+	tree_connector_3            from '../vendor/self/tree-connectors/pen_3.png'   25x25 disabled;
+	tree_connector_4            from '../vendor/self/tree-connectors/pen_4.png'   25x25 disabled;
+	tree_connector_5            from '../vendor/self/tree-connectors/pen_5.png'   25x25 disabled;
+	tree_connector_6            from '../vendor/self/tree-connectors/pen_6.png'   25x25 disabled;
+	tree_connector_7            from '../vendor/self/tree-connectors/pen_7.png'   25x25 disabled;
+
+	/* SYSTEM ICONS */
+
+	folder                      from '../vendor/gnome/Gnome-folder.svg'           16x16 20x20 disabled;
+	file                        from '../vendor/gnome/Gnome-text-x-preview.svg'   16x16 20x20 disabled;
+
 };

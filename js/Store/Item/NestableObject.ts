@@ -50,6 +50,18 @@ class Store_Item_NestableObject extends Store_Item_NamedObject {
 		this.onChange();
 	}
 
+	protected onCollapse( before: boolean ) {
+		if ( !this._dead ) {
+			this._owner.fire( before ? 'before-collapse' : 'collapse', this );
+		}
+	}
+
+	protected onExpand( before: boolean ) {
+		if ( !this._dead ) {
+			this._owner.fire( before ? 'before-expand' : 'expand', this );
+		}
+	}
+
 	get collapsed(): boolean {
 		if ( this.isLeaf ) {
 			return false;
@@ -60,10 +72,23 @@ class Store_Item_NestableObject extends Store_Item_NamedObject {
 
 	set collapsed( collapsed: boolean ) {
 		collapsed = !!collapsed;
-		if ( collapsed != this._isCollapsed ) {
+		if ( collapsed != this._isCollapsed && !this._isLeaf ) {
+
+			if ( collapsed )
+				this.onCollapse( true );
+			else
+				this.onExpand( true );
+
 			this._isCollapsed = collapsed;
 			this.onChange();
 			this.onParentCollapse( collapsed ? 1 : -1 );
+			this.onMetaChanged();
+
+			if ( collapsed ) {
+				this.onCollapse( false );
+			} else {
+				this.onExpand( false );
+			}
 		}
 	}
 
