@@ -4,6 +4,7 @@ constraint.js
 compiler.js
 postcompiler.js
 demo/*
+css/main.css
 
 # Windows image file caches
 Thumbs.db
