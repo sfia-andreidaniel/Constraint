@@ -64,6 +64,14 @@ class UI_Canvas_ContextMapper {
 	   All the methods that require coordinates, are translated to local window coordinates 
 	*/
 
+	get imageSmoothingEnabled(): boolean {
+		return this.ctx['imageSmoothingEnabled'];
+	}
+
+	set imageSmoothingEnabled( on: boolean ) {
+		this.ctx['imageSmoothingEnabled'] = !!on;
+	}
+
 	public clearRect( x: number, y: number, width: number, height: number ) {
 		this.ctx.clearRect( this.size.x + x, this.size.y + y, width, height );
 	}

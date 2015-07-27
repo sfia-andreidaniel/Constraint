@@ -58,6 +58,10 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 	    this._setupExtendedEvents_();
 	}
 
+	get paintContext(): UI_Canvas_ContextMapper {
+		return this.defaultContext;
+	}
+
 	/* Local methods */
 	protected _setupExtendedEvents_() {
 		( function( me ) {
@@ -253,7 +257,7 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 	public paint() {
 		var scrollTop : number = this.scrollTop,
 			skip      : number = ~~( scrollTop / UI_Tree._theme.option.height ),
-			ctx               = this._dom.canvas.getContext('2d'),
+			ctx               = this.paintContext,
 			bgColor           = this.disabled
 		    		? UI_Tree._theme.background.disabled
 		    		: UI_Tree._theme.background.enabled,
@@ -272,10 +276,11 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 		   	ci            : number,
 		   	numConnectors : number;
 
-		ctx['imageSmoothingEnabled'] = false;
-
 		ctx.fillStyle = bgColor;
-		ctx.fillRect( 0, 0, this._paintRect.width, this._paintRect.height );
+		ctx.fillRect( -this._freezedWidth, 0, this._paintRect.width, ctx.height );
+
+		ctx.beginPaint();
+		ctx.imageSmoothingEnabled = false;
 		ctx.font = UI_Tree._theme.option.font;
 		ctx.textBaseline = "middle";
 
@@ -292,12 +297,19 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 					? UI_Tree._theme.option.color.disabled
 					: UI_Tree._theme.option.color.normal;
 			} else {
+
+				ctx.endPaint();
+
 				// Draw also the selected background color
 				ctx.fillStyle = isDisabled
 					? UI_Tree._theme.option.background.selectedDisabled
 					: ( isActive ? UI_Tree._theme.option.background.selected : UI_Tree._theme.option.background.selectedInactive );
 
-				ctx.fillRect( 0, startY, this._paintRect.width, UI_Tree._theme.option.height );
+				ctx.fillRect( -this._freezedWidth, startY, this._paintRect.width, UI_Tree._theme.option.height );
+
+				ctx.beginPaint();
+				ctx.font = UI_Tree._theme.option.font;
+				ctx.textBaseline = "middle";
 
 				ctx.fillStyle = isDisabled
 					? UI_Tree._theme.option.color.selectedDisabled
@@ -316,7 +328,7 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 						+ UI_Tree._theme.option.height + 'x' + UI_Tree._theme.option.height
 						+ ( this.disabled ? '-disabled' : '' )
 
-					).paintCtx( ctx, ci * UI_Tree._theme.option.height, startY );
+					).paintWin( ctx, ci * UI_Tree._theme.option.height, startY );
 
 				}
 			}
@@ -331,7 +343,7 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 					+ '/20x20'
 					+ ( this.disabled ? '-disabled' : '' )
 				
-				).paintCtx( ctx, numConnectors * UI_Tree._theme.option.height, startY + ~~( UI_Tree._theme.option.height - 20 ) / 2 );
+				).paintWin( ctx, numConnectors * UI_Tree._theme.option.height, startY + ~~( UI_Tree._theme.option.height - 20 ) / 2 );
 
 			} else {
 
@@ -342,21 +354,26 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 					+ '/20x20'
 					+ ( this.disabled ? '-disabled' : '' )
 				
-				).paintCtx( ctx, numConnectors * UI_Tree._theme.option.height, startY + ~~( UI_Tree._theme.option.height - 20 ) / 2 );
+				).paintWin( ctx, numConnectors * UI_Tree._theme.option.height, startY + ~~( UI_Tree._theme.option.height - 20 ) / 2 );
 			}
 
 			ctx.fillText( opt.name, 2 + paddingLeft, startY + ~~( UI_Tree._theme.option.height / 2 ) );
 
 			if ( selectedIndex == i && isActive && !isDisabled ) {
+	
+				ctx.endPaint();
 				// draw selected index focus ring
 				ctx.strokeStyle = 'black';
-				ctx.lineWidth = 1;
-				ctx.strokeRect( .5, startY + 0.5, this._paintRect.width - 1 - ( ~~isScrollbar * UI_Dom.scrollbarSize ), UI_Tree._theme.option.height - 1 );
-				ctx.stroke();
+				ctx.strokeRect( -this._freezedWidth + .5, startY + 0.5, this._paintRect.width - 1 - ( ~~isScrollbar * UI_Dom.scrollbarSize ), UI_Tree._theme.option.height - 1 );
+				ctx.font = UI_Tree._theme.option.font;
+				ctx.textBaseline = "middle";
+				ctx.beginPaint();
 			}
 
 			startY += UI_Tree._theme.option.height;
 		}
+
+		ctx.endPaint();
 
 	}
 
@@ -436,7 +453,7 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 	}
 
 	get itemsPerPage(): number {
-		return ~~( this._paintRect.height / UI_Tree._theme.option.height );
+		return ~~( this.paintContext.height / UI_Tree._theme.option.height );
 	}
 
 	public isRowSelected( rowIndex: number ): boolean {

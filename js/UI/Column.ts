@@ -11,7 +11,7 @@ class UI_Column extends UI {
 	protected _sortable  : boolean = false;
 	protected _resizable : boolean = false;
 
-	constructor( ) {
+	constructor( owner: UI ) {
 	    super( owner );
 	}
 

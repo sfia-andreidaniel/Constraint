@@ -15,6 +15,14 @@ class UI_Canvas extends UI {
 
 	protected _dom = {
 		"canvas": UI_Dom.create( 'canvas' ),
+
+		// Freezed Viewport
+		"fViewport": UI_Dom.create( 'div', 'freezed-viewport' ),
+		"fCanvasSize": UI_Dom.create( 'div', 'canvas-size' ),
+
+		"fHeader": UI_Dom.create( 'div', 'freezed-header' ),
+
+		// Unfreezed Viewport
 		"viewport": UI_Dom.create( 'div', 'viewport' ),
 		"canvasSize": UI_Dom.create( 'div', 'canvas-size' )
 	};
@@ -27,8 +35,10 @@ class UI_Canvas extends UI {
 	protected _scrollLeft: number = 0;
 	protected _scrollTop: number = 0;
 
-	protected _numColumns: number = 0;
-	protected _totalFreezedWidth: number = 0;
+	protected _hasHeader: boolean = false;
+	protected _freezedWidth: number = 0;
+
+	protected _defaultContext: UI_Canvas_ContextMapper;
 
 	constructor( owner: UI, mixins: string[] = [] ) {
 		super( owner, mixins, UI_Dom.create( 'div', 'ui UI_Canvas' ) );
@@ -36,6 +46,8 @@ class UI_Canvas extends UI {
 		this._root.appendChild( this._dom.viewport );
 
 		this._dom.viewport.appendChild( this._dom.canvasSize );
+		this._dom.fViewport.appendChild( this._dom.fCanvasSize );
+
 		this._width = UI_Canvas._theme.defaultWidth;
 		this._height= UI_Canvas._theme.defaultHeight;
 
@@ -53,15 +65,95 @@ class UI_Canvas extends UI {
 			this._dom.canvas.width = this._viewportWidth = ( this._paintRect.width - this.padding.left - this.padding.right );
 			this._dom.canvas.height= this._viewportHeight = ( this._paintRect.height - this.padding.top - this.padding.bottom );
 
+			if ( this._defaultContext ) {
+
+				this._defaultContext.width = this._viewportWidth - this._freezedWidth;
+				this._defaultContext.height= this._viewportHeight - ( ~~this._hasHeader * UI_Column._theme.height );
+				this._defaultContext.top = ( ~~this._hasHeader * UI_Column._theme.height );
+				this._defaultContext.left = this._freezedWidth;
+
+			}
+
 			this.render( );
+			this.postrender();
 
 		} else {
 			return false;
 		}
 	}
 
+	get defaultContext(): UI_Canvas_ContextMapper {
+		if ( this._defaultContext ) {
+			return this._defaultContext;
+		} else {
+			this._defaultContext = new UI_Canvas_ContextMapper(
+				this._dom.canvas.getContext('2d'),
+				{
+					"x": this._freezedWidth,
+					"y": ( ~~this._hasHeader * UI_Column._theme.height ),
+					"width": this._viewportWidth - this._freezedWidth,
+					"height": this._viewportHeight - ( ~~this._hasHeader * UI_Column._theme.height )
+				}
+			);
+			return this._defaultContext;
+		}
+	}
+
+	get header(): boolean {
+		return this._hasHeader;
+	}
+
+	set header( on: boolean ) {
+		on = !!on;
+		if ( on != this._hasHeader ) {
+			this._hasHeader = on;
+
+			switch ( on ) {
+				case true:
+					this._root.appendChild( this._dom.fHeader );
+					UI_Dom.addClass( this._root, 'has-header' );
+					break;
+				case false:
+					this._root.removeChild( this._dom.fHeader );
+					UI_Dom.removeClass( this._root, 'has-header' );
+					break;
+			}
+
+			this.onRepaint();
+		}
+	}
+
+	get freezedWidth(): number {
+		return this._freezedWidth;
+	}
+
+	set freezedWidth( width: number ) {
+		width = ~~width;
+		width = width < 0 ? 0 : width;
+		if ( width != this._freezedWidth ) {
+
+			if ( width == 0 ) {
+				this._root.removeChild( this._dom.fViewport );
+			} else {
+				this._root.appendChild( this._dom.fViewport );
+			}
+
+			this._dom.viewport.style.left = width + "px";
+			this._dom.fViewport.style.width = width + "px";
+
+			this._freezedWidth = width;
+
+			this.onRepaint();
+		}
+	}
+
 	// renders something on the canvas.
 	public render() {
+	}
+
+	// renders something on the canvas after the main render is done.
+	// this is usefull in order to always-draw the columns on the canvas.
+	public postrender() {
 	}
 
 	get logicalWidth(): number {
@@ -85,6 +177,7 @@ class UI_Canvas extends UI {
 		if ( height != this._logicalHeight ) {
 			this._logicalHeight = height;
 			this._dom.canvasSize.style.height = this._logicalHeight + "px";
+			this._dom.fCanvasSize.style.height = this._logicalHeight + "px";
 		}
 	}
 
