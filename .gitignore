@@ -5,6 +5,7 @@ compiler.js
 postcompiler.js
 demo/*
 css/main.css
+vendor/gnome/*.png
 
 # Windows image file caches
 Thumbs.db

@@ -125,9 +125,10 @@ try {
 					throw new Error( 'Failed to build resource "' + res.name + '.res" : file ' + res.props[k].file + ' was not found' );
 				}
 
-				ext = /\.(png|svg)$/.exec( res.props[k].file );
+				//ext = /\.(png|svg)$/.exec( res.props[k].file );
+				ext = /\.(png)$/.exec( res.props[k].file );
 				if ( !ext ) {
-					throw new Error( 'Files from resources can have only ".svg" and ".png" extension!')
+					throw new Error( 'Files from resources can have only ".png" extension!')
 				}
 
 				res.props[k].data = fs.readFileSync( res.props[k].file ).toString( 'base64' );

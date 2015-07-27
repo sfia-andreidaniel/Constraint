@@ -147,7 +147,7 @@ class UI_Resource extends UI_Event {
 		this.stage.height= stageHeight;
 
 		ctx = this.stage.getContext( '2d' );
-		ctx['imageSmoothingEnabled'] = false;
+		//ctx['imageSmoothingEnabled'] = false;
 
 		ctx.clearRect( 0, 0, stageWidth, stageHeight );
 
@@ -251,7 +251,7 @@ class UI_Resource extends UI_Event {
 		this.stageX.height = stageHeight;
 		
 		ctx = this.stageX.getContext('2d');
-		ctx['imageSmoothingEnabled'] = false;
+		//ctx['imageSmoothingEnabled'] = false;
 		
 		ctx.clearRect( 0, 0, stageWidth, stageHeight );
 
@@ -352,7 +352,7 @@ class UI_Resource extends UI_Event {
 		this.stageY.height = stageHeight;
 		
 		ctx = this.stageY.getContext('2d');
-		ctx['imageSmoothingEnabled'] = false;
+		//ctx['imageSmoothingEnabled'] = false;
 
 		ctx.clearRect( 0, 0, stageWidth, stageHeight );
 

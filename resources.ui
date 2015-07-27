@@ -2,9 +2,9 @@
 	
 	/* MENU ITEMS */
 
-	menuitem_checked    		from '../vendor/self/menuitem-checked.svg'    	  20x20 disabled;
-	menuitem_expander   		from '../vendor/self/menuitem-expander.svg'   	  20x20 disabled;
-	menuitem_expander_hover 	from '../vendor/self/menuitem-expander-hover.svg' 20x20 disabled;
+	menuitem_checked    		from '../vendor/self/menuitem-checked.png'    	  20x20 disabled;
+	menuitem_expander   		from '../vendor/self/menuitem-expander.png'   	  20x20 disabled;
+	menuitem_expander_hover 	from '../vendor/self/menuitem-expander-hover.png' 20x20 disabled;
 
 	/* TREE CONNECTORS */
 
@@ -19,7 +19,7 @@
 
 	/* SYSTEM ICONS */
 
-	folder                      from '../vendor/gnome/Gnome-folder.svg'           16x16 20x20 disabled;
-	file                        from '../vendor/gnome/Gnome-text-x-preview.svg'   16x16 20x20 disabled;
+	folder                      from '../vendor/gnome/Gnome-folder.png'           16x16 20x20 disabled;
+	file                        from '../vendor/gnome/Gnome-text-x-preview.png'   16x16 20x20 disabled;
 
 };

@@ -1,3 +1,5 @@
+/* {$R ./vendor/rsvp/rsvp.js} */
+
 /// <reference path="Global.ts" />
 
 /// <reference path="types.ts" />
