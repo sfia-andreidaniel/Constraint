@@ -387,6 +387,20 @@ class Constraint {
 		}
 	}
 
+	public static classAcceptsChild( className: string, childType: string ) {
+		var def: IClass = Constraint.getClassByName( className );
+
+		if ( !def ) {
+			return true;
+		}
+
+		if ( typeof def.acceptsOnly != 'undefined' ) {
+			return def.acceptsOnly && def.acceptsOnly.indexOf( childType ) > -1;
+		} else {
+			return true;
+		}
+	}
+
 	// should be null after parse.
 	// if non null, returns the line on which compiler encountered error.
 	public line: number = null;

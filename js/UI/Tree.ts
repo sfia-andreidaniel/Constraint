@@ -64,6 +64,7 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 
 	/* Local methods */
 	protected _setupExtendedEvents_() {
+
 		( function( me ) {
 
 			me._render = new UI_Throttler( function() { me.paint(); }, 1 );
@@ -496,6 +497,7 @@ Mixin.extend( "UI_Tree", "MRowInterface" );
 Constraint.registerClass( {
 	"name": "UI_Tree",
 	"extends": "UI_Canvas",
+	"acceptsOnly": null,
 	"properties": [
 		{
 			"name": "active",

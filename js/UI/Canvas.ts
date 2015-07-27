@@ -82,6 +82,19 @@ class UI_Canvas extends UI {
 		}
 	}
 
+	/* What we can insert on UI_Canvas is "UI_Column" only, so we alter the
+	   "insert" method of UI.
+	 */
+	public insert( child: UI ): UI {
+		if ( !child || !( child instanceof UI_Column ) ) {
+			throw new Error("Invalid child! Excepting UI_Column, nothing can be inserted inside UI_Canvas" );
+		} else {
+			super.insert( child );
+			this.fire( 'column-changed', child );
+			return child;
+		}
+	}
+
 	get defaultContext(): UI_Canvas_ContextMapper {
 		if ( this._defaultContext ) {
 			return this._defaultContext;

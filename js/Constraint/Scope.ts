@@ -264,6 +264,10 @@ class Constraint_Scope {
 			throw Error( 'UI Element "' + name + '" cannot be declared twice!' );
 		}
 
+		if ( this.strict && !Constraint.classAcceptsChild( this.type, type ) ) {
+			throw new Error( 'STRICT: You cannot place a "' + type + '" inside a "' + this.type + '"!' );
+		}
+
 		var result = new Constraint_Scope( this, name, type, this.strict );
 		this.children.push( result );
 

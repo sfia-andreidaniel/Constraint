@@ -35,6 +35,7 @@ interface IClassProperty {
 interface IClass {
 	name: string;
 	extends?: string;
+	acceptsOnly?: string[];
 	properties: IClassProperty[];
 }
 

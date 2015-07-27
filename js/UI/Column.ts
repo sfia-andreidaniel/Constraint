@@ -10,6 +10,7 @@ class UI_Column extends UI {
 	protected _freezed   : boolean = false;
 	protected _sortable  : boolean = false;
 	protected _resizable : boolean = false;
+	protected _visible   : boolean = true;
 
 	constructor( owner: UI ) {
 	    super( owner );
@@ -102,4 +103,42 @@ class UI_Column extends UI {
 		return UI_Column._theme.height;
 	}
 
+	get visible(): boolean {
+		return this._visible;
+	}
+
+	set visible( on: boolean ) {
+		on = !!on;
+		if ( on != this._visible ) {
+			this._visible = on;
+			if ( this._owner ) {
+				this._owner.fire( 'column-changed', this );
+			}
+		}
+	}
+
+	/* @Override UI.remove */
+	public remove(): UI {
+		var owner: UI = this._owner;
+		super.remove();
+		if ( owner ) {
+			owner.fire( 'column-changed', null );
+		}
+		return this;
+	}
 }
+
+Constraint.registerClass( {
+	"name": "UI_Column",
+	"extends": "UI",
+	"properties": [
+		{
+			"name": "name",
+			"type": "string"
+		},
+		{
+			"name": "type",
+			"type": "enum:EColumnType"
+		}
+	]
+});

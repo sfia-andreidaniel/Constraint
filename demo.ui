@@ -69,7 +69,7 @@
 		@UI_Tab Tab0 {
 			caption: 'Tree';
 
-			@UI_Tree FS_Tree {
+			@UI_Tree_Grid FS_Tree {
 				left: 20;
 				top: 20;
 				right: 20;
@@ -85,7 +85,12 @@
 			    	{id: 6;  parent: 4;    name: 'My Music';                   } 
 			    ];
 
+			    @UI_Column {
+			    	name: 'id';
+			    };
+
 			};
+
 		};
 
 		@UI_Tab Tab1 {

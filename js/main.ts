@@ -68,6 +68,7 @@
 /// <reference path="UI/MenuBar.ts" />
 /// <reference path="UI/MenuItem.ts" />
 /// <reference path="UI/Tree.ts" />
+/// <reference path="UI/Tree/Grid.ts" />
 /// <reference path="UI/Column.ts" />
 
 // ADD DEFAULT RESOURCE FILES
