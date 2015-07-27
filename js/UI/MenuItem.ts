@@ -415,15 +415,17 @@ class UI_MenuItem extends UI {
 			return;
 		}
 
-		this._overlay.beginPaint();
+		var ctx: UI_Canvas_ContextMapper = this._overlay.ctx;
 
-		this._overlay.fillStyle = UI_MenuItem._theme.bgColor;
-		this._overlay.fillRect( 0, 0, this._overlay.width, this._overlay.height );
+		ctx.beginPaint();
 
-		this._overlay.strokeStyle = UI_MenuItem._theme.border;
-		this._overlay.lineWidth = 1;
-		this._overlay.rect( .5, .5, this._overlay.width - 1, this._overlay.height - 1 );
-		this._overlay.stroke();
+		ctx.fillStyle = UI_MenuItem._theme.bgColor;
+		ctx.fillRect( 0, 0, this._overlay.width, this._overlay.height );
+
+		ctx.strokeStyle = UI_MenuItem._theme.border;
+		ctx.lineWidth = 1;
+		ctx.rect( .5, .5, this._overlay.width - 1, this._overlay.height - 1 );
+		ctx.stroke();
 
 		var top = 1;
 
@@ -432,7 +434,7 @@ class UI_MenuItem extends UI {
 			top += UI_MenuItem._theme.height;
 		}
 
-		this._overlay.endPaint();
+		ctx.endPaint();
 
 	}
 
@@ -446,12 +448,14 @@ class UI_MenuItem extends UI {
 			"height": win.height
 		};
 
+		var ctx: UI_Canvas_ContextMapper = win.ctx;
+
 		if ( paintActive && !this.disabled ) {
-			win.fillStyle = UI_MenuItem._theme.selectedBgColor;
-			win.fillRect( 1, top, win.width - 2, UI_MenuItem._theme.height );
+			ctx.fillStyle = UI_MenuItem._theme.selectedBgColor;
+			ctx.fillRect( 1, top, ctx.width - 2, UI_MenuItem._theme.height );
 		}
 
-		win.font = UI_MenuItem._theme.font;
+		ctx.font = UI_MenuItem._theme.font;
 
 		var left: number = UI_MenuItem._theme.padding,
 		    color: string = this.disabled 
@@ -464,7 +468,7 @@ class UI_MenuItem extends UI {
 		if ( this.renderFlags[ UI_MenuItem.FLAG_ICON ] > 0 ) {
 
 			if ( this._icon ) {
-				this._icon.paintWin( win, left, top + ~~( UI_MenuItem._theme.height / 2 - UI_MenuItem._theme.iconSize / 2 ) );
+				this._icon.paintWin( ctx, left, top + ~~( UI_MenuItem._theme.height / 2 - UI_MenuItem._theme.iconSize / 2 ) );
 			}
 
 			left += this.renderFlags[ UI_MenuItem.FLAG_ICON ];
@@ -482,7 +486,7 @@ class UI_MenuItem extends UI {
 						
 						UI_Resource.createSprite( 
 							'Constraint/menuitem_checked/' + ( UI_MenuItem._theme.inputSize + 'x' + UI_MenuItem._theme.inputSize ) + ( this.disabled ? '-disabled' : '' ) 
-						).paintWin( win, left, top + ~~( UI_MenuItem._theme.height / 2 - 10 ) );
+						).paintWin( ctx, left, top + ~~( UI_MenuItem._theme.height / 2 - 10 ) );
 
 					} 
 
@@ -497,10 +501,10 @@ class UI_MenuItem extends UI {
 
 		if ( this.renderFlags[ UI_MenuItem.FLAG_LABEL ] > 0 ) {
 
-			win.textBaseline = 'middle';
-			win.textAlign = 'left';
-			win.fillStyle = color;
-			win.fillText( this._caption, left, top + ~~( UI_MenuItem._theme.height / 2 ) );
+			ctx.textBaseline = 'middle';
+			ctx.textAlign = 'left';
+			ctx.fillStyle = color;
+			ctx.fillText( this._caption, left, top + ~~( UI_MenuItem._theme.height / 2 ) );
 
 			left += this.renderFlags[ UI_MenuItem.FLAG_LABEL ];
 		}
@@ -512,10 +516,10 @@ class UI_MenuItem extends UI {
 			left += this.renderFlags[ UI_MenuItem.FLAG_KBD ];
 
 			if ( this._shortcutKey ) {
-				win.textBaseline = 'middle';
-				win.textAlign = 'right';
-				win.fillStyle = color;
-				win.fillText( this._shortcutKey, left, top + ~~( UI_MenuItem._theme.height / 2 ) );
+				ctx.textBaseline = 'middle';
+				ctx.textAlign = 'right';
+				ctx.fillStyle = color;
+				ctx.fillText( this._shortcutKey, left, top + ~~( UI_MenuItem._theme.height / 2 ) );
 			}
 
 		}
@@ -528,7 +532,7 @@ class UI_MenuItem extends UI {
 				
 				UI_Resource.createSprite( 
 					'Constraint/menuitem_expander' + ( paintActive ? '_hover' : '' ) + '/20x20' + ( this.disabled ? '-disabled' : '' ) 
-				).paintWin( win, left, top + ~~( UI_MenuItem._theme.height / 2 - 10 ) );
+				).paintWin( ctx, left, top + ~~( UI_MenuItem._theme.height / 2 - 10 ) );
 
 			}
 

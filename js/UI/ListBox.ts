@@ -132,7 +132,9 @@ class UI_ListBox extends UI_Canvas implements IFocusable, IRowInterface {
 	public paint() {
 		var scrollTop: number = this.scrollTop,
 		    skip: number = ~~( scrollTop / UI_ListBox._theme.optionHeight ),
+		    
 		    ctx = this._dom.canvas.getContext('2d'),
+		    
 		    bgColor = this.disabled
 		    	? UI_ListBox._theme.disabledBackgroundColor
 		    	: UI_ListBox._theme.enabledBackgroundColor,

@@ -49,7 +49,7 @@ class UI_Sprite extends UI_Event {
 		return this._path;
 	}
 
-	public paintWin( win: UI_Screen_Window, x: number, y: number ) {
+	public paintWin( win: UI_Canvas_ContextMapper, x: number, y: number ) {
 		if ( this.version.window ) {
 			switch ( true ) {
 				case !this.version.repeatX && !this.version.repeatY:

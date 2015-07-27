@@ -162,7 +162,7 @@ class UI_Screen extends UI_Event {
 				this.pointerEvents = false;
 			} else {
 				for ( i=0; i<len; i++ ) {
-					if ( this._windows[i].containsAbsolutePoint( x, y ) ) {
+					if ( this._windows[i].ctx.containsAbsolutePoint( x, y ) ) {
 						this.pointerEvents = true;
 						return;
 					}
@@ -183,7 +183,7 @@ class UI_Screen extends UI_Event {
 		    handled: boolean = false;
 
 		for ( i = len-1; i >= 0; i-- ) {
-			if ( this._windows[i].containsAbsolutePoint( x, y ) ) {
+			if ( this._windows[i].ctx.containsAbsolutePoint( x, y ) ) {
 				this._windows[i].fire( 'mousedown', x - this._windows[i].left, y - this._windows[i].top, ev.which );
 				handled = true;
 				break;
@@ -209,7 +209,7 @@ class UI_Screen extends UI_Event {
 		    handled: boolean = false;
 
 		for ( i = len-1; i >= 0; i-- ) {
-			if ( this._windows[i].containsAbsolutePoint( x, y ) ) {
+			if ( this._windows[i].ctx.containsAbsolutePoint( x, y ) ) {
 				this._windows[i].fire( 'mousemove', x - this._windows[i].left, y - this._windows[i].top, ev.which );
 				handled = true;
 				break;
@@ -237,7 +237,7 @@ class UI_Screen extends UI_Event {
 		    handled: boolean = false;
 
 		for ( i = len-1; i >= 0; i-- ) {
-			if ( this._windows[i].containsAbsolutePoint( x, y ) ) {
+			if ( this._windows[i].ctx.containsAbsolutePoint( x, y ) ) {
 				this._windows[i].fire( 'dblclick', x - this._windows[i].left, y - this._windows[i].top, ev.which );
 				handled = true;
 				break;
@@ -264,7 +264,7 @@ class UI_Screen extends UI_Event {
 		    handled: boolean = false;
 
 		for ( i = len-1; i >= 0; i-- ) {
-			if ( this._windows[i].containsAbsolutePoint( x, y ) ) {
+			if ( this._windows[i].ctx.containsAbsolutePoint( x, y ) ) {
 				this._windows[i].fire( 'mouseup', x - this._windows[i].left, y - this._windows[i].top, ev.which );
 				handled = true;
 				break;
@@ -291,7 +291,7 @@ class UI_Screen extends UI_Event {
 		    handled: boolean = false;
 
 		for ( i = len-1; i >= 0; i-- ) {
-			if ( this._windows[i].containsAbsolutePoint( x, y ) ) {
+			if ( this._windows[i].ctx.containsAbsolutePoint( x, y ) ) {
 				this._windows[i].fire( 'click', x - this._windows[i].left, y - this._windows[i].top, ev.which );
 				handled = true;
 				break;

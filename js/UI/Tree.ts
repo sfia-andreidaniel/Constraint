@@ -186,6 +186,10 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 
 	}
 
+	get store(): Store_NestedObjects {
+		return this._items;
+	}
+
 	private restoreSelectedIndex(): boolean {
 		var len: number = this._selectedIndexPath.length,
 		    i: number,

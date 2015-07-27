@@ -19,17 +19,6 @@ class UI_Canvas extends UI {
 		"canvasSize": UI_Dom.create( 'div', 'canvas-size' )
 	};
 
-	constructor( owner: UI, mixins: string[] = [] ) {
-		super( owner, mixins, UI_Dom.create( 'div', 'ui UI_Canvas' ) );
-		this._root.appendChild( this._dom.canvas );
-		this._root.appendChild( this._dom.viewport );
-		this._dom.viewport.appendChild( this._dom.canvasSize );
-		this._width = UI_Canvas._theme.defaultWidth;
-		this._height= UI_Canvas._theme.defaultHeight;
-
-		this._setupEvents_();
-	}
-
 	protected _logicalWidth: number = 0;
 	protected _logicalHeight: number = 0;
 	protected _viewportWidth: number = 0;
@@ -37,6 +26,21 @@ class UI_Canvas extends UI {
 
 	protected _scrollLeft: number = 0;
 	protected _scrollTop: number = 0;
+
+	protected _numColumns: number = 0;
+	protected _totalFreezedWidth: number = 0;
+
+	constructor( owner: UI, mixins: string[] = [] ) {
+		super( owner, mixins, UI_Dom.create( 'div', 'ui UI_Canvas' ) );
+		this._root.appendChild( this._dom.canvas );
+		this._root.appendChild( this._dom.viewport );
+
+		this._dom.viewport.appendChild( this._dom.canvasSize );
+		this._width = UI_Canvas._theme.defaultWidth;
+		this._height= UI_Canvas._theme.defaultHeight;
+
+		this._setupEvents_();
+	}
 
 	/* We're overriding the repaint of the canvas, in order to optimize it
 	 */

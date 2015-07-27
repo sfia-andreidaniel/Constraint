@@ -59,3 +59,12 @@ enum EMenuItemInputType {
 	RADIO,
 	CHECKBOX
 }
+
+enum EColumnType {
+	INT,
+	FLOAT,
+	STRING,
+	BOOLEAN,
+	DATE,
+	TREE
+}
