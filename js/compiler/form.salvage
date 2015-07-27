@@ -15,6 +15,10 @@ class {{name}} extends UI_Form {
 	
     /* $hint: class-properties */
     // WARNING: Any code written inside of this hint is overrided by constraint compiler!
+
+    // make all instances of {{name}} to await for resources, etc. before opening.
+    public static __awaits__ = {{{awaits}}};
+
 {{#if properties}}{{#each properties}}{{#unless anonymous}}
     public {{name}}: {{type}};{{#end}}{{#end}}{{#else}}{{#end}}
     /* $hint: end */

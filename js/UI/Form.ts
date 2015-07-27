@@ -112,6 +112,21 @@ class UI_Form extends UI implements IFocusable {
 		this._setupEvents_();
 	}
 
+	public __awaits__( what: string ): string[] {
+		var result = [],
+		    className: string = this.__class__;
+		
+		if ( typeof Global['env'][ className ][ '__awaits__' ] != 'undefined' && 
+			 typeof Global['env'][ className ][ '__awaits__' ][ what ] != 'undefined' &&
+			 Global['env'][ className ][ '__awaits__' ][ what ] instanceof Array
+		) {
+			result = Global['env'][ className ][ '__awaits__' ][ what ];
+		}
+
+		return result;
+
+	}
+
 	// returns an element defined on this instance.
 	// the element must extend the UI interface
 	public getElementByName( elementName ): UI {
@@ -130,10 +145,31 @@ class UI_Form extends UI implements IFocusable {
 	/* The open method appends the form's element into the DialogManager desktop ( which by
 	   default is document.body ) in order to make the form visible.
 	 */
-	public open( ) {
-		UI_DialogManager.get.desktop.appendChild( this._root );
-		this.onRepaint();
-		UI_DialogManager.get.onWindowOpened( this );
+	public open( ): Thenable<any> {
+
+		return ( function( self ) {
+
+			var resources: string[] = self.__awaits__('resource');
+
+			return Promise.resolve()
+			.then( function() {
+				if ( resources.length ) {
+					return UI_Resource.require( resources );
+				} else {
+					return true;
+				}
+			} )
+			.then( function() {
+
+				UI_DialogManager.get.desktop.appendChild( self._root );
+				self.onRepaint();
+				UI_DialogManager.get.onWindowOpened( self );
+
+			} );
+
+
+		} )( this );
+
 	}
 
 	/* Closes the form  (removes it from Dialog Manager's desktop)

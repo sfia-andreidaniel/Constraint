@@ -9,13 +9,9 @@
 	
 	<script type="text/javascript">
 		
-		UI_Resource.require( [ 'Constraint' ] ).then( function() {
-			window.form = new DemoForm();
-			form.open();
-		})[ 'catch' ]( function( err ) {
-
-			alert( 'Failed to start application: ' + err );
-
+		window.form = new DemoForm();
+		form.open().then( function() {
+			console.log( 'form opened' );
 		} );
 
 	</script>

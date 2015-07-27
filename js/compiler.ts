@@ -160,7 +160,8 @@ try {
 				"constraintLibPath": constraintLibPath,
 				"fileName": form.$name + '.ts',
 				"childProperties": form.$properties,
-				"anonymousCode": []
+				"anonymousCode": [],
+				"awaits": form.$awaits ? JSON.stringify( form.$awaits ) : null
 			};
 
 			if ( justForm && form._name != justForm ) {

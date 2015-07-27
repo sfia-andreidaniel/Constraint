@@ -591,6 +591,11 @@ class UI extends UI_Event {
 		return this._children;
 	}
 
+	get __class__(): string {
+		var matches: string[] = /^function ([^\s\(]+)/.exec( this['constructor']['toString']() );
+		return matches[1] || null;
+	}
+
 	public implements( interfaceName: string ): boolean {
 		return this._embrace && this._embrace[ interfaceName ] === true;
 	}

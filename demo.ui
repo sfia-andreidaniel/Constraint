@@ -1,8 +1,13 @@
 @UI_Form DemoForm {
+	
+	/* Tell the window to open only after the resource called "Constraint" is ready.
+	   Note that windows are awainting for some default resources, so there is not
+	   need to include them through "$awaits" clause.
+	 */
+	$awaits resource Constraint;
 
 	width: 800;
 	height: 400;
-
 	left: 10;
 	top: 10;
 

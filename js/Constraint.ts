@@ -113,6 +113,14 @@ class Constraint {
 			"regex": /^\$declare/,
 			"return": 0
 		},
+		"tok_awaits": {
+			"regex": /^\$awaits/,
+			"return": 0
+		},
+		"tok_await_type": {
+			"regex": /^(resource)/,
+			"return": 1
+		},
 		"tok_attrib": {
 			"regex": /^\:/,
 			"return": 0
@@ -272,6 +280,19 @@ class Constraint {
 			]
 		},
 
+		"awaits": {
+			"flow": [
+				"tok_white_space_opt",
+				"tok_awaits",
+				"tok_white_space",
+				"tok_await_type",
+				"tok_white_space",
+				"tok_identifier",
+				"tok_white_space_opt",
+				"tok_instruction_end"
+			]
+		},
+
 		"scope": {
 			"flow": [
 				"tok_white_space_opt",
@@ -294,7 +315,8 @@ class Constraint {
 				"array_assignment",
 				"scope",
 				"white_space",
-				"resource_file"
+				"resource_file",
+				"awaits"
 			]
 		},
 
@@ -393,6 +415,11 @@ class Constraint {
 			}
 		}
 		return this.buffer;
+	}
+
+	// Makes the current UI_Dialog to await for a specific async event.
+	public awaits( awaitType: string, awaitValue: string ) {
+		this.scope.awaits( awaitType, awaitValue );
 	}
 
 	// creates a scope inside the current scope with the name "n", and type "t" and returns it.

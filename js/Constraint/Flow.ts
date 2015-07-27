@@ -221,6 +221,10 @@ class Constraint_Flow {
 				inConstraint.resource( rstart[0] );
 				break;
 
+			case 'awaits':
+				inConstraint.awaits( rstart[3].result, rstart[5].result );
+				break;
+
 			default:
 				//console.log( this.name );
 		}

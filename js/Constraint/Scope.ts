@@ -21,6 +21,10 @@ class Constraint_Scope {
 	protected anonObjStack: any[] = [];
 	protected anonObjProps: string[] = [];
 
+	protected _awaits = {
+		"resource": []
+	};
+
 	private   _isAnonymous: boolean;
 
 	constructor( parentScope: Constraint_Scope = null, name: string = '', type: string = '', strict: boolean = false ) {
@@ -105,6 +109,24 @@ class Constraint_Scope {
 		return this.parent === null
 			? null
 			: this.parent.ownName;
+	}
+
+	public awaits( awaitType: string, awaitValue: string ) {
+		
+		if ( this.strict && this.type != 'UI_Form' ) {
+			throw new Error( 'STRICT: $awaits clause can be used only inside a UI_Form scope type.' );
+		}
+
+		switch ( awaitType ) {
+			case 'resource':
+				if ( this._awaits.resource.indexOf( awaitValue ) == -1 ) {
+					this._awaits.resource.push( awaitValue );
+				}
+				break;
+			default:
+				throw new Error('Unknown await type: ' + JSON.stringify( awaitType ) );
+				break;
+		}
 	}
 
 	public pushObjectKey( key: string ) {
@@ -504,6 +526,18 @@ class Constraint_Scope {
 		} else {
 			return '';
 		}
+	}
+
+	get $awaits(): any {
+		var out: any = {},
+		    anything: boolean = false;
+
+		if ( this._awaits.resource.length ) {
+			out['resource'] = this._awaits.resource;
+			anything = true;
+		}
+
+		return anything ? out : null;
 	}
 
 	/* THIS IS USED BY THE CONSTRAINT COMPILER, AND SHOULD NOT BE USED ELSEWHERE */
