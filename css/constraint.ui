@@ -22,6 +22,8 @@
 	$declare formColor: white;
 	
 	$declare object3dColor: #f0f0f0;
+	$declare object3dDisabledColor: #f0f0f0;
+
 	$declare object3dBorderColor: #acacac;
 
 	// Form styling
@@ -254,6 +256,20 @@
 	@Theme UI_Column {
 		
 		height: 30;
+
+		background: {
+			enabledColor: $object3dColor;
+			disabledColor: $object3dDisabledColor;
+		};
+
+		font: {
+			family: $fontFamily;
+			size: $fontSize;
+			color: {
+				enabled: $fontColor;
+				disabled: $disabledFontColor;
+			};
+		};
 
 	};
 

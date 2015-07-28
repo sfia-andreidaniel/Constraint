@@ -618,14 +618,11 @@ class UI_MenuItem extends UI {
 			case 37:
 
 				if ( this.selectedIndex == -1 && this.owner instanceof UI_MenuBar ) {
-
 					this.owner.fire( 'keydown', evt );
-
 				} else {
-
-					console.log( 'LEFT: in ' + this._caption );
 					this.close();
 				}
+
 				break;
 			// Right
 			case 39:

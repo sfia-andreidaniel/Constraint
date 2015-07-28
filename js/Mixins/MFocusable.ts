@@ -1,3 +1,10 @@
+interface IFocusable {
+	active: boolean;
+	wantTabs: boolean;
+	tabIndex: number;
+	includeInFocus: boolean;
+}
+
 class MFocusable extends UI implements IFocusable {
 
 	public static isMixin: boolean = true;

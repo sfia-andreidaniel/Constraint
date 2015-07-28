@@ -87,6 +87,16 @@
 
 			    @UI_Column {
 			    	name: 'id';
+			    	freezed: true;
+			    	type: INT;
+			    	width: 50;
+			    	caption: 'ID';
+			    };
+
+			    @UI_Column {
+			    	type: TREE;
+			    	width: 300;
+			    	caption: 'TREE';
 			    };
 
 			};

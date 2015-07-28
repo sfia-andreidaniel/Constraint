@@ -10,10 +10,6 @@ build:: clean
 	rm -f ./postcompiler.js
 
 resources::
-	@echo .
-	@echo off
-	@echo If mogrify is not found, you can install it from ImageMagick
-	@echo .
 	mogrify -format png -background none vendor/self/*.svg
 	mogrify -format png -background none vendor/gnome/*.svg
 	constraint --src:resources.ui --http-include-path:resources --make

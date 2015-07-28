@@ -7,6 +7,8 @@
 
 class UI_Canvas_ContextMapper {
 
+	private _paintable: boolean = true;
+
 	constructor( private ctx: CanvasRenderingContext2D, private size: IWindow ) {
 	}
 
@@ -42,6 +44,14 @@ class UI_Canvas_ContextMapper {
 		this.size.height = ~~distance;
 	}
 
+	get paintable(): boolean {
+		return this._paintable;
+	}
+
+	set paintable(on: boolean ) {
+		this._paintable = !!on;
+	}
+
 	// before anything is painted on the window, this method must be called
 	public beginPaint() {
 		this.ctx.save();
@@ -73,24 +83,30 @@ class UI_Canvas_ContextMapper {
 	}
 
 	public clearRect( x: number, y: number, width: number, height: number ) {
+		if ( this._paintable )
 		this.ctx.clearRect( this.size.x + x, this.size.y + y, width, height );
 	}
 
 	public fillRect( x: number, y: number, width: number, height: number ) {
+		if ( this._paintable )
 		this.ctx.fillRect( this.size.x + x, this.size.y + y, width, height );
 	}
 
 	public strokeRect( x: number, y: number, width: number, height: number ) {
+		if ( this._paintable )
 		this.ctx.strokeRect( this.size.x + x, this.size.y + y, width, height );
 	}
 
 	public fillText( ...args: any[] ) {
-		args[1] += this.size.x;
-		args[2] += this.size.y;
-		this.ctx.fillText.apply( this.ctx, args );
+		if ( this._paintable ) {
+			args[1] += this.size.x;
+			args[2] += this.size.y;
+			this.ctx.fillText.apply( this.ctx, args );
+		}
 	}
 
 	public strokeText( text: string, x: number, y: number, maxWidth?: number ) {
+		if ( this._paintable )
 		this.ctx.strokeText( text, this.size.x + x, this.size.y + y, maxWidth );
 	}
 
@@ -237,26 +253,32 @@ class UI_Canvas_ContextMapper {
 	}
 
 	public lineTo( x: number, y: number ) {
+		if ( this._paintable )
 		this.ctx.lineTo( this.size.x + x, this.size.y + y );
 	}
 
 	public arc( x: number, y: number, radius: number, startAngle: number, endAngle: number, anticlockwise?: boolean ) {
+		if ( this._paintable )
 		this.ctx.arc( this.size.x + x, this.size.y + y, radius, startAngle, endAngle, anticlockwise );
 	}
 
 	public arcTo( x1: number, y1: number, x2: number, y2: number, radius: number ) {
+		if ( this._paintable )
 		this.ctx.arcTo( this.size.x + x1, this.size.y + y1, this.size.x + x2, this.size.y + y2, radius );
 	}
 
 	public rect( x, y, width, height ) {
+		if ( this._paintable )
 		this.ctx.rect( this.size.x + x, this.size.y + y, width, height );
 	}
 
 	public fill( ...args: any[] ) {
+		if ( this._paintable )
 		this.ctx.fill.apply( this.ctx, args );
 	}
 
 	public stroke( ...args: any[] ) {
+		if ( this._paintable )
 		this.ctx.stroke.apply( this.ctx, args );
 	}
 
@@ -277,19 +299,21 @@ class UI_Canvas_ContextMapper {
 	}
 
 	public drawImage( ...args: any[] ) {
-		switch ( args.length ) {
-			case 3:
-				this.ctx.drawImage( args[0], this.size.x + args[1], this.size.y + args[2] );
-				break;
-			case 5:
-				this.ctx.drawImage( args[0], this.size.x + args[1], this.size.y + args[2], args[3], args[4] );
-				break;
-			case 9:
-				this.ctx.drawImage( args[0], args[1], args[2], args[3], args[4], this.size.x + args[5], this.size.y + args[6], args[7], args[8] );
-				break;
-			default:
-				throw new Error( 'Invalid arguments' );
-				break;
+		if ( this._paintable ) {
+			switch ( args.length ) {
+				case 3:
+					this.ctx.drawImage( args[0], this.size.x + args[1], this.size.y + args[2] );
+					break;
+				case 5:
+					this.ctx.drawImage( args[0], this.size.x + args[1], this.size.y + args[2], args[3], args[4] );
+					break;
+				case 9:
+					this.ctx.drawImage( args[0], args[1], args[2], args[3], args[4], this.size.x + args[5], this.size.y + args[6], args[7], args[8] );
+					break;
+				default:
+					throw new Error( 'Invalid arguments' );
+					break;
+			}
 		}
 	}
 
@@ -302,9 +326,11 @@ class UI_Canvas_ContextMapper {
 	}
 
 	public putImageData( ...args: any[] ) {
-		args[1] += this.size.x;
-		args[2] += this.size.y;
-		this.ctx.putImageData.apply( this.ctx, args );
+		if ( this._paintable ){
+			args[1] += this.size.x;
+			args[2] += this.size.y;
+			this.ctx.putImageData.apply( this.ctx, args );
+		}
 	}
 
 	public save() {

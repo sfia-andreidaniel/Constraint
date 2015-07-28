@@ -49,8 +49,10 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 
 	private   _selectedIndexPath: any[] = null;
 
-	constructor( owner: UI ) {
-	    super( owner, [ 'IFocusable', 'IRowInterface' ] );
+	constructor( owner: UI, mixins: string[] = [] ) {
+	    
+	    super( owner, Utils.arrayMerge( [ 'IFocusable', 'IRowInterface' ], mixins ) );
+	    
 	    UI_Dom.addClass( this._root, 'UI_Tree' );
 	    this._items = new Store_NestedObjects(null);
 	    this._view = this._items.createTreeView( null );
@@ -58,8 +60,41 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 	    this._setupExtendedEvents_();
 	}
 
+	get rowHeight(): number {
+		return UI_Tree._theme.option.height;
+	}
+
 	get paintContext(): UI_Canvas_ContextMapper {
 		return this.defaultContext;
+	}
+
+	/* Must be reimplemented also by the UI_Tree_Grid */
+	protected setupMouseHandler() {
+
+		( function( me ) {
+
+			me.on( 'mousedown', function( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {
+				
+				if ( me.disabled || which != 1 || point.y < 0 ) {
+					return;
+				}
+
+				//console.log( e.offsetY, e.clientY, e );
+				var y: number  = point.y,
+				    x: number  = point.x,
+					rowIndex   = ~~( y / UI_Tree._theme.option.height ),
+					numConnectors = me._view.connectorsAt( rowIndex ).length;
+
+				me.onRowIndexClick( rowIndex, shiftKey, ctrlKey );
+
+				/* If x is in the range of the last connector, click on the expander */
+				if ( ~~( x / UI_Tree._theme.option.height ) == numConnectors - 1 ) {
+					me.onRowExpanderClick( rowIndex );
+				}
+
+			}, true );
+
+		})( this );
 	}
 
 	/* Local methods */
@@ -67,7 +102,9 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 
 		( function( me ) {
 
-			me._render = new UI_Throttler( function() { me.paint(); }, 1 );
+			me._render = new UI_Throttler( function() { 
+				me.paint(); 
+			}, 1 );
 
 			me._view.on( 'before-change', function() {
 				
@@ -118,26 +155,7 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 				me.render();
 			} );
 
-			me._dom.canvasSize.addEventListener( 'mousedown', function(e) {
-				
-				if ( me.disabled || e.which != 1 ) {
-					return;
-				}
-
-				//console.log( e.offsetY, e.clientY, e );
-				var y: number  = typeof e.offsetY != 'undefined' ? e.offsetY : e.layerY,
-				    x: number  = typeof e.offsetX != 'undefined' ? e.offsetX : e.layerX,
-					rowIndex   = ~~( y / UI_Tree._theme.option.height ),
-					numConnectors = me._view.connectorsAt( rowIndex ).length;
-
-				me.onRowIndexClick( rowIndex, e.shiftKey, e.ctrlKey );
-
-				/* If x is in the range of the last connector, click on the expander */
-				if ( ~~( x / UI_Tree._theme.option.height ) == numConnectors - 1 ) {
-					me.onRowExpanderClick( rowIndex );
-				}
-
-			}, true );
+			me.setupMouseHandler();
 
 			me.on( 'keydown', function( evt ) {
 
@@ -255,13 +273,23 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 		}
 	}
 
+	public itemAt( index: number ): Store_Item {
+		return this._view.itemAt( index );
+	}
+
 	public paint() {
-		var scrollTop : number = this.scrollTop,
+
+		this.prerender();
+
+		var ctx = this.paintContext;
+
+		if ( !ctx ) {
+			return;
+		}
+
+		var	scrollTop : number = this.scrollTop,
+			bgColor = this.disabled ? UI_Tree._theme.background.disabled : UI_Tree._theme.background.enabled,
 			skip      : number = ~~( scrollTop / UI_Tree._theme.option.height ),
-			ctx               = this.paintContext,
-			bgColor           = this.disabled
-		    		? UI_Tree._theme.background.disabled
-		    		: UI_Tree._theme.background.enabled,
 		    startY    : number = -( scrollTop % UI_Tree._theme.option.height ),
 		    paintRows : number = Math.round( this._paintRect.height / UI_Tree._theme.option.height ) + 1,
 		    i 		  : number,
@@ -278,7 +306,7 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 		   	numConnectors : number;
 
 		ctx.fillStyle = bgColor;
-		ctx.fillRect( -this._freezedWidth, 0, this._paintRect.width, ctx.height );
+		ctx.fillRect( 0, 0, ctx.width, ctx.height );
 
 		ctx.beginPaint();
 		ctx.imageSmoothingEnabled = false;
@@ -375,6 +403,8 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 		}
 
 		ctx.endPaint();
+
+		this.postrender();
 
 	}
 

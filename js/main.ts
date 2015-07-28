@@ -60,7 +60,10 @@
 /// <reference path="UI/Button.ts" />
 /// <reference path="UI/CheckBox.ts" />
 /// <reference path="UI/RadioBox.ts" />
+
 /// <reference path="UI/Canvas.ts" />
+/// <reference path="Mixins/MGridInterface.ts" />
+
 /// <reference path="UI/ListBox.ts" />
 /// <reference path="UI/TabsPanel.ts" />
 /// <reference path="UI/Tab.ts" />
@@ -72,6 +75,8 @@
 /// <reference path="UI/Tree.ts" />
 /// <reference path="UI/Tree/Grid.ts" />
 /// <reference path="UI/Column.ts" />
+/// <reference path="UI/Column/Renderer.ts" />
+/// <reference path="UI/Column/Renderer/Tree.ts" />
 
 // ADD DEFAULT RESOURCE FILES
 

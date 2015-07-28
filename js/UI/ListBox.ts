@@ -84,19 +84,16 @@ class UI_ListBox extends UI_Canvas implements IFocusable, IRowInterface {
 				me.render();
 			} );
 
-			me._dom.canvasSize.addEventListener( 'mousedown', function(e) {
+			me.on( 'mousedown', function( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {
 				
-				if ( me.disabled || e.which != 1 ) {
+				if ( me.disabled || which != 1 || point.y < 0 ) {
 					return;
 				}
 
-				//console.log( e.offsetY, e.clientY, e );
-				var y: number = typeof e.offsetY != 'undefined'
-					? e.offsetY
-					: e.layerY,
+				var y: number = point.y,
 					rowIndex = ~~( y / UI_ListBox._theme.optionHeight );
 
-				me.onRowIndexClick( rowIndex, e.shiftKey, e.ctrlKey );
+				me.onRowIndexClick( rowIndex, shiftKey, ctrlKey );
 
 			}, true );
 

@@ -39,9 +39,18 @@ class UI_Canvas extends UI {
 	protected _freezedWidth: number = 0;
 
 	protected _defaultContext: UI_Canvas_ContextMapper;
+	protected _headerContext:  UI_Canvas_ContextMapper;
+
+	private   _previousViewportWidth: number = null;
+	private   _previousViewportHeight: number = null;
+
+	// Required by IGridInterface / MGridInterface
+	public    selectedIndex: number;
+	public    rowHeight: number;
 
 	constructor( owner: UI, mixins: string[] = [] ) {
 		super( owner, mixins, UI_Dom.create( 'div', 'ui UI_Canvas' ) );
+		
 		this._root.appendChild( this._dom.canvas );
 		this._root.appendChild( this._dom.viewport );
 
@@ -62,8 +71,24 @@ class UI_Canvas extends UI {
 			/* Resize the canvas, and trigger the "render" method.
 			 */
 
+			var changed: boolean = false;
+
 			this._dom.canvas.width = this._viewportWidth = ( this._paintRect.width - this.padding.left - this.padding.right );
 			this._dom.canvas.height= this._viewportHeight = ( this._paintRect.height - this.padding.top - this.padding.bottom );
+
+			if ( this._viewportWidth != this._previousViewportWidth ) {
+				this._previousViewportWidth = this._viewportWidth;
+				changed = true;
+			}
+
+			if ( this._viewportHeight != this._previousViewportHeight ) {
+				this._previousViewportHeight = this._viewportHeight;
+				changed = true;
+			}
+
+			if ( changed ) {
+				this.fire( 'viewport-resized' );
+			}
 
 			if ( this._defaultContext ) {
 
@@ -74,8 +99,12 @@ class UI_Canvas extends UI {
 
 			}
 
+			if ( this._headerContext ) {
+				this._headerContext.height = ( ~~this._hasHeader * UI_Column._theme.height );
+				this._headerContext.width  = this._viewportWidth;
+			}
+
 			this.render( );
-			this.postrender();
 
 		} else {
 			return false;
@@ -95,6 +124,10 @@ class UI_Canvas extends UI {
 		}
 	}
 
+	get globalContext(): CanvasRenderingContext2D {
+		return this._dom.canvas.getContext('2d');
+	}
+
 	get defaultContext(): UI_Canvas_ContextMapper {
 		if ( this._defaultContext ) {
 			return this._defaultContext;
@@ -109,6 +142,23 @@ class UI_Canvas extends UI {
 				}
 			);
 			return this._defaultContext;
+		}
+	}
+
+	get headerContext(): UI_Canvas_ContextMapper {
+		if ( this._headerContext ) {
+			return this._headerContext;
+		} else {
+			this._headerContext = new UI_Canvas_ContextMapper(
+				this._dom.canvas.getContext('2d'),
+				{
+					"x": 0,
+					"y": 0,
+					"width": this._viewportWidth,
+					"height": ( ~~this._hasHeader * UI_Column._theme.height )
+				}
+			);
+			return this._headerContext;
 		}
 	}
 
@@ -158,6 +208,11 @@ class UI_Canvas extends UI {
 
 			this.onRepaint();
 		}
+	}
+
+	// renders something on the canvas before the main render is started.
+	public prerender() {
+
 	}
 
 	// renders something on the canvas.
@@ -226,6 +281,43 @@ class UI_Canvas extends UI {
 		return this._viewportHeight;
 	}
 
+	private translateMouseEvent( x: number, y: number, target ): IPoint {
+
+		var result = { "x": 0, "y": 0 };
+
+		switch ( true ) {
+			case target == this._dom.fHeader:
+				result.y = y - UI_Column._theme.height;
+				result.x = x + ( x > this.freezedWidth ? this.scrollLeft : 0 );
+				break;
+
+			case target == this._dom.canvasSize:
+				result.x = x + this.freezedWidth;
+				result.y = y;
+				break;
+
+			case target == this._dom.viewport:
+				return null;
+				break;
+
+			case target == this._dom.fCanvasSize:
+				result.x = x;
+				result.y = y + this.scrollTop;
+				if ( result.y > this.logicalHeight ) {
+					return null;
+				}
+
+				break;
+
+			default:
+				//console.log( target, x, y );
+				return null;
+				break;
+		}
+
+		return result;
+	}
+
 	protected _setupEvents_() {
 
 		( function( me ) {
@@ -237,8 +329,68 @@ class UI_Canvas extends UI {
 				me.render();
 			}, true );
 
+			me._root.addEventListener( 'mousemove', function( e ) {
+
+				var x = e.offsetX,
+				    y = e.offsetY,
+
+				    result = me.translateMouseEvent( x, y, e.target );
+
+				if ( result )
+					me.fire( 'mousemove', result, e.which, e.ctrlKey, e.altKey, e.shiftKey );
+
+			}, true );
+
+			me._root.addEventListener( 'mousedown', function( e ) {
+
+				var x = e.offsetX,
+					y = e.offsetY,
+					result = me.translateMouseEvent( x, y, e.target );
+
+				if ( result )
+					me.fire( 'mousedown', result, e.which, e.ctrlKey, e.altKey, e.shiftKey );
+
+			} );
+
+			me._root.addEventListener( 'mouseup', function( e ) {
+
+				var x = e.offsetX,
+				    y = e.offsetY,
+				    result = me.translateMouseEvent( x, y, e.target );
+
+				if ( result )
+					me.fire( 'mouseup', result, e.which, e.ctrlKey, e.altKey, e.shiftKey );
+
+			} );
+
+			me._root.addEventListener( 'click', function( e ) {
+
+				var x = e.offsetX,
+				    y = e.offsetY,
+				    result = me.translateMouseEvent( x, y, e.target );
+
+				if ( result )
+					me.fire( 'click', result, e.which, e.ctrlKey, e.altKey, e.shiftKey );
+
+			} );
+
+			me._root.addEventListener( 'dblclick', function( e ) {
+
+				var x = e.offsetX,
+				    y = e.offsetY,
+				    result = me.translateMouseEvent( x, y, e.target );
+
+				if ( result )
+					me.fire( 'dblclick', result, e.which, e.ctrlKey, e.altKey, e.shiftKey );
+
+			} );
+
 		} )( this );
 
+	}
+
+	public itemAt( index: number ): Store_Item {
+		throw new Error( 'Should be implemented if ancestor implements a MGridInterface' );
 	}
 
 }
