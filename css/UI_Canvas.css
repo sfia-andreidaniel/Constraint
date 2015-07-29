@@ -70,7 +70,7 @@
 	z-index: 3;
 }
 
-.ui.UI_Canvas.has-header.col-resize > .freezed-header {
+.ui.UI_Canvas.has-header.col-resize {
 	cursor: col-resize !important;
 }
 

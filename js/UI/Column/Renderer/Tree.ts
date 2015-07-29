@@ -34,7 +34,8 @@ class UI_Column_Renderer_Tree extends UI_Column_Renderer {
 		    paddingLeft 	: number,
 		    ci 				: number,
 		    numConnectors 	: number,
-		    icon            : string;
+		    icon            : string,
+		    width4          : number = ctx.width - 4;
 
 		ctx.beginPaint();
 		ctx.imageSmoothingEnabled = false;
@@ -76,7 +77,7 @@ class UI_Column_Renderer_Tree extends UI_Column_Renderer {
 
 			// paint caption
 
-			ctx.fillText( opt.name, 2 + paddingLeft, startY + ~~( rowHeight / 2 ) );
+			ctx.fillText( ctx.dotDotDot( opt.name,  width4 - paddingLeft ), 2 + paddingLeft, startY + ~~( rowHeight / 2 ) );
 
 			startY += rowHeight;
 

@@ -113,7 +113,7 @@
 			    	width: 200;
 			    	caption: 'Name';
 			    	name: 'name';
-			    	textAlign: RIGHT;
+			    	textAlign: CENTER;
 			    };
 
 			    @UI_Column {

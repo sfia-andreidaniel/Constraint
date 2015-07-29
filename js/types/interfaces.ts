@@ -94,3 +94,7 @@ interface IResourceFileVersion {
 	disabled?: boolean;
 	window?: IWindow;
 }
+
+interface ITextMetrics {
+	width: number;
+}

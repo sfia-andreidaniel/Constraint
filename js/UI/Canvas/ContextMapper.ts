@@ -71,6 +71,138 @@ class UI_Canvas_ContextMapper {
 		return ( x === null || ( x >= this.size.x && x <= this.size.x + this.size.width - 1 ) ) && ( y === null || ( y >= this.size.y && y <= this.size.y + this.size.height - 1 ) );
 	}
 
+	/* Transforms a string to fit a length, using the "..." at it's beginnig or at it's ending 
+	 *
+	 * Uses current canvas text settings.
+	 */
+	public dotDotDot( s: string, width: number ): string {
+		s = String( s || '' );
+
+		if ( s == '' || width <= 0 ) {
+			return '';
+		}
+
+		var result: string,
+		    result1: string,
+			dotDotDot: number,
+			align: string,
+		    metrics: ITextMetrics = this.measureText( s ),
+		    i: number,
+		    len: number,
+		    direction: EAlignment,
+		    condition: boolean,
+		    mid: number,
+		    letterWidth: number,
+		    letter: string,
+		    pivot: number,
+		    cWidth: number;
+
+		if ( metrics.width <= width ) {
+			return s;
+		} else {
+			dotDotDot = this.measureText('…').width;
+			
+			if ( metrics.width < dotDotDot ) {
+				return '…';
+			} else {
+				align = this.textAlign;
+				result = '';
+				cWidth = dotDotDot;
+				condition = true;
+
+				switch ( align ) {
+					case 'start': case 'left':
+						direction = EAlignment.LEFT;
+						i = 0;
+						len = s.length;
+						break;
+
+					case 'right': case 'end':
+						direction = EAlignment.RIGHT;
+						len = s.length;
+						i = len - 1;
+						break;
+
+					// center?
+					default:
+						direction = EAlignment.CENTER;
+						result1 = '';
+						len = s.length - 1;
+						mid = ~~( ( len + 1 ) / 2 );
+						i = 0;
+						pivot = 0;
+						break;
+				}
+
+				do {
+
+					switch ( direction ) {
+						case EAlignment.LEFT:
+							letter = s[i];
+							break;
+						case EAlignment.RIGHT:
+							letter = s[i];
+							break;
+						case EAlignment.CENTER:
+							letter = pivot == 1 ? s[ len - i ] : s[ i ];
+							break;
+					}
+
+					letterWidth = this.measureText( letter ).width;
+
+					condition = ( letter != '\n' ) && ( cWidth + letterWidth <= width );
+
+					if ( condition ) {
+
+						cWidth += letterWidth;
+
+						switch ( direction ) {
+							case EAlignment.LEFT:
+								result = result + letter;
+								i++;
+								condition = i < len;
+								break;
+							case EAlignment.RIGHT:
+								result = letter + result;
+								i--;
+								condition = i > 0;
+								break;
+							case EAlignment.CENTER:
+								if ( pivot == 1 ) {
+									result1 = letter + result1;
+								} else {
+									result = result + letter;
+								}
+								pivot = 1 - pivot;
+								if ( pivot == 0 ) {
+									i++;
+								}
+								condition = i < mid;
+								break;
+						}
+					}
+
+				} while( condition );
+
+				switch ( direction ) {
+					case EAlignment.LEFT:
+						return result + '…';
+						break;
+					case EAlignment.RIGHT:
+						return '…' + result ;
+						break;
+					case EAlignment.CENTER:
+						return result + '…' + result1;
+						break;
+				}
+			}
+
+
+		}
+
+		return s;
+	}
+
 	/* CANVAS API METHODS AND PROPERTIES ARE IMPLEMENTED ON UI_Canvas_ContextMapper
 	   All the methods that require coordinates, are translated to local window coordinates 
 	*/
@@ -109,6 +241,10 @@ class UI_Canvas_ContextMapper {
 	public strokeText( text: string, x: number, y: number, maxWidth?: number ) {
 		if ( this._paintable )
 		this.ctx.strokeText( text, this.size.x + x, this.size.y + y, maxWidth );
+	}
+
+	public measureText( text: string ): ITextMetrics {
+		return this.ctx.measureText( text );
 	}
 
 	get lineWidth(): number {

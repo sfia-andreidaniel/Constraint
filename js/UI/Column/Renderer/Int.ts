@@ -23,7 +23,8 @@ class UI_Column_Renderer_Int extends UI_Column_Renderer {
 		    value           : number,
 		    valueStr        : string,
 		    color           : string,
-		    paintX          : number = 2;
+		    paintX          : number = 2,
+		    width4          : number = ctx.width - 4;
 
 		ctx.beginPaint();
 
@@ -58,7 +59,7 @@ class UI_Column_Renderer_Int extends UI_Column_Renderer {
 				? String( Math.round( value ) )
 				: ( value === null ? 'NULL' : '' );
 
-			ctx.fillText( valueStr, paintX, startY + ~~( rowHeight / 2 ) );
+			ctx.fillText( ctx.dotDotDot( valueStr, width4 ), paintX, startY + ~~( rowHeight / 2 ) );
 
 			startY += UI_Tree._theme.option.height;
 

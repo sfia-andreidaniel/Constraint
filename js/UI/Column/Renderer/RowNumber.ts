@@ -23,7 +23,8 @@ class UI_Column_Renderer_RowNumber extends UI_Column_Renderer {
 		    value           : number,
 		    valueStr        : string,
 		    color           : string,
-		    paintX          : number = 2;
+		    paintX          : number = 2,
+		    width4          : number = ctx.width - 4;
 
 		ctx.beginPaint();
 
@@ -52,7 +53,7 @@ class UI_Column_Renderer_RowNumber extends UI_Column_Renderer {
 
 			ctx.fillStyle = color;
 
-			ctx.fillText( ( i + 1 ) + '', paintX, startY + ~~( rowHeight / 2 ) );
+			ctx.fillText( ctx.dotDotDot( ( i + 1 ) + '', width4 ), paintX, startY + ~~( rowHeight / 2 ) );
 
 			startY += UI_Tree._theme.option.height;
 

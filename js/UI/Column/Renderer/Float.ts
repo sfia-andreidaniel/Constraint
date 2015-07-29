@@ -24,7 +24,8 @@ class UI_Column_Renderer_Float extends UI_Column_Renderer {
 		    valueStr        : string,
 		    color           : string,
 		    precision       : number = this._column.precision,
-		    paintX          : number = 2;
+		    paintX          : number = 2,
+		    width4          : number = ctx.width - 4;
 
 		ctx.beginPaint();
 
@@ -59,7 +60,7 @@ class UI_Column_Renderer_Float extends UI_Column_Renderer {
 				? String( value.toFixed( precision ) )
 				: ( value === null ? 'NULL' : '' );
 
-			ctx.fillText( valueStr, paintX, startY + ~~( rowHeight / 2 ) );
+			ctx.fillText( ctx.dotDotDot( valueStr, width4 ), paintX, startY + ~~( rowHeight / 2 ) );
 
 			startY += UI_Tree._theme.option.height;
 

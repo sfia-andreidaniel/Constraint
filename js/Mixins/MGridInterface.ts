@@ -554,6 +554,10 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 				this.freezedColumns[i].paintEdge();
 			}
 
+			header.fillStyle = UI_Column._theme.border[ this.disabled ? 'disabled' : 'enabled' ];
+
+			header.fillRect( 0, header.height - 1, header.width - 1, 1 );
+
 		}
 
 
