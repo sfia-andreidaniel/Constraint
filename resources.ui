@@ -17,6 +17,9 @@
 	tree_connector_6            from '../vendor/self/tree-connectors/pen_6.png'   25x25 disabled;
 	tree_connector_7            from '../vendor/self/tree-connectors/pen_7.png'   25x25 disabled;
 
+	/* GRID STUFF */
+	grid_boolean                from '../vendor/self/grid-boolean-column.png'     14x14 disabled;
+
 	/* SYSTEM ICONS */
 
 	folder                      from '../vendor/gnome/Gnome-folder.png'           16x16 20x20 disabled;

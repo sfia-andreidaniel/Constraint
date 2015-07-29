@@ -131,6 +131,28 @@
 		width: 100;
 		height: 100;
 
+		font: {
+			family: $fontFamily;
+			size:   $fontSize;
+
+			color: {
+				normal           : $normalFontColor;
+				disabled         : $disabledFontColor;
+				selectedEnabled  : $selectedItemColor;
+				selectedDisabled : $selectedDisabledItemColor;
+				selectedInactive : $selectedInactiveItemColor;
+			};
+
+		};
+
+		background: {
+			disabled: $disabledControlBackgroundColor;
+			enabled: $enabledControlBackgroundColor;
+			selected: $selectedItemBackgroundColor;
+			selectedDisabled: $selectedDisabledItemBackgroundColor;
+			selectedInactive: $inactiveSelectedItemBackgroundColor;
+		};
+
 		border: {
 			color: $enabledControlBorderColor;
 		};

@@ -1,71 +1,56 @@
 class UI_Column_Renderer_Tree extends UI_Column_Renderer {
 	
+	public onClick( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {
+		var rowIndex      = ~~( point.y / this._column.target.rowHeight ),
+		    item          = <Store_Item_NestableObject>this._column.target.itemAt( rowIndex ),
+		    numConnectors = item.connectors.length;
+
+		/* If x is in the range of the last connector, click on the expander */
+		if ( ~~( point.x / this._column.target.rowHeight ) == numConnectors - 1 ) {
+			this._column.target['onRowExpanderClick']( rowIndex );
+		}
+
+	}
+
 	public render() {
 
-		super.render();
+		var ctx = this._column.canvasContext;
 
-		/*
-		this.prerender();
-
-		var ctx = this.paintContext;
-
-		if ( !ctx ) {
+		if ( !ctx || !this._column.target ) {
 			return;
 		}
 
-		var	scrollTop : number = this.scrollTop,
-			bgColor = this.disabled ? UI_Tree._theme.background.disabled : UI_Tree._theme.background.enabled,
-			skip      : number = ~~( scrollTop / UI_Tree._theme.option.height ),
-		    startY    : number = -( scrollTop % UI_Tree._theme.option.height ),
-		    paintRows : number = Math.round( this._paintRect.height / UI_Tree._theme.option.height ) + 1,
-		    i 		  : number,
-		   	len 	  : number,
-		   	opt 	  : INestable,
+		var skip 			: number = this._column.target.indexPaintStart,
+		    stop            : number = this._column.target.indexPaintEnd,
+		    startY 			: number = this._column.target.yPaintStart,
+		    paintRows  		: number = this._column.target.itemsPerPage,
+		    i 				: number,
+		    len 			: number,
+		    opt 			: Store_Item_NestableObject,
+		    rowHeight       : number = this._column.target.rowHeight,
 
-		   	isActive  : boolean = this.active && this.form && this.form.active,
-		   	isDisabled: boolean = this.disabled,
-		   	isScrollbar: boolean = this.logicalHeight >= this._paintRect.height,
-		   	selectedIndex: number = this.selectedIndex,
-		   	connectors: number[],
-		   	paddingLeft: number,
-		   	ci            : number,
-		   	numConnectors : number;
-
-		ctx.fillStyle = bgColor;
-		ctx.fillRect( 0, 0, ctx.width, ctx.height );
+		    isActive 		: boolean = !!this._column.target['active'] && this._column.target.form.active,
+		    isDisabled 		: boolean = this._column.target.disabled,
+		    paddingLeft 	: number,
+		    ci 				: number,
+		    numConnectors 	: number,
+		    icon            : string;
 
 		ctx.beginPaint();
 		ctx.imageSmoothingEnabled = false;
 		ctx.font = UI_Tree._theme.option.font;
 		ctx.textBaseline = "middle";
 
-		for ( i = skip, len = Math.min( this.length, skip + paintRows); i<len; i++ ) {
+		for ( i=skip; i< stop; i++ ) {
+			opt = <Store_Item_NestableObject>this._column.target.itemAt( i );
+			numConnectors = opt.connectors.length;
+			paddingLeft = ( numConnectors + 1 ) * rowHeight;
 			
-			opt = <INestable>this._view.itemAt( i ).data;
-			connectors = this._view.connectorsAt(i);
-			numConnectors = connectors.length;
-
-			paddingLeft = ( numConnectors + 1 ) * UI_Tree._theme.option.height;
-
-			if ( !this._view.itemAt(i)['selected'] ) {
+			if ( !opt.selected ) {
 				ctx.fillStyle = isDisabled
 					? UI_Tree._theme.option.color.disabled
 					: UI_Tree._theme.option.color.normal;
 			} else {
-
-				ctx.endPaint();
-
-				// Draw also the selected background color
-				ctx.fillStyle = isDisabled
-					? UI_Tree._theme.option.background.selectedDisabled
-					: ( isActive ? UI_Tree._theme.option.background.selected : UI_Tree._theme.option.background.selectedInactive );
-
-				ctx.fillRect( -this._freezedWidth, startY, this._paintRect.width, UI_Tree._theme.option.height );
-
-				ctx.beginPaint();
-				ctx.font = UI_Tree._theme.option.font;
-				ctx.textBaseline = "middle";
-
 				ctx.fillStyle = isDisabled
 					? UI_Tree._theme.option.color.selectedDisabled
 					: ( isActive ? UI_Tree._theme.option.color.selectedNormal : UI_Tree._theme.option.color.selectedInactive );
@@ -73,65 +58,31 @@ class UI_Column_Renderer_Tree extends UI_Column_Renderer {
 
 			// paint connectors
 			for ( ci=0; ci < numConnectors; ci++ ) {
+				if ( opt.connectors[ci] ) {
+					UI_Resource.createSprite(
 
-				if ( connectors[ci] ) {
+						'Constraint/tree_connector_' + opt.connectors[ci] + '/' 
+						+ rowHeight + 'x' + rowHeight
+						+ ( isDisabled ? '-disabled' : '' )
 
-					UI_Resource.createSprite( 
-
-						'Constraint/tree_connector_' + connectors[ci] + '/' 
-
-						+ UI_Tree._theme.option.height + 'x' + UI_Tree._theme.option.height
-						+ ( this.disabled ? '-disabled' : '' )
-
-					).paintWin( ctx, ci * UI_Tree._theme.option.height, startY );
-
+					).paintWin( ctx, ci * rowHeight, startY );
 				}
 			}
 
-			// paint icon
-			if ( opt.isLeaf ) {
-				
-				// paint file icon
-				UI_Resource.createSprite(
-				
-					( opt['icon'] || 'Constraint/file' ) 
-					+ '/20x20'
-					+ ( this.disabled ? '-disabled' : '' )
-				
-				).paintWin( ctx, numConnectors * UI_Tree._theme.option.height, startY + ~~( UI_Tree._theme.option.height - 20 ) / 2 );
+			// paint the icon
+			icon = (opt.data.icon || ( opt.isLeaf ? 'Constraint/file': 'Constraint/folder') )  + '/20x20'+ ( isDisabled ?  '-disabled' : '' );
 
-			} else {
+			UI_Resource.createSprite( icon ).paintWin( ctx, ci * rowHeight, ~~( startY + ( rowHeight / 2 ) - 10 ) );
 
-				// paint folder icon
-				UI_Resource.createSprite(
-				
-					( opt['icon'] || 'Constraint/folder' ) 
-					+ '/20x20'
-					+ ( this.disabled ? '-disabled' : '' )
-				
-				).paintWin( ctx, numConnectors * UI_Tree._theme.option.height, startY + ~~( UI_Tree._theme.option.height - 20 ) / 2 );
-			}
+			// paint caption
 
-			ctx.fillText( opt.name, 2 + paddingLeft, startY + ~~( UI_Tree._theme.option.height / 2 ) );
+			ctx.fillText( opt.name, 2 + paddingLeft, startY + ~~( rowHeight / 2 ) );
 
-			if ( selectedIndex == i && isActive && !isDisabled ) {
-	
-				ctx.endPaint();
-				// draw selected index focus ring
-				ctx.strokeStyle = 'black';
-				ctx.strokeRect( -this._freezedWidth + .5, startY + 0.5, this._paintRect.width - 1 - ( ~~isScrollbar * UI_Dom.scrollbarSize ), UI_Tree._theme.option.height - 1 );
-				ctx.font = UI_Tree._theme.option.font;
-				ctx.textBaseline = "middle";
-				ctx.beginPaint();
-			}
+			startY += rowHeight;
 
-			startY += UI_Tree._theme.option.height;
 		}
 
 		ctx.endPaint();
-
-		this.postrender();
-		*/
 
 	}
 }

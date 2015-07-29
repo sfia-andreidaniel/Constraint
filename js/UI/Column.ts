@@ -1,4 +1,3 @@
-
 class UI_Column extends UI {
 
 	public static _theme: any = {
@@ -26,8 +25,9 @@ class UI_Column extends UI {
 	protected _renderer  : UI_Column_Renderer = null;
 	protected _freezed   : boolean = false;
 	protected _sortable  : boolean = false;
-	protected _resizable : boolean = false;
+	protected _resizable : boolean = true;
 	protected _visible   : boolean = true;
+	protected _precision : number  = 2;
 
 	protected _headerContext: UI_Canvas_ContextMapper;
 	protected _canvasContext: UI_Canvas_ContextMapper;
@@ -79,6 +79,16 @@ class UI_Column extends UI {
 				this._owner.fire( 'column-changed', this );
 			}
 		}
+	}
+
+	get precision(): number {
+		return this._precision;
+	}
+
+	set precision( precision: number ){ 
+		precision = ~~precision;
+		precision = precision < 0 ? 0 : precision;
+		this._precision = precision;
 	}
 
 	get caption(): string {
@@ -149,9 +159,6 @@ class UI_Column extends UI {
 		resizable = !!resizable;
 		if ( resizable != this._resizable ) {
 			this._resizable = resizable;
-			if ( this._owner ) {
-				this._owner.fire( 'column-changed', this );
-			}
 		}
 	}
 
@@ -187,6 +194,10 @@ class UI_Column extends UI {
 		}
 	}
 
+	get target(): MGridInterface {
+		return <MGridInterface>this._owner || null;
+	}
+
 	public paintHeader() {
 		if ( this._headerContext ) {
 
@@ -214,13 +225,26 @@ class UI_Column extends UI {
 
 				ctx.fillText( this._caption, 4, ~~( ctx.height / 2 ) );
 			}
-
+			
 			ctx.fillStyle = UI_Column._theme.border[ this.disabled ? 'disabled' : 'enabled' ];
 			ctx.fillRect( ctx.width - 1, 0, ctx.width, ctx.height );
 
 			ctx.endPaint();
 
 		}
+	}
+
+	/* Paints the right edge of the column in the "body" of the parent */
+
+	public paintEdge() {
+
+		var ctx = this.canvasContext;
+
+		if ( ctx && ctx.paintable ) {
+			ctx.fillStyle = this._owner.disabled ? UI_Column._theme.background.disabled : UI_Column._theme.background.enabled;
+			ctx.fillRect( ctx.width - 1, 0, 1, ctx.height );
+		}
+
 	}
 
 	/* @Override UI.remove */
@@ -245,6 +269,18 @@ Constraint.registerClass( {
 		{
 			"name": "type",
 			"type": "enum:EColumnType"
+		},
+		{
+			"name": "freezed",
+			"type": "boolean"
+		},
+		{
+			"name": "precision",
+			"type": "number"
+		},
+		{
+			"name": "resizable",
+			"type": "boolean"
 		}
 	]
 });

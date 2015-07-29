@@ -1,7 +1,5 @@
 class Store_View_Tree extends Store_View {
 	
-	protected _connectors = [];
-
 	constructor( owner: Store_NamedObjects, customQuery?: ( node: Store_Item_NestableObject ) => boolean ) {
 		super( owner, customQuery || function( node: Store_Item_NestableObject ) {
 			return node.visible;
@@ -9,7 +7,7 @@ class Store_View_Tree extends Store_View {
 	}
 
 	public connectorsAt( index: number ): number[] {
-		return this._connectors[ index ];
+		return (<Store_Item_NestableObject>this.itemAt(index)).connectors;
 	}
 
 	private lookAhead( startIndex: number, parentId: any, depth: number ): boolean {
@@ -65,8 +63,6 @@ class Store_View_Tree extends Store_View {
 		   before the tree changes.
 		*/
 
-		this.setLength( this._connectors, this.length, () => [] );
-
 		var pen          : number[] = [],
 		    penLength    : number =  0,
 		    currentDepth : number = -1,
@@ -91,9 +87,9 @@ class Store_View_Tree extends Store_View {
 
 			pen[ currentDepth ] = this.lookAhead( i + 1, item.parentId, item.depth ) ? 1 : 0;
 
-			this.clonePen( pen, this._connectors[ i ] );
+			this.clonePen( pen, item.connectors );
 
-			switch ( this._connectors[ i ][ currentDepth ] ) {
+			switch ( item.connectors[ currentDepth ] ) {
 
 				case 0:
 
@@ -101,14 +97,14 @@ class Store_View_Tree extends Store_View {
 
 					if ( item.isLeaf ) {
 
-						this._connectors[ i ][ currentDepth ] = 3;
+						item.connectors[ currentDepth ] = 3;
 					
 					} else {
 
 						if ( item.collapsed ) {
-							this._connectors[ i ][ currentDepth ] = 6;
+							item.connectors[ currentDepth ] = 6;
 						} else {
-							this._connectors[ i ][ currentDepth ] = 7;
+							item.connectors[ currentDepth ] = 7;
 						}
 
 					}
@@ -119,14 +115,14 @@ class Store_View_Tree extends Store_View {
 
 					if ( item.isLeaf ) {
 
-						this._connectors[ i ][ currentDepth ] = 2;
+						item.connectors[ currentDepth ] = 2;
 
 					} else {
 
 						if ( item.collapsed ) {
-							this._connectors[ i ][ currentDepth ] = 4;
+							item.connectors[ currentDepth ] = 4;
 						} else {
-							this._connectors[ i ][ currentDepth ] = 5;
+							item.connectors[ currentDepth ] = 5;
 						}
 
 					}

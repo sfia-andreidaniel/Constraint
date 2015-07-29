@@ -190,7 +190,7 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 
 		for ( i=0; i<len; i++ ) {
 
-			item = <Store_Item_NestableObject>this._view.itemAt( i );
+			item = <Store_Item_NestableObject>this._items.itemAt( i );
 
 			out.push({
 				id: item.id,
@@ -484,7 +484,7 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 	}
 
 	get itemsPerPage(): number {
-		return ~~( this.paintContext.height / UI_Tree._theme.option.height );
+		return ~~( this.paintContext.height / UI_Tree._theme.option.height ) + 1;
 	}
 
 	public isRowSelected( rowIndex: number ): boolean {

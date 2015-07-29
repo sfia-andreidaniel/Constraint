@@ -70,6 +70,10 @@
 	z-index: 3;
 }
 
+.ui.UI_Canvas.has-header.col-resize > .freezed-header {
+	cursor: col-resize !important;
+}
+
 .ui.UI_Canvas > .viewport > .canvas-size {
 	display: block;
 	position: relative;
@@ -88,7 +92,9 @@
 	height: 100%;
 }
 
-.ui.UI_Canvas.disabled > .viewport {
+.ui.UI_Canvas.disabled > .viewport,
+.ui.UI_Canvas.disabled > .fViewport,
+.UI.UI_Canvas.disabled > .freezed-header {
 	pointer-events: none;
 }
 

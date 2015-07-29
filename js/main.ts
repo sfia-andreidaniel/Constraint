@@ -77,6 +77,12 @@
 /// <reference path="UI/Column.ts" />
 /// <reference path="UI/Column/Renderer.ts" />
 /// <reference path="UI/Column/Renderer/Tree.ts" />
+/// <reference path="UI/Column/Renderer/Int.ts" />
+/// <reference path="UI/Column/Renderer/Float.ts" />
+/// <reference path="UI/Column/Renderer/RowNumber.ts" />
+/// <reference path="UI/Column/Renderer/String.ts" />
+/// <reference path="UI/Column/Renderer/Boolean.ts" />
+
 
 // ADD DEFAULT RESOURCE FILES
 

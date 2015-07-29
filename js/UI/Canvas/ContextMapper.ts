@@ -66,8 +66,9 @@ class UI_Canvas_ContextMapper {
 	}
 
 	// returns TRUE if a point in the main screen is contained by this window.
+	// use null to ignore checking on x on y.
 	public containsAbsolutePoint( x: number, y: number ): boolean {
-		return x >= this.size.x && x <= this.size.x + this.size.width - 1 && y >= this.size.y && y <= this.size.y + this.size.height - 1;
+		return ( x === null || ( x >= this.size.x && x <= this.size.x + this.size.width - 1 ) ) && ( y === null || ( y >= this.size.y && y <= this.size.y + this.size.height - 1 ) );
 	}
 
 	/* CANVAS API METHODS AND PROPERTIES ARE IMPLEMENTED ON UI_Canvas_ContextMapper

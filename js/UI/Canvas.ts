@@ -5,12 +5,39 @@
  * EG: A tree should extend the UI_Canvas, in order to draw it's nodes, and not implement
  * the tree nodes in a DOM way, because it would have limitations on speed and memory.
  *
+ * @events:
+ *     scroll-x  ()
+ *     scroll-y  ()
+ *     mousedown ( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean )
+ *     mouseup   ( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean )
+ *     mousemove ( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean )
+ *     click     ( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean )
+ *     dblclick  ( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean )
  */
 class UI_Canvas extends UI {
 
 	public static _theme: any = {
-		"defaultWidth": $I.number('UI.UI_Canvas/width'),
-		"defaultHeight": $I.number('UI.UI_Canvas/height')
+		"defaultWidth" 			   : $I.number('UI.UI_Canvas/width'),
+		"defaultHeight" 		   : $I.number('UI.UI_Canvas/height'),
+		"font": {
+			"size"    			   : $I.number('UI.UI_Canvas/font.size'),
+			"family"  			   : $I.string('UI.UI_Canvas/font.family'),
+			"font"   			   : $I.number('UI.UI_Canvas/font.size') + "px " + $I.string('UI.UI_Canvas/font.family'),
+			"color"  : {
+				"normal"           : $I.string('UI.UI_Canvas/font.color.normal'),
+				"disabled"         : $I.string('UI.UI_Canvas/font.color.disabled'),
+				"selectedEnabled"  : $I.string('UI.UI_Canvas/font.color.selectedEnabled'),
+				"selectedDisabled" : $I.string('UI.UI_Canvas/font.color.selectedDisabled'),
+				"selectedInactive" : $I.string('UI.UI_Canvas/font.color.selectedInactive')
+			}
+		},
+		"background": {
+			"disabled"         : $I.string('UI.UI_Canvas/background.disabled'),
+			"enabled"          : $I.string('UI.UI_Canvas/background.enabled'),
+			"selected"         : $I.string('UI.UI_Canvas/background.selected'),
+			"selectedDisabled" : $I.string('UI.UI_Canvas/background.selectedDisabled'),
+			"selectedInactive" : $I.string('UI.UI_Canvas/background.selectedInactive')
+		}
 	};
 
 	protected _dom = {
@@ -47,6 +74,8 @@ class UI_Canvas extends UI {
 	// Required by IGridInterface / MGridInterface
 	public    selectedIndex: number;
 	public    rowHeight: number;
+	public    freezedColumns: UI_Column[];
+	public    freeColumns: UI_Column[];
 
 	constructor( owner: UI, mixins: string[] = [] ) {
 		super( owner, mixins, UI_Dom.create( 'div', 'ui UI_Canvas' ) );
@@ -323,13 +352,37 @@ class UI_Canvas extends UI {
 		( function( me ) {
 
 			me._dom.viewport.addEventListener( 'scroll', function( e ) {
+
+				var x: boolean = false,
+				    y: boolean = false;
+
+				if ( me._scrollLeft != me.scrollLeft ) {
+					x = true;
+				}
+
+				if ( me._scrollTop != me.scrollTop ) {
+					y = true;
+				}
+
 				me._scrollLeft = me.scrollLeft;
 				me._scrollTop = me.scrollTop;
+
+				if ( x ) {
+					me.fire( 'scroll-x' );
+				}
+
+				if ( y ) {
+					me.fire( 'scroll-y' );
+				}
 
 				me.render();
 			}, true );
 
 			me._root.addEventListener( 'mousemove', function( e ) {
+
+				if ( me.disabled ) {
+					return;
+				}
 
 				var x = e.offsetX,
 				    y = e.offsetY,
@@ -343,6 +396,10 @@ class UI_Canvas extends UI {
 
 			me._root.addEventListener( 'mousedown', function( e ) {
 
+				if ( me.disabled ) {
+					return;
+				}
+
 				var x = e.offsetX,
 					y = e.offsetY,
 					result = me.translateMouseEvent( x, y, e.target );
@@ -353,6 +410,10 @@ class UI_Canvas extends UI {
 			} );
 
 			me._root.addEventListener( 'mouseup', function( e ) {
+
+				if ( me.disabled ) {
+					return;
+				}
 
 				var x = e.offsetX,
 				    y = e.offsetY,
@@ -365,6 +426,10 @@ class UI_Canvas extends UI {
 
 			me._root.addEventListener( 'click', function( e ) {
 
+				if ( me.disabled ) {
+					return;
+				}
+
 				var x = e.offsetX,
 				    y = e.offsetY,
 				    result = me.translateMouseEvent( x, y, e.target );
@@ -375,6 +440,10 @@ class UI_Canvas extends UI {
 			} );
 
 			me._root.addEventListener( 'dblclick', function( e ) {
+
+				if ( me.disabled ) {
+					return;
+				}
 
 				var x = e.offsetX,
 				    y = e.offsetY,

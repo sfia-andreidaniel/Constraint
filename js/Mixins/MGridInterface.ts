@@ -8,6 +8,9 @@ interface IGridInterface {
 	yPaintStart     : number;
 	indexPaintStart : number;
 	indexPaintEnd   : number;
+
+	freezedColumns  : UI_Column[];
+	freeColumns     : UI_Column[];
 }
 
 class MGridInterface extends UI_Canvas implements IGridInterface {
@@ -19,11 +22,10 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 	public static forceProperties: string[] = [
 		'columns',
 		'postrender',
-		'_freezedColumns',
-		'_freeColumns',
+		'freezedColumns',
+		'freeColumns',
 		'prerender',
-		'postrender',
-		'itemsPerPage'
+		'postrender'
 	];
 
 	// do not mix these properties into target.
@@ -34,11 +36,111 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 	public freezedColumns: UI_Column[] = [];
 	public freeColumns:    UI_Column[] = [];
 	
+	public itemsPerPage: number;
+
 	public length: number;
 
 	public static initialize( node: UI_Canvas ) {
 
-		var computeColumns = function() {
+		/* PRIVATE INITIALIZE DATA */
+
+		var isRowInterface: boolean = node.implements( 'IRowInterface' ),
+		    resizeTargetColumn: UI_Column = null,
+		    isResizing: boolean = false,
+		    prevX: number = 0;
+
+		function forwardEvent( eventType: string, point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {
+
+			if ( node.disabled || point.y < 0 ) {
+				return;
+			}
+
+			var i: number,
+			    len: number, 
+			    translated: IPoint = {
+					x: point.x,
+					y: point.y + UI_Column._theme.height
+				},
+				target: UI_Column = null;
+
+			// try to send the point first to the freezed columns.
+			if ( node.freezedColumns ) {
+				for ( i=0, len = node.freezedColumns.length; i<len; i++ ) {
+					if ( node.freezedColumns[i].canvasContext && node.freezedColumns[i].canvasContext.containsAbsolutePoint( translated.x, null ) ) {
+						target = node.freezedColumns[i];
+						break;
+					}
+				}
+			}
+
+			if ( !target && node.freeColumns ) {
+				for ( i=0, len = node.freeColumns.length; i<len; i++ ) {
+					if ( node.freeColumns[i].canvasContext && node.freeColumns[i].canvasContext.containsAbsolutePoint( translated.x, null ) ) {
+						target = node.freeColumns[i];
+						break;
+					}
+				}
+			}
+
+			if ( target ) {
+				switch ( eventType ) {
+					case 'mousedown':
+						target.renderer.onMouseDown( { "x": translated.x - target.canvasContext.left, "y": point.y }, which, ctrlKey, altKey, shiftKey );
+						break;
+					case 'mouseup':
+						target.renderer.onMouseUp( { "x": translated.x - target.canvasContext.left, "y": point.y }, which, ctrlKey, altKey, shiftKey );
+						break;
+					case 'mousemove':
+						target.renderer.onMouseMove( { "x": translated.x - target.canvasContext.left, "y": point.y }, which, ctrlKey, altKey, shiftKey );
+						break;
+					case 'click':
+						target.renderer.onClick( { "x": translated.x - target.canvasContext.left, "y": point.y }, which, ctrlKey, altKey, shiftKey );
+						break;
+					case 'dblclick':
+						target.renderer.onDblClick( { "x": translated.x - target.canvasContext.left, "y": point.y }, which, ctrlKey, altKey, shiftKey );
+						break;
+				}
+			}
+
+		}
+
+		function getResizeTargetColumn( point: IPoint ): UI_Column {
+
+			var left: number = 0,
+			    i: number,
+			    len: number;
+
+			if ( node.freezedColumns ) {
+				for ( i=0, len = node.freezedColumns.length; i<len; i++ ) {
+					left += node.freezedColumns[i].width;
+					if ( node.freezedColumns[i].resizable && ( left == point.x || left == point.x - 1 || left == point.x + 1 ) ) {
+						return node.freezedColumns[i];
+					}
+				}
+			}
+
+			if ( node.freeColumns ) {
+
+				for ( i = 0, len = node.freeColumns.length; i<len; i++ ) {
+					left += node.freeColumns[i].width;
+					if ( left > node.freezedWidth && node.freeColumns[i].resizable ) {
+						if ( left == point.x || left == point.x - 1 || left == point.x + 1 ) {
+							return node.freeColumns[i];
+						}
+					}
+				}
+			}
+
+			return null;
+
+		}
+
+		function resizeRelease( ev ) {
+			isResizing = false;
+			document.body.removeEventListener( 'mouseup', resizeRelease, true );
+		}
+
+		function computeColumns() {
 			
 			node.header = !!node.childNodes.length;
 
@@ -124,7 +226,7 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 							columns[i].headerContext = new UI_Canvas_ContextMapper(
 								node.globalContext,
 								{
-									"x": freezedWidth + ( logicalWidth - columns[i].width ),
+									"x": freezedWidth + ( logicalWidth - node.scrollLeft - columns[i].width ),
 									"y": 0,
 									"width": columns[i].width,
 									"height": UI_Column._theme.height
@@ -139,7 +241,7 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 							columns[i].canvasContext = new UI_Canvas_ContextMapper(
 								node.globalContext,
 								{
-									"x": freezedWidth + ( logicalWidth - columns[i].width ),
+									"x": freezedWidth + ( logicalWidth - node.scrollLeft - columns[i].width ),
 									"y": UI_Column._theme.height,
 									"width": columns[i].width,
 									"height": node.viewportHeight - UI_Column._theme.height
@@ -150,7 +252,7 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 
 						columns[i].headerContext.left 
 						    = columns[i].canvasContext.left
-							= freezedWidth + ( logicalWidth - columns[i].width );
+							= freezedWidth + ( logicalWidth - columns[i].width ) - node.scrollLeft;
 
 						columns[i].headerContext.width
 							= columns[i].canvasContext.width
@@ -172,12 +274,100 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 
 			node.onRepaint();
 
-		};
+		}
+
+		/* PUBLIC INITIALIZE DATA */
+
+		/* Initialize mouse events */
+		node.on( 'mousedown', function( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {
+			
+			if ( isResizing === false && resizeTargetColumn !== null ) {
+				isResizing = true;
+				prevX = point.x;
+
+				document.body.addEventListener( 'mouseup', resizeRelease );
+			}
+
+			if ( !isResizing ) {
+				
+				if ( isRowInterface && point.y > 0 && which == 1 && !node.disabled ) {
+
+					var rowIndex: number = ~~( point.y / node.rowHeight );
+
+					node['onRowIndexClick']( rowIndex, shiftKey, ctrlKey );
+
+				}
+
+				forwardEvent( 'mousedown', point, which, ctrlKey, altKey, shiftKey );
+
+			}
+
+		} );
+
+		node.on( 'mouseup', function(point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean) {
+			
+			if ( !isResizing ) {
+
+				forwardEvent( 'mouseup', point, which, ctrlKey, altKey, shiftKey );
+
+			} else {
+
+				isResizing = false;
+
+			}
+
+		} );
+
+		node.on( 'mousemove', function(point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean) {
+			
+			var nowTargetColumn: UI_Column,
+			    deltaX: number;
+
+			if ( isResizing === false ) {
+				
+				nowTargetColumn = point.y < 0 ? getResizeTargetColumn( point ) : null;
+				
+				if ( nowTargetColumn != resizeTargetColumn ) {
+					resizeTargetColumn = nowTargetColumn;
+					if ( resizeTargetColumn ) {
+						UI_Dom.addClass( node._root, 'col-resize' );
+					} else {
+						UI_Dom.removeClass( node._root, 'col-resize' );
+					}
+				}
+
+				forwardEvent( 'mousemove', point, which, ctrlKey, altKey, shiftKey );
+			} else {
+
+				deltaX = point.x - prevX;
+
+				if ( resizeTargetColumn.width + deltaX > 5 ) {
+					resizeTargetColumn.width += deltaX;
+					prevX = point.x;
+				}
+
+			}
+			
+
+		} );
+
+		node.on( 'click', function(point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean) {
+			forwardEvent( 'click', point, which, ctrlKey, altKey, shiftKey );
+		} );
+
+		node.on( 'dblclick', function(point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean) {
+			forwardEvent( 'dblclick', point, which, ctrlKey, altKey, shiftKey );
+		} );
 
 		// Each time the columns are triggering this event, we must
 		// update them in the main parent.
 		node.on( 'column-changed', computeColumns );
 		node.on( 'viewport-resized', computeColumns );
+		node.on( 'scroll-x', computeColumns );
+
+		node.on( 'disabled', function() {
+			node.onRepaint();
+		} );
 
 	}
 
@@ -209,17 +399,95 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 			this.freeColumns[i].renderer.render();
 		}
 
-		for ( i=0, len = this.freezedColumns.length; i<len; i++ ) {
-			this.freezedColumns[i].renderer.render();
+		if ( this.freezedColumns.length ) {
+			this.prerenderFreezed();
+			for ( i=0, len = this.freezedColumns.length; i<len; i++ ) {
+				this.freezedColumns[i].renderer.render();
+			}
+		}
+	}
+
+	public prerenderFreezed() {
+		var ctx = this.globalContext;
+
+		/* Paints the background for the selected items globally */
+		var yPaintStart: number = this.yPaintStart + UI_Column._theme.height,
+		    start      : number = this.indexPaintStart,
+		    stop       : number = this.indexPaintEnd,
+
+		    isDisabled : boolean = this.disabled,
+		    isActive   : boolean = this['active'],
+		    i          : number,
+		    item       : Store_Item,
+		    rowHeight  : number = this.rowHeight,
+		    width      : number = this.freezedWidth;
+
+		ctx.fillStyle = isDisabled
+			? UI_Canvas._theme.background.disabled
+			: UI_Canvas._theme.background.enabled;
+
+		ctx.fillRect( 0, 0, width, this.viewportHeight );
+
+		for ( i = start; i < stop; i++ ) {
+			
+			item = this.itemAt(i);
+			
+			if ( item.selected ) {
+
+				ctx.fillStyle = isActive
+					? ( isDisabled ? UI_Canvas._theme.background.selectedDisabled: UI_Canvas._theme.background.selected )
+					: UI_Canvas._theme.background.selectedInactive;
+
+				ctx.fillRect( 0, yPaintStart, width, rowHeight );
+
+			}
+
+			yPaintStart += rowHeight;
+		}
+	}
+
+	public prerenderFree() {
+		var ctx = this.globalContext;
+
+		/* Paints the background for the selected items globally */
+		var yPaintStart: number = this.yPaintStart + UI_Column._theme.height,
+		    start      : number = this.indexPaintStart,
+		    stop       : number = this.indexPaintEnd,
+
+		    isDisabled : boolean = this.disabled,
+		    isActive   : boolean = this['active'],
+		    i          : number,
+		    item       : Store_Item,
+		    rowHeight  : number = this.rowHeight,
+		    width      : number = this.viewportWidth,
+		    freezedWidth: number = this.freezedWidth;
+
+		ctx.fillStyle = isDisabled
+			? UI_Canvas._theme.background.disabled
+			: UI_Canvas._theme.background.enabled;
+
+		ctx.fillRect( freezedWidth, 0, width - freezedWidth, this.viewportHeight );
+
+		for ( i = start; i < stop; i++ ) {
+			
+			item = this.itemAt(i);
+			
+			if ( item.selected ) {
+
+				ctx.fillStyle = isActive
+					? ( isDisabled ? UI_Canvas._theme.background.selectedDisabled: UI_Canvas._theme.background.selected )
+					: UI_Canvas._theme.background.selectedInactive;
+
+				ctx.fillRect( freezedWidth, yPaintStart, width - freezedWidth, rowHeight );
+
+			}
+
+			yPaintStart += rowHeight;
 		}
 	}
 
 	public prerender() {
-		var ctx = this.globalContext;
-		ctx.fillStyle = 'white';
-		ctx.fillRect( 0, 0, this.viewportWidth, this.viewportHeight );
-
-		/* Paints the background for the selected items globally */
+		this.prerenderFree();
 	}
 
 	get yPaintStart(): number {
@@ -230,10 +498,6 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 		return ~~( this.scrollTop / this.rowHeight );
 	}
 
-	get itemsPerPage(): number {
-		return Math.round( ( this.viewportHeight - ~~UI_Column._theme.height ) / this.rowHeight );
-	}
-
 	get indexPaintEnd(): number {
 		return Math.min( this.length, this.indexPaintStart + this.itemsPerPage );
 	}
@@ -241,19 +505,34 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 	// @overrides the postrender on the canvas
 	public postrender() {
 
+		var yPaintStart   : number = this.yPaintStart + UI_Column._theme.height + .5,
+		    start         : number = this.indexPaintStart,
+		    stop          : number = this.indexPaintEnd,
+		    selectedIndex : number = this.selectedIndex,
+			header 		  : UI_Canvas_ContextMapper = this.headerContext,
+			body          : CanvasRenderingContext2D = this.globalContext,
+			rowHeight     : number = this.rowHeight;
+
+		/* Paint the selectedIndex */
+		if ( selectedIndex >= start && selectedIndex < stop && this['active'] ) {
+			body.strokeStyle = 'black';
+			body.lineWidth   = 1;
+			body.strokeRect( .5, yPaintStart + ( selectedIndex - start ) * rowHeight, this.viewportWidth - 1, rowHeight - 1 )
+
+		}
+
 		if ( this.freeColumns && this.freezedColumns ) {
 			
-			var ctx: UI_Canvas_ContextMapper = this.headerContext;
 
-			ctx.beginPaint();
+			header.beginPaint();
 
-			ctx.fillStyle = this.disabled
+			header.fillStyle = this.disabled
 				? UI_Column._theme.background.disabled
 				: UI_Column._theme.background.enabled;
 
-			ctx.fillRect( 0, 0, ctx.width, ctx.height );
+			header.fillRect( 0, 0, header.width, header.height );
 
-			ctx.endPaint();
+			header.endPaint();
 
 			var i: number,
 			    len: number;
@@ -264,6 +543,7 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 
 			for ( i=0, len = this.freeColumns.length; i<len; i++ ) {
 				this.freeColumns[i].paintHeader();
+				this.freeColumns[i].paintEdge();
 			}
 
 			/* Second we paint freezed columns
@@ -271,9 +551,11 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 
 			for ( i=0, len = this.freezedColumns.length; i<len; i++ ) {
 				this.freezedColumns[i].paintHeader();
+				this.freezedColumns[i].paintEdge();
 			}
 
 		}
+
 
 	}
 

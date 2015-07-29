@@ -7,6 +7,11 @@ class Store_Item_NestableObject extends Store_Item_NamedObject {
 	protected _depth: number = 0;
 	protected _parent: Store_Item_NestableObject = null;
 
+
+	// the tree connectors are stored in this array.
+	// the tree connectors are computed by Store_View/* objects
+	public    connectors: number[] = [];
+
 	constructor( payload: INestable, owner: Store ) {
 		super( payload, owner );
 

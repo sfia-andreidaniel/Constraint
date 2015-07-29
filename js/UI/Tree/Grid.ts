@@ -14,53 +14,7 @@ class UI_Tree_Grid extends UI_Tree implements IGridInterface {
 	}
 
 	protected setupMouseHandler() {
-
-		( function( me ) {
-
-			me.on( 'mousedown', function( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {
-				
-				if ( me.disabled || which != 1 || point.y < 0 ) {
-					return;
-				}
-
-				//console.log( e.offsetY, e.clientY, e );
-				var y: number  = point.y,
-				    x: number  = point.x,
-					rowIndex   = ~~( y / UI_Tree._theme.option.height ),
-					numConnectors = me._view.connectorsAt( rowIndex ).length;
-
-				me.onRowIndexClick( rowIndex, shiftKey, ctrlKey );
-				
-				// translate the X to the X of the column in which the tree is rendered.
-
-				if ( this._paintContextColumn !== null ) {
-					x -= this._paintContextColumn.canvasContext.left;
-				}
-
-				/* If x is in the range of the last connector, click on the expander */
-				if ( x > 0 && ~~( x / UI_Tree._theme.option.height ) == numConnectors - 1 ) {
-					me.onRowExpanderClick( rowIndex );
-				}
-
-			}, true );
-
-		})( this );
-	}
-
-	protected _setupExtendedEvents_() {
-		super._setupExtendedEvents_();
-		
-		( function( grid ) {
-
-			grid.on( 'column-changed', function( column: UI_Column ) {
-				
-				if ( column && column.type == EColumnType.TREE ) {
-					grid._paintContextColumn = column;
-				}
-
-			} );
-
-		} )( this );
+		// THE WHOLE MOUSE HANDLER IS CONTROLED BY MGridInterface.
 	}
 
 	// @overrided by MGridInterface

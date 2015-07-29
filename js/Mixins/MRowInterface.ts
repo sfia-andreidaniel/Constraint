@@ -118,6 +118,9 @@ class MRowInterface extends UI implements IRowInterface {
 		 			return;
 		 		}
 
+		 		ev.preventDefault();
+		 		ev.stopPropagation();
+
 		 		if ( selIndex > RI.length - 1 ) {
 		 			selIndex = RI.length - 1;
 		 		}

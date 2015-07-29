@@ -61,6 +61,7 @@ enum EMenuItemInputType {
 }
 
 enum EColumnType {
+	ROW_NUMBER,
 	INT,
 	FLOAT,
 	STRING,

@@ -78,12 +78,20 @@
 				items: [
 					{id: 1;  parent: null; name: 'My Computer';                },
 			    	{id: 20; parent: null; name: 'My file';      isLeaf: true; },
-			    	{id: 2;  parent: 1;    name: 'C:';                         },
-			    	{id: 3;  parent: 1;    name: 'D:';                         },
+			    	{id: 2;  parent: 1;    name: 'C:';                         online: true; },
+			    	{id: 3;  parent: 1;    name: 'D:';                         online: false;},
 			    	{id: 4;  parent: 2;    name: 'My Documents';               },
 			    	{id: 5;  parent: 4;    name: 'User';                       },
 			    	{id: 6;  parent: 4;    name: 'My Music';                   } 
 			    ];
+
+			    @UI_Column {
+			    	caption: '#';
+			    	freezed: true;
+			    	type: ROW_NUMBER;
+			    	width: 30;
+			    	textAlign: RIGHT;
+			    };
 
 			    @UI_Column {
 			    	name: 'id';
@@ -91,12 +99,29 @@
 			    	type: INT;
 			    	width: 50;
 			    	caption: 'ID';
+			    	textAlign: RIGHT;
 			    };
 
 			    @UI_Column {
 			    	type: TREE;
 			    	width: 300;
-			    	caption: 'TREE';
+			    	caption: 'Tree';
+			    };
+
+			    @UI_Column {
+			    	type: STRING;
+			    	width: 200;
+			    	caption: 'Name';
+			    	name: 'name';
+			    	textAlign: RIGHT;
+			    };
+
+			    @UI_Column {
+			    	type: BOOLEAN;
+			    	width: 40;
+			    	caption: 'Online';
+			    	name: 'online';
+			    	textAlign: CENTER;
 			    };
 
 			};
