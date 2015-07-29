@@ -69,3 +69,9 @@ enum EColumnType {
 	DATE,
 	TREE
 }
+
+enum ESortState {
+	NONE,
+	ASC,
+	DESC
+}

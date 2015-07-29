@@ -24,7 +24,8 @@ class UI_Column extends UI {
 	protected _type      : EColumnType = EColumnType.STRING;
 	protected _renderer  : UI_Column_Renderer = null;
 	protected _freezed   : boolean = false;
-	protected _sortable  : boolean = false;
+	protected _sortable  : boolean = true;
+	protected _sortState : ESortState = ESortState.NONE;
 	protected _resizable : boolean = true;
 	protected _visible   : boolean = true;
 	protected _precision : number  = 2;
@@ -68,7 +69,7 @@ class UI_Column extends UI {
 	}
 
 	get name(): string {
-		return String( this._name || '' ) || null;
+		return this._type == EColumnType.TREE ? 'name' : ( String( this._name || '' ) || null );
 	}
 
 	set name( name: string ) {
@@ -138,7 +139,7 @@ class UI_Column extends UI {
 	}
 
 	get sortable(): boolean {
-		return this._sortable;
+		return this._sortable && this._type != EColumnType.ROW_NUMBER;
 	}
 
 	set sortable( sortable: boolean ) {
@@ -147,6 +148,27 @@ class UI_Column extends UI {
 			this._sortable = sortable;
 			if ( this._owner ) {
 				this._owner.fire( 'column-changed', this );
+			}
+		}
+	}
+
+	get sortState(): ESortState {
+		return this._sortState;
+	}
+
+	set sortState( sortState: ESortState ) {
+		if ( sortState != this._sortState ) {
+			switch ( sortState ) {
+				case ESortState.ASC:
+				case ESortState.DESC:
+					this._sortState = sortState;
+					break;
+				default:
+					this._sortState = ESortState.NONE;
+					break;
+			}
+			if ( this._owner ) {
+				this._owner.fire( 'sort', this.name || null, this.sortState );
 			}
 		}
 	}
@@ -201,11 +223,16 @@ class UI_Column extends UI {
 	public paintHeader() {
 		if ( this._headerContext ) {
 
-			var ctx = this.headerContext;
+			var ctx = this.headerContext,
+			    icon: string;
 
 			if ( !ctx ) {
 				return;
 			}
+
+			var labelWidth: number = !this.sortable
+				? ctx.width - 8
+				: ctx.width - 28; // reserve space for the sortable sign
 
 			ctx.beginPaint();
 
@@ -223,7 +250,24 @@ class UI_Column extends UI {
 				ctx.font = UI_Column._theme.font.family;
 				ctx.textBaseline = "middle";
 
-				ctx.fillText( this._caption, 4, ~~( ctx.height / 2 ) );
+				ctx.fillText( ctx.dotDotDot( this._caption, labelWidth ), 4, ~~( ctx.height / 2 ) );
+			}
+
+			/* paint sorter sign */
+			if ( this.sortable ) {
+				switch ( this._sortState ) {
+					case ESortState.NONE:
+						icon = 'Constraint/grid_sorter/16x10';
+						break;
+					case ESortState.ASC:
+						icon = 'Constraint/grid_sorter_asc/16x10';
+						break;
+					case ESortState.DESC:
+						icon = 'Constraint/grid.sorter_desc/16x10';
+						break;
+				}
+				UI_Resource.createSprite( icon + ( this.disabled ? '-disabled' : '' ) )
+					.paintWin( ctx, labelWidth + 4, ~~( UI_Column._theme.height / 2 - 5 ) );
 			}
 			
 			ctx.fillStyle = UI_Column._theme.border[ this.disabled ? 'disabled' : 'enabled' ];

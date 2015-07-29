@@ -177,7 +177,7 @@ class UI_Resource_File extends UI_Event {
 		switch ( true ) {
 			case !!( matches = /^([\d]+)x([\d]+)$/.exec( version ) ):
 				width = ~~matches[1];
-				height = ~~matches[1];
+				height = ~~matches[2];
 				break;
 			case !!( matches = /^([\d]+)\:(x|y)$/.exec( version ) ):
 				if ( matches[2] == 'x' ) {
