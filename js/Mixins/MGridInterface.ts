@@ -543,7 +543,7 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 
 			for ( i=0, len = this.freeColumns.length; i<len; i++ ) {
 				this.freeColumns[i].paintHeader();
-				this.freeColumns[i].paintEdge();
+				// this.freeColumns[i].paintEdge();
 			}
 
 			/* Second we paint freezed columns
@@ -551,7 +551,7 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 
 			for ( i=0, len = this.freezedColumns.length; i<len; i++ ) {
 				this.freezedColumns[i].paintHeader();
-				this.freezedColumns[i].paintEdge();
+				// this.freezedColumns[i].paintEdge();
 			}
 
 			header.fillStyle = UI_Column._theme.border[ this.disabled ? 'disabled' : 'enabled' ];
