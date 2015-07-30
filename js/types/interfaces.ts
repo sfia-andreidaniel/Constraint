@@ -98,3 +98,10 @@ interface IResourceFileVersion {
 interface ITextMetrics {
 	width: number;
 }
+
+interface ISortOption {
+	name: string;
+	type: string;
+	asc: boolean;
+	callback?: ( a: any, b: any ) => number;
+}

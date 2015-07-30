@@ -67,7 +67,8 @@ enum EColumnType {
 	STRING,
 	BOOLEAN,
 	DATE,
-	TREE
+	TREE,
+	BYTES
 }
 
 enum ESortState {

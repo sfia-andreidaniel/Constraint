@@ -104,13 +104,13 @@
 
 			    @UI_Column {
 			    	type: TREE;
-			    	width: 300;
+			    	width: 100;
 			    	caption: 'Tree';
 			    };
 
 			    @UI_Column {
 			    	type: STRING;
-			    	width: 200;
+			    	width: 100;
 			    	caption: 'Name';
 			    	name: 'name';
 			    	textAlign: CENTER;
@@ -122,6 +122,14 @@
 			    	caption: 'Online';
 			    	name: 'online';
 			    	textAlign: CENTER;
+			    };
+
+			    @UI_Column {
+			    	type: BYTES;
+			    	width: 60;
+			    	caption: 'Size';
+			    	name: 'size';
+			    	textAlign: RIGHT;
 			    };
 
 			};

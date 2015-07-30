@@ -34,6 +34,8 @@
 /// <reference path="Mixins/MRowInterface.ts" />
 
 /// <reference path="Store.ts" />
+/// <reference path="Store/Map.ts" />
+/// <reference path="Store/Sorter.ts" />
 /// <reference path="Store/Strings.ts" />
 /// <reference path="Store/Objects.ts" />
 /// <reference path="Store/NamedObjects.ts" />
@@ -46,6 +48,9 @@
 /// <reference path="Store/Item/Object.ts" />
 /// <reference path="Store/Item/NamedObject.ts" />
 /// <reference path="Store/Item/NestableObject.ts" />
+
+/// <reference path="Store2.ts" />
+/// <reference path="Store2/Item.ts" />
 
 /// <reference path="UI/Anchor.ts" />
 /// <reference path="UI/Anchor/Form.ts" />
@@ -82,7 +87,7 @@
 /// <reference path="UI/Column/Renderer/RowNumber.ts" />
 /// <reference path="UI/Column/Renderer/String.ts" />
 /// <reference path="UI/Column/Renderer/Boolean.ts" />
-
+/// <reference path="UI/Column/Renderer/Bytes.ts" />
 
 // ADD DEFAULT RESOURCE FILES
 
