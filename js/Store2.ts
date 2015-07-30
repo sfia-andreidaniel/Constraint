@@ -1,12 +1,12 @@
 class Store2 extends UI_Event {
 
-	private _autoID      : number = 0;
-	private _id          : string = null;
-	private _items       : Store2_Item[] = [];
-	private _length      : number = 0;
-	private _map         : Store_Map;
-	private _wr_locks    : number = 0;
-	private _rd_locks    : number = 0;
+	private   _autoID      : number = 0;
+	protected _id          : string = null;
+	protected _items       : Store2_Item[] = [];
+	protected _length      : number = 0;
+	protected _map         : Store_Map;
+	private   _wr_locks    : number = 0;
+	private   _rd_locks    : number = 0;
 	
 	public  $sorter : ( a: any, b: any ) => number = null;
 
@@ -26,14 +26,31 @@ class Store2 extends UI_Event {
 		this.sort();
 	}
 
-	protected sort() {
-		if ( this.$sorter ) {
+	get readable(): boolean {
+		return this._wr_locks == 0;
+	}
+
+	get readLocks(): number {
+		return this._rd_locks;
+	}
+
+	get writable(): boolean {
+		return this._rd_locks == 0 && this._wr_locks == 0;
+	}
+
+	get writeLocks(): number {
+		return this._wr_locks;
+	}
+
+	protected sort( requestChange: boolean = true ) {
+		if ( this.$sorter && this._length ) {
 			
 			this._items.sort( function( a: Store2_Item, b: Store2_Item ): number {
 				return a.compare(b);
 			});
 
-			this.requestChange();
+			if ( requestChange )
+				this.requestChange();
 		}
 	}
 
@@ -75,7 +92,7 @@ class Store2 extends UI_Event {
 
 		} else {
 
-			id = data && data[ this._id ] ? data[ this._id ] : null;
+			id = ( data && data[ this._id ] ) ? data[ this._id ] : null;
 
 			if ( id === null ) {
 				throw new Error( 'Failed to read $id property "' + this._id + '" from item' );
@@ -143,11 +160,42 @@ class Store2 extends UI_Event {
 		}
 	}
 
+	public remove( item: Store2_Item ): Store2_Item {
+		
+		if ( this.writable ) {
+			
+			var index: number = this._items.indexOf( item );
+			
+			if ( index > -1 ) {
+
+				this._items.splice( index, 1 );
+				this._length--;
+
+				item.die();
+			}
+
+			return item;
+
+		} else {
+		
+			throw new Error('delete failed: Store is not writable at this point' );
+		
+		}
+	}
+
+	public removeUniqueId( id: any ) {
+		this._map.delete(id);
+	}
+
 	public getElementById( id: any ) {
 		return this._map.has( id ) ? this._map.get(id) : null;
 	}
 
-	protected requestChange() {
+	public requestUpdate( $id: any, propertyName?: string ) {
+		//console.log( 'request-update' );
+	}
+
+	public requestChange() {
 		//console.log( 'request-change' );
 	}
 

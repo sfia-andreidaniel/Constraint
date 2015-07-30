@@ -51,6 +51,8 @@
 
 /// <reference path="Store2.ts" />
 /// <reference path="Store2/Item.ts" />
+/// <reference path="Store2/Tree.ts" />
+/// <reference path="Store2/Node.ts" />
 
 /// <reference path="UI/Anchor.ts" />
 /// <reference path="UI/Anchor/Form.ts" />

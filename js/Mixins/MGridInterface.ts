@@ -395,14 +395,16 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 		var i: number = 0,
 		    len: number;
 
-		for ( i=0, len = this.freeColumns.length; i<len; i++ ) {
-			this.freeColumns[i].renderer.render();
-		}
+		if ( this.freeColumns && this.freezedColumns ) {
+			for ( i=0, len = this.freeColumns.length; i<len; i++ ) {
+				this.freeColumns[i].renderer.render();
+			}
 
-		if ( this.freezedColumns.length ) {
-			this.prerenderFreezed();
-			for ( i=0, len = this.freezedColumns.length; i<len; i++ ) {
-				this.freezedColumns[i].renderer.render();
+			if ( this.freezedColumns.length ) {
+				this.prerenderFreezed();
+				for ( i=0, len = this.freezedColumns.length; i<len; i++ ) {
+					this.freezedColumns[i].renderer.render();
+				}
 			}
 		}
 	}

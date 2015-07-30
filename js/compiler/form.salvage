@@ -32,6 +32,7 @@ class {{name}} extends UI_Form {
         this.{{name}} = new {{type}}( {{#if in}}this.{{in}}{{#else}}this{{#end}} );{{#end}}{{#end}}{{#end}}
         /* $hint: end */
 
+        this.paintable = false;
         this.onInitialize();
     }
 

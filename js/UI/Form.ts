@@ -160,7 +160,7 @@ class UI_Form extends UI implements IFocusable {
 				}
 			} )
 			.then( function() {
-
+				self.paintable = true;
 				UI_DialogManager.get.desktop.appendChild( self._root );
 				self.onRepaint();
 				UI_DialogManager.get.onWindowOpened( self );
