@@ -33,26 +33,31 @@
 /// <reference path="Mixins/MFocusable.ts" />
 /// <reference path="Mixins/MRowInterface.ts" />
 
+// ---------------------------------------
 /// <reference path="Store.ts" />
 /// <reference path="Store/Map.ts" />
-/// <reference path="Store/Sorter.ts" />
 /// <reference path="Store/Strings.ts" />
 /// <reference path="Store/Objects.ts" />
 /// <reference path="Store/NamedObjects.ts" />
 /// <reference path="Store/NestedObjects.ts" />
-/// <reference path="Store/View.ts" />
-/// <reference path="Store/View/Tree.ts" />
 
 /// <reference path="Store/Item.ts" />
 /// <reference path="Store/Item/String.ts" />
 /// <reference path="Store/Item/Object.ts" />
 /// <reference path="Store/Item/NamedObject.ts" />
 /// <reference path="Store/Item/NestableObject.ts" />
+// ------------------------------------------
 
-/// <reference path="Store2.ts" />
-/// <reference path="Store2/Item.ts" />
-/// <reference path="Store2/Tree.ts" />
-/// <reference path="Store2/Node.ts" />
+/// <reference path="Store.ts" />
+/// <reference path="Store/Map.ts" />
+/// <reference path="Store/Sorter.ts" />
+/// <reference path="Store/Item.ts" />
+/// <reference path="Store/Tree.ts" />
+/// <reference path="Store/Node.ts" />
+/// <reference path="Store/Cursor.ts" />
+/// <reference path="Store/Cursor/Tree.ts" />
+/// <reference path="Store/View.ts" />
+/// <reference path="Store/View/Tree.ts" />
 
 /// <reference path="UI/Anchor.ts" />
 /// <reference path="UI/Anchor/Form.ts" />

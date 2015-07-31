@@ -1,9 +1,9 @@
-class Store2_Tree extends Store2 {
+class Store_Tree extends Store {
 
 	private _parent: string = null;
 	private _leaf  : string = null;
 	
-	constructor( uniqueKeyName: string, parentKeyName: string, leafKeyName: string ) {
+	constructor( uniqueKeyName: string = "id", parentKeyName: string = "parent", leafKeyName: string = "isLeaf" ) {
 		super( uniqueKeyName );
 
 		if ( !uniqueKeyName ) {
@@ -24,7 +24,7 @@ class Store2_Tree extends Store2 {
 	}
 
 	// The "insert" method is altered...
-	public insert( data: any ): Store2_Item {
+	public insert( data: any ): Store_Item {
 		// We're returning a <Store2_Node> actually
 		var id: any,
 		    parent: any,
@@ -54,13 +54,13 @@ class Store2_Tree extends Store2 {
 				throw new Error('Parent id "' + parent + '" was not found!' );
 			}
 			
-			result = new Store2_Node( data, this, id, this.getElementById( parent ), leaf );
+			result = new Store_Node( data, this, id, <Store_Node>this.getElementById( parent ), leaf );
 			
 			this._map.get( parent ).appendChild( result );
 
 		} else {
 
-			result = new Store2_Node( data, this, id, null, leaf );
+			result = new Store_Node( data, this, id, null, leaf );
 
 			if ( this.$sorter && this.writeLocks == 0 ) {
 				index = this.pivotInsert( 0, this._length - 1, result );
@@ -71,6 +71,8 @@ class Store2_Tree extends Store2 {
 			} else {
 				this._items.splice( index, 0, result );
 			}
+
+			this._sorting.set( '__insertion__', true );
 
 			this._length++;
 		}
@@ -89,18 +91,31 @@ class Store2_Tree extends Store2 {
 		
 		super.sort( !recursive );
 
+		/* set the $lastChild on nodes */
+		for ( var i=0, len = this._length; i<len; i++ ) {
+			(<Store_Node>this._items[i]).$lastChild = i == len - 1;
+		}
+
 		if ( this.$sorter && this._length && recursive ) {
 			
 			for ( var i=0; i<this._length; i++ ) {
-				(<Store2_Node>this._items[i]).sort( false, true );
+				(<Store_Node>this._items[i]).sort( false, true );
 			}
 
 			if ( requestChange ) {
 				this.requestChange();
 			}
 		}
-
 	}
 
+	public walk( callback: ( index: number ) => void, skip: number = 0, limit: number = null ): Store2 {
+		var cursor = new Store_Cursor_Tree( this, this.lengthDepth, skip, limit );
+		return cursor.each( callback );
+	}
+
+
+	get lengthDepth(): number {
+		return this._map.size;
+	}
 
 }

@@ -21,7 +21,7 @@ class Mixin {
 		    skipProperties: string[] = src.skipProperties || [],
 		    forceProperties: string[] = src.forceProperties || [];
 
-		console.log( 'Mixin.extend( ' + JSON.stringify( classDef ) + ', ' + JSON.stringify( withClass ) + ')' );
+		//console.log( 'Mixin.extend( ' + JSON.stringify( classDef ) + ', ' + JSON.stringify( withClass ) + ')' );
 
 		for ( var propertyName in src.prototype ) {
 			if ( src.prototype.hasOwnProperty( propertyName ) && propertyName != 'constructor' ) {

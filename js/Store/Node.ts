@@ -1,4 +1,4 @@
-class Store2_Node extends Store2_Item {
+class Store_Node extends Store_Item {
 
 /*  // Inherited from Store2_Item
 	public    data   : any;
@@ -7,22 +7,23 @@ class Store2_Node extends Store2_Item {
 	private   $dead  : boolean;
 
  */
-	protected $parent: Store2_Node;
-	protected $leaf: boolean;
-	protected $length: number = 0;
-	protected $children: Store2_Node[];
-	protected $depth: number = 1;
-	protected $totalChildren: number = 0;
-	protected $collapsed: boolean = true;
-	protected $visible: number = 0;
+	protected $parent 	     : Store_Node;
+	protected $leaf 	     : boolean;
+	protected $length  	     : number = 0;
+	protected $children      : Store_Node[];
+	protected $depth 	     : number = 1;
+	protected $totalChildren : number = 0;
+	protected $collapsed     : boolean = true;
+	protected $visible       : number = 0;
+	public    $lastChild     : boolean = false;
 
-	constructor( data: any, store: Store2_Tree, $id: any, $parent: Store2_Node = null, $leaf: boolean = false ) {
+	constructor( data: any, store: Store_Tree, $id: any, $parent: Store_Node = null, $leaf: boolean = false ) {
 		super( data, store, $id );
 		this.$parent = $parent || null;
 		this.$leaf = !!$leaf;
 	}
 
-	public appendChild( node: Store2_Node ): Store2_Node {
+	public appendChild( node: Store_Node ): Store_Node {
 		
 		var index: number = null;
 
@@ -54,7 +55,7 @@ class Store2_Node extends Store2_Item {
 
 	}
 
-	protected pivotInsert( left: number, right: number, item: Store2_Item ): number {
+	protected pivotInsert( left: number, right: number, item: Store_Item ): number {
 		if ( left >= right ) {
 			return left;
 		} else {
@@ -100,7 +101,7 @@ class Store2_Node extends Store2_Item {
 		return this.$totalChildren;
 	}
 
-	get childNodes(): Store2_Node[] {
+	get childNodes(): Store_Node[] {
 		return this.$children;
 	}
 
@@ -122,8 +123,12 @@ class Store2_Node extends Store2_Item {
 
 	set collapsed( on: boolean ) {
 		on = !!on;
-		if ( on != this.$collapsed ) {
+		if ( !this.$leaf && on != this.$collapsed ) {
 			this.$collapsed = on;
+			if ( !on && this.visible ) {
+				//console.log( 'sorting on visible...' );
+				this.sort( true, true );
+			}
 		}
 	}
 
@@ -136,24 +141,45 @@ class Store2_Node extends Store2_Item {
 	}
 
 	get visible(): boolean {
-		if ( this.$parent ) {
+		if ( !this.$parent ) {
 			return true;
 		} else {
 			var cursor = this.$parent;
 			while ( cursor ) {
-				if ( !cursor.$parent ) {
-					return true;
-				}
 				if ( cursor.$collapsed ) {
 					return false;
 				}
+				if ( !cursor.$parent ) 
+					break;
 				cursor = cursor.$parent;
 			}
+			return true;
 		}
 	}
 
-	get parentNode(): Store2_Node {
+	get parentNode(): Store_Node {
 		return this.$parent;
+	}
+
+	get connectors(): number [] {
+		return this.computeConnectors( true );
+	}
+
+	protected computeConnectors( forMyself: boolean ): number[] {
+		var result: number[],
+		    depth: number;
+
+		result = !this.$parent ? [] : this.$parent.computeConnectors(false);
+		result.push(~~(!this.$lastChild));
+
+		if ( forMyself ) {
+			depth = this.$depth - 1;
+			result[ depth ] = result[ depth ]
+				? ( this.$leaf ? 3 : ( this.$collapsed ? 6 : 7 ) )
+				: ( this.$leaf ? 2 : ( this.$collapsed ? 4 : 5 ) );
+		}
+
+		return result;
 	}
 
 	public updateDepthLength( withRelativeAmount: number ) {
@@ -168,12 +194,13 @@ class Store2_Node extends Store2_Item {
 	public sort( requestChange: boolean = true, recursive: boolean = true ) {
 		if ( this.$store.$sorter && this.$length > 0 ) {
 			
-			this.$children.sort( function( a: Store2_Node, b: Store2_Node ): number {
+			this.$children.sort( function( a: Store_Node, b: Store_Node ): number {
 				return a.compare(b);
 			});
 
-			if ( recursive ) {
-				for ( var i=0; i<this.$length; i++ ) {
+			for ( var i=0, len = this.$children.length; i<len; i++ ) {
+				this.$children[i].$lastChild = i == len - 1;
+				if ( recursive && this.$children[i].visible ) {
 					this.$children[i].sort( false, true );
 				}
 			}
@@ -185,19 +212,22 @@ class Store2_Node extends Store2_Item {
 		}
 	}
 
-	public remove(): Store2_Item {
+	public remove(): Store_Item {
 
 		if ( !this.dead ) {
-
-			if ( !this.$parent ) {
-				return super.remove();
-			} else {
-				// we're removing from it's parent child nodes, not
+			if ( this.$store.writable ) {
+				if ( !this.$parent ) {
+					// deallocate sub children
+					for ( var i=this.$length-1; i>=0; i-- ) {
+						this.$children[i].remove();
+					}
+					return super.remove();
+				} else {
+					// we're removing from it's parent child nodes, not
 				// from the store root node.
-				if ( this.$store.writable ) {
 
 					// deallocate sub children
-					for ( var i=0, len = this.$length; i<len; i++ ) {
+					for ( var i=this.$length-1; i>=0; i-- ) {
 						this.$children[i].remove();
 					}
 
@@ -209,12 +239,10 @@ class Store2_Node extends Store2_Item {
 					this.$parent.$length--;
 
 					this.die();
-
-				} else {
-					throw new Error( 'remove failed: Store is not writable at this point' );
 				}
+			} else {
+				throw new Error( 'remove failed: Store is not writable at this point' );
 			}
-
 		}
 	}
 }

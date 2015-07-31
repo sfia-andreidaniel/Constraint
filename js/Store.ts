@@ -1,301 +1,316 @@
-/* The store class is the base class for all the collections of the UI.
-
-   The store collection implements a basic CRUD system for storing collections
-   in the memory.
-
-   The store emits 4 events:
-   		"ready"  => (         ) when all the items are loaded
-   		"insert" => ( id: any ) when an item has been inserted
-   		"update" => ( id: any ) when an item has been updated
-   		"remove" => ( id: any ) when an item has been removed
-   		"change" => () whenever somethings changes in the store
-
- */
 class Store extends UI_Event {
+
+	// an auto increment id value, that is used when the name of the unique key of the
+	// objects of the store is null.
+	private   _autoID      : number = 0;
 	
-	private   _autoId: number = 0;
-	protected _items: Store_Item[] = [];
-	protected _length: number = 0;
-	protected _allowDuplicates: boolean = true;
-	protected _sorted: boolean = false;
+	// the name of the unique key in the objects in the store.
+	protected _id          : string = null;
 
-	private   _changeThrottler: UI_Throttler;
+	// the place where we store the items in the store.
+	protected _items       : Store_Item[] = [];
+	
+	// length of the store. we use the length separately, because accessing the
+	// this._items.length is much slower.
+	protected _length      : number = 0;
 
-	constructor( values: any[] = null ) {
+	// the map that is used for storing the unique key bindings
+	protected _map         : Store_Map;
+
+	// number of write locks
+	private   _wr_locks    : number = 0;
+
+	// number of read locks
+	private   _rd_locks    : number = 0;
+
+	// a throttler that is limiting the number of "change" to a rate of 1ms.
+	private   _onchanged     : UI_Throttler;
+	private   _onmetachanged : UI_Throttler;
+
+	// we keep tracking on the keys that were updated on the store, in order
+	// to fire the sorting before actually firing the "change" event in this map.
+	// also, when an insertion is made, we set the "__insertion__" property
+	// to true in this map.
+	// this way, we avoid unnecesarry sorting.
+	protected   _sorting     : Store_Map;
+	
+	// the function that is used for sorting.
+	public  $sorter : ( a: any, b: any ) => number = null;
+
+	// the fields that are afecting the sorting.
+	private $sortFields: ISortOption[];
+
+	// @uniqueKeyName: the name of the "id" key.
+	constructor( uniqueKeyName: string = "id" ) {
 		super();
-
+		this._id      = uniqueKeyName || null;
+		this._map     = new Store_Map();
+		this._sorting = new Store_Map();
+		
 		( function( me ) {
-			
-			me._changeThrottler = new UI_Throttler( function() {
-				me.fire( 'change' );
-			}, 100 );
-
-			me.on( 'insert', function() {
-				if ( me._sorted ) {
-					me.ensureSorted();
-				}
-			} );
-
-			me.on( 'update', function() {
-				if ( me._sorted ) {
-					me.ensureSorted();
-				}
-			} );
-
-			me.on( 'ready', function() {
-				if ( me._sorted ) {
-					me.ensureSorted();
-				}
-			} );
-
+			me._onchanged = new UI_Throttler( function() { me.onBeforeChange(); }, 1 );
+			me._onmetachanged = new UI_Throttler( function() { me.fire('meta-changed'); }, 1 );
 		} )( this );
 
-		this.setItems( values || [] );
+	}
+
+	// returns the next auto-id increment
+	get autoID(): number {
+		return ++this.autoID;
+	}
+
+	set sorter( options: ISortOption[] ) {
+		this.$sorter = options ? Store_Sorter.create( this.$sortFields = options ) : ( this.$sortFields = null );
+		/* sort items */
+		this.sort();
+	}
+
+	get readable(): boolean {
+		return this._wr_locks == 0;
+	}
+
+	get readLocks(): number {
+		return this._rd_locks;
+	}
+
+	get writable(): boolean {
+		return this._rd_locks == 0 && this._wr_locks == 0;
+	}
+
+	get writeLocks(): number {
+		return this._wr_locks;
+	}
+
+	get items(): Store_Item[] {
+		return this._items;
+	}
+
+	// sorts the rows in the store.
+	protected sort( requestChange: boolean = true ) {
+		if ( this.$sorter && this._length ) {
+			
+			this._items.sort( function( a: Store_Item, b: Store_Item ): number {
+				return a.compare(b);
+			});
+
+			if ( requestChange )
+				this.requestChange();
+		}
+	}
+
+	// locks the store ( write-true for writing, otherwise for reading)
+	public lock( write: boolean ) {
+		if ( write ) {
+			this._wr_locks++;
+			this._rd_locks++;
+		} else {
+			this._rd_locks++;
+		}
+	}
+
+	// unlocks the store.
+	// @write - true: unlocks from writing
+	// @write - false: unlocks from reading
+	public unlock( write: boolean ) {
+		if ( write ) {
+			if ( this._wr_locks > 0 ) {
+				this._wr_locks--;
+				if ( this._wr_locks == 0 ) {
+					/* Do sorting @ this point */
+					if ( this.$sorter ) {
+						this.sort();
+					}
+				}
+			}
+		}
+		if ( this._rd_locks > 0 ) {
+			this._rd_locks--;
+		}
+	}
+
+	// inserts data in the store. returns an instance of the
+	// item.
+	public insert( data: any ): Store_Item {
+		
+		var id: any,
+		    i: number = 0,
+		    index: number = null;
+
+		if ( this._id === null ) {
+
+			id = this.autoID;
+
+		} else {
+
+			id = ( data && data[ this._id ] ) ? data[ this._id ] : null;
+
+			if ( id === null ) {
+				throw new Error( 'Failed to read $id property "' + this._id + '" from item' );
+			}
+
+		}
+
+		if ( this._map.has( id ) ) {
+			throw new Error( 'Duplicate primary key: ' + id );
+		}
+
+		var item = new Store_Item( data, this, id );
+
+		this._map.set( id, item );
+
+		if ( this.$sorter && this._wr_locks == 0 ) {
+
+			index = this.pivotInsert( 0, this._length - 1, item );
+
+		}
+
+		if ( index === null ) {
+			this._items.push( item );
+		} else {
+			this._items.splice( index, 0, item );
+		}
+
+		this._length++;
+
+		this._sorting.set( '__insertion__', true );
+
+		if ( this._wr_locks == 0 )
+		this.requestChange();
+
+		return item;
+
+	}
+
+	// used to determine where to insert the item in the store
+	protected pivotInsert( left: number, right: number, item: Store_Item ): number {
+		if ( left >= right ) {
+			return left;
+		} else {
+			var mid: number = ~~( ( left + right ) / 2 ),
+			    cmp: number = this._items[mid].compare( item );
+
+			if ( cmp == 0 ) {
+				return mid;
+			} else {
+				if ( cmp < 0 ) {
+					return this.pivotInsert( left, mid - 1, item );
+				} else {
+					return this.pivotInsert( mid + 1, right, item );
+				}
+			}
+
+		}
+	}
+
+	// returns the item @ position index in the store.
+	public itemAt( index: number ): Store_Item {
+		if ( this._wr_locks > 0 ) {
+			throw new Error( 'Store is locked for writing!' );
+		}
+		if ( index < 0 || index > this._length - 1 ) {
+			throw new Error( 'Index out of bounds' );
+		} else {
+			return this._items[index];
+		}
+	}
+
+	// removes an item from the store. note that if you want
+	// to remove all items from the store, the "clear" method
+	// is much way faster.
+	public remove( item: Store_Item ): Store_Item {
+		
+		if ( this.writable ) {
+			
+			var index: number = this._items.indexOf( item );
+			
+			if ( index > -1 ) {
+
+				this._items.splice( index, 1 );
+				this._length--;
+
+				item.die();
+
+				this.requestChange();
+			}
+
+			return item;
+
+		} else {
+		
+			throw new Error('delete failed: Store is not writable at this point' );
+		
+		}
+	}
+
+	public removeUniqueId( id: any ) {
+		this._map.delete(id);
+	}
+
+	public getElementById( id: any ): Store_Item {
+		return this._map.has( id ) ? <Store_Item>this._map.get(id) : null;
+	}
+
+	public requestUpdate( $id: any, propertyName?: string ) {
+		if ( propertyName && this.$sortFields ) {
+			this._sorting.set( propertyName, true );
+		}
+	}
+
+	public requestChange() {
+		this._onchanged.run();
+	}
+
+	public requestMetaChange() {
+		this._onmetachanged.run();
+	}
+
+	protected onBeforeChange() {
+		
+		var needSorting: boolean = false;
+
+		if ( this._sorting.has( '__insertion__' ) ) {
+			needSorting = true;
+			//console.log( 'sorting because of insertion' );
+		} 
+
+		else
+		
+		if ( this.$sortFields && this._sorting.size ) {
+			// find out if the affected fields that were changed require sorting...
+			var ns: boolean = false,
+			    i: number,
+			    len: number;
+			
+			for ( i=0, len=this.$sortFields.length; i<len; i++ ) {
+				if ( this.$sortFields[i].name && this._sorting.has( this.$sortFields[i].name ) ) {
+					needSorting = true;
+					//console.log( 'sorting because of updating' );
+					break;
+				}
+			}
+
+		}
+
+		if ( needSorting ) {
+			this._sorting.clear();
+			this.sort( false );
+		}
+
+		this.fire( 'change' );
+	}
+
+	public walk( callback: ( index: number ) => void, skip: number = 0, limit: number = null ): Store {
+		var cursor = new Store_Cursor( this, this.length, skip, limit );
+		return cursor.each( callback );
 	}
 
 	public createQueryView( query: ( item: Store_Item ) => boolean ): Store_View {
 		return new Store_View( this, query );
 	}
 
-	public onChange() {
-		this._changeThrottler.run();
-	}
-
-	get autoIncrement(): number {
-		this._autoId++;
-		return this._autoId;
-	}
-
-	public create( payload: any ): Store_Item {
-		return new Store_Item( payload, this.autoIncrement, this );
-	}
-
-	public setItems( values: any[] ) {
-
-		this.clear();
-
-		this._length = values.length;
-
-		for ( var i=0, len = values.length; i<len; i++ ) {
-			this._items.push( this.create( values[i] ) );
-		}
-
-		this.fire( 'ready' );
-		this.onChange();
-	}
-
+	// length is imutable
 	get length(): number {
 		return this._length;
-	}
-
-	public getElementById( id: any ): Store_Item {
-		
-		if ( id === null ) {
-			return null;
-		} else {
-			for ( var i=0; i< this._length; i++ ) {
-				if ( this._items[i].id == id ) {
-					return this._items[i];
-				}
-			}
-			return null;
-		}
-	}
-
-	public getItemIndexById( id: any ): number {
-		if ( id === null ) {
-			return null;
-		} else {
-			for ( var i=0; i<this._length; i++ ) {
-				if ( this._items[i].id == id ) {
-					return i;
-				}
-			}
-			return null;
-		}
-	}
-
-	public insert( payload: any ): any {
-
-		var item: Store_Item;
-
-		this._items.push( item = this.create( payload ) );
-		this._length++;
-
-		this.fire( 'insert', item.id );
-		this.fire( 'change' );
-		return item.id;
-	}
-
-	public update( id: any, payload: any ) {
-		for ( var i=0; i<this._length; i++ ) {
-			if ( this._items[i].id == id ) {
-				this._items[i].data = payload;
-				this.fire( 'update', id );
-				this.onChange();
-				return;
-			}
-		}
-	}
-
-	public remove( id: any ) {
-		
-		var ptr: Store_Item;
-
-		for ( var i=0; i<this._length; i++ ) {
-			if ( this._items[i].id == id ) {
-				ptr = this._items[i];
-				this._items.splice( i, 1 );
-				this._length--;
-				this.fire( 'remove', id );
-				this.onChange();
-				ptr.onRemove();
-				return;
-			}
-		}
-	}
-
-	// returns the item at index @index
-	public itemAt( index: number ): Store_Item {
-		if ( index >= 0 && index < this._length ) {
-			return this._items[index];
-		} else {
-			throw new Error( 'Index out of bounds: ' + index );
-		}
-	}
-
-	// removes the item at index @index
-	public removeAt( index: number ): any {
-		var ptr: Store_Item;
-		
-		if ( index >= 0 && index < this._length ) {
-			ptr = this._items[ index ];
-			this._items.splice( index, 1 );
-			this._length--;
-			this.fire( 'remove', ptr.id );
-			this.onChange();
-			ptr.onRemove();
-			return ptr.id;
-		} else {
-			throw new Error( 'Index out of bounds: ' + index );
-		}
-	}
-
-	// updates the item at index @index
-	public updateAt( index: number, payload: any ) {
-		if ( index >= 0 && index < this._length ) {
-			this._items[index].data = payload;
-		} else {
-			throw new Error( 'Index out of bounds: ' + index );
-		}
-	}
-
-	public insertAt( index: number, payload: any ) {
-		if ( index >= 0 && index <= this._length ) {
-			var item: Store_Item;
-			this._length++;
-			this._items.splice( index, 0, item = this.create( payload ) );
-			this.fire( 'insert', item.id );
-			this.onChange();
-		} else {
-			throw new Error( 'Index out of bounds: ' + index );
-		}
-	}
-
-	public compare( a: Store_Item, b: Store_Item ): number {
-		return -1;
-	}
-
-	public ensureNoDuplicates() {
-		var i: number,
-		    j: number;
-		
-		if  ( this._length > 1 ) {
-
-			for ( i=0; i < this._length; i++ ) {
-				for ( j=0; j < this._length; j++ ) {
-					if ( i != j && this.compare( this._items[i].data, this._items[j].data ) == 0 ) {
-						throw new Error( 'Duplicate items not allowed in this store!' );
-					}
-				}
-			}
-		}
-	}
-
-	// Ensures the store stays sorted always.
-	public ensureSorted() {
-		if ( this._sorted && this._length > 1 ) {
-			
-			var oldIdList: any[] = [],
-			    i: number;
-
-			for ( i = 0; i < this._length; i++ ) {
-				oldIdList.push( this._items[i].id );
-			}
-
-			( function( me ) {
-				me._items.sort( function( a,b ) { return me.compare( a, b ); } );
-			} )( this );
-			
-
-			for ( i = 0; i < this._length; i++ ) {
-				if ( oldIdList[i] != this._items[i].id ) {
-					this.onChange();
-					return;
-				}
-			}
-
-		}
-	}
-
-	// Weather the store allows duplicates or not
-	get allowDuplicates(): boolean {
-		return this._allowDuplicates;
-	}
-
-	set allowDuplicates( allow: boolean ) {
-
-		allow = !!allow;
-		
-		if ( allow != this._allowDuplicates ) {
-			
-			if ( !allow ) {
-				this.ensureNoDuplicates();
-			}
-
-			this._allowDuplicates = allow;
-		}
-	}
-
-	// Getter setter for setting the "always sorted" flag.
-	get sorted(): boolean {
-		return this._sorted;
-	}
-
-	set sorted( sorted: boolean ) {
-		sorted = !!sorted;
-		if ( sorted != this._sorted ) {
-			this._sorted = sorted;
-			this.ensureSorted();
-		}
-	}
-
-	public clear() {
-		
-		if ( this._length > 0 ) {
-
-			for ( var i=0, len = this._length; i<len; i++ ) {
-				this._items[i].die();
-			}
-			
-			this._items.splice( 0, this._length );
-
-			this._length = 0;
-
-			this.onChange();
-
-		}
-
 	}
 
 }
