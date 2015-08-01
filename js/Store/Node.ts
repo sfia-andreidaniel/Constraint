@@ -25,7 +25,8 @@ class Store_Node extends Store_Item {
 
 	public appendChild( node: Store_Node ): Store_Node {
 		
-		var index: number = null;
+		var index: number = null,
+		    i: number;
 
 		if ( this.$leaf ) {
 			throw new Error( 'Destination node #' + this.$id + ' is a leaf, and doesn\'t support child nodes' );
@@ -45,6 +46,10 @@ class Store_Node extends Store_Item {
 			this.$children.push( node );
 		} else {
 			this.$children.splice( index, 0, node );
+		}
+
+		for ( i=0; i<this.$length; i++ ) {
+			this.$children[i].$lastChild = i == this.$length - 1;
 		}
 
 		node.depth = this.depth + 1;
@@ -121,6 +126,18 @@ class Store_Node extends Store_Item {
 		}
 	}
 
+	get idPath(): any[] {
+		var result: any[] = [],
+		    cursor = this.$parent;
+		
+		while ( cursor ) {
+			result.push( cursor.id );
+			cursor = cursor.$parent;
+		}
+
+		return result;
+	}
+
 	set collapsed( on: boolean ) {
 		on = !!on;
 		if ( !this.$leaf && on != this.$collapsed ) {
@@ -128,6 +145,9 @@ class Store_Node extends Store_Item {
 			if ( !on && this.visible ) {
 				//console.log( 'sorting on visible...' );
 				this.sort( true, true );
+			}
+			if ( !this.dead ) {
+				this.$store.requestMetaChange();
 			}
 		}
 	}
@@ -169,14 +189,28 @@ class Store_Node extends Store_Item {
 		var result: number[],
 		    depth: number;
 
+		/* CONNECTORS MEANING
+			~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            0           1           2          3
+			            |           |          |
+			            |           |__        |__
+				        |           |
+			~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+			4           5           6          7
+            |           |           |          |
+			+ --        - --        + --       - --
+            |           |
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		 */
+
 		result = !this.$parent ? [] : this.$parent.computeConnectors(false);
-		result.push(~~(!this.$lastChild));
+
+		result.push( this.$lastChild ? 0 : 1 );
 
 		if ( forMyself ) {
 			depth = this.$depth - 1;
-			result[ depth ] = result[ depth ]
-				? ( this.$leaf ? 3 : ( this.$collapsed ? 6 : 7 ) )
-				: ( this.$leaf ? 2 : ( this.$collapsed ? 4 : 5 ) );
+
+			result[ depth ] = this.$leaf ? ( this.$lastChild ? 3 : 2 ) : ( this.$lastChild ? ( this.$collapsed ? 6 : 7 ) : ( this.$collapsed ? 4 : 5 ) );
 		}
 
 		return result;

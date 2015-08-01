@@ -54,6 +54,13 @@ class Store extends UI_Event {
 
 	}
 
+	public fire( eventName: string, ...args ) {
+		if ( [ 'change', 'meta-changed', 'before-change', 'death' ].indexOf( eventName ) == -1 ) {
+			throw new Error('Bad store event ' + eventName );
+		} else
+		super.fire( eventName, args );
+	}
+
 	// returns the next auto-id increment
 	get autoID(): number {
 		return ++this.autoID;
@@ -83,6 +90,10 @@ class Store extends UI_Event {
 
 	get items(): Store_Item[] {
 		return this._items;
+	}
+
+	get isTree(): boolean {
+		return false;
 	}
 
 	// sorts the rows in the store.
@@ -142,7 +153,7 @@ class Store extends UI_Event {
 
 		} else {
 
-			id = ( data && data[ this._id ] ) ? data[ this._id ] : null;
+			id = ( data && Store_Map.validKey( data[ this._id ] ) ) ? data[ this._id ] : null;
 
 			if ( id === null ) {
 				throw new Error( 'Failed to read $id property "' + this._id + '" from item' );
@@ -179,6 +190,34 @@ class Store extends UI_Event {
 
 		return item;
 
+	}
+
+	// @items:            an array containing the items for the store.
+	// @isNested:         indicating that the structure is a nested one.
+	//                    This argument is used by Store_Tree class, and
+	//                    ignored by the Store class.
+	// @childrenKeyName:  indicating the name of the "children" array
+	//                    of the nested structure.
+
+	public setItems( items: any, fromNested: boolean = false, childrenKeyName: string = 'children' ) {
+		items = items || [];
+
+		var i: number,
+		    len: number = ~~items.length;
+
+		this.clear();
+
+		if ( len ) {
+			this.lock(true);
+
+			for ( i=0; i<len; i++ ) {
+				this.insert( items[i] );
+			}
+
+			this.unlock(true);
+		}
+
+		this.requestChange();
 	}
 
 	// used to determine where to insert the item in the store
@@ -264,6 +303,15 @@ class Store extends UI_Event {
 		this._onmetachanged.run();
 	}
 
+	public clear() {
+		this.lock(true);
+		this.walk( function( index: number ): ETraverseSignal { this.die(); return 0; } );
+		this._items.splice( 0, this._length );
+		this._length = 0;
+		this.unlock(true);
+		this.requestChange();
+	}
+
 	protected onBeforeChange() {
 		
 		var needSorting: boolean = false;
@@ -299,13 +347,29 @@ class Store extends UI_Event {
 		this.fire( 'change' );
 	}
 
-	public walk( callback: ( index: number ) => void, skip: number = 0, limit: number = null ): Store {
+	public walk( 
+		callback 	: FTraversor,
+		skip 		: number = 0, 
+		limit 		: number = null, 
+		aggregator 	: FAggregator = null
+	): Store {
 		var cursor = new Store_Cursor( this, this.length, skip, limit );
-		return cursor.each( callback );
+		return cursor.each( callback, aggregator );
 	}
 
-	public createQueryView( query: ( item: Store_Item ) => boolean ): Store_View {
+	public createQueryView( query: FTraversor ): Store_View {
 		return new Store_View( this, query );
+	}
+
+	public getItemIndexById( itemId: any ): number {
+		var result: number = -1;
+		this.walk( function( index ): ETraverseSignal {
+			if ( this.id == itemId ) {
+				result = index;
+				return ETraverseSignal.STOP;
+			}
+		} );
+		return result;
 	}
 
 	// length is imutable

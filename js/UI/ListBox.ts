@@ -27,7 +27,7 @@ class UI_ListBox extends UI_Canvas implements IFocusable, IRowInterface {
 		inactiveSelectedFontColor: $I.string('UI.UI_ListBox/font.inactiveSelectedColor')
 	};
 
-	private _options: Store_NamedObjects;
+	private _options: Store;
 
 	// IFocusable properties
 	public    active: boolean; // the active is overrided by the MFocusable mixin
@@ -46,7 +46,7 @@ class UI_ListBox extends UI_Canvas implements IFocusable, IRowInterface {
 	constructor( owner: UI ) {
 		super( owner, [ 'IFocusable', 'IRowInterface' ] );
 		UI_Dom.addClass( this._root, 'UI_ListBox' );
-		this._options = new Store_NamedObjects([]);
+		this._options = new Store('id');
 		this._setupExtendedEvents_();
 
 	}

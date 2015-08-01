@@ -42,20 +42,32 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 	public    selectedIndex: number;
 	public    multiple: boolean;
 
-	protected _items: Store_NestedObjects;
-	protected _view:  Store_View_Tree;
+	protected _items: Store_Tree;
+	protected _view:  Store_View;
 
 	private   _render: UI_Throttler;
 
 	private   _selectedIndexPath: any[] = null;
+
+	// FROM WHICH PROPERTY OF THE ITEMS IN THE STORE DOES THE TREE RENDERS THE LABEL AND IT'S ICONS?
+	protected _name: string = 'name';
+	protected _icon: string = 'icon';
 
 	constructor( owner: UI, mixins: string[] = [] ) {
 	    
 	    super( owner, Utils.arrayMerge( [ 'IFocusable', 'IRowInterface' ], mixins ) );
 	    
 	    UI_Dom.addClass( this._root, 'UI_Tree' );
-	    this._items = new Store_NestedObjects(null);
-	    this._view = this._items.createTreeView( null );
+	    this._items = new Store_Tree('id','parent','isLeaf');
+
+	    this._view = this._items.createQueryView( function( index: number ) : ETraverseSignal {
+	    	
+	    	if ( this.visible ) {
+	    		return ETraverseSignal.AGGREGATE;
+	    	} else {
+	    		return ETraverseSignal.STOP_RECURSIVE;
+	    	}
+	    });
 
 	    this._setupExtendedEvents_();
 	}
@@ -83,7 +95,7 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 				var y: number  = point.y,
 				    x: number  = point.x,
 					rowIndex   = ~~( y / UI_Tree._theme.option.height ),
-					numConnectors = me._view.connectorsAt( rowIndex ).length;
+					numConnectors = me._view.itemAt( rowIndex ).connectors.length;
 
 				me.onRowIndexClick( rowIndex, shiftKey, ctrlKey );
 
@@ -111,10 +123,10 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 				// SAVE selectedIndex
 				me._selectedIndexPath = ( me.selectedIndex == -1 )
 					? null
-					: ( <Store_Item_NestableObject>me._view.itemAt( me.selectedIndex ) ).idPath;
+					: ( <Store_Node>me._view.itemAt( me.selectedIndex ) ).idPath;
 
 				if ( me._selectedIndexPath !== null ) {
-					me._selectedIndexPath.push( ( <Store_Item_NestableObject>me._view.itemAt( me.selectedIndex ) ).id );
+					me._selectedIndexPath.push( ( <Store_Node>me._view.itemAt( me.selectedIndex ) ).id );
 				}
 
 			} );
@@ -183,34 +195,54 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 	}
 
 	get items(): INestable[] {
-		var out: INestable[] = [],
-		    i: number = 0,
-		    len: number = this._items.length,
-		    item: Store_Item_NestableObject;
+		var out: INestable[] = [];
 
-		for ( i=0; i<len; i++ ) {
-
-			item = <Store_Item_NestableObject>this._items.itemAt( i );
-
-			out.push({
-				id: item.id,
-				name: item.name,
-				parent: item.parentId,
-				selected: item.selected
-			});
-		}
+		this._items.walk( function( index: number ): ETraverseSignal {
+			out.push(<INestable>this.data);
+			return 0;
+		} );
 
 		return out;
 	}
 
 	set items( items: INestable[] ) {
 
-		this._items.setItems( items );
+		this._items.setItems( items, false );
 
 	}
 
-	get store(): Store_NestedObjects {
+	set nestedItems( items: any ) {
+
+		this._items.setItems( items, true, 'children' );
+	
+	}
+
+	get store(): Store_Tree {
 		return this._items;
+	}
+
+	get nameField(): string {
+		return this._name;
+	}
+
+	set nameField( fieldName: string ) {
+		fieldName = String( fieldName || '' );
+		if ( fieldName != this._name ) {
+			this._name = fieldName;
+			this.onRepaint();
+		}
+	}
+
+	get iconField(): string {
+		return this._icon;
+	}
+
+	set iconField( fieldName: string ) {
+		fieldName = String( fieldName || '' );
+		if ( fieldName != this._icon ) {
+			this._icon = fieldName;
+			this.onRepaint();
+		}
 	}
 
 	private restoreSelectedIndex(): boolean {
@@ -234,7 +266,7 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 	}
 
 	private onRowExpanderClick( rowIndex: number ) {
-		var opt: Store_Item_NestableObject = <Store_Item_NestableObject>this._view.itemAt( rowIndex );
+		var opt: Store_Node = <Store_Node>this._view.itemAt( rowIndex );
 
 		if ( !opt.isLeaf ) {
 			opt.expanded = !opt.expanded;
@@ -246,7 +278,7 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 			return;
 		}
 
-		var node: Store_Item_NestableObject = <Store_Item_NestableObject>this._view.itemAt( this.selectedIndex );
+		var node: Store_Node = <Store_Node>this._view.itemAt( this.selectedIndex );
 
 		if ( !node.collapsed ) {
 			node.collapsed = true;
@@ -258,7 +290,7 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 			return;
 		}
 
-		var node: Store_Item_NestableObject = <Store_Item_NestableObject>this._view.itemAt( this.selectedIndex );
+		var node: Store_Node = <Store_Node>this._view.itemAt( this.selectedIndex );
 
 		if ( node.collapsed ) {
 			node.collapsed = false;
@@ -294,7 +326,8 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 		    paintRows : number = Math.round( this._paintRect.height / UI_Tree._theme.option.height ) + 1,
 		    i 		  : number,
 		   	len 	  : number,
-		   	opt 	  : INestable,
+		   	label     : string,
+		   	icon      : string,
 
 		   	isActive  : boolean = this.active && this.form && this.form.active,
 		   	isDisabled: boolean = this.disabled,
@@ -303,7 +336,8 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 		   	connectors: number[],
 		   	paddingLeft: number,
 		   	ci            : number,
-		   	numConnectors : number;
+		   	numConnectors : number,
+		   	item          : Store_Node;
 
 		ctx.fillStyle = bgColor;
 		ctx.fillRect( 0, 0, ctx.width, ctx.height );
@@ -315,8 +349,9 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 
 		for ( i = skip, len = Math.min( this.length, skip + paintRows); i<len; i++ ) {
 			
-			opt = <INestable>this._view.itemAt( i ).data;
-			connectors = this._view.connectorsAt(i);
+			item = <Store_Node>this._view.itemAt(i);
+
+			connectors = item.connectors;
 			numConnectors = connectors.length;
 
 			paddingLeft = ( numConnectors + 1 ) * UI_Tree._theme.option.height;
@@ -362,13 +397,15 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 				}
 			}
 
+			icon = String( item.get( this._icon ) || '' );
+
 			// paint icon
-			if ( opt.isLeaf ) {
+			if ( item.isLeaf ) {
 				
 				// paint file icon
 				UI_Resource.createSprite(
 				
-					( opt['icon'] || 'Constraint/file' ) 
+					( icon || 'Constraint/file' ) 
 					+ '/20x20'
 					+ ( this.disabled ? '-disabled' : '' )
 				
@@ -379,14 +416,18 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 				// paint folder icon
 				UI_Resource.createSprite(
 				
-					( opt['icon'] || 'Constraint/folder' ) 
+					( icon || 'Constraint/folder' ) 
 					+ '/20x20'
 					+ ( this.disabled ? '-disabled' : '' )
 				
 				).paintWin( ctx, numConnectors * UI_Tree._theme.option.height, startY + ~~( UI_Tree._theme.option.height - 20 ) / 2 );
 			}
 
-			ctx.fillText( opt.name, 2 + paddingLeft, startY + ~~( UI_Tree._theme.option.height / 2 ) );
+			label = String( item.get( this._name ) || '' );
+
+			if ( label ) {
+				ctx.fillText( label, 2 + paddingLeft, startY + ~~( UI_Tree._theme.option.height / 2 ) );
+			}
 
 			if ( selectedIndex == i && isActive && !isDisabled ) {
 	
@@ -410,27 +451,34 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 
 	// returns the id of the selected tree item
 	get value(): any {
-		for ( var i=0, len = this._items.length; i<len; i++ ) {
-			if ( (<Store_Item_NestableObject>this._items.itemAt(i)).selected ) {
-				return this._items.itemAt(i).id;
+
+		var result: any = null;
+
+		this._items.walk( function( index: number ): ETraverseSignal {
+			if ( this.selected ) {
+				result = this.id;
+				return ETraverseSignal.STOP;
 			}
-		}
+		} );
+
 		return null;
 	}
 
 	set value( valueId: any ) {
-		var index: number = -1,
-		    item: Store_Item_NestableObject;
+		var index: number = -1;
 
-		for ( var i=0, len = this._items.length; i<len; i++ ) {
-			item = <Store_Item_NestableObject>this._items.itemAt(i);
-			
-			if ( item.id == valueId ) {
-				index = i;
-				item.selected = true;
+		this._items.walk( function( nIndex: number ): ETraverseSignal {
+			if ( this.id == valueId ) {
+				index = nIndex;
+				this.selected = true;
 			} else {
-				item.selected = false;
+				this.selected = false;
 			}
+			return 0;
+		});
+
+		if ( index != -1 ) {
+			index = this._view.getItemIndexById( valueId );
 		}
 
 		this.selectedIndex = index;
@@ -448,14 +496,14 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 		} else {
 
 			var result: any[] = [],
-			    i: number,
-			    len: number = this._items.length;
+			    i: number;
 
-			for ( i=0; i<len; i++ ) {
-				if ( (<Store_Item_NestableObject>this._items.itemAt(i)).selected ) {
-					result.push( this._items.itemAt(i).id );
+			this._items.walk( function( index ): ETraverseSignal {
+				if ( this.selected ) {
+					result.push( this.id );
 				}
-			}
+				return 0;
+			} );
 
 			return result;
 		}
@@ -469,12 +517,12 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 
 		values = values || [];
 
-		var i: number = 0,
-		    len: number = this._items.length;
+		var i: number = 0;
 
-		for ( i=0; i<len; i++ ) {
-			(<Store_Item_NestableObject>this._items.itemAt(i)).selected = values.indexOf( this._items.itemAt(i).id ) > -1;
-		}
+		this._items.walk( function( index ): ETraverseSignal {
+			this.selected = values.indexOf( this.id ) > -1;
+			return 0;
+		} );
 
 	}
 
@@ -536,6 +584,14 @@ Constraint.registerClass( {
 		{
 			"name": "tabIndex",
 			"type": "boolean"
+		},
+		{
+			"name": "nameField",
+			"type": "string"
+		},
+		{
+			"name": "iconField",
+			"type": "string"
 		}
 	]
 } );

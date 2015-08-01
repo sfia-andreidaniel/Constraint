@@ -1,6 +1,6 @@
 class UI_Sprite extends UI_Event {
 	
-	constructor( private file: UI_Resource_File, private version: IResourceFileVersion, private _path: string ) {
+	constructor( private file: UI_Resource_File, private version: IResourceFileVersion, protected _path: string ) {
 		super();
 	}
 

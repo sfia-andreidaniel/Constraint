@@ -38,4 +38,8 @@ class Store_Map {
 		return this._size;
 	}
 
+	public static validKey( key: any ): boolean {
+		return key === 0 || !!key;
+	}
+
 }

@@ -28,15 +28,22 @@ class Store_Cursor {
 		this.limit= limit;
 	}
 
-	public each( callback: ( index: number ) => void ): Store {
+	public each( callback: ( index: number ) => ETraverseSignal, aggregator?: ( item: Store_Item ) => void ): Store {
 
-		var cursor: Store2_Item,
+		var cursor: Store_Item,
 		    i: number,
-		    len: number;
+		    len: number,
+		    signal: ETraverseSignal;
 
 		for ( i = this.skip, len = this.skip + this.limit; i < len; i++ ) {
 			cursor = this.store.itemAt( i );
-			callback.call( cursor, i );
+			signal = ~~callback.call( cursor, i );
+			if ( signal == ETraverseSignal.STOP ) {
+				break;
+			} else
+			if ( signal == ETraverseSignal.AGGREGATE && aggregator ) {
+				aggregator( cursor );
+			}
 		}
 
 		return this.store;

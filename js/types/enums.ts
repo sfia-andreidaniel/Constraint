@@ -76,3 +76,10 @@ enum ESortState {
 	ASC,
 	DESC
 }
+
+enum ETraverseSignal {
+	CONTINUE,
+	STOP,
+	STOP_RECURSIVE,
+	AGGREGATE
+}

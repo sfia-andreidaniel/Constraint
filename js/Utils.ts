@@ -29,6 +29,42 @@ class Utils {
 
 	}
 
+	public static ObjectPeek( keys: string[], srcObject: any ): any {
+		var result: any = Object.create( null ),
+		    i: number,
+		    len: number;
+		
+		if ( !srcObject ) {
+			return result;
+		}
+
+		for ( i=0, len = keys.length; i<len; i++ ) {
+			if ( typeof srcObject[ keys[i] ] != 'undefined' ) {
+				result[ keys[i] ] = srcObject[ keys[i] ];
+			}
+		}
+
+		return result;
+
+	}
+
+	public static ObjectExclude( keys: string[], srcObject: any ): any {
+		var result: any = Object.create( null ),
+		    k: string;
+
+		if ( !srcObject ) {
+			return result;
+		}
+
+		for ( k in srcObject ) {
+			if ( srcObject.hasOwnProperty( k ) && keys.indexOf( k ) == -1 ) {
+				result[ k ] = srcObject[ k ];
+			}
+		}
+
+		return result;
+	}
+
 	public static createCircularMap( minValue: number, maxValue: number, currentValue: number, descending: boolean = false ): number[] {
 
 		if ( maxValue < minValue ) {

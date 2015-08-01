@@ -105,3 +105,11 @@ interface ISortOption {
 	asc: boolean;
 	callback?: ( a: any, b: any ) => number;
 }
+
+interface FTraversor {
+	( index: number ) : ETraverseSignal;
+}
+
+interface FAggregator {
+	( item: any ) : void;
+}

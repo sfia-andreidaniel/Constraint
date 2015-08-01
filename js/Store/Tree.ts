@@ -31,7 +31,7 @@ class Store_Tree extends Store {
 		    leaf: boolean,
 		    i: number = 0,
 		    index: number = null,
-		    result: Store2_Node;
+		    result: Store_Node;
 
 		id = ( data && data[ this._id ] ) ? ( data[ this._id ] || null ) : null;
 
@@ -39,7 +39,7 @@ class Store_Tree extends Store {
 			throw new Error('Missing $id property "' + this._id + '" from data.' );
 		}
 
-		parent = data[ this._parent ] ? data[ this._parent ] || null : null;
+		parent = Store_Map.validKey( data[ this._parent ] ) ? data[ this._parent ] || null : null;
 
 		leaf = !!data[ this._leaf ];
 
@@ -108,14 +108,99 @@ class Store_Tree extends Store {
 		}
 	}
 
-	public walk( callback: ( index: number ) => void, skip: number = 0, limit: number = null ): Store2 {
+	public walk( 
+		callback   : FTraversor, 
+		skip 	   : number = 0, 
+		limit 	   : number = null,
+		aggregator : FAggregator = null
+	): Store {
 		var cursor = new Store_Cursor_Tree( this, this.lengthDepth, skip, limit );
-		return cursor.each( callback );
+		return cursor.each( callback, aggregator );
+	}
+
+	get isTree(): boolean {
+		return true;
 	}
 
 
 	get lengthDepth(): number {
 		return this._map.size;
+	}
+
+	public setItems( items: any, fromNested: boolean = false, childrenKeyName: string = 'children' ) {
+		if ( fromNested ) {
+
+			var result: any[],
+			    i: number,
+			    len: number;
+
+			if ( items ) {
+
+				if ( items instanceof Global.env['Array'] ) {
+
+					if ( items.length ) {
+					
+						result = Store_Tree.unnest( items[0], this._id, this._parent, childrenKeyName, this._leaf );
+
+						for ( i=1, len = items.length; i<len; i++ ) {
+							result = Utils.arrayMerge( result, Store_Tree.unnest( items[i], this._id, this._parent, childrenKeyName, this._leaf ), true );
+						}
+
+						super.setItems( result );
+
+					} else result = [];
+
+					super.setItems( result );
+
+				} else {
+
+					super.setItems( Store_Tree.unnest( items, this._id, this._parent, childrenKeyName, this._leaf ) );
+
+				}
+
+			}
+
+		} else {
+
+			super.setItems( items, false );
+		
+		}
+
+	}
+
+	public static unnest( data: any, idKeyName: string = 'id', parentKeyName: string = 'parent', childrenKeyName: string = 'children', leafKeyName: string = 'isLeaf' ): any[] {
+
+		var result: any[] = [],
+		    autoId: number = 0;
+
+		function traverse( item: any, parentValue: any = null ) {
+			if ( !item ) {
+				return;
+			}
+
+			var row = Utils.ObjectExclude( [ idKeyName, childrenKeyName, leafKeyName ], item ),
+			    i: number,
+			    len: number;
+
+			row[ idKeyName ] = typeof item[ idKeyName ] != 'undefined' && Store_Map.validKey( item[ idKeyName ] ) ? item[ idKeyName ] : ++autoId;
+			row[ parentKeyName ] = parentValue;
+
+			result.push( row );
+
+			if ( typeof item[ childrenKeyName ] != 'undefined' && ( len = item[ childrenKeyName ].length ) ) {
+				for ( i=0; i<len; i++ ) {
+					traverse( item[ childrenKeyName ][ i ], row[ idKeyName ] );
+				}
+			} else {
+				row[ leafKeyName ] = true;
+			}
+
+		}
+
+		traverse( data );
+
+		return result;
+
 	}
 
 }

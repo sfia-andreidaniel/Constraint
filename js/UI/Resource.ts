@@ -482,7 +482,7 @@ class UI_Resource extends UI_Event {
 				spritePath
 			) )
 		} else {
-			throw new Error( 'Invalid resource: ' + spritePath );
+			return new UI_Sprite_Null(spritePath);
 		}
 	}
 

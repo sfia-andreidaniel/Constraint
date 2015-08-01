@@ -23,6 +23,7 @@
 /// <reference path="UI/Resource.ts" />
 /// <reference path="UI/Resource/File.ts" />
 /// <reference path="UI/Sprite.ts" />
+/// <reference path="UI/Sprite/Null.ts" />
 
 /// <reference path="UI/Dom.ts" />
 /// <reference path="UI/Color.ts" />
@@ -33,21 +34,6 @@
 /// <reference path="Mixins/MFocusable.ts" />
 /// <reference path="Mixins/MRowInterface.ts" />
 
-// ---------------------------------------
-/// <reference path="Store.ts" />
-/// <reference path="Store/Map.ts" />
-/// <reference path="Store/Strings.ts" />
-/// <reference path="Store/Objects.ts" />
-/// <reference path="Store/NamedObjects.ts" />
-/// <reference path="Store/NestedObjects.ts" />
-
-/// <reference path="Store/Item.ts" />
-/// <reference path="Store/Item/String.ts" />
-/// <reference path="Store/Item/Object.ts" />
-/// <reference path="Store/Item/NamedObject.ts" />
-/// <reference path="Store/Item/NestableObject.ts" />
-// ------------------------------------------
-
 /// <reference path="Store.ts" />
 /// <reference path="Store/Map.ts" />
 /// <reference path="Store/Sorter.ts" />
@@ -57,7 +43,6 @@
 /// <reference path="Store/Cursor.ts" />
 /// <reference path="Store/Cursor/Tree.ts" />
 /// <reference path="Store/View.ts" />
-/// <reference path="Store/View/Tree.ts" />
 
 /// <reference path="UI/Anchor.ts" />
 /// <reference path="UI/Anchor/Form.ts" />

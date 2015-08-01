@@ -7,13 +7,14 @@ class Store_Cursor_Tree extends Store_Cursor {
 		this._visited = new Store_Map();
 	}
 
-	public each( callback: ( index: number ) => void ): Store {
+	public each( callback: ( index: number ) => ETraverseSignal, aggregator?: ( item: Store_Item ) => void ): Store {
 
 		var index: number = 0,
 		    jump   : number = this.skip,
 		    skip   : number = this.skip,
 		    called : number = 0,
-		    limit  : number = this.limit;
+		    limit  : number = this.limit,
+		    signal : ETraverseSignal;
 
 		function traverse( arr: Store_Node[] ) {
 			
@@ -22,6 +23,10 @@ class Store_Cursor_Tree extends Store_Cursor {
 
 			for ( i=0, len = arr.length; i<len; i++ ) {
 				
+				if ( signal == ETraverseSignal.STOP ) {
+					return;
+				}
+
 				// fast forward?
 				if ( jump >= ( arr[i].lengthDepth + 1 ) ) {
 
@@ -35,21 +40,26 @@ class Store_Cursor_Tree extends Store_Cursor {
 					if ( called < limit ) {
 
 						if ( jump == 0 ) {
-							callback.call( arr[i], index );
+							signal = ~~callback.call( arr[i], index );
 							index++;
 							called++;
+
+							if ( signal == ETraverseSignal.AGGREGATE && aggregator ) {
+								aggregator( arr[i] );
+							}
+
 						} else {
 							jump--;
 							index++;
 							//console.log( 'slow forward: ', arr[i].lengthDepth + 1, 'jumped = ', jump, 'index = ', index );
 						}
 
-						if ( called > limit ) {
+						if ( called > limit || signal == ETraverseSignal.STOP) {
 							//console.log( 'called > limit: ', called, limit );
 							return;
 						}
 
-						if ( arr[i].length ) {
+						if ( signal != ETraverseSignal.STOP_RECURSIVE && arr[i].length ) {
 							traverse( arr[i].childNodes );
 						}
 

@@ -1,6 +1,6 @@
 class Store_View extends Store {
 
-	protected _query: ( item: Store_Item ) => boolean;
+	protected _query: FTraversor;
 	protected _owner: Store;
 	private   _updater: UI_Throttler;
 	private   _metaChanged: UI_Throttler;
@@ -11,12 +11,11 @@ class Store_View extends Store {
 	protected _changeFunc: ()      => void = null;
 	protected _metaChangeFunc: ()  => void = null;
 
-
-	constructor( owner: Store, query: ( item: Store_Item ) => boolean ) {
+	constructor( owner: Store, query: FTraversor ) {
 	    super( null );
 	    this._owner = owner;
 	    this._query = query;
-	    
+
 	    this.listen();
 	}
 
@@ -56,7 +55,7 @@ class Store_View extends Store {
 		throw new Error( 'Views does not support insertion. Insert the items in their master store instead.' );
 	}
 
-	protected pivotInsert( left: number, right: number,item: Store_Item ) {
+	protected pivotInsert( left: number, right: number,item: Store_Item ): number {
 		throw new Error( 'Cannot compute pivot insertion' );
 	}
 
@@ -85,23 +84,15 @@ class Store_View extends Store {
 	}
 
 	public requestChange() {
-		super.requestChange();
+		throw new Error( 'Command not supported on views' );
 	}
 
 	public requestMetaChange() {
-		super.requestMetaChange();
+		throw new Error( 'Command not supported on views' );
 	}
 
 	protected onBeforeChange() {
 		console.log( 'onbeforechange...' );
-	}
-
-	public walk( callback: ( index: number ) => void, skip: number = 0, limit: number = null ): Store {
-		return super.walk( callback, skip, limit );
-	}
-
-	public createQueryView( query: ( item: Store_Item ) => boolean ): Store_View {
-		throw new Error('Views cannot create sub-views (or should?)' );
 	}
 
 	// starts listening to the store for events
@@ -110,8 +101,79 @@ class Store_View extends Store {
 		if ( this._isListening )
 			return;
 
-		
+		( function( self ) {
 
+			self._changeFunc = function() {
+				self.update();
+			}
+
+			self._metaChangeFunc = function(  ) {
+				self.update();
+			}
+
+		} )( this );
+
+		this._owner.on( 'change', this._changeFunc );
+		this._owner.on( 'meta-changed', this._metaChangeFunc );
+
+		this._isListening = true;
+
+		this.update();
+
+	}
+
+	public stopListening() {
+		if ( !this._isListening ) {
+			return;
+		}
+
+		this._owner.off( 'change', this._changeFunc );
+		this._owner.off( 'meta-changed', this._metaChangeFunc );
+
+		this._metaChangeFunc = undefined;
+		this._changeFunc = undefined;
+		
+		this._isListening = false;
+	}
+
+	private update() {
+		
+		if ( !this.readable ) {
+			return;
+		}
+
+		this.fire( 'before-change' );
+		
+		var _oldLength: number = this._length,
+		    _nowIndex: number = 0,
+		    fireChange: boolean = false;
+
+		this._length = 0;
+		this._map.clear();
+
+		( function( self ) {
+
+			function aggregate( item: Store_Item ) {
+
+				self._map.set( item.id, item );
+
+				if ( item != self._items[ self._length ] ) {
+					self._items[ self._length ] = item;
+					fireChange = true;
+				}
+
+				self._length++;
+
+			}
+
+			self._owner.walk( self._query, 0, null, aggregate );
+
+		} )( this );
+			
+		if ( this._length != _oldLength || fireChange ) {
+			this._items.length = this._length;
+			this.fire( 'change' );
+		}
 	}
 
 
