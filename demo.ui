@@ -77,7 +77,7 @@
 
 				items: [
 					{id: 1;  parent: null; name: 'My Computer';                },
-			    	{id: 20; parent: null; name: 'My file';      isLeaf: true; },
+			    	{id: 20; parent: null; name: 'My file';      isLeaf: true; size: 8192; },
 			    	{id: 2;  parent: 1;    name: 'C:';                         online: true; },
 			    	{id: 3;  parent: 1;    name: 'D:';                         online: false;},
 			    	{id: 4;  parent: 2;    name: 'My Documents';               },

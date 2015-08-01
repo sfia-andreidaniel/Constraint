@@ -54,12 +54,14 @@ class Store extends UI_Event {
 
 	}
 
+	/* 
 	public fire( eventName: string, ...args ) {
-		if ( [ 'change', 'meta-changed', 'before-change', 'death' ].indexOf( eventName ) == -1 ) {
+		if ( [ 'change', 'meta-changed', 'before-change', 'death', 'tree-change' ].indexOf( eventName ) == -1 ) {
 			throw new Error('Bad store event ' + eventName );
 		} else
 		super.fire( eventName, args );
 	}
+	*/
 
 	// returns the next auto-id increment
 	get autoID(): number {
@@ -301,6 +303,10 @@ class Store extends UI_Event {
 
 	public requestMetaChange() {
 		this._onmetachanged.run();
+	}
+
+	public triggerInsertionFlag() {
+		this._sorting.set( '__insertion__', true );
 	}
 
 	public clear() {

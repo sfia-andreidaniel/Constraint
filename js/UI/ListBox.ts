@@ -102,11 +102,16 @@ class UI_ListBox extends UI_Canvas implements IFocusable, IRowInterface {
 
 	get options(): INameable[] {
 		var out: INameable[] = [],
-		    item: INameable;
+		    opt: INameable,
+		    item: Store_Item;
 		for ( var i=0, len = this._options.length; i<len; i++ ) {
-			item = this._options.itemAt( i ).data;
-			item['selected'] = this._options.itemAt(i)['selected'];
-			out.push( item );
+			item = this._options.itemAt( i );
+			opt = {
+				"id": item.id,
+				"name": item.get('name')
+			};
+			opt['selected'] = item.selected;
+			out.push( opt );
 		}
 		return out;
 	}
@@ -139,7 +144,7 @@ class UI_ListBox extends UI_Canvas implements IFocusable, IRowInterface {
 		   	paintRows: number = Math.round( this._paintRect.height / UI_ListBox._theme.optionHeight ) + 1,
 		   	i: number,
 		   	len: number,
-		   	opt: INameable,
+		   	opt: Store_Item,
 		   	isActive: boolean = this.active && this.form && this.form.active,
 		   	isDisabled: boolean = this.disabled,
 		   	isScrollbar: boolean = this.logicalHeight >= this._paintRect.height,
@@ -151,9 +156,9 @@ class UI_ListBox extends UI_Canvas implements IFocusable, IRowInterface {
 		ctx.textBaseline = "middle";
 
 		for ( i = skip, len = Math.min( this.length, skip + paintRows); i<len; i++ ) {
-			opt = this._options.itemAt( i ).data;
+			opt = this._options.itemAt( i );
 
-			if ( !this._options.itemAt(i)['selected'] ) {
+			if ( !opt.selected ) {
 				ctx.fillStyle = isDisabled
 					? UI_ListBox._theme.disabledColor
 					: UI_ListBox._theme.color;
@@ -170,7 +175,7 @@ class UI_ListBox extends UI_Canvas implements IFocusable, IRowInterface {
 					: ( isActive ? UI_ListBox._theme.enabledSelectedFontColor : UI_ListBox._theme.inactiveSelectedFontColor );
 			}
 
-			ctx.fillText( opt.name, 2, startY + ~~( UI_ListBox._theme.optionHeight / 2 ) );
+			ctx.fillText( opt.get('name'), 2, startY + ~~( UI_ListBox._theme.optionHeight / 2 ) );
 
 			if ( selectedIndex == i && isActive && !isDisabled ) {
 				// draw selected index focus ring

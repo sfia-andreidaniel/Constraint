@@ -49,7 +49,7 @@ class UI_Column_Renderer_Boolean extends UI_Column_Renderer {
 
 			ctx.fillStyle = color;
 
-			value = opt.data[ propertyName ];
+			value = opt.get( propertyName );
 
 			if ( !!value ) {
 				UI_Resource.createSprite(

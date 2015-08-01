@@ -1,6 +1,6 @@
 class Store_Item {
 	
-	public    data      : any;
+	protected data      : any;
 	protected $store    : Store;
 	protected $id       : any;
 	private   $dead     : boolean;
@@ -104,7 +104,11 @@ class Store_Item {
 
 	public remove(): Store_Item {
 		if ( !this.$dead ) {
-			return this.$store.remove( this );
+			
+			this.$store.remove( this );
+
 		}
+
+		return this;
 	}
 }

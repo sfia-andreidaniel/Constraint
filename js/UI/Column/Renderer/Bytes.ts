@@ -70,7 +70,7 @@ class UI_Column_Renderer_Bytes extends UI_Column_Renderer {
 
 			ctx.fillStyle = color;
 
-			value = opt.data[ propertyName ];
+			value = opt.get( propertyName );
 
 			valueStr = typeof value == 'number' && !isNaN( value )
 				? String( UI_Column_Renderer_Bytes.formatSize( value, precision ) )

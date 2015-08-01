@@ -56,7 +56,7 @@ class Store_Tree extends Store {
 			
 			result = new Store_Node( data, this, id, <Store_Node>this.getElementById( parent ), leaf );
 			
-			this._map.get( parent ).appendChild( result );
+			this._map.get( parent )['appendChild']( result );
 
 		} else {
 
@@ -165,6 +165,63 @@ class Store_Tree extends Store {
 			super.setItems( items, false );
 		
 		}
+
+	}
+
+	public remove( item: Store_Item ) {
+		super.remove(item);
+		for ( var i=0; i<this._length; i++ ) {
+			(<Store_Node>this._items[i]).$lastChild = ( i == this._length - 1 );
+		}
+		this.fire('tree-changed');
+		return item;
+	}
+
+	private dettach( node: Store_Node ): Store_Node {
+		
+		var index: number;
+
+		if ( ( index = this._items.indexOf( node ) ) > -1 ) {
+			this._items.splice( index, 1 );
+			this._length--;
+
+			// update last child property
+			if ( this._length ) {
+				(<Store_Node>this._items[ this._length - 1 ]).$lastChild = true;
+			}
+
+		} else {
+			throw new Error( 'Node is not attached to the root' );
+		}
+
+		return node;
+	}
+
+	private attach( node: Store_Node ): Store_Node {
+
+		var index: number;
+
+		if ( ( index = this._items.indexOf( node ) ) > -1 ) {
+			
+			throw new Error( 'Node is already attached to the root' );
+		
+		} else {
+
+			index = this.$sorter ? this.pivotInsert( 0, this._length - 1, node ) : null;
+
+			if ( index === null ) {
+				this._items.push( node );
+			} else {
+				this._items.splice( index, 0, node );
+			}
+
+			node.depth = 1;
+
+			this._length++;
+
+		}
+
+		return node;
 
 	}
 

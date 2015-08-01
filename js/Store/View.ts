@@ -2,14 +2,13 @@ class Store_View extends Store {
 
 	protected _query: FTraversor;
 	protected _owner: Store;
-	private   _updater: UI_Throttler;
-	private   _metaChanged: UI_Throttler;
 
 	protected _isListening: boolean;
 	
 	// these two callbacks are binded to the master store.
 	protected _changeFunc: ()      => void = null;
 	protected _metaChangeFunc: ()  => void = null;
+	protected _treeChangeFunc: ()  => void = null;
 
 	constructor( owner: Store, query: FTraversor ) {
 	    super( null );
@@ -108,13 +107,18 @@ class Store_View extends Store {
 			}
 
 			self._metaChangeFunc = function(  ) {
-				self.update();
+				self.update(true);
+			}
+
+			self._treeChangeFunc = function() {
+				self.update(true);
 			}
 
 		} )( this );
 
 		this._owner.on( 'change', this._changeFunc );
 		this._owner.on( 'meta-changed', this._metaChangeFunc );
+		this._owner.on( 'tree-changed', this._treeChangeFunc );
 
 		this._isListening = true;
 
@@ -129,14 +133,16 @@ class Store_View extends Store {
 
 		this._owner.off( 'change', this._changeFunc );
 		this._owner.off( 'meta-changed', this._metaChangeFunc );
+		this._owner.off( 'tree-changed', this._treeChangeFunc );
 
 		this._metaChangeFunc = undefined;
 		this._changeFunc = undefined;
+		this._treeChangeFunc = undefined;
 		
 		this._isListening = false;
 	}
 
-	private update() {
+	private update( force: boolean = false ) {
 		
 		if ( !this.readable ) {
 			return;
@@ -170,7 +176,7 @@ class Store_View extends Store {
 
 		} )( this );
 			
-		if ( this._length != _oldLength || fireChange ) {
+		if ( this._length != _oldLength || fireChange || force ) {
 			this._items.length = this._length;
 			this.fire( 'change' );
 		}

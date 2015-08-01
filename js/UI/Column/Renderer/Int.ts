@@ -53,7 +53,7 @@ class UI_Column_Renderer_Int extends UI_Column_Renderer {
 
 			ctx.fillStyle = color;
 
-			value = opt.data[ propertyName ];
+			value = opt.get( propertyName );
 
 			valueStr = typeof value == 'number' && !isNaN( value )
 				? String( Math.round( value ) )

@@ -143,7 +143,7 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 				} else {
 					me.selectedIndex = -1;
 				}
-
+				
 				me.render();
 			} );
 
