@@ -2,6 +2,8 @@
 
 Constraint is a project that aims to implement an UI Framework for the browser. The advantage of using the Constraint Framework, is that the layout of the application is decoupled form the code of the application, and it's written on a type language - Typescript.
 
+![demo form](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/demo_form.png "Demo Form")
+
 ## Features
 * Typescript strict library
 * 100% OOP, no "hacks" and no other obfuscations
