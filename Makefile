@@ -23,5 +23,11 @@ dts_install:
 dts:
 	dts-generator --name Constraint --baseDir . --out Constraint.d.ts js/main-self.ts
 
+doc_install:
+	npm install -g typedoc
+
+doc:
+	typedoc --name Constraint  --theme default --readme README.md --target es5 --mode file --out ./docs ./js/main.ts
+
 clean::
 	rm -f *.js js/*.js demo/*.js demo/*.res css/main.css

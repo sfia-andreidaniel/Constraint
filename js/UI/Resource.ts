@@ -1,9 +1,11 @@
-/* An UI_Resource has two purposes:
-   1. To keep a singleton of images the applications need,
-   2. To automatically build sprite-based css style nodes, in
-      order to applications benefit from css elements with
-      different sizes and states.
-*/
+/** An UI_Resource has two purposes:
+ *  1. To keep a singleton of images the applications need,
+ *  2. To automatically build sprite-based css style nodes, in
+ *     order to applications benefit from css elements with
+ *     different sizes and states.
+ */
+
+/// <reference path="../es6-promise.d.ts" />
 
 class UI_Resource extends UI_Event {
 
