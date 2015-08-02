@@ -1,3 +1,4 @@
+/// <reference path="../es6-promise.d.ts" />
 /// <reference path="../UI/Event.ts" />
 /// <reference path="../Global.ts" />
 
