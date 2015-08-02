@@ -27,7 +27,9 @@ doc_install:
 	npm install -g typedoc
 
 doc:
+	rm -rf docs
 	typedoc --name Constraint  --theme default --readme README.md --target es5 --mode file --out ./docs ./js/main.ts
 
 clean::
-	rm -f *.js js/*.js demo/*.js demo/*.res css/main.css
+	rm -rf docs
+	rm -f *.js js/*.js demo/*.js demo/*.res css/main.css Constraint.d.ts

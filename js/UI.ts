@@ -1,3 +1,17 @@
+/**
+ * This is the BaseClass of an UI input. All the UI types are deriving from this
+ * class.
+ *
+ * Weather it's a form, a grid, a button, etc., everything needs to extend this
+ * class.
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
 class UI extends UI_Event {
 
 	// the logical parent of this UI element (has nothing to do with dom)
@@ -433,15 +447,29 @@ class UI extends UI_Event {
 		}
 	}
 
+	/**
+	 * If this element needs to be painted translated on the screen,
+	 * this property returns that value ( e.g. a form has a translate
+	 * left property of 5, because it's border size ).
+	 */
 	get translateLeft(): number {
 		return 0;
 	}
 
+	/**
+	 * If this element needs to be painted translated on the screen,
+	 * this property returns that value ( e.g. a form has a translate
+	 * left property of 5, because it's border size ).
+	 */
 	get translateTop(): number {
 		return 0;
 	}
 
 
+	/**
+	 * Gets the text alignment of this UI element.
+	 * TOP and BOTTOM are considered to be illegal values, and treated as "CENTER".
+	 */
 	get textAlign(): EAlignment {
 		return this._textAlign;
 	}
@@ -468,10 +496,17 @@ class UI extends UI_Event {
 		}
 	}
 
+	/**
+	 * Returns the "disabled" state of this UI element
+	 *
+	 */
 	get disabled(): boolean {
 		return this._disabled || this._parentsDisabled > 0;
 	}
 
+	/**
+	 * Sets the "disabled" state of this UI element.
+	 */
 	set disabled( on: boolean ) {
 		on = !!on;
 
@@ -498,6 +533,10 @@ class UI extends UI_Event {
 		}
 	}
 
+	/**
+	 * This is called automatically by a parent UI to a child UI, when the disabled
+	 * property of the parent changes. Should not be invoked manually.
+	 */
 	public onParentDisableStateChange( amount: number = 1 ) {
 		if ( amount === 0 ) {
 			return;
@@ -541,6 +580,17 @@ class UI extends UI_Event {
 	}
 
 
+	/**
+	 * Tells this UI element to "embrace" an interface, and to load
+	 * the interface appropriated mixin.
+	 *
+	 * Interfaces are starting with "I", mixins are starting with "M".
+	 *
+	 * So if you embrace an interface "IFoo", an attempt to apply the
+	 * mixin "MFoo" will be made automatically.
+	 *
+	 */
+
 	protected embrace( interfaceName: string ) {
 		this._embrace = this._embrace || {};
 		
@@ -558,6 +608,11 @@ class UI extends UI_Event {
 		}
 	}
 
+	/**
+	 * Returns the visibility of this UI element
+	 *
+	 */
+
 	get visible(): boolean {
 		if ( !this._visible ) {
 			return false;
@@ -569,6 +624,11 @@ class UI extends UI_Event {
 			}
 		}
 	}
+
+	/**
+	 * Sets the visibility of this UI element.
+	 *
+	 */
 
 	set visible( on: boolean ) {
 		on = !!on;
@@ -587,10 +647,18 @@ class UI extends UI_Event {
 		}
 	}
 
+	/**
+	 * Returns the children of this UI element
+	 *
+	 */
 	get childNodes(): UI[] {
 		return this._children;
 	}
 
+	/**
+	 * Returns the name of the current class as a string.
+	 *
+	 */
 	get __class__(): string {
 		var matches: string[] = /^function ([^\s\(]+)/.exec( this['constructor']['toString']() );
 		return matches[1] || null;

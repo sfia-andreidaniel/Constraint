@@ -6,6 +6,8 @@ postcompiler.js
 demo/*
 css/main.css
 vendor/gnome/*.png
+docs/*
+Constraint.d.ts
 
 # Windows image file caches
 Thumbs.db
