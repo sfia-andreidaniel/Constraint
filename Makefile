@@ -17,5 +17,11 @@ resources::
 demo:: build
 	constraint --src:demo.ui --http-include-path:demo --make
 
+dts_install:
+	npm install -g dts-generator
+
+dts:
+	dts-generator --name Constraint --baseDir . --out Constraint.d.ts js/main-self.ts
+
 clean::
 	rm -f *.js js/*.js demo/*.js demo/*.res css/main.css

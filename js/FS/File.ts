@@ -1,7 +1,6 @@
-/// <reference path="../node.d.ts" />
+/// <reference path="../es6-promise.d.ts" />
 /// <reference path="../UI/Event.ts" />
 /// <reference path="../Global.ts" />
-/// <reference path="../es6-promise.d.ts" />
 
 class FS_File extends UI_Event {
 

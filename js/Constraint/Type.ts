@@ -1,4 +1,3 @@
-/// <reference path="../node.d.ts" />
 /// <reference path="Enum.ts" />
 /// <reference path="../UI/Anchor/Literal.ts" />
 /// <reference path="../UI/Resource/Literal.ts" />
