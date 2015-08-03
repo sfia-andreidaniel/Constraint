@@ -42,6 +42,11 @@ class Store_Sorter {
 			return as == bs
 				? 0
 				: as < bs ? -1 : 1;
+		},
+		"date": function( a, b ) {
+			var ad = a && a.getTime ? a.getTime() : 0,
+			    bd = b && b.getTime ? b.getTime() : 0;
+			return ad - bd;
 		}
 	};
 

@@ -1,5 +1,9 @@
 class UI_Column_Renderer_RowNumber extends UI_Column_Renderer {
 
+	get sortDataType(): string {
+		return 'number';
+	}
+
 	public render() {
 		
 		var ctx = this._column.canvasContext;

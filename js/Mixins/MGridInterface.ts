@@ -352,7 +352,48 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 		} );
 
 		node.on( 'click', function(point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean) {
-			forwardEvent( 'click', point, which, ctrlKey, altKey, shiftKey );
+
+			if ( !isResizing ) {
+
+				var i: number,
+				    len: number,
+				    left: number = 0;
+				
+				if ( point.y < 0 ) {
+					// clicked on a column?
+
+					if ( node.freezedColumns ) {
+						for ( i=0, len = node.freezedColumns.length; i<len; i++ ) {
+							if ( ( left + 2 ) < point.x && point.x < ( node.freezedColumns[i].width + left - 2 ) ) {
+								node.freezedColumns[i].onHeaderClick();
+								return;
+							}
+							left += node.freezedColumns[i].width;
+						}
+					}
+
+					if ( node.freeColumns ) {
+
+						for ( i = 0, len = node.freeColumns.length; i<len; i++ ) {
+							if ( left + 2 > node.freezedWidth ) {
+								if ( ( left + 2 ) < point.x && point.x < ( node.freeColumns[i].width + left - 2 ) ) {
+									node.freeColumns[i].onHeaderClick();
+									return;
+								}
+							}
+							left += node.freeColumns[i].width;
+						}
+					}
+
+
+				} else {
+
+					forwardEvent( 'click', point, which, ctrlKey, altKey, shiftKey );
+
+				}
+
+			}
+
 		} );
 
 		node.on( 'dblclick', function(point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean) {
@@ -364,6 +405,30 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 		node.on( 'column-changed', computeColumns );
 		node.on( 'viewport-resized', computeColumns );
 		node.on( 'scroll-x', computeColumns );
+		
+		node.on( 'sort', function( fieldName: string, sortState: ESortState, dataType: string ) {
+
+			if ( !fieldName || !node['columns'] ) {
+				return;
+			}
+
+			var i: number = 0,
+			    columns = node['columns']( null ),
+			    len: number = columns.length;
+
+			for ( i=0; i<len; i++ ) {
+				if ( columns[i].name == fieldName ) {
+					if ( columns[i].sortState != sortState )
+						columns[i].sortState = sortState;
+				} else {
+					columns[i].sortState = ESortState.NONE;
+				}
+			}
+
+			node.onRepaint();
+
+		} );
+
 
 		node.on( 'disabled', function() {
 			node.onRepaint();
@@ -418,7 +483,7 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 		    stop       : number = this.indexPaintEnd,
 
 		    isDisabled : boolean = this.disabled,
-		    isActive   : boolean = this['active'],
+		    isActive   : boolean = this['active'] && ( this.form ? this.form.active : true ),
 		    i          : number,
 		    item       : Store_Item,
 		    rowHeight  : number = this.rowHeight,
@@ -457,7 +522,7 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 		    stop       : number = this.indexPaintEnd,
 
 		    isDisabled : boolean = this.disabled,
-		    isActive   : boolean = this['active'],
+		    isActive   : boolean = this['active'] && ( this.form ? this.form.active : true ),
 		    i          : number,
 		    item       : Store_Item,
 		    rowHeight  : number = this.rowHeight,
@@ -516,7 +581,7 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 			rowHeight     : number = this.rowHeight;
 
 		/* Paint the selectedIndex */
-		if ( selectedIndex >= start && selectedIndex < stop && this['active'] ) {
+		if ( selectedIndex >= start && selectedIndex < stop && this['active'] && ( this.form ? this.form.active : true ) ) {
 			body.strokeStyle = 'black';
 			body.lineWidth   = 1;
 			body.strokeRect( .5, yPaintStart + ( selectedIndex - start ) * rowHeight, this.viewportWidth - 1, rowHeight - 1 )

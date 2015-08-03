@@ -1,5 +1,9 @@
 class UI_Column_Renderer_String extends UI_Column_Renderer {
 
+	get sortDataType(): string {
+		return this._column.caseSensitive ? 'string' : 'istring';
+	}
+
 	public render() {
 		
 		var ctx = this._column.canvasContext;

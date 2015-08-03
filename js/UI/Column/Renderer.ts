@@ -23,6 +23,10 @@ class UI_Column_Renderer {
 
 	}
 
+	get sortDataType(): string {
+		return 'istring';
+	}
+
 	/* IF THE RENDERER IS USING MOUSE EVENTS, THESE METHODS CAN BE IMPLEMENTED. */
 
 	public onMouseDown( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {

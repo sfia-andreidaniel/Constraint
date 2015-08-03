@@ -29,6 +29,7 @@ class UI_Column extends UI {
 	protected _resizable : boolean = true;
 	protected _visible   : boolean = true;
 	protected _precision : number  = 2;
+	protected _caseSensitive: boolean = false;
 
 	protected _headerContext: UI_Canvas_ContextMapper;
 	protected _canvasContext: UI_Canvas_ContextMapper;
@@ -69,7 +70,7 @@ class UI_Column extends UI {
 	}
 
 	get name(): string {
-		return this._type == EColumnType.TREE ? 'name' : ( String( this._name || '' ) || null );
+		return this._type == EColumnType.TREE ? ( this._owner ? ( this._owner['nameField'] || 'name' ) : 'name' ) : ( String( this._name || '' ) || null );
 	}
 
 	set name( name: string ) {
@@ -80,6 +81,14 @@ class UI_Column extends UI {
 				this._owner.fire( 'column-changed', this );
 			}
 		}
+	}
+
+	get caseSensitive(): boolean {
+		return this._caseSensitive;
+	}
+
+	set caseSensitive( sensitive: boolean ) {
+		this._caseSensitive = !!sensitive;
 	}
 
 	get precision(): number {
@@ -166,9 +175,6 @@ class UI_Column extends UI {
 				default:
 					this._sortState = ESortState.NONE;
 					break;
-			}
-			if ( this._owner ) {
-				this._owner.fire( 'sort', this.name || null, this.sortState );
 			}
 		}
 	}
@@ -263,7 +269,7 @@ class UI_Column extends UI {
 						icon = 'Constraint/grid_sorter_asc/16x10';
 						break;
 					case ESortState.DESC:
-						icon = 'Constraint/grid.sorter_desc/16x10';
+						icon = 'Constraint/grid_sorter_desc/16x10';
 						break;
 				}
 				UI_Resource.createSprite( icon + ( this.disabled ? '-disabled' : '' ) )
@@ -300,6 +306,27 @@ class UI_Column extends UI {
 		}
 		return this;
 	}
+
+	public onHeaderClick() {
+		if ( this.disabled || !this.sortable ) {
+			return;
+		}
+
+		switch ( this.sortState ) {
+			case ESortState.NONE:
+			case ESortState.DESC:
+				this.sortState = ESortState.ASC;
+				break;
+
+			case ESortState.ASC:
+				this.sortState = ESortState.DESC;
+				break;
+		}
+
+		if ( this._owner ) {
+			this._owner.fire( 'sort', this.name || null, this.sortState, this._renderer.sortDataType );
+		}
+	}
 }
 
 Constraint.registerClass( {
@@ -324,6 +351,10 @@ Constraint.registerClass( {
 		},
 		{
 			"name": "resizable",
+			"type": "boolean"
+		},
+		{
+			"name": "caseSensitive",
 			"type": "boolean"
 		}
 	]

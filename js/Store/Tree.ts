@@ -3,6 +3,8 @@ class Store_Tree extends Store {
 	private _parent: string = null;
 	private _leaf  : string = null;
 	
+	private _sortLeafsLast: boolean = true;
+
 	constructor( uniqueKeyName: string = "id", parentKeyName: string = "parent", leafKeyName: string = "isLeaf" ) {
 		super( uniqueKeyName );
 
@@ -23,6 +25,18 @@ class Store_Tree extends Store {
 		}
 	}
 
+	get sortLeafsLast(): boolean {
+		return this._sortLeafsLast;
+	}
+
+	set sortLeafsLast( on: boolean ) {
+		on = !!on;
+		if ( on != this._sortLeafsLast ) {
+			this._sortLeafsLast = on;
+			this.sort( true );
+		}
+	}
+
 	// The "insert" method is altered...
 	public insert( data: any ): Store_Item {
 		// We're returning a <Store2_Node> actually
@@ -33,13 +47,13 @@ class Store_Tree extends Store {
 		    index: number = null,
 		    result: Store_Node;
 
-		id = ( data && data[ this._id ] ) ? ( data[ this._id ] || null ) : null;
+		id = ( data && Store_Map.validKey( data[ this._id ] ) ) ? data[ this._id ] : null;
 
 		if ( id === null ) {
-			throw new Error('Missing $id property "' + this._id + '" from data.' );
+			throw new Error('Missing $id property "' + this._id + '" from data ' + JSON.stringify( data ) );
 		}
 
-		parent = Store_Map.validKey( data[ this._parent ] ) ? data[ this._parent ] || null : null;
+		parent = Store_Map.validKey( data[ this._parent ] ) ? data[ this._parent ] : null;
 
 		leaf = !!data[ this._leaf ];
 
@@ -62,7 +76,7 @@ class Store_Tree extends Store {
 
 			result = new Store_Node( data, this, id, null, leaf );
 
-			if ( this.$sorter && this.writeLocks == 0 ) {
+			if ( ( this.$sorter || this._sortLeafsLast ) && this.writeLocks == 0 ) {
 				index = this.pivotInsert( 0, this._length - 1, result );
 			}
 
@@ -96,7 +110,7 @@ class Store_Tree extends Store {
 			(<Store_Node>this._items[i]).$lastChild = i == len - 1;
 		}
 
-		if ( this.$sorter && this._length && recursive ) {
+		if ( ( this.$sorter || this._sortLeafsLast ) && this._length && recursive ) {
 			
 			for ( var i=0; i<this._length; i++ ) {
 				(<Store_Node>this._items[i]).sort( false, true );
@@ -207,7 +221,7 @@ class Store_Tree extends Store {
 		
 		} else {
 
-			index = this.$sorter ? this.pivotInsert( 0, this._length - 1, node ) : null;
+			index = ( this.$sorter || this._sortLeafsLast ) ? this.pivotInsert( 0, this._length - 1, node ) : null;
 
 			if ( index === null ) {
 				this._items.push( node );

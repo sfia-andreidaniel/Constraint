@@ -2,6 +2,10 @@ class UI_Column_Renderer_Bytes extends UI_Column_Renderer {
 
 	public static sizeLabels: string[] = ['', ' KB', ' MB', ' GB', ' TB', ' PB' ];
 
+	get sortDataType(): string {
+		return 'number';
+	}
+
 	public static formatSize( size: number, precision: number ): string {
 		var cursor: number = size,
 		    labelIndex: number = 0,

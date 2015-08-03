@@ -1,5 +1,9 @@
 class UI_Column_Renderer_Boolean extends UI_Column_Renderer {
 
+	get sortDataType(): string {
+		return 'boolean';
+	}
+
 	public render() {
 		
 		var ctx = this._column.canvasContext;

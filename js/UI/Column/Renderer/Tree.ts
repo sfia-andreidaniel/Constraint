@@ -1,4 +1,8 @@
 class UI_Column_Renderer_Tree extends UI_Column_Renderer {
+
+	get sortDataType(): string {
+		return this._column.caseSensitive ? 'string' : 'istring';
+	}
 	
 	public onClick( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {
 		var rowIndex      = ~~( point.y / this._column.target.rowHeight ),

@@ -190,6 +190,15 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 
 			} );
 
+			me.on( 'sort', function( fieldName: string, sortState: ESortState, dataType: string ) {
+
+				if ( !fieldName ) {
+					return;
+				}
+
+				me._items.sorter = [ { "name": fieldName, "type": dataType, "asc": sortState == ESortState.ASC } ];
+
+			} );
 
 		} )( this );
 	}
