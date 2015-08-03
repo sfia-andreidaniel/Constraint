@@ -43,9 +43,13 @@ class Store_Sorter {
 				? 0
 				: as < bs ? -1 : 1;
 		},
-		"date": function( a, b ) {
-			var ad = a && a.getTime ? a.getTime() : 0,
-			    bd = b && b.getTime ? b.getTime() : 0;
+		"date": function( a, b, format: string ) {
+			var ad: any = Utils.date.parse( a, format ),
+			    bd: any = Utils.date.parse( b, format );
+
+			ad = ad ? ad.getTime() : 0;
+			bd = bd ? bd.getTime() : 0;
+
 			return ad - bd;
 		}
 	};
@@ -59,10 +63,11 @@ class Store_Sorter {
 		for ( var i=0, sort = sort || [], len = sort.length; i<len; i++ ) {
 			
 			opt = {
-				"name": sort[i].name,
-				"type": sort[i].type,
-				"asc":  sort[i].asc,
-				"callback": Store_Sorter.comparers[ sort[i].type ] || null
+				"name"     : sort[i].name,
+				"type"     : sort[i].type,
+				"asc"      : sort[i].asc,
+				"callback" : Store_Sorter.comparers[ sort[i].type ] || null,
+				"format"   : sort[i].format || null
 			};
 
 			if ( !opt.callback ){
@@ -88,7 +93,7 @@ class Store_Sorter {
 				for ( i=0; i<len; i++ ) {
 					ka = a ? a[ me._sort[i].name ] : null;
 					kb = b ? b[ me._sort[i].name ] : null;
-					expr = me._sort[i].callback( ka, kb );
+					expr = me._sort[i].callback( ka, kb, me._sort[i].format );
 					if ( expr != 0 ) {
 						return me._sort[i].asc ? expr : -expr;
 					}

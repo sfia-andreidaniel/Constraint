@@ -406,7 +406,7 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 		node.on( 'viewport-resized', computeColumns );
 		node.on( 'scroll-x', computeColumns );
 		
-		node.on( 'sort', function( fieldName: string, sortState: ESortState, dataType: string ) {
+		node.on( 'sort', function( fieldName: string, sortState: ESortState, dataType: string, inputFormat?: string ) {
 
 			if ( !fieldName || !node['columns'] ) {
 				return;

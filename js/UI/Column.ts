@@ -30,6 +30,8 @@ class UI_Column extends UI {
 	protected _visible   : boolean = true;
 	protected _precision : number  = 2;
 	protected _caseSensitive: boolean = false;
+	protected _inputFormat: string = 'MS';
+	protected _outputFormat: string = Utils.date.DEFAULT_DATE_FORMAT;
 
 	protected _headerContext: UI_Canvas_ContextMapper;
 	protected _canvasContext: UI_Canvas_ContextMapper;
@@ -67,6 +69,24 @@ class UI_Column extends UI {
 		if ( ctx != this._canvasContext ) {
 			this._canvasContext = ctx;
 		}
+	}
+
+	get inputFormat(): string {
+		return this._inputFormat;
+	}
+
+	get outputFormat(): string {
+		return this._outputFormat;
+	}
+
+	set inputFormat( inputFormat: string ) {
+		inputFormat = String( inputFormat || '' );
+		this._inputFormat = inputFormat;
+	}
+
+	set outputFormat( outputFormat: string ) {
+		outputFormat = String( outputFormat || '' );
+		this._outputFormat = outputFormat;
 	}
 
 	get name(): string {
@@ -324,7 +344,13 @@ class UI_Column extends UI {
 		}
 
 		if ( this._owner ) {
-			this._owner.fire( 'sort', this.name || null, this.sortState, this._renderer.sortDataType );
+			this._owner.fire( 
+				'sort', 
+				this.name || null, 
+				this.sortState, 
+				this._renderer.sortDataType, 
+				this._type == EColumnType.DATE ? this._inputFormat : null
+			);
 		}
 	}
 }

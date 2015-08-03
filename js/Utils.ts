@@ -8,7 +8,7 @@
  * * **object** -> **Utils_Object**
  * * **circular** -> **Utils_Circular**
  * * **dom** -> **Utils_Dom**
- *
+ * * **string** -> **Utils_String**
  */
 class Utils {
 

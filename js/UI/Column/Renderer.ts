@@ -72,6 +72,9 @@ class UI_Column_Renderer {
 			case EColumnType.BYTES:
 				return new UI_Column_Renderer_Bytes( inColumn );
 				break;
+			case EColumnType.DATE:
+				return new UI_Column_Renderer_Date( inColumn );
+				break;
 			default:
 				return new UI_Column_Renderer( inColumn );
 				break;

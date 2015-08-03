@@ -1,10 +1,11 @@
 /**
  * Date helper functions, for manipulating the date object.
  *
- *
+ * This class can also be constructed.
  *
  */
 class Utils_Date {
+
 
 	public static DEFAULT_DATE_FORMAT      : string = "DD-MM-YYYY";
 	public static DEFAULT_TIME_FORMAT      : string = "hh:mm:ss";
@@ -17,7 +18,8 @@ class Utils_Date {
 		"hh": EDatePart.HOUR,
 		"mm": EDatePart.MINUTE,
 		"ss": EDatePart.SECOND,
-		"UU": EDatePart.UNIX_TIMESTAMP
+		"UU": EDatePart.UNIX_TIMESTAMP,
+		"MS": EDatePart.MILLISECONDS
 	};
 
 	private static readInt(len: number, from: string ): number {
@@ -61,6 +63,12 @@ class Utils_Date {
 	 * * **ss**   - second
 	 * * **UU**   - unix timestamp. If this is used, the other formats are ignored, as this 
 	 *   format is self enough to describe a date.
+	 * * **MS**   - int64 milliseconds. If this is used, the other formats are ignored, as
+	 *   this format is self enough to describe a date.
+	 *
+	 * **IMPORTANT**: For speed considerations, the UU and MS format fields cannot be used in
+	 *   conjunction with any other formats. By not doing so, the returned date will be NULL,
+	 *   even if the syntax is correct.
 	 *
 	 * **Format example**: "DD-MM-YYYY hh:mm:ss"
 	 *
@@ -85,7 +93,31 @@ class Utils_Date {
 
 	public static parse( date: string, format?: string, useInitializer?: Date ): Date {
 		
-		if ( !date ) {
+		var result: Date,
+		    setTimestamp: number;
+
+		if ( format === 'MS' ) {
+			setTimestamp = parseInt( date );
+			if ( !isNaN( setTimestamp ) ) {
+				result = new Date();
+				result.setTime( setTimestamp );
+				return result;
+			} else {
+				return null;
+			}
+		} else
+		if ( format === 'UU' ) {
+			setTimestamp = parseInt( date );
+			if ( !isNaN( setTimestamp ) ) {
+				result = new Date();
+				result.setTime( setTimestamp * 1000 );
+				return result;
+			} else {
+				return null;
+			}
+		}
+
+		if ( !date && parseInt( date ) !== 0 ) {
 			return null;
 		} else {
 
@@ -136,9 +168,7 @@ class Utils_Date {
 		    setHour: number,
 		    setMinute: number,
 		    setSecond: number,
-		    setTimestamp: number,
 
-		    result: Date,
 		    matches: string[],
 
 		    addSeconds: number,
@@ -146,7 +176,6 @@ class Utils_Date {
 		    addYears: number,
 		    addSign: number,
 		    addMonths: number;
-
 
 		if ( !!(matches = /^(\+|\-)?([\d]+[YMDWhms](([\d]+[YMDWhms])+)?)$/.exec( pDate ) ) ) {
 
@@ -191,7 +220,7 @@ class Utils_Date {
 
 			result = useInitializer || new Date();
 
-			console.log( addYears, 'years', addMonths, 'months', addDays, 'days', addSeconds, 'seconds' );
+			//console.log( addYears, 'years', addMonths, 'months', addDays, 'days', addSeconds, 'seconds' );
 
 			if ( addYears !== null )
 				result.setFullYear( result.getFullYear() + addSign * addYears );
@@ -307,10 +336,8 @@ class Utils_Date {
 							break;
 
 						case EDatePart.UNIX_TIMESTAMP:
-							setTimestamp = ~~pDate;
-							if ( setTimestamp === 0 ) return null;
-							dLen = 0;
-							pDate = '';
+						case EDatePart.MILLISECONDS:
+							return null;
 							break;
 					}
 
@@ -404,7 +431,7 @@ class Utils_Date {
 		var out: string = '',
 		    chr2: string = '',
 		    pFormat: string = String( format || '' ),
-		    len: string = pFormat.length;
+		    len: number = pFormat.length;
 
 		while ( len ) {
 
@@ -422,31 +449,34 @@ class Utils_Date {
 				switch ( Utils_Date.dateFormatMappings[chr2] ) {
 
 					case EDatePart.YEAR:
-						out += Utils.string.pad( d.getFullYear(), 4, '0', EStrPadding.LEFT );
+						out += Utils_String.pad( d.getFullYear(), 4, '0', EStrPadding.LEFT );
 						break;
 					case EDatePart.MONTH:
-						out += Utils.string.pad( ( d.getFullMonth() + 1 ), 2, '0', EStrPadding.LEFT );
+						out += Utils_String.pad( ( d.getMonth() + 1 ), 2, '0', EStrPadding.LEFT );
 						break;
 					case EDatePart.DAY:
-						out += Utils.string.pad( d.getDate(), 2, '0', EStrPadding.LEFT );
+						out += Utils_String.pad( d.getDate(), 2, '0', EStrPadding.LEFT );
 						break;
 
 					case EDatePart.HOUR:
-						out += Utils.string.pad( d.getHours(), 2, '0', EStrPadding.LEFT );
+						out += Utils_String.pad( d.getHours(), 2, '0', EStrPadding.LEFT );
 						break;
 
 					case EDatePart.MINUTE:
-						out += Utils.string.pad( d.getMinutes(), 2, '0', EStrPadding.LEFT );
+						out += Utils_String.pad( d.getMinutes(), 2, '0', EStrPadding.LEFT );
 						break;
 
 					case EDatePart.SECOND:
-						out += Utils.string.pad( d.getSeconds(), 2, '0', EStrPadding.LEFT );
+						out += Utils_String.pad( d.getSeconds(), 2, '0', EStrPadding.LEFT );
 						break;
 
 					case EDatePart.UNIX_TIMESTAMP:
-						out += String( ~~( d.getTime() / 1000 ) );
+						return String( ~~( d.getTime() / 1000 ) );
 						break;
 
+					case EDatePart.MILLISECONDS:
+						return String( d.getTime() );
+						break;
 				}
 
 
@@ -459,6 +489,87 @@ class Utils_Date {
 
 		return out;
 
+	}
+
+	/**
+	 * Is a string representing a date a representation of a relative date.
+	 *
+	 * Example: isRelative( 'now' ) == true
+	 *
+	 * Example: isRelative( '+1W2s' ) == true
+	 *
+	 * Example: isRelative( 'some random string' ) == false
+	 *
+	 */
+	public static isRelative( dateStr: string ): boolean {
+		dateStr = String(dateStr || '');
+
+		return /^(\+|\-)?([\d]+[YMDWhms](([\d]+[YMDWhms])+)?)$/.test( dateStr )
+			|| [
+				'now',
+				'yesterday',
+				'tomorrow',
+				'last year',
+				'last month',
+				'last week',
+				'next year',
+				'next month',
+				'next week'
+			].indexOf( dateStr ) > -1;
+	}
+
+
+	// INSTANCE IMPLEMENTATION
+
+	protected _date: Date;
+	protected _text: string;
+	protected _format: string;
+
+	/**
+	 * Constructs a new date. If the date is a relative one, it is kept
+	 * in it's relative format. You can always obtain the date value of
+	 * the date by using the ".toDate" accessor
+	 */
+	constructor( dateStr: string, format: string ) {
+		if ( !Utils_Date.isRelative(dateStr) ) {
+			this._date = Utils_Date.parse( dateStr, format );
+			this._text = null;
+			if ( this._date === null ) {
+				throw new Error('Invalid date "' + dateStr + '" ( using format "' + format + '" )' );
+			}
+		} else {
+			this._date = null;
+			this._text = dateStr;
+		}
+		this._format = format || '';
+	}
+
+	/**
+	 * Used by Constraint ".ui" compiler
+	 */
+	public toString(): string {
+		return String(this.toDate.getTime());
+	}
+
+	/**
+	 * Used by constraint ".ui" compiler
+	 */
+	public toTimestamp(): number {
+		return this.toDate.getTime();
+	}
+
+	/**
+	 * Returns a date object representing this date
+	 */
+	get toDate(): Date {
+		return this._date ? this._date : Utils_Date.parse( this._text, this._format );
+	}
+
+	/**
+	 * Creates a new Util_Date object (without using the new syntax)
+	 */
+	public static create( dateStr: string, format: string = Utils_Date.DEFAULT_TIMESTAMP_FORMAT ): Utils_Date {
+		return ( new Utils_Date( dateStr, format ) );
 	}
 
 }

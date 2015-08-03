@@ -81,3 +81,5 @@
 /// <reference path="UI/Column/Renderer/String.ts" />
 /// <reference path="UI/Column/Renderer/Boolean.ts" />
 /// <reference path="UI/Column/Renderer/Bytes.ts" />
+/// <reference path="UI/Column/Renderer/Date.ts" />
+

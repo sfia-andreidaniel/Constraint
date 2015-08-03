@@ -103,6 +103,7 @@ interface ISortOption {
 	name: string;
 	type: string;
 	asc: boolean;
+	format?: string;
 	callback?: ( a: any, b: any ) => number;
 }
 

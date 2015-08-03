@@ -116,9 +116,9 @@ enum EColumnType {
 	FLOAT,
 	STRING,
 	BOOLEAN,
-	DATE,
 	TREE,
-	BYTES
+	BYTES,
+	DATE
 }
 
 /**
@@ -155,5 +155,15 @@ enum ETraverseSignal {
  	HOUR,
  	MINUTE,
  	SECOND,
- 	UNIX_TIMESTAMP
+ 	UNIX_TIMESTAMP,
+ 	MILLISECONDS
  }
+
+ /**
+  * String padding enumerator ( where to place the pad when using Utils.string.pad )
+  */
+enum EStrPadding {
+	LEFT, // Pad string to the left
+	RIGHT,// Pad string to the right
+	BOTH  // Pad string to both sizes
+}

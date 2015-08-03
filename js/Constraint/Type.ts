@@ -1,6 +1,10 @@
 /// <reference path="Enum.ts" />
 /// <reference path="../UI/Anchor/Literal.ts" />
 /// <reference path="../UI/Resource/Literal.ts" />
+/// <reference path="../Utils/Date.ts" />
+/// <reference path="../Utils/String.ts" />
+
+
 class Constraint_Type {
 
 	public static create( from: ITokenResult, inContext: Constraint_Scope, inPropertyType: string = null, strict: boolean = false ): any {
@@ -82,6 +86,18 @@ class Constraint_Type {
 						}
 					}
 				}
+				break;
+
+			case 'type_date':
+
+				matches = from.result.replace( /(([ ]+)?\;([ ]+)?)/g, ';' ).replace( /(^[ ]+|[ ]+$)/g, '' ).split( ';' );
+
+				if ( !matches[1] ) {
+					matches.length = 1;
+				}
+
+				return ( matches.length == 2 ? Utils_Date.create( matches[0], matches[1] ) : Utils_Date.create( matches[0] ) ).toTimestamp();
+
 				break;
 
 			default:
