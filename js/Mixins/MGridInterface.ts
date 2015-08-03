@@ -330,9 +330,9 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 				if ( nowTargetColumn != resizeTargetColumn ) {
 					resizeTargetColumn = nowTargetColumn;
 					if ( resizeTargetColumn ) {
-						UI_Dom.addClass( node._root, 'col-resize' );
+						Utils.dom.addClass( node._root, 'col-resize' );
 					} else {
-						UI_Dom.removeClass( node._root, 'col-resize' );
+						Utils.dom.removeClass( node._root, 'col-resize' );
 					}
 				}
 

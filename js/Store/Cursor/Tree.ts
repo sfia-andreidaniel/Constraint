@@ -1,12 +1,22 @@
+/**
+ * Specialized cursor used to walk nested trees.
+ * See also: Store_Cursor.
+ */
 class Store_Cursor_Tree extends Store_Cursor {
 	
 	private _visited: Store_Map;
 
+	/**
+	 * See Store_Cursor.constructor
+	 */
 	constructor( store: Store_Tree, totalItems: number, skip: number = 0, limit: number = null ) {
 		super( <Store>store, totalItems, skip, limit );
 		this._visited = new Store_Map();
 	}
 
+	/**
+	 * See Store_Cursor.each
+	 */
 	public each( callback: ( index: number ) => ETraverseSignal, aggregator?: ( item: Store_Item ) => void ): Store {
 
 		var index: number = 0,

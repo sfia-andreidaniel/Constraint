@@ -55,9 +55,9 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 
 	constructor( owner: UI, mixins: string[] = [] ) {
 	    
-	    super( owner, Utils.arrayMerge( [ 'IFocusable', 'IRowInterface' ], mixins ) );
+	    super( owner, Utils.array.merge( [ 'IFocusable', 'IRowInterface' ], mixins ) );
 	    
-	    UI_Dom.addClass( this._root, 'UI_Tree' );
+	    Utils.dom.addClass( this._root, 'UI_Tree' );
 	    this._items = new Store_Tree('id','parent','isLeaf');
 
 	    this._view = this._items.createQueryView( function( index: number ) : ETraverseSignal {
@@ -443,7 +443,7 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 				ctx.endPaint();
 				// draw selected index focus ring
 				ctx.strokeStyle = 'black';
-				ctx.strokeRect( -this._freezedWidth + .5, startY + 0.5, this._paintRect.width - 1 - ( ~~isScrollbar * UI_Dom.scrollbarSize ), UI_Tree._theme.option.height - 1 );
+				ctx.strokeRect( -this._freezedWidth + .5, startY + 0.5, this._paintRect.width - 1 - ( ~~isScrollbar * Utils.dom.scrollbarSize ), UI_Tree._theme.option.height - 1 );
 				ctx.font = UI_Tree._theme.option.font;
 				ctx.textBaseline = "middle";
 				ctx.beginPaint();

@@ -27,7 +27,7 @@ class MFocusable extends UI implements IFocusable {
 
 		node.on( 'blur', function() {
 			if ( node._root ) {
-				UI_Dom.removeClass( this._root, 'focused' );
+				Utils.dom.removeClass( this._root, 'focused' );
 			}
 		} );
 
@@ -49,14 +49,14 @@ class MFocusable extends UI implements IFocusable {
 			if ( on ) {
 				this.form.activeElement = this;
 				if ( this._root ) {
-					UI_Dom.addClass( this._root, 'focused' );
+					Utils.dom.addClass( this._root, 'focused' );
 				}
 			} else {
 				if ( this.form.activeElement == this ) {
 					this.form.activeElement = null;
 				}
 				if ( this._root ) {
-					UI_Dom.removeClass( this._root, 'focused' );
+					Utils.dom.removeClass( this._root, 'focused' );
 				}
 			}
 		}

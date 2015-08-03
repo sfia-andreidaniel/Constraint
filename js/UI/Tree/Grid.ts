@@ -9,7 +9,7 @@ class UI_Tree_Grid extends UI_Tree implements IGridInterface {
 
 	constructor( owner: UI, mixins: string[] = [] ) {
 	    
-	    super( owner, Utils.arrayMerge( [ 'IGridInterface' ], mixins ) );
+	    super( owner, Utils.array.merge( [ 'IGridInterface' ], mixins ) );
 
 	}
 

@@ -6,14 +6,14 @@ class UI_Label extends UI {
 	}
 
 	protected _dom = {
-		caption: UI_Dom.create( 'div', 'label' )
+		caption: Utils.dom.create( 'div', 'label' )
 	};
 
 	protected _caption: string = 'Label';
 	
 	constructor( owner: UI ) {
 		super( owner );
-	    this._root = UI_Dom.create( 'div', 'ui UI_Label ta-left' );
+	    this._root = Utils.dom.create( 'div', 'ui UI_Label ta-left' );
 		this._root.appendChild( this._dom.caption );
 		this._dom.caption.appendChild( document.createTextNode( this._caption ) );
 

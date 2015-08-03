@@ -6,8 +6,8 @@ class UI_CheckBox extends UI implements IFocusable {
 	};
 
 	protected _dom = {
-		"input"  : UI_Dom.create( 'div', 'input icon ui' ),
-		"caption": UI_Dom.create( 'div', 'caption' )
+		"input"  : Utils.dom.create( 'div', 'input icon ui' ),
+		"caption": Utils.dom.create( 'div', 'caption' )
 	};
 
 	public active: boolean;
@@ -19,7 +19,7 @@ class UI_CheckBox extends UI implements IFocusable {
 	protected _value: boolean = false;
 
 	constructor( owner: UI ) {
-		super( owner, [ 'IFocusable' ], UI_Dom.create('div', 'ui UI_CheckBox v-false' ) );
+		super( owner, [ 'IFocusable' ], Utils.dom.create('div', 'ui UI_CheckBox v-false' ) );
 		this._root.appendChild( this._dom.input );
 		this._root.appendChild( this._dom.caption );
 		this._dom.caption.appendChild( document.createTextNode( this._caption ) );
@@ -53,18 +53,18 @@ class UI_CheckBox extends UI implements IFocusable {
 		if ( newOne !== this._value ) {
 			switch ( newOne ) {
 				case null:
-					UI_Dom.removeClasses( this._root, [ 'v-true', 'v-false' ] );
-					UI_Dom.addClass( this._root, 'v-null' );
+					Utils.dom.removeClasses( this._root, [ 'v-true', 'v-false' ] );
+					Utils.dom.addClass( this._root, 'v-null' );
 					this._value = null;
 					break;
 				case true:
-					UI_Dom.removeClasses( this._root, [ 'v-null', 'v-false' ] );
-					UI_Dom.addClass( this._root, 'v-true' );
+					Utils.dom.removeClasses( this._root, [ 'v-null', 'v-false' ] );
+					Utils.dom.addClass( this._root, 'v-true' );
 					this._value = true;
 					break;
 				case false:
-					UI_Dom.removeClasses( this._root, [ 'v-true', 'v-null' ] );
-					UI_Dom.addClass( this._root, 'v-false' );
+					Utils.dom.removeClasses( this._root, [ 'v-true', 'v-null' ] );
+					Utils.dom.addClass( this._root, 'v-false' );
 					this._value = false;
 					break;
 			}

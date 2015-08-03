@@ -15,7 +15,7 @@ class UI_Screen extends UI_Event {
 
 	constructor() {
 		super();
-		this._canvas = UI_Dom.create( 'canvas', 'UI_Screen' );
+		this._canvas = Utils.dom.create( 'canvas', 'UI_Screen' );
 		this._setupEvents_();
 		
 	}
@@ -40,7 +40,7 @@ class UI_Screen extends UI_Event {
 			this._visible = visible;
 			switch ( visible ) {
 				case true:
-					UI_Dom.addClass( this._canvas, 'visible' );
+					Utils.dom.addClass( this._canvas, 'visible' );
 					break;
 				case false:
 
@@ -48,7 +48,7 @@ class UI_Screen extends UI_Event {
 						this._windows[i].close();
 					}
 
-					UI_Dom.removeClass( this._canvas, 'visible' );
+					Utils.dom.removeClass( this._canvas, 'visible' );
 
 					this.render();
 

@@ -47,22 +47,22 @@ class UI_Form extends UI implements IFocusable {
 	public includeInFocus: boolean = false;
 
 	private   _dom = {
-		"inner": UI_Dom.create( 'div', 'inner' ),
-		"body": UI_Dom.create('div', 'body'),
-		"titlebar": UI_Dom.create('div', 'titlebar'),
-		"caption": UI_Dom.create('div', 'caption' ),
-		"buttons": UI_Dom.create( 'div', 'buttons' ),
-		"n": UI_Dom.create('div', 'resizer n' ),
-		"s": UI_Dom.create('div', 'resizer s' ),
-		"w": UI_Dom.create('div', 'resizer w' ),
-		"e": UI_Dom.create('div', 'resizer e' ),
-		"nw": UI_Dom.create( 'div', 'resizer nw' ),
-		"ne": UI_Dom.create( 'div', 'resizer ne' ),
-		"sw": UI_Dom.create( 'div', 'resizer sw' ),
-		"se": UI_Dom.create( 'div', 'resizer se' ),
-		"btnClose": UI_Dom.create('div', 'button close' ),
-		"btnMinimize": UI_Dom.create( 'div', 'button minimize' ),
-		"btnMaximize": UI_Dom.create( 'div', 'button maximize' ),
+		"inner": Utils.dom.create( 'div', 'inner' ),
+		"body": Utils.dom.create('div', 'body'),
+		"titlebar": Utils.dom.create('div', 'titlebar'),
+		"caption": Utils.dom.create('div', 'caption' ),
+		"buttons": Utils.dom.create( 'div', 'buttons' ),
+		"n": Utils.dom.create('div', 'resizer n' ),
+		"s": Utils.dom.create('div', 'resizer s' ),
+		"w": Utils.dom.create('div', 'resizer w' ),
+		"e": Utils.dom.create('div', 'resizer e' ),
+		"nw": Utils.dom.create( 'div', 'resizer nw' ),
+		"ne": Utils.dom.create( 'div', 'resizer ne' ),
+		"sw": Utils.dom.create( 'div', 'resizer sw' ),
+		"se": Utils.dom.create( 'div', 'resizer se' ),
+		"btnClose": Utils.dom.create('div', 'button close' ),
+		"btnMinimize": Utils.dom.create( 'div', 'button minimize' ),
+		"btnMaximize": Utils.dom.create( 'div', 'button maximize' ),
 		"menuBar": null
 	};
 
@@ -75,7 +75,7 @@ class UI_Form extends UI implements IFocusable {
 		this._right   = new UI_Anchor_Form( this, EAlignment.RIGHT );
 		this._bottom  = new UI_Anchor_Form( this, EAlignment.BOTTOM );
 
-		this._root = UI_Dom.create( 'div', 'ui UI_Form state-normal border-normal style-form placement-auto' );
+		this._root = Utils.dom.create( 'div', 'ui UI_Form state-normal border-normal style-form placement-auto' );
 		this._root.tabIndex = 0; // make the window focusable.
 
 		this._root.appendChild( this._dom.inner );
@@ -198,7 +198,7 @@ class UI_Form extends UI implements IFocusable {
 				// Set a menubar.
 				if ( !this._dom.menuBar ) {
 					// If we don't have an existing menubar, we create it
-					this._dom.menuBar = UI_Dom.create('div', 'menubar');
+					this._dom.menuBar = Utils.dom.create('div', 'menubar');
 				} else {
 					// If we already have a menuBar, we clear it's dom nodes from the form
 					// menubar holder
@@ -208,7 +208,7 @@ class UI_Form extends UI implements IFocusable {
 				// and we append the menubar to the dom, of course
 				this._dom.inner.insertBefore( this._dom.menuBar, this._dom.body );
 
-				UI_Dom.addClass( this._root, 'has-menu' );
+				Utils.dom.addClass( this._root, 'has-menu' );
 
 				this._dom.menuBar.appendChild( bar._root );
 
@@ -226,7 +226,7 @@ class UI_Form extends UI implements IFocusable {
 
 					this._dom.menuBar.innerHTML = '';
 
-					UI_Dom.removeClass( this._root, 'has-menu' );
+					Utils.dom.removeClass( this._root, 'has-menu' );
 
 				}
 
@@ -249,28 +249,28 @@ class UI_Form extends UI implements IFocusable {
 	set state( state: EFormState ) {
 		if ( state != this._state ) {
 
-			UI_Dom.removeClasses( this._root, [ 'state-normal', 'state-minimized', 'state-maximized', 'state-fullscreen', 'state-closed' ] );
+			Utils.dom.removeClasses( this._root, [ 'state-normal', 'state-minimized', 'state-maximized', 'state-fullscreen', 'state-closed' ] );
 
 			switch ( state ) {
 				case EFormState.NORMAL:
-					UI_Dom.addClass( this._root, 'state-normal' );
+					Utils.dom.addClass( this._root, 'state-normal' );
 					this._state = EFormState.NORMAL;
 					break;
 				case EFormState.MINIMIZED:
-					UI_Dom.addClass( this._root, 'state-minimized' );
+					Utils.dom.addClass( this._root, 'state-minimized' );
 					this._state = EFormState.MINIMIZED;
 					break;
 				case EFormState.MAXIMIZED:
-					UI_Dom.addClass( this._root, 'state-maximized' );
+					Utils.dom.addClass( this._root, 'state-maximized' );
 					this._state = EFormState.MAXIMIZED;
 					break;
 				case EFormState.FULLSCREEN:
-					UI_Dom.addClass( this._root, 'state-fullscreen' );
+					Utils.dom.addClass( this._root, 'state-fullscreen' );
 					this._state = EFormState.FULLSCREEN;
 					break;
 				case EFormState.CLOSED:
 				default:
-					UI_Dom.addClass( this._root, 'state-closed' );
+					Utils.dom.addClass( this._root, 'state-closed' );
 					this._state = EFormState.CLOSED;
 					break;
 			}
@@ -289,16 +289,16 @@ class UI_Form extends UI implements IFocusable {
 
 	set borderStyle( bStyle: EBorderStyle ) {
 		if ( bStyle != this._borderStyle ) {
-			UI_Dom.removeClasses( this._root, [ 'border-normal', 'border-none' ] );
+			Utils.dom.removeClasses( this._root, [ 'border-normal', 'border-none' ] );
 			switch ( bStyle ) {
 				case EBorderStyle.NORMAL:
-					UI_Dom.addClass( this._root, 'border-normal' );
+					Utils.dom.addClass( this._root, 'border-normal' );
 					this._borderStyle = EBorderStyle.NORMAL;
 					this._padding.top += UI_Form._theme.titlebarHeight;
 					break;
 				case EBorderStyle.NONE:
 				default:
-					UI_Dom.addClass( this._root, 'border-none' );
+					Utils.dom.addClass( this._root, 'border-none' );
 					this._borderStyle = EBorderStyle.NONE;
 					this._padding.top -= UI_Form._theme.titlebarHeight;
 					break;
@@ -317,15 +317,15 @@ class UI_Form extends UI implements IFocusable {
 
 	set formStyle( fStyle: EFormStyle ) {
 		if ( fStyle != this._formStyle ) {
-			UI_Dom.removeClasses( this._root, [ 'style-form', 'style-mdi' ] );
+			Utils.dom.removeClasses( this._root, [ 'style-form', 'style-mdi' ] );
 			switch ( fStyle ) {
 				case EFormStyle.FORM:
-					UI_Dom.addClass( this._root, 'style-form' );
+					Utils.dom.addClass( this._root, 'style-form' );
 					this._formStyle = EFormStyle.FORM;
 					break;
 				case EFormStyle.MDI:
 				default:
-					UI_Dom.addClass( this._root, 'style-mdi' );
+					Utils.dom.addClass( this._root, 'style-mdi' );
 					this._formStyle = EFormStyle.MDI;
 					break;
 			}
@@ -344,15 +344,15 @@ class UI_Form extends UI implements IFocusable {
 
 	set placement( fPlacement: EFormPlacement ) {
 		if ( fPlacement != this._placement ) {
-			UI_Dom.removeClasses( this._root, [ 'placement-auto', 'placement-center' ] );
+			Utils.dom.removeClasses( this._root, [ 'placement-auto', 'placement-center' ] );
 			switch ( fPlacement ) {
 				case EFormPlacement.AUTO:
-					UI_Dom.addClass( this._root, 'placement-auto' );
+					Utils.dom.addClass( this._root, 'placement-auto' );
 					this._placement = EFormPlacement.AUTO;
 					break;
 				case EFormPlacement.CENTER:
 				default:
-					UI_Dom.addClass( this._root, 'placement-center' );
+					Utils.dom.addClass( this._root, 'placement-center' );
 					this._placement = EFormPlacement.CENTER;
 					break;
 			}
@@ -385,9 +385,9 @@ class UI_Form extends UI implements IFocusable {
 		if ( on != this._active ) {
 			this._active = on;
 			if ( this._active ) {
-				UI_Dom.addClass( this._root, 'focus-active' );
+				Utils.dom.addClass( this._root, 'focus-active' );
 			} else {
-				UI_Dom.removeClass( this._root, 'focus-active' );
+				Utils.dom.removeClass( this._root, 'focus-active' );
 			}
 			this.onRepaint();
 		}
@@ -835,9 +835,9 @@ class UI_Form extends UI implements IFocusable {
 
 			if ( this._root ) {
 				if ( this.disabled ){
-					UI_Dom.addClass( this._root, 'disabled' );
+					Utils.dom.addClass( this._root, 'disabled' );
 				} else {
-					UI_Dom.removeClass( this._root, 'disabled' );
+					Utils.dom.removeClass( this._root, 'disabled' );
 				}
 			}
 

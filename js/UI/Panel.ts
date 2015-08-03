@@ -6,7 +6,7 @@ class UI_Panel extends UI {
 	protected _logicalHeight: number;
 
 	constructor( owner: UI ) {
-		super( owner, null, UI_Dom.create('div', 'ui UI_Panel') );
+		super( owner, null, Utils.dom.create('div', 'ui UI_Panel') );
 		this.getDOM();
 	}
 
@@ -81,8 +81,8 @@ class UI_Panel extends UI {
 	private getDOM(): any {
 		if ( !this._dom ) {
 			this._dom = {
-				"inner": UI_Dom.create('div', 'inner'),
-				"body": UI_Dom.create('div', 'body')
+				"inner": Utils.dom.create('div', 'inner'),
+				"body": Utils.dom.create('div', 'body')
 			};
 			
 			this._root.appendChild( this._dom.inner );

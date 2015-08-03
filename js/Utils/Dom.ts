@@ -1,6 +1,9 @@
-/* Minimal JQuery like interface */
+/**
+ * The Utils_Dom class defines helpers for manipulating the browser DOM (Document Object Model).
+ *
+ */
 
-class UI_Dom {
+class Utils_Dom {
 
 	public static _selector_( element: any ): any {
 		return typeof element == 'string'
@@ -12,7 +15,7 @@ class UI_Dom {
 
 	public static hasClass( element: any, className: string ): boolean {
 
-		element = UI_Dom._selector_( element );
+		element = Utils_Dom._selector_( element );
 
 		if ( !className || !element ) {
 			return false;
@@ -34,7 +37,7 @@ class UI_Dom {
 
 	public static addClass( element: any, className: string ) {
 
-		element = UI_Dom._selector_( element );
+		element = Utils_Dom._selector_( element );
 
 		if ( !element || !className ) {
 			return;
@@ -61,7 +64,7 @@ class UI_Dom {
 
 	public static removeClass( element: any, className: string ) {
 
-		element = UI_Dom._selector_( element );
+		element = Utils_Dom._selector_( element );
 
 		if ( !element || !className || !element.className ) {
 			return;
@@ -90,7 +93,7 @@ class UI_Dom {
 
 	/* Removes a list of classes from a DOM element */
 	public static removeClasses( element: any, classes: string[] ) {
-		element = UI_Dom._selector_( element );
+		element = Utils_Dom._selector_( element );
 
 		if ( !element || !element.className || !classes.length ) {
 			return;
@@ -129,10 +132,10 @@ class UI_Dom {
 if ( Global.isBrowser ) {
 	Global.env.addEventListener( 'load', function() {
 		// measure the scrollbar width
-		var d = UI_Dom.create('div');
+		var d = Utils_Dom.create('div');
 		d.style.cssText = 'overflow:scroll;width:100px;height:40px;';
 		document.body.appendChild(d);
-		UI_Dom.scrollbarSize = 100 - d.clientWidth;
+		Utils_Dom.scrollbarSize = 100 - d.clientWidth;
 		d.parentNode.removeChild(d);
 	}, true );
 }

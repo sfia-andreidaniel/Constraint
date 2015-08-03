@@ -45,7 +45,7 @@ class UI_ListBox extends UI_Canvas implements IFocusable, IRowInterface {
 
 	constructor( owner: UI ) {
 		super( owner, [ 'IFocusable', 'IRowInterface' ] );
-		UI_Dom.addClass( this._root, 'UI_ListBox' );
+		Utils.dom.addClass( this._root, 'UI_ListBox' );
 		this._options = new Store('id');
 		this._setupExtendedEvents_();
 
@@ -181,7 +181,7 @@ class UI_ListBox extends UI_Canvas implements IFocusable, IRowInterface {
 				// draw selected index focus ring
 				ctx.strokeStyle = 'black';
 				ctx.lineWidth = 1;
-				ctx.strokeRect( .5, startY + 0.5, this._paintRect.width - 1 - ( ~~isScrollbar * UI_Dom.scrollbarSize ), UI_ListBox._theme.optionHeight - 1 );
+				ctx.strokeRect( .5, startY + 0.5, this._paintRect.width - 1 - ( ~~isScrollbar * Utils.dom.scrollbarSize ), UI_ListBox._theme.optionHeight - 1 );
 				ctx.stroke();
 			}
 

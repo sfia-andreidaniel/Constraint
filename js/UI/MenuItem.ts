@@ -130,7 +130,7 @@ class UI_MenuItem extends UI {
 	}
 
 	private createMenuBarNode(): HTMLDivElement {
-		this._menuBarRootNode = UI_Dom.create( 'div', 'ui UI_MenuItem'),
+		this._menuBarRootNode = Utils.dom.create( 'div', 'ui UI_MenuItem'),
 
 		this._menuBarRootNode.appendChild( document.createTextNode( String( this._caption || '' ) ) );
 
@@ -234,9 +234,9 @@ class UI_MenuItem extends UI {
 				
 				if ( menuItem._menuBarRootNode ) {
 					if ( !on ) {
-						UI_Dom.removeClass( menuItem._menuBarRootNode, 'disabled' );
+						Utils.dom.removeClass( menuItem._menuBarRootNode, 'disabled' );
 					} else {
-						UI_Dom.addClass( menuItem._menuBarRootNode, 'disabled' );
+						Utils.dom.addClass( menuItem._menuBarRootNode, 'disabled' );
 					}
 					this.render();
 				} else {
@@ -581,7 +581,7 @@ class UI_MenuItem extends UI {
 
 		( function( self ) {
 
-			Utils.createCircularMap( -1, self._children.length - 1, self.selectedIndex, relative < 0 ).forEach( function( index ) {
+			Utils.circular.createMap( -1, self._children.length - 1, self.selectedIndex, relative < 0 ).forEach( function( index ) {
 				
 				if ( cursor == null && ( index == -1 || !self._children[index].disabled ) ) {
 					cursor = index;

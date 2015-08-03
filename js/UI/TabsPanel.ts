@@ -7,9 +7,9 @@ class UI_TabsPanel extends UI implements IFocusable {
 	};
 
 	protected _dom: any = {
-		inner: UI_Dom.create( 'div', 'inner' ),
-		tabsBar: UI_Dom.create( 'div', 'tabs' ),
-		body: UI_Dom.create( 'div','body' )
+		inner: Utils.dom.create( 'div', 'inner' ),
+		tabsBar: Utils.dom.create( 'div', 'tabs' ),
+		body: Utils.dom.create( 'div','body' )
 	};
 
 	protected _activeTab: UI_Tab = null;
@@ -22,7 +22,7 @@ class UI_TabsPanel extends UI implements IFocusable {
 
 
 	constructor( owner: UI ) {
-		super( owner, [ 'IFocusable' ], UI_Dom.create('div', 'ui UI_TabsPanel') );
+		super( owner, [ 'IFocusable' ], Utils.dom.create('div', 'ui UI_TabsPanel') );
 
 		this._root.appendChild( this._dom.inner );
 		this._dom.inner.appendChild( this._dom.tabsBar );
@@ -72,13 +72,13 @@ class UI_TabsPanel extends UI implements IFocusable {
 	set activeTab( tab: UI_Tab ) {
 		if ( tab != this._activeTab ) {
 			if ( this._activeTab ) {
-				UI_Dom.removeClass( this._activeTab.tabElement, 'active' );
+				Utils.dom.removeClass( this._activeTab.tabElement, 'active' );
 				this._activeTab.visible = false;
 			}
 			this._activeTab = tab;
 
 			if ( this._activeTab ) {
-				UI_Dom.addClass( this._activeTab.tabElement, 'active' );
+				Utils.dom.addClass( this._activeTab.tabElement, 'active' );
 				this._activeTab.visible = true;
 			}
 		}

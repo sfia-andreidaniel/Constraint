@@ -4,7 +4,7 @@ class UI_Tab extends UI {
 	protected _caption: string = 'Tab';
 
 	constructor( owner: UI ) {
-		super( owner, null, UI_Dom.create('div', 'ui UI_Tab') );
+		super( owner, null, Utils.dom.create('div', 'ui UI_Tab') );
 		this.tabElement;
 		this._setupEvents_();
 	}
@@ -34,8 +34,8 @@ class UI_Tab extends UI {
 		if ( !this._dom ) {
 
 			this._dom = {
-				tab: UI_Dom.create( 'div', 'ui UI_Tab' ),
-				caption: UI_Dom.create( 'div', 'caption' )
+				tab: Utils.dom.create( 'div', 'ui UI_Tab' ),
+				caption: Utils.dom.create( 'div', 'caption' )
 			};
 
 			this._dom.tab.appendChild( this._dom.caption );
@@ -75,9 +75,9 @@ class UI_Tab extends UI {
 			me.on( 'disabled', function( state ) {
 				
 				if ( state ) {
-					UI_Dom.addClass( this.tabElement, 'disabled' );
+					Utils.dom.addClass( this.tabElement, 'disabled' );
 				} else {
-					UI_Dom.removeClass( this.tabElement, 'disabled' );
+					Utils.dom.removeClass( this.tabElement, 'disabled' );
 				}
 
 			} );

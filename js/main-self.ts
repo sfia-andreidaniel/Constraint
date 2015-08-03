@@ -3,7 +3,13 @@
 
 /// <reference path="Mixin.ts" />
 
+/// <reference path="Utils/Date.ts" />
+/// <reference path="Utils/Array.ts" />
+/// <reference path="Utils/Object.ts" />
+/// <reference path="Utils/Circular.ts" />
+/// <reference path="Utils/Dom.ts" />
 /// <reference path="Utils.ts" />
+
 
 /// <reference path="Constraint.ts" />
 /// <reference path="Constraint/Token.ts" />
@@ -20,7 +26,6 @@
 /// <reference path="UI/Sprite.ts" />
 /// <reference path="UI/Sprite/Null.ts" />
 
-/// <reference path="UI/Dom.ts" />
 /// <reference path="UI/Color.ts" />
 /// <reference path="UI/Event.ts" />
 /// <reference path="UI/Throttler.ts" />

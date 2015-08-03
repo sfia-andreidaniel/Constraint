@@ -6,8 +6,8 @@ class UI_Button extends UI implements IFocusable {
 	};
 
 	protected _dom = {
-		"caption" : UI_Dom.create( 'div', 'caption' ),
-		"icon"    : UI_Dom.create( 'div', 'icon' )
+		"caption" : Utils.dom.create( 'div', 'caption' ),
+		"icon"    : Utils.dom.create( 'div', 'icon' )
 	};
 
 	protected _caption: string = 'Button';
@@ -21,7 +21,7 @@ class UI_Button extends UI implements IFocusable {
 
 	constructor ( owner: UI ) {
 		
-		super( owner, [ 'IFocusable' ], UI_Dom.create( 'div', 'ui UI_Button ta-center' ) );
+		super( owner, [ 'IFocusable' ], Utils.dom.create( 'div', 'ui UI_Button ta-center' ) );
 
 		this._root.appendChild( this._dom.caption );
 		this._dom.caption.appendChild( document.createTextNode( this._caption ) );

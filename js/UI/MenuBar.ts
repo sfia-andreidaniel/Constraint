@@ -9,7 +9,7 @@ class UI_MenuBar extends UI implements IFocusable {
 	protected _focusedItem: UI_MenuItem = null;
 
 	constructor( owner: UI ) {
-		super( owner, [ 'IFocusable' ], UI_Dom.create( 'div', 'ui UI_MenuBar' ) );
+		super( owner, [ 'IFocusable' ], Utils.dom.create( 'div', 'ui UI_MenuBar' ) );
 
 		this._setupEvents_();
 
@@ -59,14 +59,14 @@ class UI_MenuBar extends UI implements IFocusable {
 		if ( item != this._focusedItem ) {
 
 			if ( this._focusedItem ) {
-				UI_Dom.removeClass( this._focusedItem.menuBarNode, 'focused' );
+				Utils.dom.removeClass( this._focusedItem.menuBarNode, 'focused' );
 				this._focusedItem.close();
 			}
 
 			this._focusedItem = item;
 
 			if ( this._focusedItem ) {
-				UI_Dom.addClass( this._focusedItem.menuBarNode, 'focused' );
+				Utils.dom.addClass( this._focusedItem.menuBarNode, 'focused' );
 			}
 
 		}
@@ -186,7 +186,7 @@ class UI_MenuBar extends UI implements IFocusable {
 			} );
 
 			menuBar.on( 'focus', function() {
-				UI_Dom.addClass( this._root, 'focused' );
+				Utils.dom.addClass( this._root, 'focused' );
 				
 				if ( menuBar.focusedItem === null )
 					menuBar.focusItem(1);

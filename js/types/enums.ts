@@ -143,3 +143,17 @@ enum ETraverseSignal {
 	STOP_RECURSIVE,
 	AGGREGATE
 }
+
+/**
+ * Date components. Used for parsing dates.
+ *
+ */
+ enum EDatePart {
+ 	DAY,
+ 	MONTH,
+ 	YEAR,
+ 	HOUR,
+ 	MINUTE,
+ 	SECOND,
+ 	UNIX_TIMESTAMP
+ }

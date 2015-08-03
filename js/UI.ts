@@ -479,17 +479,17 @@ class UI extends UI_Event {
 			switch ( ta ) {
 				case EAlignment.LEFT:
 					this._textAlign = ta;
-					UI_Dom.removeClasses( this._root, [ 'ta-right', 'ta-center' ] );
-					UI_Dom.addClass( this._root, 'ta-left' );
+					Utils.dom.removeClasses( this._root, [ 'ta-right', 'ta-center' ] );
+					Utils.dom.addClass( this._root, 'ta-left' );
 					break;
 				case EAlignment.RIGHT:
-					UI_Dom.removeClasses( this._root, [ 'ta-left', 'ta-center' ] );
-					UI_Dom.addClass( this._root, 'ta-right' );
+					Utils.dom.removeClasses( this._root, [ 'ta-left', 'ta-center' ] );
+					Utils.dom.addClass( this._root, 'ta-right' );
 					this._textAlign = ta;
 					break;
 				default:
-					UI_Dom.removeClasses( this._root, [ 'ta-left', 'ta-right' ] );
-					UI_Dom.addClass( this._root, 'ta-center' );
+					Utils.dom.removeClasses( this._root, [ 'ta-left', 'ta-right' ] );
+					Utils.dom.addClass( this._root, 'ta-center' );
 					this._textAlign = EAlignment.CENTER;
 					break;
 			}
@@ -515,9 +515,9 @@ class UI extends UI_Event {
 
 			if ( this._root ) {
 				if ( this.disabled ){
-					UI_Dom.addClass( this._root, 'disabled' );
+					Utils.dom.addClass( this._root, 'disabled' );
 				} else {
-					UI_Dom.removeClass( this._root, 'disabled' );
+					Utils.dom.removeClass( this._root, 'disabled' );
 				}
 			}
 
@@ -562,9 +562,9 @@ class UI extends UI_Event {
 			if ( this._root ) {
 
 				if ( actualDisabledState ) {
-					UI_Dom.addClass( this._root, 'disabled' );
+					Utils.dom.addClass( this._root, 'disabled' );
 				} else {
-					UI_Dom.removeClass( this._root, 'disabled' );
+					Utils.dom.removeClass( this._root, 'disabled' );
 				}
 
 			}

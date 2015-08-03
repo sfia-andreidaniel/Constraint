@@ -1,10 +1,34 @@
+/**
+ * This class implements a store which has nested items ( Tree ).
+ * 
+ * The items of this class are of type Store_Node.
+ *
+ * Beside the "unuqueKeyName" that the store requires on constructor, this class
+ * requires two additional arguments: "parentKeyName" and "leafKeyName".
+ *
+ *
+ */
 class Store_Tree extends Store {
 
+	/**
+	 * The property name of the "parent" key
+	 */
 	private _parent: string = null;
+
+	/**
+	 * The property name of the "leaf" key
+	 */
 	private _leaf  : string = null;
 	
+	/**
+	 * Option that tells the tree to always place the nodes of type leaf
+	 * at the end, when sorting (folders first, files last).
+	 */
 	private _sortLeafsLast: boolean = true;
 
+	/**
+	 * Constructor. Creates a new tree.
+	 */
 	constructor( uniqueKeyName: string = "id", parentKeyName: string = "parent", leafKeyName: string = "isLeaf" ) {
 		super( uniqueKeyName );
 
@@ -25,10 +49,16 @@ class Store_Tree extends Store {
 		}
 	}
 
+	/**
+	 * Are the leafs sorted at the end always?
+	 */
 	get sortLeafsLast(): boolean {
 		return this._sortLeafsLast;
 	}
 
+	/**
+	 * Are the leafs sorted at the end always?
+	 */
 	set sortLeafsLast( on: boolean ) {
 		on = !!on;
 		if ( on != this._sortLeafsLast ) {
@@ -37,7 +67,19 @@ class Store_Tree extends Store {
 		}
 	}
 
-	// The "insert" method is altered...
+	/**
+	 * Inserts a node in the tree. The "data" property should be an object
+	 * containing at least two keys, and an optional third key denoting if the
+	 * item is a leaf or not:
+	 *
+	 * {
+	 *	    <id>: any
+	 *      <parent>: any
+	 *      [optional] <isLeaf>: boolean
+	 *  
+	 * }
+	 *
+	 */
 	public insert( data: any ): Store_Item {
 		// We're returning a <Store2_Node> actually
 		var id: any,
@@ -101,6 +143,10 @@ class Store_Tree extends Store {
 
 	}
 
+	/**
+	 * Sorts the tree.
+	 *
+	 */
 	protected sort( requestChange: boolean = true, recursive: boolean = true ) {
 		
 		super.sort( !recursive );
@@ -122,6 +168,11 @@ class Store_Tree extends Store {
 		}
 	}
 
+	/**
+	 * Depth walks the tree.
+	 *
+	 * See Store.walk for arguments meaning.
+	 */
 	public walk( 
 		callback   : FTraversor, 
 		skip 	   : number = 0, 
@@ -132,15 +183,35 @@ class Store_Tree extends Store {
 		return cursor.each( callback, aggregator );
 	}
 
+	/**
+	 * Immutable. Always true, as this is a tree store.
+	 */
 	get isTree(): boolean {
 		return true;
 	}
 
 
+	/**
+	 * Returns the total number of items in the store, considering the sub-nodes also.
+	 */
 	get lengthDepth(): number {
 		return this._map.size;
 	}
 
+	/**
+	 * Sets the items of the tree.
+	 *
+	 * @param items - The items to add in the store. Can be an array, or a nested structure.
+	 *        If the items is a nested structure, additional arguments need to be
+	 *        provided:
+	 *
+	 * @param fromNested Boolean, telling the importer that this is a nested object
+	 *        insted of an array.
+	 *
+	 * @param childrenKeyName - If items is nested, this argument configures the "key" name used
+	 *        for the "children" property.
+	 *
+	 */
 	public setItems( items: any, fromNested: boolean = false, childrenKeyName: string = 'children' ) {
 		if ( fromNested ) {
 
@@ -157,7 +228,7 @@ class Store_Tree extends Store {
 						result = Store_Tree.unnest( items[0], this._id, this._parent, childrenKeyName, this._leaf );
 
 						for ( i=1, len = items.length; i<len; i++ ) {
-							result = Utils.arrayMerge( result, Store_Tree.unnest( items[i], this._id, this._parent, childrenKeyName, this._leaf ), true );
+							result = Utils.array.merge( result, Store_Tree.unnest( items[i], this._id, this._parent, childrenKeyName, this._leaf ), true );
 						}
 
 						super.setItems( result );
@@ -182,6 +253,9 @@ class Store_Tree extends Store {
 
 	}
 
+	/**
+	 * Removes an item from the store, putting it in garbage collection state.
+	 */
 	public remove( item: Store_Item ) {
 		super.remove(item);
 		for ( var i=0; i<this._length; i++ ) {
@@ -191,6 +265,9 @@ class Store_Tree extends Store {
 		return item;
 	}
 
+	/**
+	 * Used internally, by the Store_Node.move method
+	 */
 	private dettach( node: Store_Node ): Store_Node {
 		
 		var index: number;
@@ -211,6 +288,9 @@ class Store_Tree extends Store {
 		return node;
 	}
 
+	/**
+	 * Used internally, by the Store_Node.move method.
+	 */
 	private attach( node: Store_Node ): Store_Node {
 
 		var index: number;
@@ -239,6 +319,9 @@ class Store_Tree extends Store {
 
 	}
 
+	/**
+	 * Helper to convert a nested structure into an unnested structure (array)
+	 */
 	public static unnest( data: any, idKeyName: string = 'id', parentKeyName: string = 'parent', childrenKeyName: string = 'children', leafKeyName: string = 'isLeaf' ): any[] {
 
 		var result: any[] = [],
@@ -249,7 +332,7 @@ class Store_Tree extends Store {
 				return;
 			}
 
-			var row = Utils.ObjectExclude( [ idKeyName, childrenKeyName, leafKeyName ], item ),
+			var row = Utils.object.exclude( [ idKeyName, childrenKeyName, leafKeyName ], item ),
 			    i: number,
 			    len: number;
 

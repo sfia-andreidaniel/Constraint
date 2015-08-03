@@ -19,13 +19,21 @@ Constraint is a project that aims to implement an UI Framework for the browser. 
 * NodeJS - https://nodejs.org/
 * gnu make program (can be installed on Windows too)
 
+### Quick start
+
+* Make the framework reachable under a webserver, then from the command line:
+
+
+    make resources  
+    make demo
+
+
+
+* Load in your browser the repository address
+
 ### Building framework:
     
     make
-
-### Building demo
-    
-    make demo
 
 ### Building framework resources:
     
@@ -35,21 +43,21 @@ In order to be able to build resources, you will need the Image Magik package in
 
 ### Generating documentation
 
-You will need a tool called "typedoc", which can be installed first by typing:
+**You will need a tool called "typedoc"**, which can be installed first by typing:
     
     make doc_install
 
-After you have the "typedoc" installed, you can build the documentation by typing:
+**After** you have the "typedoc" installed, you can build the documentation by typing:
     
     make doc
 
-### Generating the Typescript .d.ts library file
+### Generating the Constraint.d.ts declarations file
 
-You will need a tool called "dts-generator", which can be installed first by typing:
+**You will need a tool called "dts-generator"**, which can be installed first by typing:
     
     make dts_install
 
-After you have the "dts-generator" installed, you can build the documentation by typing:
+**After** you have the "dts-generator" installed, you can build the documentation by typing:
     
     make dts
 

@@ -41,17 +41,17 @@ class UI_Canvas extends UI {
 	};
 
 	protected _dom = {
-		"canvas": UI_Dom.create( 'canvas' ),
+		"canvas": Utils.dom.create( 'canvas' ),
 
 		// Freezed Viewport
-		"fViewport": UI_Dom.create( 'div', 'freezed-viewport' ),
-		"fCanvasSize": UI_Dom.create( 'div', 'canvas-size' ),
+		"fViewport": Utils.dom.create( 'div', 'freezed-viewport' ),
+		"fCanvasSize": Utils.dom.create( 'div', 'canvas-size' ),
 
-		"fHeader": UI_Dom.create( 'div', 'freezed-header' ),
+		"fHeader": Utils.dom.create( 'div', 'freezed-header' ),
 
 		// Unfreezed Viewport
-		"viewport": UI_Dom.create( 'div', 'viewport' ),
-		"canvasSize": UI_Dom.create( 'div', 'canvas-size' )
+		"viewport": Utils.dom.create( 'div', 'viewport' ),
+		"canvasSize": Utils.dom.create( 'div', 'canvas-size' )
 	};
 
 	protected _logicalWidth: number = 0;
@@ -78,7 +78,7 @@ class UI_Canvas extends UI {
 	public    freeColumns: UI_Column[];
 
 	constructor( owner: UI, mixins: string[] = [] ) {
-		super( owner, mixins, UI_Dom.create( 'div', 'ui UI_Canvas' ) );
+		super( owner, mixins, Utils.dom.create( 'div', 'ui UI_Canvas' ) );
 		
 		this._root.appendChild( this._dom.canvas );
 		this._root.appendChild( this._dom.viewport );
@@ -203,11 +203,11 @@ class UI_Canvas extends UI {
 			switch ( on ) {
 				case true:
 					this._root.appendChild( this._dom.fHeader );
-					UI_Dom.addClass( this._root, 'has-header' );
+					Utils.dom.addClass( this._root, 'has-header' );
 					break;
 				case false:
 					this._root.removeChild( this._dom.fHeader );
-					UI_Dom.removeClass( this._root, 'has-header' );
+					Utils.dom.removeClass( this._root, 'has-header' );
 					break;
 			}
 
