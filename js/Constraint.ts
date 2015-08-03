@@ -71,6 +71,11 @@ class Constraint {
 			"regex": /^date\((?:[ ]+)?([a-zA-Z\d\:\/\- ]+?((?:[ ]+)?;(?:[ ]+)?(?:[a-zA-Z\d\:\-\/ ]+?))?)(?:[ ]+)?\)/,
 			"return": 1
 		},
+		// matches any json structure
+		"type_json": {
+			"regex": /^<\!\[JSON\[([\s]+)?([\s\S\r\n]+?)([\s]+)?\]\]\>/,
+			"return": 2
+		},
 		// matches: 
 		"tok_resource": {
 			"regex": /^(([a-zA-Z\$_]([a-zA-Z\d_\$]+)?)+)[\s]+from[\s]+'(([^']+|'')+)'([\s]+([\d]+(x[\d]+|\:(x|y))([\s]+)?)+)?(disabled)?([\s]+)?;/,
@@ -175,7 +180,7 @@ class Constraint {
 				"tok_white_space_opt",
 				"tok_attrib",
 				"tok_white_space_opt",
-				"type_color_named|type_color_hex|type_color_rgba|type_color_rgb|type_string|type_number|type_boolean|type_anchor|type_null|type_enum|type_date",
+				"type_color_named|type_color_hex|type_color_rgba|type_color_rgb|type_string|type_number|type_boolean|type_anchor|type_null|type_enum|type_date|type_json",
 				"tok_instruction_end"
 			]
 		},
@@ -186,7 +191,7 @@ class Constraint {
 				"tok_white_space_opt",
 				"tok_attrib",
 				"tok_white_space_opt",
-				"type_color_named|type_color_hex|type_color_rgba|type_color_rgb|type_string|type_number|type_boolean|type_anchor|type_subst|type_null|type_enum|type_date",
+				"type_color_named|type_color_hex|type_color_rgba|type_color_rgb|type_string|type_number|type_boolean|type_anchor|type_subst|type_null|type_enum|type_date|type_json",
 				"tok_white_space_opt",
 				"tok_instruction_end"
 			]
@@ -214,7 +219,7 @@ class Constraint {
 
 		"type_anonymous_primitive": {
 			"flow": [
-				"type_color_named|type_color_hex|type_color_rgba|type_color_rgb|type_string|type_number|type_boolean|type_anchor|type_subst|type_null|type_enum|type_date"
+				"type_color_named|type_color_hex|type_color_rgba|type_color_rgb|type_string|type_number|type_boolean|type_anchor|type_subst|type_null|type_enum|type_date|type_json"
 			]
 		},
 
@@ -252,7 +257,7 @@ class Constraint {
 
 		"array_literal": {
 			"flow": [
-				"type_color_named|type_color_hex|type_color_rgba|type_color_rgb|type_string|type_number|type_boolean|type_anchor|type_null|type_enum|type_date"
+				"type_color_named|type_color_hex|type_color_rgba|type_color_rgb|type_string|type_number|type_boolean|type_anchor|type_null|type_enum|type_date|type_json"
 			]
 		},
 

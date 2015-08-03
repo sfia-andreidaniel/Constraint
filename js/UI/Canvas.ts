@@ -321,7 +321,7 @@ class UI_Canvas extends UI {
 				break;
 
 			case target == this._dom.canvasSize:
-				result.x = x + this.freezedWidth;
+				result.x = x + this.freezedWidth - this.scrollLeft;
 				result.y = y;
 				break;
 

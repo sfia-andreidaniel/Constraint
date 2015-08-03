@@ -20,6 +20,7 @@
 	/* GRID STUFF */
 	// checkbox for boolean state
 	grid_boolean                from '../vendor/self/grid-boolean-column.png'     14x14 disabled;
+	dark_glow_we                from '../vendor/self/dark-glow-we.png'            12:y;
 
 	// sort signs
 	grid_sorter                 from '../vendor/self/sorter_none.png'             16x10 disabled;

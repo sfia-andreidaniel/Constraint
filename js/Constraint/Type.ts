@@ -100,6 +100,16 @@ class Constraint_Type {
 
 				break;
 
+			case 'type_json':
+
+				try {
+					return JSON.parse( from.result );
+				} catch ( error ) {
+					throw new SyntaxError( 'Failed to parse JSON data: ' + error );
+				}
+
+				break;
+
 			default:
 				throw Error( 'Unknown type: ' + from.type + JSON.stringify( from ) );
 				break;

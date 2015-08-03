@@ -49,7 +49,7 @@ class UI_Sprite extends UI_Event {
 		return this._path;
 	}
 
-	public paintWin( win: UI_Canvas_ContextMapper, x: number, y: number ) {
+	public paintWin( win: UI_Canvas_ContextMapper, x: number, y: number, repeat: number = null ) {
 		if ( this.version.window ) {
 			switch ( true ) {
 				case !this.version.repeatX && !this.version.repeatY:
@@ -74,7 +74,7 @@ class UI_Sprite extends UI_Event {
 						this.version.window.height,
 						x,
 						y,
-						this.version.window.width,
+						repeat !== null ? repeat : this.version.window.width,
 						this.version.window.height
 					);
 					break;
@@ -88,14 +88,14 @@ class UI_Sprite extends UI_Event {
 						x,
 						y,
 						this.version.window.width,
-						this.version.window.height
+						repeat !== null ? repeat : this.version.window.height
 					);
 					break;
 			}
 		}
 	}
 
-	public paintCtx( ctx: CanvasRenderingContext2D, x: number, y: number ) {
+	public paintCtx( ctx: CanvasRenderingContext2D, x: number, y: number, repeat: number = 1 ) {
 		if ( this.version.window ) {
 			switch ( true ) {
 				case !this.version.repeatX && !this.version.repeatY:
@@ -120,7 +120,7 @@ class UI_Sprite extends UI_Event {
 						this.version.window.height,
 						x,
 						y,
-						this.version.window.width,
+						repeat !== null ? repeat : this.version.window.width,
 						this.version.window.height
 					);
 					break;
@@ -134,7 +134,7 @@ class UI_Sprite extends UI_Event {
 						x,
 						y,
 						this.version.window.width,
-						this.version.window.height
+						repeat !== null ? repeat : this.version.window.height
 					);
 					break;
 			}

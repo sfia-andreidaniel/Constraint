@@ -605,6 +605,22 @@ Constraint.registerClass( {
 		{
 			"name": "iconField",
 			"type": "string"
+		},
+		{
+			"name": "items",
+			"type": "INestable[]"
+		},
+		{
+			"name": "nestedItems",
+			"type": "any"
+		},
+		{
+			"name": "nameField",
+			"type": "string"
+		},
+		{
+			"name": "iconField",
+			"type": "string"
 		}
 	]
 } );

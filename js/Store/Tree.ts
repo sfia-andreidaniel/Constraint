@@ -228,7 +228,7 @@ class Store_Tree extends Store {
 						result = Store_Tree.unnest( items[0], this._id, this._parent, childrenKeyName, this._leaf );
 
 						for ( i=1, len = items.length; i<len; i++ ) {
-							result = Utils.array.merge( result, Store_Tree.unnest( items[i], this._id, this._parent, childrenKeyName, this._leaf ), true );
+							result = Utils.array.merge( result, Store_Tree.unnest( items[i], this._id, this._parent, childrenKeyName, this._leaf, result.length + 1 ), true );
 						}
 
 						super.setItems( result );
@@ -322,10 +322,10 @@ class Store_Tree extends Store {
 	/**
 	 * Helper to convert a nested structure into an unnested structure (array)
 	 */
-	public static unnest( data: any, idKeyName: string = 'id', parentKeyName: string = 'parent', childrenKeyName: string = 'children', leafKeyName: string = 'isLeaf' ): any[] {
+	public static unnest( data: any, idKeyName: string = 'id', parentKeyName: string = 'parent', childrenKeyName: string = 'children', leafKeyName: string = 'isLeaf', autoIncrement: number = null ): any[] {
 
 		var result: any[] = [],
-		    autoId: number = 0;
+		    autoId: number = typeof autoIncrement === null ? 0 : autoIncrement;
 
 		function traverse( item: any, parentValue: any = null ) {
 			if ( !item ) {
@@ -345,8 +345,9 @@ class Store_Tree extends Store {
 				for ( i=0; i<len; i++ ) {
 					traverse( item[ childrenKeyName ][ i ], row[ idKeyName ] );
 				}
+				row[ leafKeyName ] = false;
 			} else {
-				row[ leafKeyName ] = true;
+				row[ leafKeyName ] = typeof item[ leafKeyName ] !== 'undefined' ? !!item[ leafKeyName ] : true;
 			}
 
 		}

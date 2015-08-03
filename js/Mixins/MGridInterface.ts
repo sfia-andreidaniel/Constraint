@@ -511,6 +511,7 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 
 			yPaintStart += rowHeight;
 		}
+
 	}
 
 	public prerenderFree() {
@@ -625,6 +626,17 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 
 			header.fillRect( 0, header.height - 1, header.width - 1, 1 );
 
+		}
+
+		if ( this.scrollLeft > 3 ) {
+			UI_Resource.createSprite(
+				'Constraint/dark_glow_we/12-y'
+			).paintCtx(
+				body,
+				this.freezedWidth - 1,
+				0,
+				this.viewportHeight
+			)
 		}
 
 

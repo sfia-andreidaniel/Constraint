@@ -10,9 +10,10 @@ build:: clean
 	rm -f ./postcompiler.js
 
 resources::
+	rm -rf ./resources
 	mogrify -format png -background none vendor/self/*.svg
 	mogrify -format png -background none vendor/gnome/*.svg
-	constraint --src:resources.ui --http-include-path:resources --make
+	constraint --src:resources.ui --http-include-path:resources
 
 demo:: build
 	constraint --src:demo.ui --http-include-path:demo --make

@@ -75,15 +75,111 @@
 				right: 20;
 				bottom: 20;
 
-				items: [
-					{id: 1;  parent: null; name: 'My Computer';  date: date( now );           },
-			    	{id: 20; parent: null; name: 'My file';      isLeaf: true; size: 8192;    },
-			    	{id: 2;  parent: 1;    name: 'C:';                         online: true;  },
-			    	{id: 3;  parent: 1;    name: 'D:';                         online: false; },
-			    	{id: 4;  parent: 2;    name: 'My Documents'; date: date( 01/01/2015 00:00:00 ; DD/MM/YYYY hh:mm:ss ); },
-			    	{id: 5;  parent: 4;    name: 'User';                                      },
-			    	{id: 6;  parent: 4;    name: 'My Music';                                  } 
-			    ];
+				nestedItems: <![JSON[
+					[
+						{
+							"name": "My Computer",
+							"children": [
+								{
+									"name": "C:",
+									"online": true,
+									"children": [
+										{
+											"name": "Program Files",
+											"children": [
+												{
+													"name": "Microsoft",
+													"isLeaf": false
+												},
+												{
+													"name": "EA Sports",
+													"isLeaf": false
+												},
+												{
+													"name": "Monolith Productions",
+													"isLeaf": false
+												}
+											]
+										},
+										{
+											"name": "Users",
+											"children": [
+												{
+													"name": "All Users",
+													"children": [
+														{
+															"name": "Desktop",
+															"isLeaf": false
+														},
+														{
+															"name": "Shared Documents",
+															"isLeaf": false
+														}
+													]
+												},
+												{
+													"name": "Andrei",
+													"children": [
+														{
+															"name": "Desktop",
+															"isLeaf": false
+														},
+														{
+															"name": "My Documents",
+															"isLeaf": false
+														},
+														{
+															"name": "My Music",
+															"isLeaf": false
+														}
+													]
+												}
+											]
+										}
+									]
+								},
+								{
+									"name": "D:",
+									"online": false,
+									"children": [
+										{
+											"name": "Music",
+											"children": [
+												{
+													"name": "Beattles - Let it be.mp3"
+												},
+												{
+													"name": "Vaya con dios - Ney nah nah nah.mp3"
+												},
+												{
+													"name": "Avril Lavigne - Complicated.mp3"
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "My Network Places",
+							"children": [
+								{
+									"name": "Microsoft Network",
+									"isLeaf": false
+								},
+								{
+									"name": "WorkGroup",
+									"children": [
+										{
+											"name": "Development001",
+											"isLeaf": false
+										}
+									]
+								}
+							]
+						}
+					]
+				]]>;
 
 			    @UI_Column {
 			    	caption: '#';
@@ -104,16 +200,16 @@
 
 			    @UI_Column {
 			    	type: TREE;
-			    	width: 200;
-			    	caption: 'Tree';
+			    	width: 600;
+			    	caption: 'Places';
 			    };
 
 			    @UI_Column {
 			    	type: STRING;
 			    	width: 100;
-			    	caption: 'Name';
-			    	name: 'name';
-			    	textAlign: CENTER;
+			    	caption: 'Type';
+			    	name: 'type';
+			    	textAlign: RIGHT;
 			    };
 
 			    @UI_Column {

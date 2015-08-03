@@ -131,6 +131,8 @@ try {
 					throw new Error( 'Files from resources can have only ".png" extension!')
 				}
 
+				console.log( 'adding file: ',res.props[k].file )
+
 				res.props[k].data = fs.readFileSync( res.props[k].file ).toString( 'base64' );
 				res.props[k].data = res.props[k].name + ' ' 
 					+ JSON.stringify( res.props[k].value.versions ) 
