@@ -33,8 +33,13 @@ class Utils {
 	public static circular = Utils_Circular;
 
 	/**
-	 * Helpers for manipulating DOM objects
+	 * Helpers for manipulating **DOM** objects
 	 */
 	public static dom = Utils_Dom;
+
+	/**
+	 * Helpers for manipulating **String**s
+	 */
+	public static string = Utils_String;
 
 }

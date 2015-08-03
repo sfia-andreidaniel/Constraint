@@ -6,6 +6,10 @@
  */
 class Utils_Date {
 
+	public static DEFAULT_DATE_FORMAT      : string = "DD-MM-YYYY";
+	public static DEFAULT_TIME_FORMAT      : string = "hh:mm:ss";
+	public static DEFAULT_TIMESTAMP_FORMAT : string = Utils_Date.DEFAULT_DATE_FORMAT + ' ' + Utils_Date.DEFAULT_TIME_FORMAT;
+
 	private static dateFormatMappings = {
 		"DD": EDatePart.DAY,
 		"MM": EDatePart.MONTH,
@@ -44,6 +48,10 @@ class Utils_Date {
 	 * @param format - Optional. You can use a free-string, denoting a date
 	 *        pattern.
 	 *
+	 * @param useInitializer - Optional. Use the initializer instead of current date
+	 *
+	 *
+	 *
 	 * Recognized format fields:
 	 * * **DD**   - day
 	 * * **MM**   - month
@@ -56,10 +64,9 @@ class Utils_Date {
 	 *
 	 * **Format example**: "DD-MM-YYYY hh:mm:ss"
 	 *
-	 * **IF** you omit the @format argument, you can parse also relative dates, in the
-	 * following format in the **date** argument:
+	 * You can parse also relative dates, in the following format in the **date** argument:
 	 *
-	 * -? [quantity] [unit]
+	 * [-|+] quantity unit [ [quantity unit] ... [quantity unit] ]
 	 * 
 	 * Where [unit] can be:
 	 * * **Y** - for years
@@ -71,16 +78,51 @@ class Utils_Date {
 	 * * **s** - for seconds
 	 *
 	 * **Relative date example**
-	 * * **-3y** -- 3 years ago
+	 * * **-3Y** -- 3 years ago
 	 * * **57s** -- current date + 57 seconds.
+	 * * **-3Y5W6D5h** -- current date - 3years, 5 weeks, 6 days, 5 hours
 	 */
 
-	public static parse( date: string, format?: string ): Date {
+	public static parse( date: string, format?: string, useInitializer?: Date ): Date {
 		
-		var unit: string,
-		    quantity: number,
-		    negative: boolean,
-		    formats: any[],
+		if ( !date ) {
+			return null;
+		} else {
+
+			switch ( date ) {
+				
+				case 'now':
+					return new Date();
+					break;
+				
+				case 'yesterday':
+					return Utils_Date.parse('-1D');
+					break;
+				case 'tomorrow':
+					return Utils_Date.parse('+1D');
+					break;
+				case 'last year':
+					return Utils_Date.parse('-1Y');
+					break;
+				case 'last month':
+					return Utils_Date.parse('-1M');
+					break;
+				case 'last week':
+					return Utils_Date.parse('+1W');
+					break;
+				case 'next year':
+					return Utils_Date.parse('+1Y');
+					break;
+				case 'next month':
+					return Utils_Date.parse('+1M');
+					break;
+				case 'next week':
+					return Utils_Date.parse('+1W');
+					break;
+			}
+		}
+
+		var formats: any[],
 		    chr2: string,
 		    pFormat: string = String( format || '' ),
 		    pDate: string = String( date || '' ),
@@ -96,8 +138,76 @@ class Utils_Date {
 		    setSecond: number,
 		    setTimestamp: number,
 
-		    result: Date;
+		    result: Date,
+		    matches: string[],
 
+		    addSeconds: number,
+		    addDays: number,
+		    addYears: number,
+		    addSign: number,
+		    addMonths: number;
+
+
+		if ( !!(matches = /^(\+|\-)?([\d]+[YMDWhms](([\d]+[YMDWhms])+)?)$/.exec( pDate ) ) ) {
+
+			addSeconds = null;
+			addDays = null;
+			addYears = null;
+			addMonths = null;
+
+			if ( matches[1] ) {
+				addSign = matches[1] == '-' ? -1 : 1;
+				pDate = pDate.substr(1);
+			}
+
+			while ( matches = /^([\d]+)([YMDWhms])/.exec( pDate ) ) {
+				
+				pDate = pDate.substr( matches[0].length );
+				
+				switch ( matches[2] ) {
+					case 'Y':
+						addYears = ( addYears || 0 ) + ~~matches[1];
+						break;
+					case 'M':
+						addMonths = ( addMonths || 0 ) + ~~matches[1];
+						break;
+					case 'D':
+						addDays = ( addDays || 0 ) + ~~matches[1];
+						break;
+					case 'W':
+						addDays = ( addDays || 0 ) + ( ~~matches[1] * 7 );
+						break;
+					case 'h':
+						addSeconds = ( addSeconds || 0 ) + ( ~~matches[1] * 3600 );
+						break;
+					case 'm':
+						addSeconds = ( addSeconds || 0 ) + ( ~~matches[1] * 60 );
+						break;
+					case 's':
+						addSeconds = ( addSeconds || 0 ) + ~~matches[1];
+						break;
+				}
+			}
+
+			result = useInitializer || new Date();
+
+			console.log( addYears, 'years', addMonths, 'months', addDays, 'days', addSeconds, 'seconds' );
+
+			if ( addYears !== null )
+				result.setFullYear( result.getFullYear() + addSign * addYears );
+
+			if ( addMonths !== null )
+				result.setMonth( result.getMonth() + addSign * addMonths );
+
+			if ( addDays !== null )
+				result.setDate( result.getDate() + addSign * addDays );
+
+			if ( addSeconds !== null )
+				result.setSeconds( result.getSeconds() + addSign * addSeconds );
+
+			return result;
+
+		} else
 		if ( pFormat ) {
 
 			formats = [];
@@ -208,16 +318,15 @@ class Utils_Date {
 
 			}
 
-			result = new Date();
+			result = useInitializer || new Date();
 
 			if ( setTimestamp !== null ) {
 
 				result.setTime( setTimestamp * 1000 );
+
 				return result;
 
 			} else {
-
-				result = new Date();
 
 				if ( setYear !== null )
 					result.setFullYear(setYear);
@@ -265,9 +374,90 @@ class Utils_Date {
 
 			}
 
+		} else {
+
+			result = Utils_Date.parse( date, Utils_Date.DEFAULT_TIMESTAMP_FORMAT );
+
+			if ( result )
+				return result;
+
+			result = Utils_Date.parse( date, Utils_Date.DEFAULT_DATE_FORMAT );
+
+			if ( result )
+				return result;
+
+			result = Utils_Date.parse( date, Utils_Date.DEFAULT_TIME_FORMAT );
+
+			if ( result )
+				return result;
+
+			return null;
+
 		}
 
 		return null;
+
+	}
+
+	public static format( d: Date, format: string = Utils_Date.DEFAULT_TIMESTAMP_FORMAT ): string {
+
+		var out: string = '',
+		    chr2: string = '',
+		    pFormat: string = String( format || '' ),
+		    len: string = pFormat.length;
+
+		while ( len ) {
+
+			chr2 = pFormat.substr(0,2);
+
+			if ( chr2 == 'YY' ) {
+				chr2 = pFormat.substr(0,4);
+			}
+			
+			if ( typeof Utils_Date.dateFormatMappings[chr2] != 'undefined' ) {
+
+				len -= chr2.length;
+				pFormat = pFormat.substr(chr2.length);
+
+				switch ( Utils_Date.dateFormatMappings[chr2] ) {
+
+					case EDatePart.YEAR:
+						out += Utils.string.pad( d.getFullYear(), 4, '0', EStrPadding.LEFT );
+						break;
+					case EDatePart.MONTH:
+						out += Utils.string.pad( ( d.getFullMonth() + 1 ), 2, '0', EStrPadding.LEFT );
+						break;
+					case EDatePart.DAY:
+						out += Utils.string.pad( d.getDate(), 2, '0', EStrPadding.LEFT );
+						break;
+
+					case EDatePart.HOUR:
+						out += Utils.string.pad( d.getHours(), 2, '0', EStrPadding.LEFT );
+						break;
+
+					case EDatePart.MINUTE:
+						out += Utils.string.pad( d.getMinutes(), 2, '0', EStrPadding.LEFT );
+						break;
+
+					case EDatePart.SECOND:
+						out += Utils.string.pad( d.getSeconds(), 2, '0', EStrPadding.LEFT );
+						break;
+
+					case EDatePart.UNIX_TIMESTAMP:
+						out += String( ~~( d.getTime() / 1000 ) );
+						break;
+
+				}
+
+
+			} else {
+				out += chr2[0];
+				len -= 1;
+				pFormat = pFormat.substr(1);
+			}
+		}
+
+		return out;
 
 	}
 

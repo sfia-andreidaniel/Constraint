@@ -8,6 +8,7 @@
 /// <reference path="Utils/Object.ts" />
 /// <reference path="Utils/Circular.ts" />
 /// <reference path="Utils/Dom.ts" />
+/// <reference path="Utils/String.ts" />
 /// <reference path="Utils.ts" />
 
 
