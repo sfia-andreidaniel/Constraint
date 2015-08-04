@@ -59,9 +59,6 @@ class UI_Canvas extends UI {
 	protected _viewportWidth: number = 0;
 	protected _viewportHeight: number = 0;
 
-	protected _scrollLeft: number = 0;
-	protected _scrollTop: number = 0;
-
 	protected _hasHeader: boolean = false;
 	protected _freezedWidth: number = 0;
 
@@ -76,6 +73,7 @@ class UI_Canvas extends UI {
 	public    rowHeight: number;
 	public    freezedColumns: UI_Column[];
 	public    freeColumns: UI_Column[];
+	public    editable: boolean;
 
 	constructor( owner: UI, mixins: string[] = [] ) {
 		super( owner, mixins, Utils.dom.create( 'div', 'ui UI_Canvas' ) );
@@ -150,6 +148,17 @@ class UI_Canvas extends UI {
 			super.insert( child );
 			this.fire( 'column-changed', child );
 			return child;
+		}
+	}
+
+	/**
+	 * Inserts a DOM node either in the freezed viewport, either in the scrollable viewport.
+	 */
+	public appendDOMNode( inFreezed: boolean, node: any ) {
+		if ( inFreezed ) {
+			this._dom.fCanvasSize.appendChild( node );
+		} else {
+			this._dom.canvasSize.appendChild( node );
 		}
 	}
 
@@ -279,27 +288,23 @@ class UI_Canvas extends UI {
 	}
 
 	get scrollTop(): number {
-		return this._dom.viewport.scrollTop || this._scrollTop;
+		return this._dom.viewport.scrollTop;
 	}
 
 	get scrollLeft(): number {
-		return this._dom.viewport.scrollLeft || this._scrollLeft;
+		return this._dom.viewport.scrollLeft;
 	}
 
 	set scrollTop( top: number ) {
 		top = ~~top;
-		if ( top != this.scrollTop ) {
-			this._dom.viewport.scrollTop = this._scrollTop = top;
-			this.render();
-		}
+		this._dom.viewport.scrollTop = top;
+		this.render();
 	}
 
 	set scrollLeft( left: number ) {
 		left = ~~left;
-		if ( left != this.scrollLeft ) {
-			this._dom.viewport.scrollLeft = this._scrollLeft = left;
-			this.render();
-		}
+		this._dom.viewport.scrollLeft = left;
+		this.render();
 	}
 
 	get viewportWidth(): number {
@@ -351,21 +356,23 @@ class UI_Canvas extends UI {
 
 		( function( me ) {
 
+			var prevScrollLeft: number = me.scrollLeft,
+			    prevScrollTop : number = me.scrollTop;
+
 			me._dom.viewport.addEventListener( 'scroll', function( e ) {
 
 				var x: boolean = false,
 				    y: boolean = false;
 
-				if ( me._scrollLeft != me.scrollLeft ) {
+				if ( prevScrollLeft != me.scrollLeft ) {
 					x = true;
+					prevScrollLeft = me.scrollLeft;
 				}
 
-				if ( me._scrollTop != me.scrollTop ) {
+				if ( prevScrollTop != me.scrollTop ) {
 					y = true;
+					prevScrollTop = me.scrollTop;
 				}
-
-				me._scrollLeft = me.scrollLeft;
-				me._scrollTop = me.scrollTop;
 
 				if ( x ) {
 					me.fire( 'scroll-x' );

@@ -269,6 +269,7 @@ class MRowInterface extends UI implements IRowInterface {
 		}
 		if ( index != this._selectedIndex ) {
 			this._selectedIndex = index;
+			this.fire( 'index-changed' );
 		}
 	}
 

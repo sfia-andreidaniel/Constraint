@@ -1,3 +1,7 @@
+/** 
+ * The Interface for the Grids. Any UI element that is representing
+ * a grid should implement this interface.
+ */
 interface IGridInterface {
 	columns 		: ( freezed: boolean ) => UI_Column[];
 	length 			: number;
@@ -8,37 +12,74 @@ interface IGridInterface {
 	yPaintStart     : number;
 	indexPaintStart : number;
 	indexPaintEnd   : number;
+	editable        : boolean;
 
 	freezedColumns  : UI_Column[];
 	freeColumns     : UI_Column[];
 }
 
+/**
+ * The Grid Mixin. It injects methods and properties to an UI element
+ * that is extendint UI_Canvas, in order to implement the IGridInterface.
+ */
 class MGridInterface extends UI_Canvas implements IGridInterface {
 
-	// confirm this class is a mixin class
+	/**
+	 * Tells the Mixin injector that this is a valid mixin.
+	 */
 	public static isMixin: boolean = true;
 
-	// force overriding these properties into target.
+	/**
+	 * Tells the Mixin injector to force injecting these properties
+	 * into the target, even if the exist implemented on the target.
+	 */
 	public static forceProperties: string[] = [
 		'columns',
 		'postrender',
 		'freezedColumns',
 		'freeColumns',
 		'prerender',
-		'postrender'
+		'postrender',
+		'editable'
 	];
 
-	// do not mix these properties into target.
+	/**
+	 * Tells the Mixin injector to skip injecting these properties
+	 * on the target, even if they are implemented in this mixin
+	 */
 	public static skipProperties: string[] = [
 		'itemAt'
 	];
 
-	public freezedColumns: UI_Column[] = [];
-	public freeColumns:    UI_Column[] = [];
-	
-	public itemsPerPage: number;
+	/**
+	 * The columns which are freezed
+	 */
+	public freezedColumns : UI_Column[] = [];
 
-	public length: number;
+	/**
+	 * The columns which are not freezed, and have free scrolling
+	 */
+	public freeColumns    : UI_Column[] = [];
+
+	/**
+	 * Items per page, computed by the visible height / row height
+	 */
+	public itemsPerPage   : number;
+
+	/**
+	 * Total numbers of items in the grid
+	 */
+	public length         : number;
+
+	/**
+	 * Is this grid editable or not?
+	 */
+	protected _editable: boolean = false;
+
+	/**
+	 * Initializer for the UI element, that mixin is calling for each node
+	 * that it's embracing it.
+	 */
 
 	public static initialize( node: UI_Canvas ) {
 
@@ -49,6 +90,9 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 		    isResizing: boolean = false,
 		    prevX: number = 0;
 
+		/**
+		 * Forwards a mouse event to a grid column.
+		 */
 		function forwardEvent( eventType: string, point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {
 
 			if ( node.disabled || point.y < 0 ) {
@@ -104,6 +148,10 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 
 		}
 
+		/**
+		 * Computes the resizing column that will be resized when the user places the
+		 * mouse cursor on the right edge in the column header.
+		 */
 		function getResizeTargetColumn( point: IPoint ): UI_Column {
 
 			var left: number = 0,
@@ -135,11 +183,18 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 
 		}
 
+		/**
+		 * Dettaches the resize event from the document body, when the user release the mouse button
+		 */
 		function resizeRelease( ev ) {
 			isResizing = false;
 			document.body.removeEventListener( 'mouseup', resizeRelease, true );
 		}
 
+		/**
+		 * Computes details about columns, their displaying in the header, their widths, etc.
+		 * This function is called each time a column emits the "column-changed" event.
+		 */
 		function computeColumns() {
 			
 			node.header = !!node.childNodes.length;
@@ -158,6 +213,8 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 				for ( i=0; i<len; i++ ) {
 
 					if ( columns[i].visible && columns[i].freezed ) {
+
+						columns[i].left.distance = freezedWidth;
 
 						freezedWidth += columns[i].width;
 						node['freezedColumns'].push( columns[i] );
@@ -217,6 +274,8 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 					
 					if ( columns[i].visible && !columns[i].freezed ) {
 						
+						columns[i].left.distance = logicalWidth;
+
 						logicalWidth += columns[i].width;
 						node['freeColumns'].push( columns[i] );
 
@@ -360,7 +419,8 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 				    left: number = 0;
 				
 				if ( point.y < 0 ) {
-					// clicked on a column?
+
+					// clicked on a column header?
 
 					if ( node.freezedColumns ) {
 						for ( i=0, len = node.freezedColumns.length; i<len; i++ ) {
@@ -400,12 +460,12 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 			forwardEvent( 'dblclick', point, which, ctrlKey, altKey, shiftKey );
 		} );
 
-		// Each time the columns are triggering this event, we must
-		// update them in the main parent.
-		node.on( 'column-changed', computeColumns );
-		node.on( 'viewport-resized', computeColumns );
-		node.on( 'scroll-x', computeColumns );
+		// Each time the columns are triggering this event, we must update them in the main parent.
+		node.on( 'column-changed',    computeColumns );
+		node.on( 'viewport-resized',  computeColumns );
+		node.on( 'scroll-x',          computeColumns );
 		
+		// we add an event to the "sort" event emited by the columns after we're clicking their header.
 		node.on( 'sort', function( fieldName: string, sortState: ESortState, dataType: string, inputFormat?: string ) {
 
 			if ( !fieldName || !node['columns'] ) {
@@ -429,9 +489,24 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 
 		} );
 
-
+		// we repaint the node if the node becomes disabled.
 		node.on( 'disabled', function() {
 			node.onRepaint();
+		} );
+
+		// when the selected index changes, if we have an editable column with it's editor active,
+		// we modify the rowIndex of the editor of that column
+		node.on( 'index-changed', function() {
+			if ( node['columns'] ) {
+				var columns: UI_Column[] = node['columns']( null ),
+				    i: number,
+				    len: number = columns.length;
+				for ( i=0; i<len; i++ ) {
+					if ( columns[i].editor ) {
+						columns[i].editor.rowIndex = node.selectedIndex;
+					}
+				}
+			}
 		} );
 
 	}
@@ -454,7 +529,9 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 		}
 	}
 
-	// Does the column rendering. @Overrides target
+	/**
+	 * Renders the columns contents on their appropriated context mappings
+	 */
 	public renderColumns() {
 		// first we paint free width columns, and after that we paint freezed columns
 		var i: number = 0,
@@ -474,6 +551,10 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 		}
 	}
 
+	/**
+	 * Renderer that is executed in pre-render phase, which renders the contents
+	 * of the freezed columns onto their appropriate canvas context mappings.
+	 */
 	public prerenderFreezed() {
 		var ctx = this.globalContext;
 
@@ -514,6 +595,10 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 
 	}
 
+	/**
+	 * Renderer that is executed in pre-render phase, which renders the contents
+	 * of the free-scrollable columns onto their appropriate canvas context mappings.
+	 */
 	public prerenderFree() {
 		var ctx = this.globalContext;
 
@@ -554,23 +639,38 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 		}
 	}
 
+	/**
+	 * Pre-renderer.
+	 */
 	public prerender() {
 		this.prerenderFree();
 	}
 
+	/**
+	 * Computes the physical "top" position where the first grid row should be
+	 * painted on the canvas viewport.
+	 */
 	get yPaintStart(): number {
 		return -( this.scrollTop % this.rowHeight ) || 0;
 	}
 
+	/**
+	 * Computes the index of the first row that should be painted in the viewport.
+	 */
 	get indexPaintStart(): number {
 		return ~~( this.scrollTop / this.rowHeight );
 	}
 
+	/**
+	 * Computes the index of the last row that should be painted in the viewport.
+	 */
 	get indexPaintEnd(): number {
 		return Math.min( this.length, this.indexPaintStart + this.itemsPerPage );
 	}
 
-	// @overrides the postrender on the canvas
+	/**
+	 * The post-renderer starts painting on canvas after the rendering phase finish.
+	 */
 	public postrender() {
 
 		var yPaintStart   : number = this.yPaintStart + UI_Column._theme.height + .5,
@@ -611,7 +711,7 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 
 			for ( i=0, len = this.freeColumns.length; i<len; i++ ) {
 				this.freeColumns[i].paintHeader();
-				// this.freeColumns[i].paintEdge();
+				this.freeColumns[i].onRepaint();
 			}
 
 			/* Second we paint freezed columns
@@ -619,7 +719,7 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 
 			for ( i=0, len = this.freezedColumns.length; i<len; i++ ) {
 				this.freezedColumns[i].paintHeader();
-				// this.freezedColumns[i].paintEdge();
+				this.freezedColumns[i].onRepaint();
 			}
 
 			header.fillStyle = UI_Column._theme.border[ this.disabled ? 'disabled' : 'enabled' ];
@@ -639,11 +739,65 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 			)
 		}
 
+	}
+
+	/**
+	 * Returns the item at position "index" in the grid collection (Store)
+	 */
+	public itemAt( index: number ): Store_Item {
+		throw new Error( 'Should be implemented by target' );
+	}
+
+	// ******* EDITABLE PART *******
+
+	/**
+	 * Does this grid allows it's columns to be edited?
+	 *
+	 * If the grid doesn't allow it's columns to be edited, the "editable" property
+	 * on it's columns will be always "false"
+	 */
+	get editable() {
+		return this._editable;
+	}
+
+	set editable( on: boolean ) {
+		on = !!on;
+		if ( on != this._editable ) {
+			this._editable = on;
+			if ( !on ) {
+				this.disposeAllColumnsEditors();
+			}
+		}
+	}
+
+	/**
+	 * Returns TRUE if a column can create an editor. In the background, the grid interface
+	 * checks the other columns to see if they have editors, and if they have editors in a closable state.
+	 */
+	public canCreateEditor( column: UI_Column ): boolean {
+
+		var columns: UI_Column[] = this.columns( null ),
+		    i: number,
+		    len: number = columns.length;
+
+		for ( i=0; i<len; i++ ) {
+			if ( ( columns[i] != column ) && ( !columns[i].canDisposeEditor() ) ) {
+				return false;
+			}
+		}
+
+		return true;
 
 	}
 
-	public itemAt( index: number ): Store_Item {
-		throw new Error( 'Should be implemented by target' );
+	public disposeAllColumnsEditors() {
+		var columns: UI_Column[] = this.columns( null ),
+		    i: number,
+		    len: number = columns.length;
+
+		for ( i=0; i<len; i++ ) {
+			columns[i].disposeEditor();
+		}
 	}
 
 }

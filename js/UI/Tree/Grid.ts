@@ -17,6 +17,10 @@ class UI_Tree_Grid extends UI_Tree implements IGridInterface {
 		// THE WHOLE MOUSE HANDLER IS CONTROLED BY MGridInterface.
 	}
 
+	protected setupKeyboardHandler() {
+		// THE WHOLE KEYBOARD HANDLER IS CONTROLLED BY MGridInterface.
+	}
+
 	// @overrided by MGridInterface
 	public renderColumns() {}
 
@@ -43,5 +47,9 @@ Constraint.registerClass( {
 		"UI_Column"
 	],
 	"properties": [
+		{
+			"name": "editable",
+			"type": "boolean"
+		}
 	]
 } );

@@ -80,6 +80,44 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 		return this.defaultContext;
 	}
 
+	/**
+	 * Setups the keyboard handler on the tree.
+	 * It is placed on a method, because on sub-classes we might change the behaviours
+	 * of the keyboard events.
+	 */
+	 protected setupKeyboardHandler() {
+	
+		( function( me ) {
+
+			me.on( 'keydown', function( evt ) {
+
+				if ( me.disabled ) {
+					return;
+				}
+
+				var code = evt.keyCode || evt.charCode;
+
+				switch ( code ) {
+					// LEFT
+					case 37:
+						me.collapseNode();
+						break;
+					// RIGHT
+					case 39:
+						me.expandNode();
+						break;
+					// SPACE
+					case 32:
+						me.toggleNode();
+						break;
+				}
+
+			} );
+
+		} )( this );
+	}
+
+
 	/* Must be reimplemented also by the UI_Tree_Grid */
 	protected setupMouseHandler() {
 
@@ -168,27 +206,7 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 			} );
 
 			me.setupMouseHandler();
-
-			me.on( 'keydown', function( evt ) {
-
-				if ( me.disabled ) {
-					return;
-				}
-
-				var code = evt.keyCode || evt.charCode;
-
-				switch ( code ) {
-					// LEFT
-					case 37:
-						me.collapseNode();
-						break;
-					// RIGHT
-					case 39:
-						me.expandNode();
-						break;
-				}
-
-			} );
+			me.setupKeyboardHandler();
 
 			me.on( 'sort', function( fieldName: string, sortState: ESortState, dataType: string, inputFormat?: string ) {
 
@@ -286,7 +304,7 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 		}
 	}
 
-	private collapseNode() {
+	protected collapseNode() {
 		if ( this.selectedIndex == -1 ) {
 			return;
 		}
@@ -298,7 +316,7 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 		}
 	}
 
-	private expandNode() {
+	protected expandNode() {
 		if ( this.selectedIndex == -1 ) {
 			return;
 		}
@@ -310,11 +328,21 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 		}
 	}
 
+	protected toggleNode() {
+		if ( this.selectedIndex == -1 ) {
+			return;
+		}
+
+		var node: Store_Node = <Store_Node>this._view.itemAt( this.selectedIndex );
+
+		node.collapsed = !node.collapsed;
+
+	}
+
+
 	public render() {
 		if ( this._render ) {
 			this._render.run();
-			this._dom.viewport.scrollLeft = this._scrollLeft;
-			this._dom.viewport.scrollTop = this._scrollTop;
 		}
 	}
 
@@ -565,8 +593,8 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 		var rowTop = UI_Tree._theme.option.height * rowIndex,
 		    rowBottom = rowTop + UI_Tree._theme.option.height;
 
-		if ( rowBottom > this.scrollTop + this._paintRect.height ) {
-			this.scrollTop = rowBottom - this._paintRect.height;
+		if ( rowBottom > this.scrollTop + this._paintRect.height - ( ~~this.header * UI_Column._theme.height ) - Utils.dom.scrollbarSize ) {
+			this.scrollTop = rowBottom - this._paintRect.height + ( ~~this.header * UI_Column._theme.height ) + Utils.dom.scrollbarSize;
 		} else
 		if ( rowTop < this.scrollTop ) {
 			this.scrollTop = rowTop;

@@ -90,10 +90,6 @@ Constraint.registerClass( {
 		{
 			"name": "tabIndex",
 			"type": "number"
-		},
-		{
-			"name": "active",
-			"type": "boolean"
 		}
 	]
 } );

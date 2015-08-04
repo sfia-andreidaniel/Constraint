@@ -295,4 +295,23 @@
 
 	};
 
+	@Theme UI_Column_Editor {
+
+		border: {
+			width: 2;
+			color: black;
+		};
+
+	};
+
+	@Theme UI_TextBox {
+		defaultWidth: 100;
+		defaultHeight: 25;
+		
+		background: {
+			enabled: $enabledControlBackgroundColor;
+			disabled: $disabledControlBackgroundColor;
+		};
+	};
+
 };

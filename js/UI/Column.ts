@@ -1,5 +1,16 @@
+/**
+ * The UI_Column class is used to represent columns inside of grids and tree-grids.
+ * 
+ * It **provides rendering, editor and sorting mechanisms** for various data types, such as
+ * string, int, float, boolean, date, etc.
+ *
+ *
+ */
 class UI_Column extends UI {
 
+	/**
+	 * Column's theme settings.
+	 */
 	public static _theme: any = {
 		height: $I.number('UI.UI_Column/height'),
 		background: {
@@ -19,42 +30,175 @@ class UI_Column extends UI {
 		}
 	};
 
+	/**
+	 * Column's property name field binding in the store.
+	 */
 	protected _name      : string;
+
+	/**
+	 * Column's caption, that is visible by the user
+	 */
 	protected _caption   : string;
+
+	/**
+	 * Column's data type. We need the data type in order to know what kind of
+	 * render / editor to instantiate on the column.
+	 */
 	protected _type      : EColumnType = EColumnType.STRING;
+
+	/**
+	 * The column's renderer, which is reponsible with the "painting" of the
+	 * column in the column canvas parent.
+	 */
 	protected _renderer  : UI_Column_Renderer = null;
+
+	/**
+	 * Weather that this is a "freezed" column or not.
+	 */
 	protected _freezed   : boolean = false;
+
+	/**
+	 * Weather this column can be sorted when the user clicks on the
+	 * column header, or not
+	 */
 	protected _sortable  : boolean = true;
+
+	/**
+	 * The sort state of the column (ASC, DESC, or NONE). Based on the
+	 * value of this property, we know to draw the mini-arrows on the
+	 * header of the column also.
+	 */
 	protected _sortState : ESortState = ESortState.NONE;
+
+	/**
+	 * Weather this column can be resized by the user or not.
+	 */
 	protected _resizable : boolean = true;
+
+	/**
+	 * Weather this colum is visible or not in the viewport.
+	 */
 	protected _visible   : boolean = true;
+
+	/**
+	 * If this colum is of type EColumnType.FLOAT, EColumnType.BYTES, what precision to be rendered for the numbers?
+	 */
 	protected _precision : number  = 2;
+
+	/**
+	 * If this colum is of type EColumnType.STRING, denotes the fact that the values
+	 * from the column are case sensitive or not.
+	 */
 	protected _caseSensitive: boolean = false;
+
+	/**
+	 * If this colum is of type EColumnType.DATE, denotes the input of the dates in the
+	 * store this column is using for sorting / parsing dates.
+	 */
 	protected _inputFormat: string = 'MS';
+
+	/**
+	 * If this colum is of type EColumnType.DATE, denotes the format for rendering the
+	 * dates on the screen.
+	 */
 	protected _outputFormat: string = Utils.date.DEFAULT_DATE_FORMAT;
 
+	/**
+	 * The editor of the column. If the owner of the colum is editable, an editor is
+	 * instantiated for the column.
+	 */
+	protected _editor    : UI_Column_Editor = null;
+
+	/**
+	 * Denotes the fact that this column is editable. If this column is not editable,
+	 * the editor of the column won't be able to enter editMode.
+	 */
+	protected _editable  : boolean = false;
+
+	/**
+	 * The Canvas Context Mapper used for the column's header.
+	 */
 	protected _headerContext: UI_Canvas_ContextMapper;
+
+	/**
+	 * The Canvas Context Mapper used for the column's body.
+	 */
 	protected _canvasContext: UI_Canvas_ContextMapper;
 
+	/**
+	 * Reference to the column's grid, that is implementing the IGridInterface.
+	 */
+	protected _grid: MGridInterface;
+
+	/**
+	 * Constructor.
+	 */
 	constructor( owner: UI ) {
 	    super( owner );
 	    this._renderer = UI_Column_Renderer.createForType( this._type, this );
+	    this._grid = <MGridInterface>owner;
 	}
 
+	/**
+	 * Editable accessor. Is this column editable?
+	 */
+	get editable(): boolean {
+		
+		if ( !this._grid || !this._grid.editable ) {
+			return false;
+		} else {
+
+			switch ( this._type ) {
+				case EColumnType.ROW_NUMBER:
+				case EColumnType.BYTES:
+					return false;
+					break;
+				default:
+					return this._editable;
+					break;
+			}
+
+		}
+	}
+
+	/**
+	 * Editable accessor. Is this column editable?
+	 */
+	set editable( editable: boolean ) {
+		editable = !!editable;
+		if ( editable != this._editable ) {
+			this._editable = editable;
+			//TODO: Maybe fire an event at this point?
+		}
+
+	}
+
+	/**
+	 * Returns the editor of the column, if any.
+	 */
+	get editor(): UI_Column_Editor {
+		return this._editor || null;
+	}
+
+	/**
+	 * Shorthand for column's owner scrollTop value.
+	 */
 	get scrollTop(): number {
 		return this._owner ? (<UI_Canvas>this._owner).scrollTop : 0;
 	}
 
+	/**
+	 * Shorthand for column's owner.itemAt( index ) value.
+	 */
 	public itemAt(index: number ) {
 		return this._owner ? (<UI_Canvas>this._owner).itemAt( index ) : null;
 	}
 
+	/**
+	 * Returns the column's header canvas context mapper
+	 */
 	get headerContext(): UI_Canvas_ContextMapper {
 		return this._headerContext || null;
-	}
-
-	get canvasContext(): UI_Canvas_ContextMapper {
-		return this._canvasContext || null;
 	}
 
 	set headerContext( ctx: UI_Canvas_ContextMapper ) {
@@ -64,6 +208,13 @@ class UI_Column extends UI {
 		}
 	}
 
+	/**
+	 * Returns the column's body canvas context mapper.
+	 */
+	get canvasContext(): UI_Canvas_ContextMapper {
+		return this._canvasContext || null;
+	}
+
 	set canvasContext( ctx: UI_Canvas_ContextMapper ) {
 		ctx = ctx || null;
 		if ( ctx != this._canvasContext ) {
@@ -71,12 +222,11 @@ class UI_Column extends UI {
 		}
 	}
 
+	/**
+	 * Returns the Date input format this column is using.
+	 */
 	get inputFormat(): string {
 		return this._inputFormat;
-	}
-
-	get outputFormat(): string {
-		return this._outputFormat;
 	}
 
 	set inputFormat( inputFormat: string ) {
@@ -84,11 +234,22 @@ class UI_Column extends UI {
 		this._inputFormat = inputFormat;
 	}
 
+	/**
+	 * Return the Date output format this column is using.
+	 */
+	get outputFormat(): string {
+		return this._outputFormat;
+	}
+
 	set outputFormat( outputFormat: string ) {
 		outputFormat = String( outputFormat || '' );
 		this._outputFormat = outputFormat;
 	}
 
+	/**
+     * Returns the columns field name used to extract data when rendering
+     * from the column's store owner
+     */
 	get name(): string {
 		return this._type == EColumnType.TREE ? ( this._owner ? ( this._owner['nameField'] || 'name' ) : 'name' ) : ( String( this._name || '' ) || null );
 	}
@@ -103,6 +264,9 @@ class UI_Column extends UI {
 		}
 	}
 
+	/**
+	 * Returns weather this column should treat strings in a case sensitive way or not.
+	 */
 	get caseSensitive(): boolean {
 		return this._caseSensitive;
 	}
@@ -111,6 +275,9 @@ class UI_Column extends UI {
 		this._caseSensitive = !!sensitive;
 	}
 
+	/**
+	 * Returns the precision this column is using when rendering float-based data types.
+	 */
 	get precision(): number {
 		return this._precision;
 	}
@@ -121,6 +288,9 @@ class UI_Column extends UI {
 		this._precision = precision;
 	}
 
+	/**
+	 * Returns the caption of the column that the user is seeing in the grid.
+	 */
 	get caption(): string {
 		return String( this._caption || '' );
 	}
@@ -135,6 +305,9 @@ class UI_Column extends UI {
 		}
 	}
 
+	/**
+	 * Returns the type of data this column is handling
+	 */
 	get type(): EColumnType {
 		return this._type;
 	}
@@ -149,10 +322,23 @@ class UI_Column extends UI {
 		}
 	}
 
+	/**
+	 * Returns the owner of the column, casted to IGridInterface.
+	 */
+	get grid(): MGridInterface {
+		return this._grid;
+	}
+
+	/**
+	 * Returns the renderer of the column.
+	 */
 	get renderer(): UI_Column_Renderer {
 		return this._renderer;
 	}
 
+	/**
+	 * Returns weather this colum is freezed or not.
+	 */
 	get freezed( ): boolean {
 		return this._freezed;
 	}
@@ -167,8 +353,11 @@ class UI_Column extends UI {
 		}
 	}
 
+	/**
+	 * Returns weather this colum is sortable or not.
+	 */
 	get sortable(): boolean {
-		return this._sortable && this._type != EColumnType.ROW_NUMBER;
+		return this._sortable && this._type != EColumnType.ROW_NUMBER && !!this._grid;
 	}
 
 	set sortable( sortable: boolean ) {
@@ -181,6 +370,9 @@ class UI_Column extends UI {
 		}
 	}
 
+	/**
+	 * Returns the direction of the sorter that is sorting this column.
+	 */
 	get sortState(): ESortState {
 		return this._sortState;
 	}
@@ -199,6 +391,9 @@ class UI_Column extends UI {
 		}
 	}
 
+	/**
+	 * Returns weather this column is resizable by the user or not.
+	 */
 	get resizable(): boolean {
 		return this._resizable;
 	}
@@ -210,10 +405,16 @@ class UI_Column extends UI {
 		}
 	}
 
+	/**
+	 * Returns the header height of this column.
+	 */
 	get height(): number {
 		return UI_Column._theme.height;
 	}
 
+	/**
+	 * Returns the width of this column
+	 */
 	get width(): number {
 		return this._width;
 	}
@@ -228,6 +429,9 @@ class UI_Column extends UI {
 		}
 	}
 
+	/**
+	 * Returns weather this column is visible or not.
+	 */
 	get visible(): boolean {
 		return this._visible;
 	}
@@ -242,10 +446,9 @@ class UI_Column extends UI {
 		}
 	}
 
-	get target(): MGridInterface {
-		return <MGridInterface>this._owner || null;
-	}
-
+	/**
+	 * Paints the column header on it's owner
+	 */
 	public paintHeader() {
 		if ( this._headerContext ) {
 
@@ -304,8 +507,75 @@ class UI_Column extends UI {
 		}
 	}
 
-	/* Paints the right edge of the column in the "body" of the parent */
+	/** 
+	 * Creates a column editor for this column. All column editors of the other columns
+	 * in the column owner will be destroyed.
+	 * 
+	 * @returns weather an editor has been created or not.
+	 *
+	 */
+	public createEditor(): boolean {
 
+		if ( this.disabled ) {
+			return false;
+		}
+
+		if ( this._grid ) {
+
+			if ( this._editor ) {
+				this.disposeEditor();
+			}
+
+			if ( this._grid.canCreateEditor( this ) ) {
+
+				this._grid.disposeAllColumnsEditors();
+
+				this._editor = UI_Column_Editor.create( this );
+				this._editor.onRepaint();
+
+				this._editor.rowIndex = this._grid.selectedIndex;
+
+				return true;
+
+			} else {
+
+				// we cannot create an editor. Another editor is in an invalid state, and must be solved first.
+				return false;
+
+			}
+
+		} else {
+			
+			return false;
+
+		}
+
+	}
+
+	/**
+	 * Returns TRUE if either the two conditions are met:
+	 * - The column doesn't have an opened editor
+	 * - The column has an editor which is in a disposable (valid) state.
+	 */
+	public canDisposeEditor(): boolean {
+		if ( !this._editor ) {
+			return true;
+		} else {
+			return this._editor.isValid;
+		}
+	}
+
+	/**
+	 * If the column has an associated editor, it disposes it.
+	 */
+	public disposeEditor() {
+		if ( this._editor ) {
+			this._editor.remove();
+			this._editor = undefined;
+		}
+	}
+
+	/* Paints the right edge of the column in the "body" of the parent */
 	public paintEdge() {
 
 		var ctx = this.canvasContext;
@@ -317,7 +587,8 @@ class UI_Column extends UI {
 
 	}
 
-	/* @Override UI.remove */
+	/** See UI.remove
+	 */
 	public remove(): UI {
 		var owner: UI = this._owner;
 		super.remove();
@@ -327,6 +598,10 @@ class UI_Column extends UI {
 		return this;
 	}
 
+	/**
+	 * When the user clicks on the header of the column, this method is responsible
+	 * with the appropriate action (usually sorting the column).
+	 */
 	public onHeaderClick() {
 		if ( this.disabled || !this.sortable ) {
 			return;
@@ -351,6 +626,33 @@ class UI_Column extends UI {
 				this._renderer.sortDataType, 
 				this._type == EColumnType.DATE ? this._inputFormat : null
 			);
+		}
+	}
+
+	/**
+	 * Required by the editor, in order to be inserted in the appropriate node of the
+	 * column's owner.
+	 */
+	protected insertDOMNode( node: UI ): UI {
+		if ( this._owner && node && node._root ) {
+			(<UI_Canvas>this._owner)['appendDOMNode']( this.freezed, node._root );
+		}
+
+		return node;
+	}
+
+	/**
+	 * @Overrides UI.onRepaint. Repaints the column, together with it's editors.
+	 */
+	public onRepaint(): boolean {
+
+		if ( this._children ) {
+			for ( var i=0, len = this._children.length; i<len; i++ ) {
+				this._children[i].onRepaint();
+			}
+			return true;
+		} else {
+			return false;
 		}
 	}
 }
@@ -381,6 +683,10 @@ Constraint.registerClass( {
 		},
 		{
 			"name": "caseSensitive",
+			"type": "boolean"
+		},
+		{
+			"name": "editable",
 			"type": "boolean"
 		}
 	]

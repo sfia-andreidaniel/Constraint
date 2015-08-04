@@ -5,13 +5,13 @@ class UI_Column_Renderer_Tree extends UI_Column_Renderer {
 	}
 	
 	public onClick( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {
-		var rowIndex      = ~~( point.y / this._column.target.rowHeight ),
-		    item          = <Store_Node>this._column.target.itemAt( rowIndex ),
+		var rowIndex      = ~~( point.y / this._column.grid.rowHeight ),
+		    item          = <Store_Node>this._column.itemAt( rowIndex ),
 		    numConnectors = item.connectors.length;
 
 		/* If x is in the range of the last connector, click on the expander */
-		if ( ~~( point.x / this._column.target.rowHeight ) == numConnectors - 1 ) {
-			this._column.target['onRowExpanderClick']( rowIndex );
+		if ( ~~( point.x / this._column.grid.rowHeight ) == numConnectors - 1 ) {
+			this._column.grid['onRowExpanderClick']( rowIndex );
 		}
 
 	}
@@ -20,29 +20,29 @@ class UI_Column_Renderer_Tree extends UI_Column_Renderer {
 
 		var ctx = this._column.canvasContext;
 
-		if ( !ctx || !this._column.target ) {
+		if ( !ctx || !this._column.grid ) {
 			return;
 		}
 
-		var skip 			: number = this._column.target.indexPaintStart,
-		    stop            : number = this._column.target.indexPaintEnd,
-		    startY 			: number = this._column.target.yPaintStart,
-		    paintRows  		: number = this._column.target.itemsPerPage,
+		var skip 			: number = this._column.grid.indexPaintStart,
+		    stop            : number = this._column.grid.indexPaintEnd,
+		    startY 			: number = this._column.grid.yPaintStart,
+		    paintRows  		: number = this._column.grid.itemsPerPage,
 		    i 				: number,
 		    len 			: number,
 		    opt 			: Store_Node,
-		    rowHeight       : number = this._column.target.rowHeight,
+		    rowHeight       : number = this._column.grid.rowHeight,
 
-		    isActive 		: boolean = !!this._column.target['active'] && this._column.target.form.active,
-		    isDisabled 		: boolean = this._column.target.disabled,
+		    isActive 		: boolean = !!this._column.grid['active'] && this._column.grid.form.active,
+		    isDisabled 		: boolean = this._column.grid.disabled,
 		    paddingLeft 	: number,
 		    ci 				: number,
 		    connectors      : number[],
 		    numConnectors 	: number,
 		    icon            : string,
 		    width4          : number = ctx.width - 4,
-		    nameField       : string = (this._column.target)['nameField'] || 'name',
-		    iconField       : string = (this._column.target)['iconField'] || 'icon',
+		    nameField       : string = (this._column.grid)['nameField'] || 'name',
+		    iconField       : string = (this._column.grid)['iconField'] || 'icon',
 		    label           : string;
 
 		ctx.beginPaint();
@@ -51,7 +51,7 @@ class UI_Column_Renderer_Tree extends UI_Column_Renderer {
 		ctx.textBaseline = "middle";
 
 		for ( i=skip; i< stop; i++ ) {
-			opt = <Store_Node>this._column.target.itemAt( i );
+			opt = <Store_Node>this._column.grid.itemAt( i );
 			connectors = opt.connectors;
 			numConnectors = connectors.length;
 			paddingLeft = ( numConnectors + 1 ) * rowHeight;

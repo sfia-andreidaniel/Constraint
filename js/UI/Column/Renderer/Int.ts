@@ -8,22 +8,22 @@ class UI_Column_Renderer_Int extends UI_Column_Renderer {
 		
 		var ctx = this._column.canvasContext;
 
-		if ( !ctx || !this._column.target || !this._column.name ) {
+		if ( !ctx || !this._column.grid || !this._column.name ) {
 			return;
 		}
 
-		var skip 			: number = this._column.target.indexPaintStart,
-		    stop            : number = this._column.target.indexPaintEnd,
-		    startY 			: number = this._column.target.yPaintStart,
-		    paintRows  		: number = this._column.target.itemsPerPage,
-		    rowHeight       : number = this._column.target.rowHeight,
+		var skip 			: number = this._column.grid.indexPaintStart,
+		    stop            : number = this._column.grid.indexPaintEnd,
+		    startY 			: number = this._column.grid.yPaintStart,
+		    paintRows  		: number = this._column.grid.itemsPerPage,
+		    rowHeight       : number = this._column.grid.rowHeight,
 		    i 				: number,
 		    len 			: number,
 		    opt 			: Store_Item,
 		    propertyName    : string = this._column.name,
 
-		    isActive 		: boolean = !!this._column.target['active'] && this._column.target.form.active,
-		    isDisabled 		: boolean = this._column.target.disabled,
+		    isActive 		: boolean = !!this._column.grid['active'] && this._column.grid.form.active,
+		    isDisabled 		: boolean = this._column.grid.disabled,
 		    value           : number,
 		    valueStr        : string,
 		    color           : string,
@@ -49,7 +49,7 @@ class UI_Column_Renderer_Int extends UI_Column_Renderer {
 
 		for ( i=skip; i< stop; i++ ) {
 			
-			opt = <Store_Item>this._column.target.itemAt( i );
+			opt = <Store_Item>this._column.itemAt( i );
 			
 			color = isDisabled
 				? ( opt.selected ? UI_Canvas._theme.font.color.selectedDisabled : UI_Canvas._theme.font.color.disabled )

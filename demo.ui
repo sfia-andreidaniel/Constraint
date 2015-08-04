@@ -66,6 +66,19 @@
 		right: 20;
 		bottom: 40;
 
+		@UI_Tab Tab_Text {
+			caption: 'Text inputs';
+
+			@UI_TextBox Text1 {
+				value: 'Input value';
+				placeholder: 'Input placeholder';
+				left: 10;
+				top: 10;
+				right: 10;
+			};
+
+		};
+
 		@UI_Tab Tab0 {
 			caption: 'Tree';
 
@@ -74,6 +87,7 @@
 				top: 20;
 				right: 20;
 				bottom: 20;
+				editable: true;
 
 				nestedItems: <![JSON[
 					[
@@ -200,8 +214,9 @@
 
 			    @UI_Column {
 			    	type: TREE;
-			    	width: 600;
+			    	width: 200;
 			    	caption: 'Places';
+			    	editable: yes;
 			    };
 
 			    @UI_Column {
@@ -210,6 +225,7 @@
 			    	caption: 'Type';
 			    	name: 'type';
 			    	textAlign: RIGHT;
+			    	editable: yes;
 			    };
 
 			    @UI_Column {
@@ -218,6 +234,7 @@
 			    	caption: 'Online';
 			    	name: 'online';
 			    	textAlign: CENTER;
+			    	editable: yes;
 			    };
 
 			    @UI_Column {
@@ -226,6 +243,7 @@
 			    	caption: 'Size';
 			    	name: 'size';
 			    	textAlign: RIGHT;
+			    	editable: yes;
 			    };
 
 			    @UI_Column {

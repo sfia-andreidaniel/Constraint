@@ -47,6 +47,7 @@
 
 /// <reference path="UI/Anchor.ts" />
 /// <reference path="UI/Anchor/Form.ts" />
+/// <reference path="UI/Anchor/ColumnEditor.ts" />
 /// <reference path="UI/Padding.ts" />
 /// <reference path="UI/Canvas/ContextMapper.ts" />
 /// <reference path="UI/Screen.ts" />
@@ -58,6 +59,7 @@
 /// <reference path="UI/Button.ts" />
 /// <reference path="UI/CheckBox.ts" />
 /// <reference path="UI/RadioBox.ts" />
+/// <reference path="UI/TextBox.ts" />
 
 /// <reference path="UI/Canvas.ts" />
 /// <reference path="Mixins/MGridInterface.ts" />
@@ -72,6 +74,7 @@
 /// <reference path="UI/MenuItem.ts" />
 /// <reference path="UI/Tree.ts" />
 /// <reference path="UI/Tree/Grid.ts" />
+
 /// <reference path="UI/Column.ts" />
 /// <reference path="UI/Column/Renderer.ts" />
 /// <reference path="UI/Column/Renderer/Tree.ts" />
@@ -82,4 +85,5 @@
 /// <reference path="UI/Column/Renderer/Boolean.ts" />
 /// <reference path="UI/Column/Renderer/Bytes.ts" />
 /// <reference path="UI/Column/Renderer/Date.ts" />
-
+/// <reference path="UI/Column/Editor.ts" />
+/// <reference path="UI/Column/Editor/Tree.ts" />

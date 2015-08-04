@@ -1,0 +1,19 @@
+{$N UI.UI_Column}
+
+{$N UI.UI_Column_Editor}
+.ui.UI_Column_Editor {
+	display: block;
+	border: ${border.width}px solid ${border.color};
+	width: 20px;
+	height: 20px;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+
+	-webkit-pointer-events: none;
+	-moz-pointer-events: none;
+	-o-pointer-events: none;
+	-ms-pointer-events: none;
+	pointer-events: none;
+
+}

@@ -1,55 +1,72 @@
+/**
+ * The UI_Column_Renderer implements a grid column mechanism that is used to
+ * draw the column contents on the column grid.
+ */
+
 class UI_Column_Renderer {
 	
+	/**
+	 * Renderer's column owner
+	 */
 	protected _column: UI_Column;
 
+	/**
+	 * Constructor.
+	 */
 	constructor( column: UI_Column ) {
 		this._column = column;
 	}
 
+	/**
+	 * Renders the column body in the canvas.
+	 */
 	public render( ) {
-		
-		var ctx = this._column.canvasContext;
-		
-		if ( !ctx ) {
-			return;
-		}
-
-		ctx.beginPaint();
-
-		ctx.fillStyle = 'black';
-		ctx.fillRect( 0, 0, ctx.width, ctx.height );
-
-		ctx.endPaint();
-
+		// overrided by ancestors
 	}
 
+	/**
+	 * Returns the sort data type that is passed to the sorter.
+	 */
 	get sortDataType(): string {
 		return 'istring';
 	}
 
 	/* IF THE RENDERER IS USING MOUSE EVENTS, THESE METHODS CAN BE IMPLEMENTED. */
 
+	/**
+	 * Handles a mouse down event in the column body.
+	 */
 	public onMouseDown( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {
-		//console.log( 'mousedown: ', point, which );
+		if ( this._column && this._column.grid && this._column.grid.editable ) {
+			this._column.createEditor();
+		}
 	}
 
-	public onMouseUp  ( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {
-		//console.log( 'mouseup: ', point, which );
-	}
+	/**
+	 * Handles a mouse up event in the column body.
+	 */
+	public onMouseUp  ( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {}
 
-	public onMouseMove( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {
-		//console.log( 'mousemove: ', point, which );
-	}
+	/**
+	 * Handles a mouse move event in the column body.
+	 */
+	public onMouseMove( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {}
 
-	public onClick    ( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {
-		//console.log( 'click', point, which );
-	}
+	/**
+	 * Handles a click event in the column body.
+	 */
+	public onClick    ( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {}
 
-	public onDblClick ( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {
-		//console.log( 'dblclick', point, which );
-	}
 
-	public static createForType( type: EColumnType, inColumn: UI_Column ) {
+	/**
+	 * Handles a double click event in the colum body.
+	 */
+	public onDblClick ( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {}
+
+	/**
+	 * Creates a column renderer for a specific column data type.
+	 */
+	public static createForType( type: EColumnType, inColumn: UI_Column ): UI_Column_Renderer {
 		switch ( type ) {
 			case EColumnType.ROW_NUMBER:
 				return new UI_Column_Renderer_RowNumber( inColumn );

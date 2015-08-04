@@ -1,0 +1,17 @@
+{$N UI.UI_TextBox}
+.ui.UI_TextBox {
+	display: block;
+	width: ${defaultWidth}px;
+	height: ${defaultHeight}px;
+	background-color: ${background.enabled};
+}
+
+.ui.UI_TextBox > input[type=text] {
+	border: none;
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	background-color: transparent;
+	outline: none !important;
+}

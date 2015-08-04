@@ -126,8 +126,6 @@ class UI_ListBox extends UI_Canvas implements IFocusable, IRowInterface {
 	public render() {
 		if ( this._render ) {
 			this._render.run();
-			this._dom.viewport.scrollLeft = this._scrollLeft;
-			this._dom.viewport.scrollTop = this._scrollTop;
 		}
 	}
 
