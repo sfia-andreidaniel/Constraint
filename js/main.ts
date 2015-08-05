@@ -4,7 +4,7 @@
 
 // ADD DEFAULT RESOURCE FILES
 
-UI_Resource.addResourceFile( "Constraint", "/resources/Constraint.res" );
+UI_Resource.addResourceFile( "Constraint", "resources/Constraint.res" );
 
 /**
  * Delimiter to remove the constraint runtime from it's makefiles.
