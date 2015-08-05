@@ -203,7 +203,7 @@ class UI_DropDown extends UI implements IFocusable {
 
 			ctx.fillStyle = UI_DropDown._theme.font[ i == this._overlaySelectedIndex ? 'selectedColor' : 'color' ];
 
-			ctx.fillText( this._options[ i ].text, 2, yTop + ~~( UI_DropDown._theme.option.height / 2 ) );
+			ctx.fillText( ctx.dotDotDot( this._options[ i ].text, optWidth - 4 ), 2, yTop + ~~( UI_DropDown._theme.option.height / 2 ) );
 
 			yTop += UI_DropDown._theme.option.height;
 		}
@@ -218,6 +218,28 @@ class UI_DropDown extends UI implements IFocusable {
 
 		ctx.endPaint();
 
+	}
+
+	protected scrollIntoIndex( index: number ) {
+
+		if ( !this._overlay || ( this._logicalHeight <= this._overlay.height ) ) {
+			return;
+		}
+
+		if ( index <= 0 ) {
+			this._scrollTop = 0;
+		} else {
+			var optionLogicalY1 = ( index ) * UI_DropDown._theme.option.height,
+			    optionLogicalY2 = ( index + 1 ) * UI_DropDown._theme.option.height;
+
+			if ( optionLogicalY1 < this._scrollTop ) {
+				this._scrollTop = optionLogicalY1;
+			} else
+			if ( optionLogicalY2 > this._scrollTop + this._overlay.height ) {
+				this._scrollTop = optionLogicalY2 - this._overlay.height;
+			}
+
+		}
 	}
 
 	protected _open() {
@@ -310,7 +332,10 @@ class UI_DropDown extends UI implements IFocusable {
 
 			} );
 
-			var onScreenClick = function() {
+			var onScreenClick = function( evt ) {
+				if ( [ me._dom.view, me._root, me._dom.expander ].indexOf( evt.target || evt.srcElement ) > -1 ) {
+					return;
+				}
 				UI_Screen.get.off( 'mousedown', onScreenClick );
 				me.expanded = false;
 			}
@@ -318,6 +343,8 @@ class UI_DropDown extends UI implements IFocusable {
 			UI_Screen.get.on( 'mousedown', onScreenClick );
 
 		} )( this );
+
+		this.scrollIntoIndex( this._overlaySelectedIndex );
 
 		UI_Screen.get.render();
 
@@ -330,6 +357,29 @@ class UI_DropDown extends UI implements IFocusable {
 			this._overlay = undefined;
 		}
 
+	}
+
+	protected changeIndex( relativeIncrement: number ) {
+		relativeIncrement = relativeIncrement || 0;
+
+		if ( !relativeIncrement || !this._length ) {
+			return;
+		}
+
+		var reference: number = this.expanded ? this._overlaySelectedIndex : this._selectedIndex,
+			cursor: number = reference == -1
+			? ( relativeIncrement > 0 ? 0 : this._length - 1 )
+			: reference,
+			circular: number[] = Utils.circular.createMap( 0, this._length-1, cursor, relativeIncrement < 0 ).slice(0,1),
+			i: number = 0;
+
+		if ( this.expanded ) {
+			this._overlaySelectedIndex = circular[0];
+			this.scrollIntoIndex( this._overlaySelectedIndex );
+			UI_Screen.get.render();
+		} else {
+			this.selectedIndex = circular[0];
+		}
 	}
 
 	protected _setupEvents_() {
@@ -353,11 +403,12 @@ class UI_DropDown extends UI implements IFocusable {
 
 					// UP
 					case 38:
-						
+						this.changeIndex( -1 );
 						break;
 
 					// DOWN
 					case 40:
+						this.changeIndex( +1 );
 						break;
 
 					// ENTER
@@ -366,6 +417,8 @@ class UI_DropDown extends UI implements IFocusable {
 						if ( this.expanded ) {
 							this.expanded = false;
 							this.selectedIndex = this._overlaySelectedIndex;
+						} else {
+							this.expanded = true;
 						}
 
 						break;
@@ -378,15 +431,21 @@ class UI_DropDown extends UI implements IFocusable {
 
 			} );
 
-			me._root.addEventListener( 'click', function() {
+			me._root.addEventListener( 'mousedown', function( evt ) {
 
-				if ( me.disabled ) {
+				if ( me.disabled || me.expanded || evt.which != 1 ) {
 					return;
 				}
 
 				me.expanded = !me.expanded;
 
 			}, false );
+
+			me.on( 'disabled', function( on: boolean ) {
+				if ( on ) {
+					me.expanded = false;
+				}
+			} );
 
 		} )( this );
 

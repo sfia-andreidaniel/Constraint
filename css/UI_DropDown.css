@@ -11,7 +11,7 @@
 }
 
 .ui.UI_DropDown.focused {
-	background-color: ${background.active};
+	background-color: ${background.selected};
 }
 
 .ui.UI_DropDown > .view {
@@ -20,6 +20,12 @@
 	margin: 2px 0px 2px 2px;
 	width: calc( 100% - 25px );
 	height: calc( 100% - 4px );
+	font-size: ${font.size}px;
+	font-family: '${font.family}';
+	cursor: default;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .ui.UI_DropDown > .expander {
