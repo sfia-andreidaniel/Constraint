@@ -14,6 +14,8 @@ class UI_TextBox extends UI implements IFocusable {
 		input: Utils.dom.create('input')
 	};
 
+	protected _password: boolean = false;
+
 	constructor( owner: UI ) {
 		
 		super( owner, [ 'IFocusable' ], Utils.dom.create('div', 'ui UI_TextBox') );
@@ -41,6 +43,26 @@ class UI_TextBox extends UI implements IFocusable {
 		this._dom.input.value = String( v || '' );
 	}
 
+	get readOnly(): boolean {
+		return this._dom.input.readOnly;
+	}
+
+	set readOnly( on: boolean ) {
+		this._dom.input.readOnly = !!on;
+	}
+
+	get password(): boolean {
+		return this._password;
+	}
+
+	set password( on: boolean ) {
+		on = !!on;
+		if ( on != this._password ) {
+			this._password = on;
+			this._dom.input.setAttribute( 'type', on ? 'password' : 'text' );
+		}
+	}
+
 	protected __initDom__() {
 		this._dom.input.setAttribute('type', 'text');
 		this._root.appendChild( this._dom.input );
@@ -63,9 +85,20 @@ class UI_TextBox extends UI implements IFocusable {
 
 			me._dom.input.addEventListener( 'focus', function( ev ) {
 				if ( me.form.activeElement != me ) {
-					me.form.activeElement = me;
+					me.active = true;
 				}
 			}, true );
+
+			me._dom.input.addEventListener('input', function( ev ) {
+				if ( !me.disabled && !me.readOnly ) {
+					me.fire( 'change' );
+				}
+			}, true );
+
+			me.on('disabled', function( on: boolean ) {
+				me._dom.input.disabled = on;
+			} );
+
 
 		} )( this );
 	}

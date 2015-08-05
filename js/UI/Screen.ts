@@ -258,7 +258,7 @@ class UI_Screen extends UI_Event {
 	public handleMouseUp( ev ): boolean {
 		
 		var x: number = ev.pageX,
-		    y: number = ev.pageX,
+		    y: number = ev.pageY,
 		    len: number = this._windows.length,
 		    i: number,
 		    handled: boolean = false;
@@ -273,6 +273,34 @@ class UI_Screen extends UI_Event {
 
 		if ( !handled ) {
 			this.fire( 'mouseup', x, y, ev.which );
+		} else {
+			ev.preventDefault();
+			ev.stopPropagation();
+		}
+
+		return handled;
+
+	}
+
+	public handleScroll( ev ): boolean {
+
+		var x: number = ev.pageX,
+		    y: number = ev.pageY,
+		    len: number = this._windows.length,
+		    i: number,
+		    handled: boolean = false,
+		    wheelX: number = - ( ev.wheelDeltaX || -ev.deltaX || 0 ),
+		    wheelY: number = - ( ev.wheelDeltaY || -ev.deltaY || 0 );
+
+		for ( i = len - 1; i >= 0; i-- ) {
+			if ( this._windows[i].ctx.containsAbsolutePoint( x, y ) ) {
+				this._windows[i].fire( 'scroll', wheelX, wheelY );
+				handled = true;
+			}
+		}
+
+		if ( !handled ) {
+			this.fire( 'scroll', wheelX, wheelY );
 		} else {
 			ev.preventDefault();
 			ev.stopPropagation();

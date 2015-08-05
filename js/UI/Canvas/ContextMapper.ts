@@ -7,6 +7,14 @@
 
 class UI_Canvas_ContextMapper {
 
+	public static _theme = {
+		scrollBar: {
+			background: $I.string('UI.UI_Scrollbar/background'),
+			draggerBackground: $I.string('UI.UI_Scrollbar/draggerBackground'),
+			size: $I.number('UI.UI_Scrollbar/size')
+		}
+	};
+
 	private _paintable: boolean = true;
 
 	constructor( private ctx: CanvasRenderingContext2D, private size: IWindow ) {
@@ -467,6 +475,29 @@ class UI_Canvas_ContextMapper {
 			args[1] += this.size.x;
 			args[2] += this.size.y;
 			this.ctx.putImageData.apply( this.ctx, args );
+		}
+	}
+
+	public paintVerticalScrollbar( logicalHeight: number, scrollTop: number ): void {
+		
+		var draggerSize: number,
+		    draggerTop : number;
+
+		this.fillStyle = UI_Canvas_ContextMapper._theme.scrollBar.background;
+		this.fillRect( this.size.width - UI_Canvas_ContextMapper._theme.scrollBar.size, 0, UI_Canvas_ContextMapper._theme.scrollBar.size, this.size.height );
+
+		if ( logicalHeight <= this.size.height ) {
+			return;
+		}
+
+		if ( UI_Canvas_ContextMapper._theme.scrollBar.size < this.size.height ) {
+			
+			draggerSize = ~~( this.size.height * this.size.height / logicalHeight );
+			draggerTop  = ~~( scrollTop * this.size.height / logicalHeight );
+
+			this.fillStyle = UI_Canvas_ContextMapper._theme.scrollBar.draggerBackground;
+			this.fillRect( this.size.width - UI_Canvas_ContextMapper._theme.scrollBar.size, draggerTop, UI_Canvas_ContextMapper._theme.scrollBar.size, draggerSize );
+
 		}
 	}
 

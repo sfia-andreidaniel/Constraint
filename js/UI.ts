@@ -511,6 +511,7 @@ class UI extends UI_Event {
 		on = !!on;
 
 		if ( on != this._disabled ) {
+			
 			this._disabled = on;
 
 			if ( this._root ) {

@@ -3,15 +3,22 @@
 	display: block;
 	width: ${defaultWidth}px;
 	height: ${defaultHeight}px;
+	background-color: ${background.inactive};
+	border: 1px solid ${border.color};
+}
+
+.ui.UI_TextBox.focused {
 	background-color: ${background.enabled};
 }
 
-.ui.UI_TextBox > input[type=text] {
+.ui.UI_TextBox > input[type=text],
+.ui.UI_TextBox > input[type=password] {
 	border: none;
-	width: 100%;
+	width: calc(100% - 4px);
 	height: 100%;
 	padding: 0;
-	margin: 0;
+	margin: 0px 2px;
 	background-color: transparent;
 	outline: none !important;
+	display: block;
 }

@@ -17,6 +17,7 @@
 
 	$declare disabledControlBackgroundColor: #f0f0f0;
 	$declare enabledControlBackgroundColor: white;
+	$declare enabledInactiveControlBackgroundColor: #eee;
 	$declare enabledControlBorderColor: #acacac;
 
 	$declare formColor: white;
@@ -184,6 +185,43 @@
 		};
 	};
 
+	@Theme UI_DropDown {
+		
+		defaults: {
+			width: 100;
+			height: 25;
+		};
+
+		border: {
+			color: $enabledControlBorderColor;	
+		};
+
+		option: {
+			height: 25;
+		};
+
+		background: {
+			active: $enabledControlBackgroundColor;
+			inactive: $enabledInactiveControlBackgroundColor;
+			disabled: $disabledControlBackgroundColor;
+			selected: $selectedItemBackgroundColor;
+		};
+
+		font: {
+			family: $fontFamily;
+			size: $fontSize;
+			color: {
+				normal: $normalFontColor;
+				selected: $selectedItemColor;
+			};
+		};
+
+		expander: {
+			collapsed: 'ui-resource Constraint collapsed_sign-20x20';
+			expanded: 'ui-resource Constraint expanded_sign-20x20';
+		};
+	};
+
 	@Theme UI_Tree {
 		
 		background: {
@@ -311,7 +349,18 @@
 		background: {
 			enabled: $enabledControlBackgroundColor;
 			disabled: $disabledControlBackgroundColor;
+			inactive: $enabledInactiveControlBackgroundColor;
+		};
+
+		border: {
+			color: $enabledControlBorderColor;
 		};
 	};
+
+	@Theme UI_Scrollbar {
+		background: #ddd;
+		draggerBackground: #333;
+		size: 16;
+	}
 
 };

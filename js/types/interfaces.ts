@@ -114,3 +114,9 @@ interface FTraversor {
 interface FAggregator {
 	( item: any ) : void;
 }
+
+interface IOption {
+	value: any;
+	text : string;
+	selected?: boolean;
+}

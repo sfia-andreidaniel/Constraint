@@ -272,6 +272,12 @@ class UI_DialogManager extends UI_Event {
 						}
 					}, true );
 
+					manager.desktop.addEventListener( 'mousewheel', function( ev ) {
+						if ( manager.screen.visible ) {
+							manager.screen.handleScroll( ev );
+						}
+					}, true );
+
 				}, true );
 
 				window.addEventListener( 'resize', function() {

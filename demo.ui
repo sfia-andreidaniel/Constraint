@@ -77,6 +77,74 @@
 				right: 10;
 			};
 
+			@UI_TextBox Text2 {
+				value: 'Disabled Input value';
+				placeholder: 'Input placeholder';
+				left: 10;
+				top: Text1 bottom 10;
+				right: 10;
+				disabled: true;
+			};
+
+			@UI_DropDown DropDown1 {
+				left: 10;
+				top: Text2 bottom 10;
+				right: 10;
+				options: <![JSON[ [
+					{
+						"value": "",
+						"text" : "Pick an option"
+					},
+					{
+						"value": "1",
+						"text": "Option # 1"
+					},
+					{
+						"value": "2",
+						"text" : "Option #2"
+					},
+					{
+						"value": "3",
+						"text": "Option #3"
+					},
+					{
+						"value": "4",
+						"text": "Option #4"
+					},
+					{
+						"value": "5",
+						"text": "Option #5"
+					},
+					{
+						"value": "6",
+						"text": "Option #6"
+					},
+					{
+						"value": "7",
+						"text": "Option #7"
+					},
+					{
+						"value": "8",
+						"text": "Option #8"
+					},
+					{
+						"value": "9",
+						"text": "Option #9"
+					},
+					{
+						"value": "10",
+						"text": "Option #10"
+					},
+					{
+						"value": "11",
+						"text": "Option #11"
+					},
+					{
+						"value": "12",
+						"text": "Option #12"
+					}
+				] ]]>;
+			};
 		};
 
 		@UI_Tab Tab0 {

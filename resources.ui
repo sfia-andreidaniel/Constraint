@@ -17,6 +17,10 @@
 	tree_connector_6            from '../vendor/self/tree-connectors/pen_6.png'   25x25 disabled;
 	tree_connector_7            from '../vendor/self/tree-connectors/pen_7.png'   25x25 disabled;
 
+	/* DROP DOWNS */
+	collapsed_sign              from '../vendor/self/collapsed.png'               20x20 disabled;
+	expanded_sign               from '../vendor/self/expanded.png'                20x20 disabled;
+
 	/* GRID STUFF */
 	// checkbox for boolean state
 	grid_boolean                from '../vendor/self/grid-boolean-column.png'     14x14 disabled;

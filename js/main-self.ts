@@ -60,6 +60,7 @@
 /// <reference path="UI/CheckBox.ts" />
 /// <reference path="UI/RadioBox.ts" />
 /// <reference path="UI/TextBox.ts" />
+/// <reference path="UI/DropDown.ts" />
 
 /// <reference path="UI/Canvas.ts" />
 /// <reference path="Mixins/MGridInterface.ts" />
