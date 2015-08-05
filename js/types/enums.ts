@@ -167,3 +167,22 @@ enum EStrPadding {
 	RIGHT,// Pad string to the right
 	BOTH  // Pad string to both sizes
 }
+
+/**
+ * Defines how a Canvas Context Mapper should treat / render it's scrollbars,
+ * in case it's logical size exceeds it's physical size
+ */
+enum EClientScrollbarOverflow {
+	HIDDEN,
+	AUTO,
+	ALWAYS
+}
+
+/**
+ * Defines how to address coordinates inside of a Canvas Context Mapper: Logical or absolute
+ */
+
+enum ECanvasPaintMode {
+	ABSOLUTE,
+	LOGICAL
+}

@@ -9,6 +9,10 @@ class UI_Screen extends UI_Event {
 	private _visible: boolean = false;
 	private _pointerEvents: boolean = false;
 
+	// USED WHEN SCREEN LOCKS A WINDOW FOR SCROLLING
+	private _targetScrollWin: UI_Screen_Window = null;
+	private _targetScrollBar: EAlignment = EAlignment.RIGHT;
+
 	static get get(): UI_Screen {
 		return UI_DialogManager.get.screen || null;
 	}
@@ -144,6 +148,7 @@ class UI_Screen extends UI_Event {
 
 		for ( var i=0, len = this._windows.length; i<len; i++ ) {
 			this._windows[i].fire( 'render', ctx );
+			this._windows[i].ctx.paintScrollbars();
 		}
 	}
 
@@ -184,7 +189,18 @@ class UI_Screen extends UI_Event {
 
 		for ( i = len-1; i >= 0; i-- ) {
 			if ( this._windows[i].ctx.containsAbsolutePoint( x, y ) ) {
-				this._windows[i].fire( 'mousedown', x - this._windows[i].left, y - this._windows[i].top, ev.which );
+				
+				if ( this._windows[i].ctx.pointInClientViewport( x, y ) ) {
+
+					this._windows[i].fire( 
+						'mousedown', 
+						x - this._windows[i].left + this._windows[i].scrollLeft, 
+						y - this._windows[i].top + this._windows[i].scrollTop,
+						ev.which
+					);
+
+				}
+				
 				handled = true;
 				break;
 			}
@@ -210,7 +226,18 @@ class UI_Screen extends UI_Event {
 
 		for ( i = len-1; i >= 0; i-- ) {
 			if ( this._windows[i].ctx.containsAbsolutePoint( x, y ) ) {
-				this._windows[i].fire( 'mousemove', x - this._windows[i].left, y - this._windows[i].top, ev.which );
+
+				if ( this._windows[i].ctx.pointInClientViewport( x, y ) ) {
+				
+					this._windows[i].fire( 
+						'mousemove', 
+						x - this._windows[i].left + this._windows[i].scrollLeft,
+						y - this._windows[i].top  + this._windows[i].scrollTop,
+						ev.which
+					);
+
+				}
+
 				handled = true;
 				break;
 			}
@@ -238,7 +265,18 @@ class UI_Screen extends UI_Event {
 
 		for ( i = len-1; i >= 0; i-- ) {
 			if ( this._windows[i].ctx.containsAbsolutePoint( x, y ) ) {
-				this._windows[i].fire( 'dblclick', x - this._windows[i].left, y - this._windows[i].top, ev.which );
+
+				if ( this._windows[i].ctx.pointInClientViewport( x, y ) ) {
+
+					this._windows[i].fire( 
+						'dblclick', 
+						x - this._windows[i].left + this._windows[i].scrollLeft,
+						y - this._windows[i].top + this._windows[i].scrollTop,
+						ev.which
+					);
+
+				}
+
 				handled = true;
 				break;
 			}
@@ -265,7 +303,18 @@ class UI_Screen extends UI_Event {
 
 		for ( i = len-1; i >= 0; i-- ) {
 			if ( this._windows[i].ctx.containsAbsolutePoint( x, y ) ) {
-				this._windows[i].fire( 'mouseup', x - this._windows[i].left, y - this._windows[i].top, ev.which );
+
+				if ( this._windows[i].ctx.pointInClientViewport( x, y ) ) {
+
+					this._windows[i].fire( 
+						'mouseup', 
+						x - this._windows[i].left + this._windows[i].scrollLeft,
+						y - this._windows[i].top  + this._windows[i].scrollTop,
+						ev.which
+					);
+
+				}
+
 				handled = true;
 				break;
 			}
@@ -320,7 +369,17 @@ class UI_Screen extends UI_Event {
 
 		for ( i = len-1; i >= 0; i-- ) {
 			if ( this._windows[i].ctx.containsAbsolutePoint( x, y ) ) {
-				this._windows[i].fire( 'click', x - this._windows[i].left, y - this._windows[i].top, ev.which );
+
+				if ( this._windows[i].ctx.pointInClientViewport( x, y ) ) {
+				
+					this._windows[i].fire( 
+						'click', 
+						x - this._windows[i].left + this._windows[i].scrollLeft, 
+						y - this._windows[i].top  + this._windows[i].scrollTop, 
+						ev.which
+					);
+				}
+				
 				handled = true;
 				break;
 			}
@@ -355,9 +414,9 @@ class UI_Screen extends UI_Event {
 
 	}
 
-	public createWindow( x: number, y: number, width: number, height: number ): UI_Screen_Window {
+	public createWindow( x: number, y: number, width: number, height: number, logicalWidth: number = null, logicalHeight: number = null ): UI_Screen_Window {
 
-		var result = new UI_Screen_Window( this, x, y, width, height );
+		var result = new UI_Screen_Window( this, x, y, width, height, logicalWidth, logicalHeight );
 
 		this._windows.push( result );
 		this.visible = true;

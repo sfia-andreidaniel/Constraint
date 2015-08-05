@@ -16,8 +16,20 @@ class UI_Canvas_ContextMapper {
 	};
 
 	private _paintable: boolean = true;
+	
+	private _scrollLeft: number = 0;
+	private _scrollTop : number = 0;
+	private _overflowX : EClientScrollbarOverflow = EClientScrollbarOverflow.HIDDEN;
+	private _overflowY : EClientScrollbarOverflow = EClientScrollbarOverflow.HIDDEN;
+	private _clientWidth: number = 0;
+	private _clientHeight: number = 0;
+	private _paintMode: ECanvasPaintMode = ECanvasPaintMode.ABSOLUTE;
 
-	constructor( private ctx: CanvasRenderingContext2D, private size: IWindow ) {
+	constructor( private ctx: CanvasRenderingContext2D, private size: IWindow, private logicalSize: IRect = null ) {
+		this.logicalSize = this.logicalSize || { width: size.width, height: size.height };
+
+		this.computeClientWidth();
+		this.computeClientHeight();
 	}
 
 	get left(): number {
@@ -52,6 +64,218 @@ class UI_Canvas_ContextMapper {
 		this.size.height = ~~distance;
 	}
 
+	get logicalWidth(): number {
+		return this.logicalSize.width === null
+			? this.size.width - ~~this.yScrollable * UI_Canvas_ContextMapper._theme.scrollBar.size
+			: this.logicalSize.width;
+	}
+
+	set logicalWidth( width: number ) {
+		width = ~~width;
+		width = width < 0 ? 0 : width;
+		if ( width != this.logicalSize.width ) {
+			this.logicalSize.width = width;
+			this.computeClientWidth();
+			this.computeClientHeight();
+		}
+	}
+
+	get logicalHeight(): number {
+		return this.logicalSize.height === null
+			? this.size.height - ~~this.xScrollable * UI_Canvas_ContextMapper._theme.scrollBar.size
+			: this.logicalSize.height;
+	}
+
+	set logicalHeight( height: number ) {
+		height = ~~height;
+		height = height < 0 ? 0 : height;
+		if ( height != this.logicalSize.height ) {
+			this.logicalSize.height = height;
+			this.computeClientHeight();
+			this.computeClientWidth();
+		}
+	}
+
+	private computeClientWidth() {
+		this._clientWidth = this.size.width - 
+			~~( ( this.size.width < this.logicalSize.width && this._overflowX != EClientScrollbarOverflow.HIDDEN) 
+				|| 
+				( this.size.height < this.logicalSize.height && this._overflowY != EClientScrollbarOverflow.HIDDEN )
+				|| this._overflowY == EClientScrollbarOverflow.ALWAYS
+			)
+			* UI_Canvas_ContextMapper._theme.scrollBar.size;
+
+		if ( this.logicalSize.height === null ) {
+			this._clientWidth += UI_Canvas_ContextMapper._theme.scrollBar.size;
+		}
+
+		this.scrollLeft = this.scrollLeft;
+	}
+
+	private computeClientHeight() {
+		this._clientHeight = this.size.height -
+			~~( ( this.size.width < this.logicalSize.width && this._overflowX != EClientScrollbarOverflow.HIDDEN) 
+				|| 
+				( this.size.height < this.logicalSize.height && this._overflowY != EClientScrollbarOverflow.HIDDEN )
+				|| this._overflowX == EClientScrollbarOverflow.ALWAYS
+			)
+			* UI_Canvas_ContextMapper._theme.scrollBar.size;
+
+		if ( this.logicalSize.width === null ) {
+			this._clientHeight += UI_Canvas_ContextMapper._theme.scrollBar.size;
+		}
+
+		this.scrollTop = this.scrollTop;
+	}
+
+	get clientWidth(): number {
+		return this._clientWidth;
+	}
+
+	get clientHeight(): number {
+		return this._clientHeight;
+	}
+
+	get overflowX(): EClientScrollbarOverflow {
+		return this._overflowX;
+	}
+
+	set overflowX( value: EClientScrollbarOverflow ) {
+		if ( value != this._overflowX ) {
+			this._overflowX = [ EClientScrollbarOverflow.HIDDEN, EClientScrollbarOverflow.AUTO, EClientScrollbarOverflow.ALWAYS ].indexOf( value ) >= 0 
+				? value 
+				: EClientScrollbarOverflow.HIDDEN;
+			this.computeClientWidth();
+			this.computeClientHeight();
+		}
+	}
+
+	get overflowY(): EClientScrollbarOverflow {
+		return this._overflowY;
+	}
+
+	set overflowY( value: EClientScrollbarOverflow ) {
+		if ( value != this._overflowY ) {
+			this._overflowY = [ EClientScrollbarOverflow.HIDDEN, EClientScrollbarOverflow.AUTO, EClientScrollbarOverflow.ALWAYS ].indexOf( value ) >= 0 
+				? value 
+				: EClientScrollbarOverflow.HIDDEN;
+			this.computeClientWidth();
+			this.computeClientHeight();
+		}
+	}
+
+	get scrollTop(): number {
+		return this.yScrollable
+			? this._scrollTop
+			: 0;
+	}
+
+	set scrollTop( value: number ) {
+		if ( this.yScrollable ) {
+			value = ~~value;
+			value = value < 0 ? 0 : value;
+			value = value + this._clientHeight <= this.logicalSize.height
+				? value
+				: this.logicalSize.height - this._clientHeight - 1;
+		} else {
+			value = 0;
+		}
+
+		this._scrollTop = value;
+	}
+
+	get scrollLeft(): number {
+		return this.xScrollable
+			? this._scrollLeft
+			: 0;
+	}
+
+	set scrollLeft( value: number ) {
+		if ( this.xScrollable ) {
+			value = ~~value;
+			value = value < 0 ? 0 : value;
+			value = value + this._clientWidth <= this.logicalSize.width
+				? value
+				: this.logicalSize.width - this._clientWidth - 1;
+		} else {
+			value = 0;
+		}
+		
+		this._scrollLeft = value;
+	}
+
+	get paintMode(): ECanvasPaintMode {
+		return this._paintMode;
+	}
+
+	get xScrollable(): boolean {
+		return this.logicalSize.width === null ? false : this.clientWidth < this.logicalSize.width && this._overflowX != EClientScrollbarOverflow.HIDDEN;
+	}
+
+	get yScrollable(): boolean {
+		return this.logicalSize.height === null ? false : this.clientHeight < this.logicalSize.height && this._overflowY != EClientScrollbarOverflow.HIDDEN;
+	}
+
+	private paintXScrollbar() {
+		var draggerSize: number,
+		    draggerLeft : number;
+
+		this.paintMode = ECanvasPaintMode.ABSOLUTE;
+
+		this.fillStyle = UI_Canvas_ContextMapper._theme.scrollBar.background;
+		this.fillRect( 
+			0, 
+			this.clientHeight, 
+			this.clientWidth,
+			UI_Canvas_ContextMapper._theme.scrollBar.size
+		);
+
+		draggerSize = ~~( Math.pow( this.clientWidth, 2 ) / this.logicalSize.width );
+		draggerLeft  = ~~( this.scrollLeft * this.clientWidth / this.logicalSize.width );
+
+		this.fillStyle = UI_Canvas_ContextMapper._theme.scrollBar.draggerBackground;
+		this.fillRect( draggerLeft, this.clientHeight, draggerSize, UI_Canvas_ContextMapper._theme.scrollBar.size );
+
+	}
+
+	private paintYScrollbar() {
+		var draggerSize: number,
+		    draggerTop : number;
+
+		this.paintMode = ECanvasPaintMode.ABSOLUTE;
+
+		this.fillStyle = UI_Canvas_ContextMapper._theme.scrollBar.background;
+		this.fillRect( 
+			this.clientWidth, 
+			0, 
+			UI_Canvas_ContextMapper._theme.scrollBar.size, 
+			this.clientHeight 
+		);
+
+		draggerSize = ~~( Math.pow( this.clientHeight, 2 ) / this.logicalSize.height );
+		draggerTop  = ~~( this.scrollTop * this.clientHeight / this.logicalSize.height );
+
+		this.fillStyle = UI_Canvas_ContextMapper._theme.scrollBar.draggerBackground;
+		this.fillRect( this.clientWidth, draggerTop, UI_Canvas_ContextMapper._theme.scrollBar.size, draggerSize );
+	}
+
+	public paintScrollbars() {
+		if ( this.yScrollable ) {
+			this.paintYScrollbar();
+		}
+		if ( this.xScrollable ) {
+			this.paintXScrollbar();
+		}
+	}
+
+	set paintMode( mode: ECanvasPaintMode ) {
+		if ( mode != this._paintMode ) {
+			this._paintMode = mode == ECanvasPaintMode.LOGICAL
+				? ECanvasPaintMode.LOGICAL
+				: ECanvasPaintMode.ABSOLUTE;
+		}
+	}
+
 	get paintable(): boolean {
 		return this._paintable;
 	}
@@ -76,7 +300,13 @@ class UI_Canvas_ContextMapper {
 	// returns TRUE if a point in the main screen is contained by this window.
 	// use null to ignore checking on x on y.
 	public containsAbsolutePoint( x: number, y: number ): boolean {
-		return ( x === null || ( x >= this.size.x && x <= this.size.x + this.size.width - 1 ) ) && ( y === null || ( y >= this.size.y && y <= this.size.y + this.size.height - 1 ) );
+		return ( x === null || ( x >= this.size.x && x <= this.size.x + this.size.width - 1 ) ) 
+			&& ( y === null || ( y >= this.size.y && y <= this.size.y + this.size.height - 1 ) );
+	}
+
+	public pointInClientViewport( x: number, y: number ): boolean {
+		return ( x === null || ( x >= this.size.x && x <= this.size.x + this.clientWidth - 1 ) ) 
+			&& ( y === null || ( y >= this.size.y && y <= this.size.y + this.clientHeight - 1 ) );
 	}
 
 	/* Transforms a string to fit a length, using the "..." at it's beginnig or at it's ending 
@@ -478,27 +708,8 @@ class UI_Canvas_ContextMapper {
 		}
 	}
 
-	public paintVerticalScrollbar( logicalHeight: number, scrollTop: number ): void {
+	private paintVerticalScrollbar( logicalHeight: number, scrollTop: number, clientHeight: number ): void {
 		
-		var draggerSize: number,
-		    draggerTop : number;
-
-		this.fillStyle = UI_Canvas_ContextMapper._theme.scrollBar.background;
-		this.fillRect( this.size.width - UI_Canvas_ContextMapper._theme.scrollBar.size, 0, UI_Canvas_ContextMapper._theme.scrollBar.size, this.size.height );
-
-		if ( logicalHeight <= this.size.height ) {
-			return;
-		}
-
-		if ( UI_Canvas_ContextMapper._theme.scrollBar.size < this.size.height ) {
-			
-			draggerSize = ~~( this.size.height * this.size.height / logicalHeight );
-			draggerTop  = ~~( scrollTop * this.size.height / logicalHeight );
-
-			this.fillStyle = UI_Canvas_ContextMapper._theme.scrollBar.draggerBackground;
-			this.fillRect( this.size.width - UI_Canvas_ContextMapper._theme.scrollBar.size, draggerTop, UI_Canvas_ContextMapper._theme.scrollBar.size, draggerSize );
-
-		}
 	}
 
 	public save() {

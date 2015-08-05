@@ -36,9 +36,6 @@ class UI_DropDown extends UI implements IFocusable {
 	protected _overlay: UI_Screen_Window = null;
 
 	// Internal renderer options
-	private   _logicalHeight        : number = 0;
-	private   _scrollTop            : number = 0;
-	private   _clientHeight         : number = 0;
 	private   _overlaySelectedIndex : number = -1;
 
 	public    active: boolean; // the active is overrided by the MFocusable mixin
@@ -175,7 +172,9 @@ class UI_DropDown extends UI implements IFocusable {
 		    optLength: number,
 		    optEnd   : number,
 		    yTop     : number,
-		    i        : number;
+		    i        : number,
+		    scrollTop: number = ctx.scrollTop,
+		    logicalHeight: number = ctx.logicalHeight;
 
 		ctx.beginPaint();
 
@@ -183,14 +182,14 @@ class UI_DropDown extends UI implements IFocusable {
 		ctx.fillRect( 0, 0, ctx.width, ctx.height );
 
 		// paint options.
-		optWidth = this._logicalHeight > ctx.height ? ctx.width - UI_Canvas_ContextMapper._theme.scrollBar.size : ctx.width;
+		optWidth = ctx.clientWidth;
 
-		optStart = ~~( this._scrollTop / UI_DropDown._theme.option.height );
+		optStart = ~~( scrollTop / UI_DropDown._theme.option.height );
 		optLength = ~~( ctx.height / UI_DropDown._theme.option.height ) + UI_DropDown._theme.option.height * ~~!!( ctx.height % UI_DropDown._theme.option.height );
 		optEnd = optStart + optLength;
 		optEnd = optEnd >= this._length ? this._length - 1 : optEnd;
 
-		yTop = -(this._scrollTop % UI_DropDown._theme.option.height );
+		yTop = -(scrollTop % UI_DropDown._theme.option.height );
 
 		ctx.font = UI_DropDown._theme.font.size + 'px ' + UI_DropDown._theme.font.family;
 		ctx.textBaseline = "middle";
@@ -208,8 +207,6 @@ class UI_DropDown extends UI implements IFocusable {
 			yTop += UI_DropDown._theme.option.height;
 		}
 
-		ctx.paintVerticalScrollbar( this._logicalHeight, this._scrollTop );
-
 		ctx.strokeStyle = 'black';
 		ctx.lineWidth = 1;
 		ctx.rect( 0, 0, ctx.width, ctx.height-1 );
@@ -222,21 +219,21 @@ class UI_DropDown extends UI implements IFocusable {
 
 	protected scrollIntoIndex( index: number ) {
 
-		if ( !this._overlay || ( this._logicalHeight <= this._overlay.height ) ) {
+		if ( !this._overlay ) {
 			return;
 		}
 
 		if ( index <= 0 ) {
-			this._scrollTop = 0;
+			this._overlay.scrollTop = 0;
 		} else {
 			var optionLogicalY1 = ( index ) * UI_DropDown._theme.option.height,
 			    optionLogicalY2 = ( index + 1 ) * UI_DropDown._theme.option.height;
 
-			if ( optionLogicalY1 < this._scrollTop ) {
-				this._scrollTop = optionLogicalY1;
+			if ( optionLogicalY1 < this._overlay.scrollTop ) {
+				this._overlay.scrollTop = optionLogicalY1;
 			} else
-			if ( optionLogicalY2 > this._scrollTop + this._overlay.height ) {
-				this._scrollTop = optionLogicalY2 - this._overlay.height;
+			if ( optionLogicalY2 > this._overlay.scrollTop + this._overlay.clientHeight ) {
+				this._overlay.scrollTop = optionLogicalY2 - this._overlay.clientHeight;
 			}
 
 		}
@@ -264,12 +261,16 @@ class UI_DropDown extends UI implements IFocusable {
 			"height": winHeight
 		}, 1 );
 
-		this._overlay = UI_Screen.get.createWindow( placement.x, placement.y, placement.width, placement.height );
-
-		this._logicalHeight = this._length * UI_DropDown._theme.option.height;
-		this._clientHeight  = placement.height;
-		this._scrollTop     = 0;
 		this._overlaySelectedIndex = this._selectedIndex;
+
+		this._overlay = UI_Screen.get.createWindow( 
+			placement.x, placement.y, 
+			placement.width, placement.height, 
+			null, 
+			this._length * UI_DropDown._theme.option.height
+		);
+
+		this._overlay.overflowY = EClientScrollbarOverflow.AUTO;
 
 		( function( me ) {
 
@@ -283,13 +284,7 @@ class UI_DropDown extends UI implements IFocusable {
 
 			me._overlay.on( 'mousemove', function( x: number, y: number ) {
 				
-				if ( me._logicalHeight > me._overlay.height ) {
-					if ( x > me._overlay.width - UI_Canvas_ContextMapper._theme.scrollBar.size ) {
-						return;
-					}
-				}
-
-				var newSelectedIndex: number = ~~( ( me._scrollTop + y ) / UI_DropDown._theme.option.height );
+				var newSelectedIndex: number = ~~( y / UI_DropDown._theme.option.height );
 
 				if ( newSelectedIndex >= me._length ) {
 					newSelectedIndex = me._length - 1;
@@ -304,7 +299,7 @@ class UI_DropDown extends UI implements IFocusable {
 
 			me._overlay.on( 'click', function( x: number, y: number ) {
 
-				var newSelectedIndex: number = ~~( ( me._scrollTop + y ) / UI_DropDown._theme.option.height );
+				var newSelectedIndex: number = ~~( y / UI_DropDown._theme.option.height );
 
 				if ( newSelectedIndex >= me._length ) {
 					return;
@@ -319,14 +314,7 @@ class UI_DropDown extends UI implements IFocusable {
 			me._overlay.on( 'scroll', function( wheelX, wheelY ) {
 				
 				if ( wheelY != 0 ) {
-					me._scrollTop += wheelY;
-					if ( me._scrollTop < 0 ) {
-						me._scrollTop = 0;
-					} else
-					if ( me._scrollTop + me._overlay.height > me._logicalHeight ) {
-						me._scrollTop = me._logicalHeight - me._overlay.height;
-					}
-
+					me._overlay.scrollTop += wheelY;
 					UI_Screen.get.render();
 				}
 

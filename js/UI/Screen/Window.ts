@@ -4,31 +4,28 @@ class UI_Screen_Window extends UI_Event {
 	private _ctx:      CanvasRenderingContext2D;
 	private _mapper:   UI_Canvas_ContextMapper;
 
-	constructor( screen: UI_Screen, left: number = 0, top: number = 0, width: number = 0, height: number = 0 ) {
+	constructor( screen: UI_Screen, left: number = 0, top: number = 0, width: number = 0, height: number = 0, logicalWidth: number = null, logicalHeight: number = null ) {
 		
 		super();
 
 		this._screen = screen;
 		this._ctx = this._screen.context;
-		this._mapper = new UI_Canvas_ContextMapper( this._ctx, { "x": left, "y": top, "width": width, "height": height } );
+		
+		var client: IRect = ( logicalWidth === null && logicalHeight === null )
+			? null
+			: (
+				logicalWidth == null
+					? { width: null, height: logicalHeight }
+					: { width: logicalWidth, height: null }
+			);
+
+		this._mapper = new UI_Canvas_ContextMapper( this._ctx, { "x": left, "y": top, "width": width, "height": height }, client );
 		
 		this.render();
 	}
 
 	get left(): number {
 		return this._mapper.left;
-	}
-
-	get top(): number {
-		return this._mapper.top;
-	}
-
-	get width(): number {
-		return this._mapper.width;
-	}
-
-	get height(): number {
-		return this._mapper.height;
 	}
 
 	set left( distance: number ) {
@@ -39,12 +36,20 @@ class UI_Screen_Window extends UI_Event {
 		}
 	}
 
+	get top(): number {
+		return this._mapper.top;
+	}
+
 	set top( distance: number ) {
 		distance = ~~distance;
 		if ( distance != this._mapper.top ) {
 			this._mapper.top = distance;
 			this.render();
 		}
+	}
+
+	get width(): number {
+		return this._mapper.width;
 	}
 
 	set width( distance: number ) {
@@ -55,12 +60,88 @@ class UI_Screen_Window extends UI_Event {
 		}
 	}
 
+	get height(): number {
+		return this._mapper.height;
+	}
+
 	set height( distance: number ) {
 		distance = ~~distance;
 		if ( distance != this._mapper.height ) {
 			this._mapper.height = distance;
 			this.render();
 		}
+	}
+
+	get logicalWidth(): number {
+		return this._mapper.logicalWidth;
+	}
+
+	set logicalWidth( width: number ) {
+		this._mapper.logicalWidth = width;
+	}
+
+	get logicalHeight(): number {
+		return this._mapper.logicalHeight;
+	}
+
+	set logicalHeight( height: number ) {
+		this._mapper.logicalHeight = height;
+	}
+
+	get paintMode(): ECanvasPaintMode {
+		return this._mapper.paintMode;
+	}
+
+	set paintMode( mode: ECanvasPaintMode ) {
+		this._mapper.paintMode = mode;
+	}
+
+	get overflowX(): EClientScrollbarOverflow {
+		return this._mapper.overflowX;
+	}
+
+	set overflowX( overflow: EClientScrollbarOverflow ) {
+		this._mapper.overflowX = overflow;
+	}
+
+	get overflowY(): EClientScrollbarOverflow {
+		return this._mapper.overflowY;
+	}
+
+	set overflowY(overflow: EClientScrollbarOverflow ) {
+		this._mapper.overflowY = overflow;
+	}
+
+	get clientWidth(): number {
+		return this._mapper.clientWidth;
+	}
+
+	get clientHeight(): number {
+		return this._mapper.clientHeight;
+	}
+
+	get scrollLeft(): number {
+		return this._mapper.scrollLeft;
+	}
+
+	set scrollLeft( left: number ) {
+		this._mapper.scrollLeft = left;
+	}
+
+	get scrollTop(): number {
+		return this._mapper.scrollTop;
+	}
+
+	set scrollTop( top: number ) {
+		this._mapper.scrollTop = top;
+	}
+
+	get xScrollable(): boolean {
+		return this._mapper.xScrollable;
+	}
+
+	get yScrollable(): boolean {
+		return this._mapper.yScrollable;
 	}
 
 	get ctx(): UI_Canvas_ContextMapper {
