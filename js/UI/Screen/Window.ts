@@ -21,6 +21,14 @@ class UI_Screen_Window extends UI_Event {
 
 		this._mapper = new UI_Canvas_ContextMapper( this._ctx, { "x": left, "y": top, "width": width, "height": height }, client );
 		
+		( function( me ) {
+
+			me._mapper.on( 'scroll-changed', function() {
+				me.render();
+			} );
+
+		} )( this );
+
 		this.render();
 	}
 

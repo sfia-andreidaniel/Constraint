@@ -10,8 +10,7 @@ class UI_Screen extends UI_Event {
 	private _pointerEvents: boolean = false;
 
 	// USED WHEN SCREEN LOCKS A WINDOW FOR SCROLLING
-	private _targetScrollWin: UI_Screen_Window = null;
-	private _targetScrollBar: EAlignment = EAlignment.RIGHT;
+	private _isScrolling: boolean = false;
 
 	static get get(): UI_Screen {
 		return UI_DialogManager.get.screen || null;
@@ -181,6 +180,10 @@ class UI_Screen extends UI_Event {
 
 	public handleMouseDown( ev ): boolean {
 
+		if ( this._isScrolling ){
+			return true;
+		}
+
 		var x: number = ev.pageX,
 		    y: number = ev.pageY,
 		    len: number = this._windows.length,
@@ -198,6 +201,18 @@ class UI_Screen extends UI_Event {
 						y - this._windows[i].top + this._windows[i].scrollTop,
 						ev.which
 					);
+
+				} else {
+
+					( function( me ) {
+
+						me._isScrolling = true;
+
+						me._windows[i].ctx.handleScrolling( x, y ).then( function( dummy ) {
+							me._isScrolling = false;
+						} );
+
+					} )( this );
 
 				}
 				
@@ -217,6 +232,10 @@ class UI_Screen extends UI_Event {
 	}
 
 	public handleMouseMove( ev ): boolean {
+
+		if ( this._isScrolling ) {
+			return true;
+		}
 
 		var x: number = ev.pageX,
 		    y: number = ev.pageY,
@@ -257,6 +276,10 @@ class UI_Screen extends UI_Event {
 
 	public handleDoubleClick( ev ): boolean {
 
+		if ( this._isScrolling ) {
+			return true;
+		}
+
 		var x: number = ev.pageX,
 		    y: number = ev.pageY,
 		    len: number = this._windows.length,
@@ -295,6 +318,10 @@ class UI_Screen extends UI_Event {
 
 	public handleMouseUp( ev ): boolean {
 		
+		if ( this._isScrolling ) {
+			return true;
+		}
+
 		var x: number = ev.pageX,
 		    y: number = ev.pageY,
 		    len: number = this._windows.length,
@@ -333,6 +360,10 @@ class UI_Screen extends UI_Event {
 
 	public handleScroll( ev ): boolean {
 
+		if ( this._isScrolling ) {
+			return true;
+		}
+
 		var x: number = ev.pageX,
 		    y: number = ev.pageY,
 		    len: number = this._windows.length,
@@ -360,6 +391,10 @@ class UI_Screen extends UI_Event {
 	}
 
 	public handleMouseClick( ev ): boolean {
+
+		if ( this._isScrolling ) {
+			return true;
+		}
 
 		var x: number = ev.pageX,
 		    y: number = ev.pageY,
@@ -397,6 +432,7 @@ class UI_Screen extends UI_Event {
 	}
 
 	public handleKeyDown( ev ) {
+
 		if ( this._windows && this._windows.length ) {
 			this._windows[ this._windows.length - 1 ].fire( 'keydown', ev );
 			ev.preventDefault();
@@ -407,7 +443,14 @@ class UI_Screen extends UI_Event {
 	private _setupEvents_() {
 		( function( self ) {
 			
-			self.on( 'keydown', function( ev ) {
+			self.on( 'keydown', function( ev ) {} );
+
+			self._repainter = new UI_Throttler( function() {
+				self.render();
+			} );
+
+			self.on( 'render', function() {
+				self._repainter.run();
 			} );
 
 		} )( this );

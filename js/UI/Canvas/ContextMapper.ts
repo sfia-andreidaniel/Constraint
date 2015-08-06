@@ -5,7 +5,7 @@
 
 */
 
-class UI_Canvas_ContextMapper {
+class UI_Canvas_ContextMapper extends UI_Event {
 
 	public static _theme = {
 		scrollBar: {
@@ -25,7 +25,16 @@ class UI_Canvas_ContextMapper {
 	private _clientHeight: number = 0;
 	private _paintMode: ECanvasPaintMode = ECanvasPaintMode.ABSOLUTE;
 
+	// scrollbar dragger buttons sizes
+	private _xDraggerSize: number = 0;
+	private _xDraggerPos : number = 0;
+
+	private _yDraggerSize: number = 0;
+	private _yDraggerPos : number = 0;
+
 	constructor( private ctx: CanvasRenderingContext2D, private size: IWindow, private logicalSize: IRect = null ) {
+		super();
+
 		this.logicalSize = this.logicalSize || { width: size.width, height: size.height };
 
 		this.computeClientWidth();
@@ -182,6 +191,9 @@ class UI_Canvas_ContextMapper {
 		}
 
 		this._scrollTop = value;
+
+		this._yDraggerSize = ~~( Math.pow( this.clientHeight, 2 ) / this.logicalSize.height );
+		this._yDraggerPos = ~~( this._scrollTop * this.clientHeight / this.logicalSize.height )
 	}
 
 	get scrollLeft(): number {
@@ -202,6 +214,9 @@ class UI_Canvas_ContextMapper {
 		}
 		
 		this._scrollLeft = value;
+
+		this._xDraggerSize = ~~( Math.pow( this.clientWidth, 2 ) / this.logicalSize.width );
+		this._xDraggerPos  = ~~( this._scrollLeft * this.clientWidth / this.logicalSize.width );
 	}
 
 	get paintMode(): ECanvasPaintMode {
@@ -230,11 +245,8 @@ class UI_Canvas_ContextMapper {
 			UI_Canvas_ContextMapper._theme.scrollBar.size
 		);
 
-		draggerSize = ~~( Math.pow( this.clientWidth, 2 ) / this.logicalSize.width );
-		draggerLeft  = ~~( this.scrollLeft * this.clientWidth / this.logicalSize.width );
-
 		this.fillStyle = UI_Canvas_ContextMapper._theme.scrollBar.draggerBackground;
-		this.fillRect( draggerLeft, this.clientHeight, draggerSize, UI_Canvas_ContextMapper._theme.scrollBar.size );
+		this.fillRect( this._xDraggerPos, this.clientHeight, this._xDraggerSize, UI_Canvas_ContextMapper._theme.scrollBar.size );
 
 	}
 
@@ -252,11 +264,11 @@ class UI_Canvas_ContextMapper {
 			this.clientHeight 
 		);
 
-		draggerSize = ~~( Math.pow( this.clientHeight, 2 ) / this.logicalSize.height );
-		draggerTop  = ~~( this.scrollTop * this.clientHeight / this.logicalSize.height );
+		//draggerSize = ~~( Math.pow( this.clientHeight, 2 ) / this.logicalSize.height );
+		//draggerTop  = ~~( this.scrollTop * this.clientHeight / this.logicalSize.height );
 
 		this.fillStyle = UI_Canvas_ContextMapper._theme.scrollBar.draggerBackground;
-		this.fillRect( this.clientWidth, draggerTop, UI_Canvas_ContextMapper._theme.scrollBar.size, draggerSize );
+		this.fillRect( this.clientWidth, this._yDraggerPos, UI_Canvas_ContextMapper._theme.scrollBar.size, this._yDraggerSize );
 	}
 
 	public paintScrollbars() {
@@ -266,6 +278,161 @@ class UI_Canvas_ContextMapper {
 		if ( this.xScrollable ) {
 			this.paintXScrollbar();
 		}
+	}
+
+	public handleScrolling( x: number, y: number ): Thenable<any> {
+
+		// translate coordinates to relative ones.
+		x -= this.left;
+		y -= this.top;
+
+		var targetScrollbar : EAlignment = null,
+		    mousePoint	    : number,
+		    clientSize		: number,
+		    draggerPos  	: number,
+		    draggerSize     : number,
+		    logicalSize     : number;
+
+		if ( x > this.clientWidth && y < this.clientHeight ) {
+			// we're handling the Y Scrollbar
+			targetScrollbar = EAlignment.TOP;
+		} else
+		if ( y > this.clientHeight && x < this.clientWidth ) {
+			// we're handling the X Scrollbar
+			targetScrollbar = EAlignment.LEFT;
+		}
+
+		if ( targetScrollbar === null )
+			return Promise.resolve( true );
+
+		if ( targetScrollbar == EAlignment.TOP ) {
+			mousePoint = y;
+			clientSize = this.clientHeight;
+			draggerPos = this._yDraggerPos;
+			draggerSize= this._yDraggerSize;
+			logicalSize= this.logicalHeight;
+
+		} else {
+			mousePoint = x;
+			clientSize = this.clientWidth;
+			draggerPos = this._xDraggerPos;
+			draggerSize = this._xDraggerSize;
+			logicalSize = this.logicalWidth;
+		}
+
+		var setVal: ( value: number ) => void,
+		    getVal: ( ) => number;
+
+		( function( me ) {
+
+		    setVal = function( value: number ) {
+		    	if ( targetScrollbar == EAlignment.TOP ) {
+		    		me.scrollTop = value;
+		    	} else {
+		    		me.scrollLeft = value;
+		    	}
+		    	me.fire( 'scroll-changed' );
+		    };
+
+		    getVal = function( ): number {
+		    	if ( targetScrollbar == EAlignment.TOP ) {
+		    		return me.scrollTop;
+		    	} else {
+		    		return me.scrollLeft;
+		    	}
+		    }
+
+		} )( this );
+
+
+		if ( mousePoint < draggerPos ) {
+
+			return Promise.resolve( true ).then( function( dummy ) {
+				setVal( getVal() - clientSize );
+				return true;
+			} )
+
+		} else
+
+		if ( mousePoint > draggerPos + draggerSize ) {
+
+			return Promise.resolve( true ).then( function( dummy ) {
+				setVal( getVal() + clientSize );
+				return true;
+			} );
+
+		} else {
+
+			return ( function( me ) {
+
+				return new Promise( function( accept, reject ) {
+
+					var canvas = me.ctx.canvas,
+					    prevPoint: number = mousePoint;
+
+					function onmousemove( ev ) {
+						var target = ev.target || ev.srcElement,
+						    point: number,
+						    x: number = ev.layerX || ev.offsetX,
+						    y: number = ev.layerY || ev.offsetY,
+						    delta: number,
+						    newScrollPos: number,
+						    currentScrollPos: number = getVal();
+
+						if ( target != canvas ) {
+							return;
+						}
+
+						// translate locally
+						x -= me.left;
+						y -= me.top;
+						
+						point = targetScrollbar == EAlignment.TOP ? y : x;
+
+						if ( point < 0 || point > clientSize ) {
+							return;
+						}
+
+						if ( point != prevPoint ) {
+
+							delta = point - prevPoint;
+
+							newScrollPos = Math.round( ( ( currentScrollPos * clientSize ) / logicalSize ) + delta ) * ( logicalSize / clientSize );
+
+							if ( newScrollPos < 0 ) {
+								newScrollPos = 0;
+							} else
+							if ( newScrollPos + clientSize > logicalSize ) {
+								newScrollPos = logicalSize - clientSize;
+							}
+
+							if ( newScrollPos != currentScrollPos ) {
+								setVal( newScrollPos );
+								prevPoint = point;
+							}
+
+						}
+
+
+					}
+
+					function onmouseup( ev ) {
+						me.ctx.canvas.removeEventListener( 'mousemove', onmousemove, true );
+						document.body.removeEventListener( 'mouseup',   onmouseup,   true );
+						accept();
+					}
+
+					canvas.addEventListener( 'mousemove', onmousemove, true );
+
+					document.body.addEventListener( 'mouseup', onmouseup, true );
+
+				} );
+
+			} )( this );
+
+
+		}
+
 	}
 
 	set paintMode( mode: ECanvasPaintMode ) {
