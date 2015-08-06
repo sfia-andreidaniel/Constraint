@@ -175,7 +175,7 @@ class UI_ListBox extends UI_Canvas implements IFocusable, IRowInterface {
 
 			ctx.fillText( opt.get('name'), 2, startY + ~~( UI_ListBox._theme.optionHeight / 2 ) );
 
-			if ( selectedIndex == i && isActive && !isDisabled ) {
+			if ( selectedIndex == i && isActive && !isDisabled && this.multiple ) {
 				// draw selected index focus ring
 				ctx.strokeStyle = 'black';
 				ctx.lineWidth = 1;

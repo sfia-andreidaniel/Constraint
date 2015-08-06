@@ -42,4 +42,9 @@ class Utils {
 	 */
 	public static string = Utils_String;
 
+	/**
+	 * Keyboard helpers
+	 */
+	public static keyboard = Utils_Keyboard;
+
 }

@@ -1,5 +1,17 @@
+/**
+ * The UI_DropDown class represents a [select] DOM node. The difference between a standard
+ * [select] DOM node and UI_DropDown is that the options of the UI_DropDown are rendered on
+ * the UI_Screen overlay, without filling the dom tree with it's options elements.
+ *
+ * This way, you can create a dropdown with 20.000 options, without populating the dom with
+ * those options.
+ *
+ */
 class UI_DropDown extends UI implements IFocusable {
 
+	/** 
+	 * DropDown theme 
+	 */
 	public static _theme = {
 		option: {
 			height: $I.number('UI.UI_DropDown/option.height')
@@ -23,27 +35,71 @@ class UI_DropDown extends UI implements IFocusable {
 		]
 	};
 
+	/** 
+	 * The only 3 DOM nodes of the dropdown :)
+	 */
 	protected _dom = {
 		view: Utils.dom.create('div', 'view'),
 		expander: Utils.dom.create('div','ui expander'),
 		icon: Utils.dom.create('div')
 	};
 
+	/** 
+	 * Array with options of the dropdown. 
+	 */
 	protected _options: IOption[]    = [];
+
+	/** 
+	 * Total number of options of the dropdown 
+	 */
 	protected _length: number = 0;
+
+	/** 
+	 * The selected index 
+	 */
 	protected _selectedIndex: number = -1;
+
+	/** 
+	 * Whether the dropdown is expanded or not 
+	 */
 	protected _expanded: boolean = false;
+
+	/** 
+	 * A virtual window in the screen, where we paint the overlay of the dropdown with it's options 
+	 */
 	protected _overlay: UI_Screen_Window = null;
 
-	// Internal renderer options
+	/** 
+	 * When the overlay of the select is opened, we don't change it's original
+	 * selected index, but a copy of it.
+	 */
 	private   _overlaySelectedIndex : number = -1;
 
+	/**
+	 * TRUE if the dropdown is the focused element in it's form.
+	 */
 	public    active: boolean; // the active is overrided by the MFocusable mixin
+
+	/**
+	 * Whether the dropdown handles by itself the TAB key (true), or the TAB key
+	 * focuses the next focusable element in it's form
+	 */
 	public    wantTabs: boolean = false;
+
+	/**
+	 * Focus order ( in form )
+	 */
 	public    tabIndex: number = 0;
+
+	/**
+	 * Whether the dropdown is included in the focus cycle of it's form or not.
+	 */
 	public    includeInFocus: boolean = true;
 
 
+	/**
+	 * Constructor. Creates a new UI_DropDown.
+	 */
 	constructor( owner: UI ) {
 		super( owner, [ 'IFocusable' ], Utils.dom.create( 'div', 'ui UI_DropDown' ) );
 		
@@ -59,12 +115,88 @@ class UI_DropDown extends UI implements IFocusable {
 		this._setupEvents_();
 	}
 
+	/**
+	 * Returns the total number of options in the DropDown
+	 */
 	get length(): number {
 		return this._length;
 	}
 
+	/**
+	 * Gets / Sets the options of the dropdown
+	 */
 	get options(): IOption[] {
 		return this._options;
+	}
+
+	/**
+	 * Adds an option at position index. If index is null,
+	 * insertion is made at end.
+	 *
+	 * If index is negative, insertion is made starting from the end.
+	 */
+	public addOption( option: IOption, index: number = null ) {
+
+		var destinationIndex: number = index == null
+			? this._length
+			: ( index < 0 ? this._length - index - 2 : index ),
+
+			needIncrementSelectedIndex: boolean
+				= this._selectedIndex > -1 && destinationIndex <= this._selectedIndex;
+
+		if ( destinationIndex < 0 || destinationIndex > this._length ) {
+			throw new Error('Index ' + index + ' is out of bounds' );
+		}
+
+		if ( !option || typeof option.value == 'undefined' || typeof option.text == 'undefined' ) {
+			throw new Error('The addOption argument expects an IOption object.');
+		}
+
+		this._options.splice( destinationIndex, 0, { "value": option.value, "text": option.text } );
+		this._length++;
+
+		if ( needIncrementSelectedIndex ) {
+			this._selectedIndex++;
+		}
+
+		if ( this.expanded ) {
+			this.expanded = false;
+		}
+	}
+
+	/** 
+	 * Removes the option from position index. If index is a negative value, the option is
+	 * removed from the end.
+	 *
+	 */
+	public removeOption( index: number = null ) {
+
+		var removeIndex: number = index === null
+			? this._length - 1
+			: ( index < 0 ? this._length - index - 2 : index ),
+
+			needDecrementSelectedIndex: boolean
+				= this._selectedIndex > -1 && removeIndex <= this._selectedIndex;
+
+		if ( removeIndex < 0 || removeIndex >= this._length ) {
+			throw new Error( 'Index ' + index + ' is out of bounds' );
+		}
+
+		this._options.splice( removeIndex, 1 );
+		this._length--;
+
+		if ( needDecrementSelectedIndex ) {
+			if ( this._selectedIndex == removeIndex ) {
+				this.selectedIndex = -1;
+			} else {
+				this._selectedIndex--;
+			}
+		}
+
+		if ( this.expanded ) {
+			this.expanded = false;
+		}
+
 	}
 
 	set options( options: IOption[] ) {
@@ -100,6 +232,10 @@ class UI_DropDown extends UI implements IFocusable {
 		this.onRepaint();
 	}
 
+	/**
+	 * Gets / Sets the selected index of the dropdown. Invalid values on setter will be treated
+	 * as -1.
+	 */
 	get selectedIndex(): number {
 		return this._selectedIndex;
 	}
@@ -115,6 +251,10 @@ class UI_DropDown extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Returns the corresponding value of the option located at selectedIndex,
+	 * or NULL if the selected index is -1.
+	 */
 	get value(): any {
 		if ( this._selectedIndex == -1 ) {
 			return null;
@@ -123,6 +263,10 @@ class UI_DropDown extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Sets the selected index to the first option whose value is "value",
+	 * or -1 if an option with those value is not found.
+	 */
 	set value( value: any ) {
 		var i: number;
 
@@ -140,10 +284,16 @@ class UI_DropDown extends UI implements IFocusable {
 		this.selectedIndex = -1;
 	}
 
+	/**
+	 * Internal. Whether the dropdown is expanded or not.
+	 */
 	protected get expanded(): boolean {
 		return this._expanded;
 	}
 
+	/**
+	 * Internal. Whether the dropdown is expanded or not.
+	 */
 	protected set expanded( expanded: boolean ) {
 		expanded = !!expanded;
 		
@@ -160,6 +310,9 @@ class UI_DropDown extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Overlay canvas renderer. Renders the dropdown's overlay.
+	 */
 	protected _renderOverlay() {
 		
 		if ( !this._overlay ) {
@@ -217,6 +370,10 @@ class UI_DropDown extends UI implements IFocusable {
 
 	}
 
+	/**
+	 * Internal. Scrolls the overlay's scrollTop, in order to make visible
+	 * in it's viewport the option at position index.
+	 */
 	protected scrollIntoIndex( index: number ) {
 
 		if ( !this._overlay ) {
@@ -239,6 +396,9 @@ class UI_DropDown extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Internal. Opens the DropDown.
+	 */
 	protected _open() {
 		
 		var rect: ClientRect = this._root.getBoundingClientRect(),
@@ -338,6 +498,9 @@ class UI_DropDown extends UI implements IFocusable {
 
 	}
 
+	/**
+	 * Internal. Closes the dropdown.
+	 */
 	protected _close() {
 
 		if ( this._overlay ) {
@@ -347,6 +510,12 @@ class UI_DropDown extends UI implements IFocusable {
 
 	}
 
+	/**
+	 * When the user press the "UP" / "DOWN" arrow keys, we call this function
+	 * in order to change the index relative from it's position with a -1 or +1.
+	 *
+	 * @param relative - number, -1 or +1 handled.
+	 */
 	protected changeIndex( relativeIncrement: number ) {
 		relativeIncrement = relativeIncrement || 0;
 
@@ -370,6 +539,9 @@ class UI_DropDown extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Internal. Binds appropriated events on the dropdown.
+	 */
 	protected _setupEvents_() {
 
 		( function( me ) {
@@ -384,23 +556,19 @@ class UI_DropDown extends UI implements IFocusable {
 
 				switch ( code ) {
 
-					// SPACE
-					case 32:
+					case Utils.keyboard.KB_SPACE:
 						this.expanded = !this.expanded;
 						break;
 
-					// UP
-					case 38:
+					case Utils.keyboard.KB_UP:
 						this.changeIndex( -1 );
 						break;
 
-					// DOWN
-					case 40:
+					case Utils.keyboard.KB_DOWN:
 						this.changeIndex( +1 );
 						break;
 
-					// ENTER
-					case 13:
+					case Utils.keyboard.KB_ENTER:
 
 						if ( this.expanded ) {
 							this.expanded = false;
@@ -411,10 +579,39 @@ class UI_DropDown extends UI implements IFocusable {
 
 						break;
 
-					// ESC
-					case 27:
+					case Utils.keyboard.KB_ESC:
 						this.expanded = false;
 						break;
+
+					case Utils.keyboard.KB_HOME:
+
+						if ( this.length ) {
+							if ( this.expanded ) {
+								this._overlaySelectedIndex = 0;
+								this.scrollIntoIndex(0);
+								this._overlay.render();
+							} else {
+								this.selectedIndex = 0;
+							}
+
+						}
+
+						break;
+
+					case Utils.keyboard.KB_END:
+
+						if ( this.length ) {
+							if ( this.expanded ) {
+								this._overlaySelectedIndex = this.length - 1;
+								this.scrollIntoIndex(this.length - 1);
+								this._overlay.render();
+							} else {
+								this.selectedIndex = this.length - 1;
+							}
+						}
+
+						break;
+
 				}
 
 			} );
@@ -425,7 +622,7 @@ class UI_DropDown extends UI implements IFocusable {
 					return;
 				}
 
-				me.expanded = !me.expanded;
+				me.expanded = true;
 
 			}, false );
 

@@ -9,6 +9,7 @@
 /// <reference path="Utils/Circular.ts" />
 /// <reference path="Utils/Dom.ts" />
 /// <reference path="Utils/String.ts" />
+/// <reference path="Utils/Keyboard.ts" />
 /// <reference path="Utils.ts" />
 
 
@@ -61,6 +62,7 @@
 /// <reference path="UI/RadioBox.ts" />
 /// <reference path="UI/TextBox.ts" />
 /// <reference path="UI/DropDown.ts" />
+/// <reference path="UI/DateBox.ts" />
 
 /// <reference path="UI/Canvas.ts" />
 /// <reference path="Mixins/MGridInterface.ts" />

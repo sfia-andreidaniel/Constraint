@@ -127,6 +127,44 @@ class Utils_Dom {
 		return result;
 	}
 
+	public static selectText( input: any, start: number, length: number ) {
+
+		if ( input ) {
+
+			if ( input.createTextRange ) {
+				var selRange = input.createTextRange();
+				selRange.collapse(true);
+				selRange.moveStart( 'character', start );
+				selRange.moveEnd( 'character', start + length );
+				selRange.select();
+			} else
+			if ( input.setSelectionRange ) {
+				input.setSelectionRange( start, start + length );
+			} else
+			if ( typeof input.selectionStart != 'undefined' ) {
+				input.selectionStart = start;
+				input.setSelectionEnd = start + length;
+			}
+
+		}
+
+	}
+
+	public static getCaretPosition( input: any ): number {
+		// Initialize
+		var iCaretPos = 0;
+
+		if (document['selection']) {
+			var oSel = document['selection'].createRange ();
+			oSel.moveStart ('character', -input.value.length);
+			iCaretPos = oSel.text.length;
+		} else 
+		if ( input.selectionStart || input.selectionStart == '0' )
+			iCaretPos = input.selectionStart;
+
+		return (iCaretPos);
+	}
+
 }
 
 if ( Global.isBrowser ) {

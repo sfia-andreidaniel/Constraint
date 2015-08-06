@@ -682,7 +682,7 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 			rowHeight     : number = this.rowHeight;
 
 		/* Paint the selectedIndex */
-		if ( selectedIndex >= start && selectedIndex < stop && this['active'] && ( this.form ? this.form.active : true ) ) {
+		if ( selectedIndex >= start && selectedIndex < stop && this['active'] && ( this.form ? this.form.active : true ) && this['multiple'] ) {
 			body.strokeStyle = 'black';
 			body.lineWidth   = 1;
 			body.strokeRect( .5, yPaintStart + ( selectedIndex - start ) * rowHeight, this.viewportWidth - 1, rowHeight - 1 )

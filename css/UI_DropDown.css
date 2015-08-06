@@ -11,6 +11,10 @@
 }
 
 .ui.UI_DropDown.focused {
+	background-color: ${background.selectedInactive};
+}
+
+.ui.UI_Form.focus-active .ui.UI_DropDown.focused {
 	background-color: ${background.selected};
 }
 
@@ -26,6 +30,11 @@
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	color: ${font.color.normal};
+}
+
+.ui.UI_Form:not(.focus-active) .ui.UI_DropDown.focused > .view {
+	color: ${font.color.selectedInactive};
 }
 
 .ui.UI_DropDown > .expander {
