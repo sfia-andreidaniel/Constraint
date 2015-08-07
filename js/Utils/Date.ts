@@ -11,6 +11,20 @@ class Utils_Date {
 	public static DEFAULT_TIME_FORMAT      : string = "hh:mm:ss";
 	public static DEFAULT_TIMESTAMP_FORMAT : string = Utils_Date.DEFAULT_DATE_FORMAT + ' ' + Utils_Date.DEFAULT_TIME_FORMAT;
 
+	/**
+	 * Internationalization support.
+	 */
+	public static i18n = {
+		monthLongNames : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'Octomber', 'November', 'December'],
+		monthShortNames: ['Jan', 	 'Feb', 	 'Mar',   'Apr',   'May', 'Jun',  'Jul',  'Aug',    'Sep',       'Oct',      'Nov',      'Dec' ],
+		
+		dayLongNames   : ['Sunday',  'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ],
+		dayShortNames  : ['Su',      'Mo',     'Tu',      'We',        'Th',       'Fr',     'Sa' ]
+	};
+
+	/**
+	 * Mappings for Date parts used by the date parser.
+	 */
 	private static dateFormatMappings = {
 		"DD": EDatePart.DAY,
 		"MM": EDatePart.MONTH,
@@ -21,6 +35,22 @@ class Utils_Date {
 		"UU": EDatePart.UNIX_TIMESTAMP,
 		"MS": EDatePart.MILLISECONDS
 	};
+
+	/**
+	 * Returns the name of the month, based on i18n.
+	 * @param month [ 1..12 ]
+	 */
+	public static monthName( month: number, short: boolean ): string {
+		return Utils_Date.i18n[ short ? 'monthShortNames' : 'monthLongNames' ][ month - 1 ] || '';
+	}
+
+	/**
+	 * Returns the name of the day of the week, based on i18n.
+	 * @param day [ 0..6 ]
+	 */
+	public static dayName( day: number, short: boolean ): string {
+		return Utils_Date.i18n[ short ? 'dayShortNames' : 'dayLongNames' ][ day ] || '';
+	}
 
 	private static readInt(len: number, from: string ): number {
 		

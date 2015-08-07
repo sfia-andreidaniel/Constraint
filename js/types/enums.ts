@@ -186,3 +186,13 @@ enum ECanvasPaintMode {
 	ABSOLUTE,
 	LOGICAL
 }
+
+/**
+ * Defines reasons a date can be invalid
+ */
+enum EInvalidDate {
+	NONE,
+	DATE_ERROR,
+	DATE_TOO_BIG,
+	DATE_TOO_SMALL
+}

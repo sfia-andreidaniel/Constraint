@@ -51,6 +51,7 @@
 /// <reference path="UI/Anchor/ColumnEditor.ts" />
 /// <reference path="UI/Padding.ts" />
 /// <reference path="UI/Canvas/ContextMapper.ts" />
+/// <reference path="UI/Canvas/Button.ts" />
 /// <reference path="UI/Screen.ts" />
 /// <reference path="UI/Screen/Window.ts" />
 /// <reference path="UI/DialogManager.ts" />

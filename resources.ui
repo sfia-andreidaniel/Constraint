@@ -21,6 +21,11 @@
 	collapsed_sign              from '../vendor/self/collapsed.png'               20x20 disabled;
 	expanded_sign               from '../vendor/self/expanded.png'                20x20 disabled;
 
+	/* DATE PICKER */
+	datepicker_prev_month       from '../vendor/self/datepicker_prev_month.png'   5x10;
+	datepicker_this_month       from '../vendor/self/datepicker_this_month.png'   10x10;
+	datepicker_next_month       from '../vendor/self/datepicker_next_month.png'   5x10;
+
 	/* GRID STUFF */
 	// checkbox for boolean state
 	grid_boolean                from '../vendor/self/grid-boolean-column.png'     14x14 disabled;

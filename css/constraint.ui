@@ -372,13 +372,121 @@
 			invalid: #fdd;
 		};
 
+		group: {
+			background: {
+				active: $selectedItemBackgroundColor;
+				inactive: $inactiveSelectedItemBackgroundColor;
+			};
+			color: {
+				active: $selectedItemColor;
+				inactive: $selectedInactiveItemColor;
+				disabled: $disabledFontColor;
+			};
+		};
+
 		border: {
 			color: $enabledControlBorderColor;
+		};
+
+		font: {
+			family: $fontFamily;
+			size: 14;
 		};
 
 		expander: {
 			collapsed: 'ui-resource Constraint collapsed_sign-20x20';
 			expanded: 'ui-resource Constraint expanded_sign-20x20';
+		};
+
+		picker: {
+			backgroundColor : white;
+			borderColor     : black;
+			padding         : 5;
+
+			header: {
+				height: 25;
+				backgroundColor: rgb( 245, 245, 245 );
+				borderColor: rgb( 192, 192, 192 );
+
+				monthButton: {
+					width: 75;
+				};
+
+				yearButton: {
+					width: 50;
+				};
+
+				monthNavigator: {
+					
+					width: 60;
+
+					prevMonth: {
+						width: 5;
+						height: 10;
+						sprite: 'Constraint/datepicker_prev_month/5x10';
+					};
+
+					thisMonth: {
+						width: 10;
+						height: 10;
+						sprite: 'Constraint/datepicker_this_month/10x10';
+					};
+
+					nextMonth: {
+						width: 5;
+						height: 10;
+						sprite: 'Constraint/datepicker_next_month/5x10';
+					};
+
+				};
+			};
+
+			font: {
+				family: $fontFamily;
+				size  : 12;
+				color : black;
+			};
+
+			day: {
+				width: 25;
+				height: 20;
+
+				header: {
+					backgroundColor: white;
+					color: black;
+					borderColor: white;
+					hoverBorderColor: white;
+				};
+
+				ofOtherMonth: {
+					backgroundColor: rgb(240,240,240);
+					color: rgb(178,178,178);
+					borderColor: rgb(240,240,240);
+					hoverBorderColor: rgb(217,197,133);
+				};
+
+				ofThisMonth: {
+					backgroundColor: white;
+					color: rgb(46,78,140);
+					borderColor: white;
+					hoverBorderColor: rgb(217,197,133);
+				};
+
+				ofToday: {
+					backgroundColor: rgb(223,234,244);
+					color: rgb(46,78,140);
+					borderColor: rgb(103,172,216);
+					hoverBorderColor: rgb(217,197,133);
+				};
+
+				ofSelected: {
+					backgroundColor: rgb(255,250,188);
+					color: rgb(46,78,140);
+					borderColor: rgb(217,197,133);
+					hoverBorderColor: rgb(217,197,133);
+				};
+
+			};
 		};
 	};
 

@@ -113,7 +113,7 @@ class UI_DialogManager extends UI_Event {
 		return null;
 	}
 
-	protected handleTabKey (ev) {
+	protected handleTabKey (ev, ignoreWantTabs: boolean = false) {
 
 		var components: UI[],
 		    index: number,
@@ -121,7 +121,7 @@ class UI_DialogManager extends UI_Event {
 
 		if ( this._activeWindow ) {
 
-			if ( this._activeWindow.activeElement && this._activeWindow.activeElement['wantTabs'] ) {
+			if ( this._activeWindow.activeElement && this._activeWindow.activeElement['wantTabs'] && !ignoreWantTabs ) {
 				
 				this.handleRegularKey( ev );
 
@@ -180,8 +180,12 @@ class UI_DialogManager extends UI_Event {
 		}
 	}
 
-	public focusNextElement() {
-		this.handleTabKey({ "keyCode": 8, "charCode": 8, "preventDefault": function() {}, "stopPropagation": function() {} });
+	public focusNextElement( force: boolean = false ) {
+		this.handleTabKey({ "keyCode": 8, "charCode": 8, "preventDefault": function() {}, "stopPropagation": function() {} }, force);
+	}
+
+	public focusPreviousElement( force: boolean = false ) {
+		this.handleTabKey({ "keyCode": 8, "charCode": 8, "preventDefault": function(){}, "stopPropagation": function(){}, "shiftKey": true }, force);
 	}
 
 	private _setupEvents_() {
@@ -234,6 +238,9 @@ class UI_DialogManager extends UI_Event {
 								manager.handleTabKey( ev );
 							} else {
 								manager.handleRegularKey( ev );
+							}
+							if ( code == 8 && !document.activeElement || [ 'input', 'textarea' ].indexOf( document.activeElement.nodeName.toLowerCase() ) == -1 ) {
+								ev.preventDefault();
 							}
 						}
 					}, true );

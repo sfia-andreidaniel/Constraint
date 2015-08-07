@@ -28,15 +28,29 @@
 	overflow: hidden;
 }
 
-.ui.UI_DateBox > .view > input[type=text] {
-	border: none;
-	width: 100%;
-	height: 100%;
-	padding: 0;
-	margin: 0;
-	background-color: transparent;
-	outline: none !important;
-	display: block;
+.ui.UI_DateBox > .view > .group {
+	display: inline-block;
+	font-family: '${font.family}';
+	font-size: ${font.size}px;
+}
+
+.ui.UI_DateBox > .view > .group > .ending {
+	white-space: pre;
+	color: ${group.color.disabled};
+}
+
+.ui.UI_DateBox.focused > .view > .group > .value.on {
+	background-color: ${group.background.inactive};
+	color: ${group.color.inactive};
+}
+
+.ui.UI_Form.focus-active .ui.UI_DateBox.focused > .view > .group > .value.on {
+	background-color: ${group.background.active};
+	color: ${group.color.active};
+}
+
+.ui.UI_DateBox.disabled > .view > .group > .value {
+	color: ${group.color.disabled};
 }
 
 .ui.UI_DateBox > .expander {
