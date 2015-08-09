@@ -128,6 +128,16 @@ class UI_DateBox_Picker extends UI_Event {
 	protected _buttons   : UI_Canvas_Button[] = [];
 	protected _days      : UI_Canvas_Button[] = [];
 
+	/** current selected date */
+	protected _currentDate: Date;
+	protected _today: Date = new Date();
+
+	/** the page we're rendering at a time */
+	protected _currentPage = {
+		month: null,
+		year: null
+	};
+
 	constructor( owner: UI_DateBox ) {
 		super();
 
@@ -154,9 +164,19 @@ class UI_DateBox_Picker extends UI_Event {
 			placement.width, placement.height
 		);
 
+		this._currentDate = new Date();
 
+		// Initialize the date from the datebox control.
+		this._currentDate.setFullYear(owner.getDatePart(EDatePart.YEAR));
+		this._currentDate.setMonth( owner.getDatePart(EDatePart.MONTH));
+		this._currentDate.setDate(owner.getDatePart(EDatePart.DAY));
+
+		this._currentPage.month = this._currentDate.getMonth();
+		this._currentPage.year = this._currentDate.getFullYear();
 
 		this._setup_();
+
+		this.computeCurrentMonth();
 	}
 
 	protected render() {
@@ -174,6 +194,66 @@ class UI_DateBox_Picker extends UI_Event {
 		}
 
 		ctx.endPaint();
+	}
+
+	protected computeCurrentMonth() {
+		var d: Date = new Date(),
+		    i: number,
+		    len: number,
+		    month: number,
+		    year: number,
+		    day: number;
+
+		d.setFullYear(this._currentPage.year);
+		d.setMonth(this._currentPage.month);
+		d.setDate(1);
+		
+		// decrement through the date until the day of week is 0 (sunday).
+		while ( d.getDay() != 0 ) {
+			d.setDate(d.getDate() - 1);
+		}
+		
+		// setup buttons.
+		for (i = 0, len = 42; i < len; i++ ) {
+			month = d.getMonth();
+			year = d.getFullYear();
+			day = d.getDate();
+			
+			if (month == this._currentDate.getMonth() && year == this._currentDate.getFullYear() && day == this._currentDate.getDate()) {
+				this._days[i].active = true;
+			} else {
+				this._days[i].active = false
+			}
+
+			if (month == this._today.getMonth() && year == this._today.getFullYear() && day == this._today.getDate()) {
+
+				this._days[i].backgroundColor = UI_DateBox_Picker._theme.day.ofToday.backgroundColor;
+				this._days[i].borderColor = UI_DateBox_Picker._theme.day.ofToday.borderColor;
+				this._days[i].borderHoverColor = UI_DateBox_Picker._theme.day.ofSelected.hoverBorderColor;
+
+			} else {
+
+				if (month == this._currentPage.month && year == this._currentPage.year) {
+
+					this._days[i].backgroundColor = UI_DateBox_Picker._theme.day.ofThisMonth.backgroundColor;
+					this._days[i].borderColor = UI_DateBox_Picker._theme.day.ofThisMonth.borderColor;
+					this._days[i].borderHoverColor = UI_DateBox_Picker._theme.day.ofSelected.hoverBorderColor;
+
+				} else {
+
+					this._days[i].backgroundColor = UI_DateBox_Picker._theme.day.ofOtherMonth.backgroundColor;
+					this._days[i].borderColor = UI_DateBox_Picker._theme.day.ofOtherMonth.borderColor;
+					this._days[i].borderHoverColor = UI_DateBox_Picker._theme.day.ofSelected.hoverBorderColor;
+
+				}
+
+			}
+
+
+			this._buttons[i].caption = String(day);
+
+			d.setDate(d.getDate() + 1);
+		}
 	}
 
 	public close() {
@@ -212,6 +292,37 @@ class UI_DateBox_Picker extends UI_Event {
 			me._closeCallback = function() {
 				me.close();
 			};
+
+			me._overlay.ctx.on('hover-button', function( button: UI_Canvas_Button ) {
+				var i: number,
+					len: number;
+				for (i = 0, len = me._buttons.length; i < len; i++ ) {
+					me._buttons[i].hover = me._buttons[i] == button;
+				}
+			});
+
+			me._overlay.ctx.on('activate-button', function( button: UI_Canvas_Button ) {
+				var i: number,
+					len: number;
+				for (i = 0, len = me._buttons.length; i < len; i++ ) {
+					me._buttons[i].active = me._buttons[i] == button;
+				}
+			});
+
+			me._overlay.on('mousemove', function( x: number, y: number, button: number ) {
+				
+				var i: number,
+					len: number;
+
+				for (i = 0, len = me._buttons.length; i < len; i++ ) {
+					if ( me._buttons[i].containsRelativePoint( x, y ) && !me._buttons[i].hover ) {
+						me._buttons[i].hover = true;
+						me._overlay.render();
+						console.log('set hover: ', me._buttons[i].caption);
+						return;
+					}
+				}
+			});
 
 			me._overlay.on( 'keydown', function( ev ) {
 
@@ -307,6 +418,12 @@ class UI_DateBox_Picker extends UI_Event {
 
 					btn.font  = UI_DateBox_Picker._theme.font.font;
 					btn.caption = String( ++n );
+					btn.borderWidth = 1;
+					btn.color = UI_DateBox_Picker._theme.day.ofThisMonth.color;
+
+					btn.borderActiveColor = UI_DateBox_Picker._theme.day.ofSelected.borderColor;
+					btn.backgroundActiveColor = UI_DateBox_Picker._theme.day.ofSelected.backgroundColor;
+					btn.activeColor = UI_DateBox_Picker._theme.day.ofSelected.color;
 
 					me.addButton( btn );
 					me._days.push( btn );

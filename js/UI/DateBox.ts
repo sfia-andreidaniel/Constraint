@@ -164,6 +164,45 @@ class UI_DateBox extends UI implements IFocusable {
 		return false;
 	}
 
+	public getDatePart( part: EDatePart ): number {
+		var i: number,
+			len: number = this._groups.length,
+			d: Date;
+
+		for (i = 0; i < len; i++ ) {
+			if ( this._groups[i].datePart == part && this._groups[i].value !== null ) {
+				return this._groups[i].value - ( part == EDatePart.MONTH ? 1 : 0 );
+			}
+		}
+
+		d = new Date();
+
+		switch ( part ) {
+			case EDatePart.YEAR:
+				return d.getFullYear();
+				break;
+			case EDatePart.MONTH:
+				return d.getMonth();
+				break;
+			case EDatePart.DAY:
+				return d.getDate();
+				break;
+			case EDatePart.HOUR:
+				return d.getHours();
+				break;
+			case EDatePart.MINUTE:
+				return d.getMinutes();
+				break;
+			case EDatePart.SECOND:
+				return d.getSeconds();
+				break;
+			default:
+				return null;
+				break;
+		}
+
+	}
+
 	get currentGroup(): number {
 		return this._currentGroup;
 	}

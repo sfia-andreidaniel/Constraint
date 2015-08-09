@@ -215,6 +215,10 @@ class UI_Canvas_Button {
 		this._icon = icon || null;
 	}
 
+	public containsRelativePoint( x: number, y: number ): boolean {
+		return x >= this._left && y >= this._top && x < this._left + this._width && y < this._top + this._height; 
+	}
+
 	public render() {
 
 		this._mapper.save();
@@ -224,13 +228,13 @@ class UI_Canvas_Button {
 		    color          : string = this.color,
 		    borderWidth    : number = this.borderWidth;
 
-		if ( this.active ) {
+		if ( this._active ) {
 			backgroundColor = this.backgroundActiveColor || backgroundColor;
 			borderColor     = this.borderActiveColor || borderColor;
 			color           = this.activeColor || color;
 		}
 
-		if ( this.hover ) {
+		if ( this._hover ) {
 			backgroundColor = this.backgroundHoverColor || backgroundColor;
 			borderColor     = this.borderHoverColor || borderColor;
 			color           = this.hoverColor || color;
@@ -244,7 +248,7 @@ class UI_Canvas_Button {
 		if ( borderWidth && borderColor && borderColor != backgroundColor ) {
 			this._mapper.lineWidth = borderWidth;
 			this._mapper.strokeStyle = borderColor;
-			this._mapper.strokeRect( this._left + .5, this._top + .5, this._width, this._height );
+			this._mapper.strokeRect( this._left + .5, this._top + .5, this._width - 1, this._height - 1 );
 		}
 
 		if ( this._caption && color && this.font && color != backgroundColor ) {
