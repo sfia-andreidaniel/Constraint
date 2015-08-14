@@ -265,7 +265,7 @@ class UI_Canvas_Button {
 
 			UI_Resource.createSprite( this._icon.sprite ).paintWin(
 				this._mapper,
-				~~( this._left + this._width / 2 ), ~~( this._top + this._height / 2 )
+				~~( this._left + this._width / 2 - this._icon.width / 2 ), ~~( this._top + this._height / 2 - this._icon.height / 2 )
 			);
 
 		}

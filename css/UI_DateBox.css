@@ -8,10 +8,19 @@
 	background-color: ${background.inactive};
 	border: 1px solid ${border.color};
 	overflow: hidden;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
 }
 
 .ui.UI_Form.focus-active .ui.UI_DateBox.focused {
 	background-color: ${background.enabled};
+}
+
+.ui.UI_Form.focus-active .ui.UI_DateBox.focused.expanded {
+	background-color: ${group.background.active};
 }
 
 .ui.UI_Form.focus-active .ui.UI_DateBox.invalid {

@@ -5,6 +5,8 @@
 	menuitem_checked    		from '../vendor/self/menuitem-checked.png'    	  20x20 disabled;
 	menuitem_expander   		from '../vendor/self/menuitem-expander.png'   	  20x20 disabled;
 	menuitem_expander_hover 	from '../vendor/self/menuitem-expander-hover.png' 20x20 disabled;
+	menuitem_scroll_prev        from '../vendor/self/menuitem_scroll_prev.png'    10x5;
+	menuitem_scroll_next        from '../vendor/self/menuitem_scroll_next.png'    10x5;
 
 	/* TREE CONNECTORS */
 

@@ -203,6 +203,16 @@ class UI_DateBox extends UI implements IFocusable {
 
 	}
 
+	public setDatePart( part: EDatePart, value: number ) {
+		var i: number,
+			len: number = this._groups.length;
+		for (i = 0; i < len; i++ ) {
+			if ( this._groups[i].datePart == part ) {
+				this._groups[i].value = value;
+			}
+		}
+	}
+
 	get currentGroup(): number {
 		return this._currentGroup;
 	}
@@ -247,9 +257,18 @@ class UI_DateBox extends UI implements IFocusable {
 			case date instanceof Date:
 				this._minDate = date;
 				break;
+			case date === Math.round(date):
+				this._minDate = new Date();
+				this._minDate.setTime(date);
+				break;
 			default:
 				this._minDate = Utils.date.parse( String(date || ''), this._displayFormat );
 				break;
+		}
+		if ( this._minDate ) {
+			this._minDate.setHours(0);
+			this._minDate.setMinutes(0);
+			this._minDate.setSeconds(0);
 		}
 	}
 
@@ -265,9 +284,18 @@ class UI_DateBox extends UI implements IFocusable {
 			case date instanceof Date:
 				this._maxDate = date;
 				break;
+			case date === Math.round(date):
+				this._maxDate = new Date();
+				this._maxDate.setTime(date);
+				break;
 			default:
 				this._maxDate = Utils.date.parse( String(date || ''), this._displayFormat );
 				break;
+		}
+		if ( this._maxDate ) {
+			this._maxDate.setHours(23);
+			this._maxDate.setMinutes(59);
+			this._maxDate.setSeconds(59);
 		}
 	}
 
@@ -385,12 +413,20 @@ class UI_DateBox extends UI implements IFocusable {
 	}
 
 	protected set expanded( expanded: boolean ) {
+
+		if ( !this.hasDatePart(EDatePart.YEAR) && !this.hasDatePart(EDatePart.MONTH) && !this.hasDatePart(EDatePart.DAY)) {
+			expanded = false;
+		}
+
 		expanded = !!expanded;
+
 		if ( expanded != this.expanded ) {
 			if ( expanded ) {
 				this._picker = new UI_DateBox_Picker( this );
+				Utils.dom.addClass(this._root, 'expanded');
 			} else {
 				this._picker.close();
+				Utils.dom.removeClass(this._root, 'expanded');
 			}
 
 			this._dom.icon.className = UI_DateBox._theme.expander[ expanded ? 'expanded' : 'collapsed' ];
@@ -541,6 +577,7 @@ class UI_DateBox extends UI implements IFocusable {
 			me.on( 'overlay-closed', function() {
 				me._picker = undefined;
 				me._dom.icon.className = UI_DateBox._theme.expander.collapsed;
+				Utils.dom.removeClass(this._root, 'expanded');
 			} );
 
 			me._dom.expander.addEventListener( 'mousedown', function( ev ) {

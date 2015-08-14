@@ -418,7 +418,7 @@
 
 				monthNavigator: {
 					
-					width: 60;
+					width: 46;
 
 					prevMonth: {
 						width: 5;
@@ -450,6 +450,8 @@
 			day: {
 				width: 25;
 				height: 20;
+
+				disabledDateColor: rgb(255,128,128);
 
 				header: {
 					backgroundColor: white;

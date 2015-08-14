@@ -114,6 +114,8 @@
 				left: 10;
 				top: DropDown1 bottom 10;
 				right: 10;
+				minDate: date(yesterday);
+				maxDate: date(tomorrow);
 			};
 		};
 

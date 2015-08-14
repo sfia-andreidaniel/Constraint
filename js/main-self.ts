@@ -64,6 +64,10 @@
 /// <reference path="UI/TextBox.ts" />
 /// <reference path="UI/DropDown.ts" />
 /// <reference path="UI/DateBox.ts" />
+/// <reference path="UI/DateBox/Picker.ts" />
+/// <reference path="UI/DateBox/Picker/Menu.ts" />
+/// <reference path="UI/DateBox/Picker/Months.ts" />
+/// <reference path="UI/DateBox/Picker/Years.ts" />
 
 /// <reference path="UI/Canvas.ts" />
 /// <reference path="Mixins/MGridInterface.ts" />
