@@ -1,4 +1,11 @@
-class UI_DateBox_Picker extends UI_Event {
+/**
+ * This is a part of the UI_DateBox control, which is used to represent calendar
+ * below the date control.
+ *
+ * This class is not intended to be used explicitly by the programmer.
+ */
+
+ class UI_DateBox_Picker extends UI_Event {
 
 	public static _theme = {
 		backgroundColor:          $I.string('UI.UI_DateBox/picker.backgroundColor'),

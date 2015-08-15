@@ -1,3 +1,9 @@
+/**
+ * This is a part of the UI_DateBox control, which is used to represent a group of
+ * numeric digits used to form a part of a date ( day, month, year, etc. ).
+ *
+ * This class is not intended to be used explicitly by the programmer.
+ */
 class UI_DateBox_DigitGroup {
 	
 	private _value: number = null;

@@ -1,4 +1,11 @@
-class UI_DateBox_Picker_Menu extends UI_Event {
+/**
+ * This is a part of the UI_DateBox control, which is used to represent a menu
+ * from which the user can pick a month or a year, inside the calendar that is
+ * rendered below the date input control.
+ *
+ * This class is not intended to be used explicitly by the programmer.
+ */
+ class UI_DateBox_Picker_Menu extends UI_Event {
 	
 	protected _overlay: UI_Screen_Window;
 	protected _buttons: UI_Canvas_Button[];

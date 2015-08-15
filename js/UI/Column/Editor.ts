@@ -42,7 +42,8 @@ class UI_Column_Editor extends UI implements IFocusable {
 		this._right   = new UI_Anchor_ColumnEditor( this, EAlignment.RIGHT );
 		this._bottom  = new UI_Anchor_ColumnEditor( this, EAlignment.BOTTOM );
 
-		window['ed'] = this;
+		this._initialize_();
+
 	}
 
 	/**
@@ -111,6 +112,9 @@ class UI_Column_Editor extends UI implements IFocusable {
 	 * See UI.remove().
 	 */
 	public remove(): UI {
+		if ( this.editMode ) {
+			this.doSave();
+		}
 		super.remove();
 		if ( this._root.parentNode ) {
 			this._root.parentNode.removeChild( this._root );
@@ -164,6 +168,116 @@ class UI_Column_Editor extends UI implements IFocusable {
 				return new UI_Column_Editor( column );
 				break;
 		}
+	}
+
+	get clientRect(): IRect {
+		return {
+			width: this.width,
+			height: this.height
+		};
+	}
+
+	get offsetRect(): IRect {
+		return {
+			width: this.width + 4,
+			height: this.height + 4
+		};
+	}
+
+	get editMode(): boolean {
+		return !!this._children.length;
+	}
+
+	set editMode( on: boolean ) {
+		var result: UI;
+
+		on = !!on;
+		if ( on != this.editMode ) {
+			if ( !on ) {
+				this._children[0].remove();
+			} else {
+				result = this.insert( UI_Column_Editor.createEditor( this ) );
+				result.left = result.right = result.top = result.bottom = 0;
+				result['active'] = true;
+			}
+		}
+	}
+
+	protected static createEditor( instance: UI_Column_Editor ): UI {
+		
+		var result: UI;
+
+		switch ( instance._column.type ) {
+
+			case EColumnType.ROW_NUMBER:
+				result = null;
+				break;
+			case EColumnType.TREE:
+				result = new UI_TextBox(instance);
+				break;
+			case EColumnType.INT:
+				result = new UI_TextBox(instance);
+				break;
+			case EColumnType.FLOAT:
+				result = new UI_TextBox(instance);
+				break;
+			case EColumnType.STRING:
+				result = new UI_TextBox(instance);
+				break;
+			case EColumnType.BOOLEAN:
+				result = new UI_CheckBox(instance);
+				(<UI_CheckBox>result).caption = '';
+				break;
+			case EColumnType.BYTES:
+				result = new UI_TextBox(instance);
+				break;
+			case EColumnType.DATE:
+				result = new UI_DateBox(instance);
+				break;
+			default:
+				result = null;
+				break;
+		}
+
+		if ( result ) {
+			result.on('keydown', function(ev) {
+				var code = ev.keyCode || ev.charCode;
+				if ( code == Utils.keyboard.KB_ENTER ) {
+					instance.fire('keydown', ev);
+				}
+			});
+
+		}
+
+		return result;
+	}
+
+	public doSave() {
+		
+		if ( !this.disabled ) {
+			
+			var value: any;
+			
+			if ( this.editMode ) {
+
+			}
+		}
+
+	}
+
+	protected _initialize_() {
+
+		(function(me) {
+
+			me.on( 'keydown', function( ev ) {
+				var code = ev.keyCode || ev.charCode;
+				if ( code == 13 && me.editMode ) {
+					me.doSave();
+				}
+			});
+
+		})(this);
+			
 	}
 
 }

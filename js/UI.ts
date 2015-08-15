@@ -14,45 +14,118 @@
  */
 class UI extends UI_Event {
 
-	// the logical parent of this UI element (has nothing to do with dom)
+	/**
+	 * The parent of this UI element (has nothing to do with dom)
+	 */
 	protected _owner  : UI;
 
-	// constraints / anchors.
+	/**
+	 * TOP anchor
+	 */
 	protected _top    : UI_Anchor = null;
+	
+	/**
+	 * LEFT anchor
+	 */
 	protected _left   : UI_Anchor = null;
+	
+	/**
+	 * RIGHT anchor
+	 */
 	protected _right  : UI_Anchor = null;
+	
+	/**
+	 * BOTTOM anchor
+	 */
 	protected _bottom : UI_Anchor = null;
 
-	// dimensions
+	/**
+	 * Component WIDTH
+	 */
 	protected _width  : number = 0;
+	
+	/**
+	 * Component HEIGHT
+	 */
 	protected _height : number = 0;
+	
+	/**
+	 * Component Minimum WIDTH
+	 */
 	protected _minWidth: number = 0;
+	
+	/**
+	 * Component Minimum HEIGHT
+	 */
 	protected _minHeight: number = 0;
 
-	// inside padding of the UI element (nothing to do with dom). 
-	// Useful if the element contains other elements at loglcal level.
+	/** 
+	 * Inside padding of the UI element (nothing to do with dom). 
+	 * Useful if the element contains other elements at loglcal level, and
+	 * they need a distance from the borders of this element in order to be neat painted.
+	 */
 	protected _padding: UI_Padding = null;
 
-	// the children of the UI element.
+	/**
+	 * The direct children of the UI element.
+	 */
 	protected _children: UI[] = [];
 
-	// if the element is represented in DOM, this is it's root element.
+	/**
+	 * if the element is represented in DOM, this is it's root element.
+	 */
 	public    _root   : HTMLDivElement = null;
+	
+	/**
+	 * Whether this element is paintable or not. If it is not paintable,
+	 * the onRepaint method will return FALSE when invoked, and it's logic
+	 * will not run. This property does not reflect if the component is visible
+	 * or not, but rather reflects if it's paint method / anchoring will be executed
+	 * or not.
+	 */
 	protected _paintable: boolean = true;
+	
+	/**
+	 * A flag representing if the user needs to be painted or not.
+	 */
 	private   _needPaint: boolean = false;
 
-	// text
+	/**
+	 * The text alignment of the input.
+	 */
 	protected _textAlign: EAlignment = EAlignment.LEFT;
 	
-	// The interface names this element is embracing.
+	/**
+	 * The interface names this element is embracing.
+	 */
 	private   _embrace: any;
 
+	/**
+	 * Whether this component is disabled or not in a direct mode (e.g. this.disabled = true).
+	 * However, the disabled state is determined also by parent's disabled state.
+	 */
 	protected _disabled: boolean = false;
+	
+	/**
+	 * How many parents of this component are disabled?
+	 */
 	protected _parentsDisabled: number = 0;
+	
+	/**
+	 * Whether the "onRepaint" method should recursively call the "onRepaint" on the
+	 * direct children of this component.
+	 */
 	protected _disableChildPainting: boolean;
+
+	/**
+	 * Whether this component is visible on the screen or not.
+	 */
 	protected _visible: boolean = true;
 	
-	// After we paint the element, it's computed painted size is located here.
+	/**
+	 * After we paint the element, it's computed painted size is stored here for caching
+	 * purposes.
+	 */
 	protected _paintRect: IBoundingBox = {
 		"left"   : 0,
 		"right"  : 0,
@@ -62,6 +135,7 @@ class UI extends UI_Event {
 		"height" : 0
 	};
 	
+
 	constructor( owner: UI, mixins: string[] = [], rootNode: HTMLDivElement = null ) {
 		super();
 
@@ -171,6 +245,9 @@ class UI extends UI_Event {
 
 	// removes the UI element from it's parent.
 	public remove(): UI {
+		if ( this.form )
+			this.form.fire('child-removed', this);
+		
 		if ( this._owner ) {
 			for ( var i=0, len = this._owner._children.length; i<len; i++ ) {
 				if ( this._owner._children[i] == this ) {
@@ -180,7 +257,13 @@ class UI extends UI_Event {
 
 			// flush parents disabled states.
 			this.onParentDisableStateChange( null );
+
 		}
+
+		if ( this._root && this._root.parentNode ) {
+			this._root.parentNode.removeChild(this._root);
+		}
+
 		return this;
 	}
 
@@ -607,6 +690,22 @@ class UI extends UI_Event {
 				mixin.initialize( this );
 			}
 		}
+	}
+
+	/**
+	 * Returns true if this component contains other component
+	 */
+	public contains( child: UI ): boolean {
+		if (child) {
+			var cursor = child._owner;
+			while (cursor) {
+				if (cursor == this) {
+					return true;
+				}
+				cursor = cursor = cursor.owner;
+			}
+		}
+		return false;
 	}
 
 	/**

@@ -61,7 +61,11 @@ class UI_Column_Renderer {
 	/**
 	 * Handles a double click event in the colum body.
 	 */
-	public onDblClick ( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {}
+	public onDblClick ( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {
+		if ( this._column.editable && this._column.editor && !this._column.disabled ) {
+			this._column.editor.editMode = true;
+		}
+	}
 
 	/**
 	 * Creates a column renderer for a specific column data type.

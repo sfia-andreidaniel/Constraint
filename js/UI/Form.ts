@@ -657,6 +657,10 @@ class UI_Form extends UI implements IFocusable {
 				form.onChildInserted( node );
 			} );
 
+			form.on('child-removed', function(node: UI) {
+				form.onChildRemoved(node);
+			});
+
 			form.on( 'child-keydown', function( evt ) {
 				
 				var key = evt.keyCode || evt.charCode,
@@ -765,7 +769,9 @@ class UI_Form extends UI implements IFocusable {
 
 	protected onChildInserted( node: UI ) {
 
-		var found: boolean = false;
+		var nodes: UI[],
+		    i: number,
+		    len: number;
 
 		if ( node ) {
 
@@ -776,8 +782,40 @@ class UI_Form extends UI implements IFocusable {
 				}
 
 			}
+
+			if ( nodes = node.childNodes ) {
+				
+				for (i = 0, len = nodes.length; i < len; i++ ) {
+					this.onChildInserted(nodes[i]);
+				}
+			}
 		}
 
+	}
+
+	protected onChildRemoved( node: UI ) {
+
+		var index: number,
+		    nodes: UI[],
+		    i: number,
+		    len: number;
+
+		if ( node ) {
+			if ( nodes = node.childNodes ) {
+				for (i = 0, len = nodes.length; i < len; i++ ) {
+					this.onChildRemoved(nodes[i]);
+				}
+			}
+
+			if ( node.implements( 'IFocusable' ) ) {
+				if ( node['active'] ) {
+					node.fire('blur');
+				}
+				if ( ( index = this._focusComponents.indexOf( node ) ) != -1 ) {
+					this._focusComponents.splice(index, 1);
+				}
+			}
+		}
 	}
 
 	// @override the "UI.insert"

@@ -17,6 +17,7 @@ class UI_CheckBox extends UI implements IFocusable {
 
 	protected _caption: string = 'CheckBox';
 	protected _value: boolean = false;
+	protected _triState: boolean = false;
 
 	constructor( owner: UI ) {
 		super( owner, [ 'IFocusable' ], Utils.dom.create('div', 'ui UI_CheckBox v-false' ) );
@@ -82,7 +83,7 @@ class UI_CheckBox extends UI implements IFocusable {
 					this.value = false;
 					break;
 				case false:
-					this.value = true;
+					this.value = this._triState ? null : true;
 					break;
 				
 				this.fire( 'click' );
@@ -106,6 +107,22 @@ class UI_CheckBox extends UI implements IFocusable {
 			} );
 
 		} )( this );
+	}
+
+	get triState(): boolean {
+		return this._triState;
+	}
+
+	set triState( on: boolean ) {
+		on = !!on;
+		if ( on != this._triState ) {
+			
+			this._triState = on;
+
+			if ( !on && this._value === null ) {
+				this.value = false;
+			}
+		}
 	}
 
 
@@ -135,6 +152,10 @@ Constraint.registerClass( {
 		},
 		{
 			"name": "active",
+			"type": "boolean"
+		},
+		{
+			"name": "triState",
 			"type": "boolean"
 		}
 	]

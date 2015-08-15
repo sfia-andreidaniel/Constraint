@@ -66,59 +66,6 @@
 		right: 20;
 		bottom: 40;
 
-		@UI_Tab Tab_Text {
-			caption: 'Text inputs';
-
-			@UI_TextBox Text1 {
-				value: 'Input value';
-				placeholder: 'Input placeholder';
-				left: 10;
-				top: 10;
-				right: 10;
-			};
-
-			@UI_TextBox Text2 {
-				value: 'Disabled Input value';
-				placeholder: 'Input placeholder';
-				left: 10;
-				top: Text1 bottom 10;
-				right: 10;
-				disabled: true;
-			};
-
-			@UI_DropDown DropDown1 {
-				left: 10;
-				top: Text2 bottom 10;
-				right: 10;
-				options: <![JSON[ [
-					{
-						"value": "",
-						"text" : "Pick an option"
-					},
-					{
-						"value": "1",
-						"text": "Option # 1"
-					},
-					{
-						"value": "2",
-						"text" : "Option #2"
-					},
-					{
-						"value": "3",
-						"text": "Option #3"
-					}
-				] ]]>;
-			};
-
-			@UI_DateBox Date1 {
-				left: 10;
-				top: DropDown1 bottom 10;
-				right: 10;
-				minDate: date(yesterday);
-				maxDate: date(tomorrow);
-			};
-		};
-
 		@UI_Tab Tab0 {
 			caption: 'Tree';
 
@@ -293,10 +240,65 @@
 			    	name: 'date';
 			    	textAlign: RIGHT;
 			    	inputFormat: 'MS';
+			    	editable: yes;
 			    };
 
 			};
 
+		};
+
+
+		@UI_Tab Tab_Text {
+			caption: 'Text inputs';
+
+			@UI_TextBox Text1 {
+				value: 'Input value';
+				placeholder: 'Input placeholder';
+				left: 10;
+				top: 10;
+				right: 10;
+			};
+
+			@UI_TextBox Text2 {
+				value: 'Disabled Input value';
+				placeholder: 'Input placeholder';
+				left: 10;
+				top: Text1 bottom 10;
+				right: 10;
+				disabled: true;
+			};
+
+			@UI_DropDown DropDown1 {
+				left: 10;
+				top: Text2 bottom 10;
+				right: 10;
+				options: <![JSON[ [
+					{
+						"value": "",
+						"text" : "Pick an option"
+					},
+					{
+						"value": "1",
+						"text": "Option # 1"
+					},
+					{
+						"value": "2",
+						"text" : "Option #2"
+					},
+					{
+						"value": "3",
+						"text": "Option #3"
+					}
+				] ]]>;
+			};
+
+			@UI_DateBox Date1 {
+				left: 10;
+				top: DropDown1 bottom 10;
+				right: 10;
+				minDate: date(yesterday);
+				maxDate: date(tomorrow);
+			};
 		};
 
 		@UI_Tab Tab1 {
@@ -364,6 +366,7 @@
 				right: 20;
 
 				value: null;
+				triState: true;
 			};
 
 			@UI_RadioBox Radio1 {

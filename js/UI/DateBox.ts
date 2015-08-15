@@ -1,8 +1,11 @@
-/// <reference path="DateBox/DigitGroup.ts" />
-/// <reference path="DateBox/Picker.ts" />
-
+/**
+ * This is a Date Picker control, allowing the user to input dates.
+ */
 class UI_DateBox extends UI implements IFocusable {
 
+	/**
+	 * Theme imported from css/constraint.ui file
+	 */
 	public static _theme = {
 		defaults: {
 			width: $I.number('UI.UI_DateBox/defaults.width'),
@@ -14,6 +17,10 @@ class UI_DateBox extends UI implements IFocusable {
 		}
 	};
 
+	/**
+	 * Creates a digit group, restricting the user to input only values specific to a
+	 * part of a date.
+	 */
 	public static createDigitGroup( date: EDatePart, owner: UI_Event ): UI_DateBox_DigitGroup {
 		switch ( date ) {
 			case EDatePart.DAY:
@@ -41,27 +48,58 @@ class UI_DateBox extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * The DOM nodes the Date Picker control is using.
+	 */
 	protected _dom = {
 		view: Utils.dom.create( 'div', 'view' ),
 		expander: Utils.dom.create( 'div', 'expander' ),
 		icon: Utils.dom.create( 'div', UI_DateBox._theme.expander.collapsed )
 	};
 
-	// Focusable mixin dependencies
+	/**
+	 * Focusable mixin dependencies 
+	 */
 	public active: boolean;
 	public tabIndex: number = 0;
 	public includeInFocus: boolean = true;
 	public wantTabs: boolean = true;
 
+	/**
+	 * The format of the date
+	 */
 	protected _displayFormat: string = null;
+	
+	/**
+	 * Groups of date parts that are used together to represent the date,
+	 * according to it's display format.
+	 */
 	protected _groups: UI_DateBox_DigitGroup[] = [];
+
+	/**
+	 * The index of the group in which the user is inputting values.
+	 */
 	protected _currentGroup: number = 0;
 
+	/**
+	 * Minimum allowed date.
+	 */
 	protected _minDate: Date = null;
+
+	/**
+	 * Maximum allowed date.
+	 */
 	protected _maxDate: Date = null;
 
+	/**
+	 * The date picker instance, that is rendered on UI_Screen, when the user
+	 * is clicking on the expand arrow, or is hitting F4.
+	 */
 	protected _picker: UI_DateBox_Picker;
 
+	/**
+	 * Input constructor
+	 */
 	constructor( owner: UI ) {
 		super( owner, [ 'IFocusable' ], Utils.dom.create( 'div', 'ui UI_DateBox' ) );
 
@@ -77,6 +115,9 @@ class UI_DateBox extends UI implements IFocusable {
 		this._setupEvents_();
 	}
 
+	/**
+	 * Gets / sets the format of the date in it's input.
+	 */
 	get displayFormat(): string {
 		return this._displayFormat;
 	}
@@ -151,6 +192,10 @@ class UI_DateBox extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Used to test if the actual format of the date contains a specific
+	 * date part (e.g. month, day, hour, etc).
+	 */
 	public hasDatePart( part: EDatePart ): boolean {
 		var i: number,
 		    len: number = this._groups.length;
@@ -164,6 +209,9 @@ class UI_DateBox extends UI implements IFocusable {
 		return false;
 	}
 
+	/**
+	 * Returns a specific date part value from the input
+	 */
 	public getDatePart( part: EDatePart ): number {
 		var i: number,
 			len: number = this._groups.length,
@@ -203,6 +251,9 @@ class UI_DateBox extends UI implements IFocusable {
 
 	}
 
+	/**
+	 * Sets the value of a specific date part of the input.
+	 */
 	public setDatePart( part: EDatePart, value: number ) {
 		var i: number,
 			len: number = this._groups.length;
@@ -213,6 +264,10 @@ class UI_DateBox extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Gets/Sets the index of the current date part group in which the user is
+	 * typing.
+	 */
 	get currentGroup(): number {
 		return this._currentGroup;
 	}
@@ -231,6 +286,9 @@ class UI_DateBox extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Returns or sets the date from the input in text format.
+	 */
 	get text(): string {
 		var result: string = '',
 		    i: number,
@@ -245,6 +303,10 @@ class UI_DateBox extends UI implements IFocusable {
 		this.value = String( dateText );
 	}
 
+	/**
+	 * Gets / Sets the minimum allowed date that the user is able
+	 * to input / select.
+	 */
 	get minDate(): any {
 		return this._minDate;
 	}
@@ -272,6 +334,10 @@ class UI_DateBox extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Gets / Sets the maximum allowed date that the user is able to input
+	 * or select.
+	 */
 	get maxDate(): any {
 		return this._maxDate;
 	}
@@ -299,6 +365,9 @@ class UI_DateBox extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Used to test / get the reason for which the date is invalid in the input.
+	 */
 	get invalid(): EInvalidDate {
 
 		if ( this.text == this._displayFormat ) {
@@ -337,6 +406,11 @@ class UI_DateBox extends UI implements IFocusable {
 
 	}
 
+	/**
+	 * Returns or sets the value of the control, in window.Date format.
+	 * 
+	 * A NULL value is returned if the date is invalid.
+	 */
 	get value(): any {
 		
 		if ( this.valid ) {
@@ -396,10 +470,17 @@ class UI_DateBox extends UI implements IFocusable {
 			this.fire( 'text-changed' );
 	}
 
+	/**
+	 * Returns true if the date from the control is valid, and false
+	 * otherwise.
+	 */
 	get valid(): boolean {
 		return this.invalid == EInvalidDate.NONE;
 	}
 
+	/**
+	 * Returns the string literal value of the date represented by the input.
+	 */
 	private dateStr(): string {
 		var result: string = '';
 		for ( var i=0, len = this._groups.length; i<len; i++ ) {
@@ -408,6 +489,11 @@ class UI_DateBox extends UI implements IFocusable {
 		return result;
 	}
 
+	/**
+	 * Gets / sets the expanded state of the date control. When the expanded
+	 * state is true, a date picker is rendered below the date control, allowing
+	 * the user to "pick" a date from a calendar.
+	 */
 	protected get expanded(): boolean {
 		return !!this._picker;
 	}
@@ -433,6 +519,10 @@ class UI_DateBox extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Prepares / binds all events of the date control, making it ready
+	 * for usage.
+	 */
 	protected _setupEvents_() {
 
 		( function( me ) {
