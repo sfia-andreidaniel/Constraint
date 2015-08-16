@@ -89,6 +89,12 @@ class UI_TextBox extends UI implements IFocusable {
 				}
 			}, true );
 
+			me._dom.input.addEventListener('blur', function(ev) {
+				if ( me.form.activeElement == me ) {
+					me.active = false;
+				}
+			}, true);
+
 			me._dom.input.addEventListener('input', function( ev ) {
 				if ( !me.disabled && !me.readOnly ) {
 					me.fire( 'change' );

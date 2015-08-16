@@ -492,6 +492,29 @@
 		};
 	};
 
+	@Theme UI_Spinner {
+		defaults: {
+			width: 100;
+			height: 25;
+		};
+
+		background: {
+			enabled: $enabledControlBackgroundColor;
+			disabled: $disabledControlBackgroundColor;
+			inactive: $enabledInactiveControlBackgroundColor;
+		};
+
+		border: {
+			color: $enabledControlBorderColor;
+		};
+
+		buttons: {
+			decrement: 'Constraint/menuitem_scroll_prev/10x5';
+			increment: 'Constraint/menuitem_scroll_next/10x5';
+		};
+
+	};
+
 	@Theme UI_Scrollbar {
 		background: #ddd;
 		draggerBackground: #333;

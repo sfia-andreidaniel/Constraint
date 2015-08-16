@@ -242,11 +242,22 @@ class UI_Column_Editor extends UI implements IFocusable {
 		if ( result ) {
 			result.on('keydown', function(ev) {
 				var code = ev.keyCode || ev.charCode;
-				if ( code == Utils.keyboard.KB_ENTER ) {
-					instance.fire('keydown', ev);
+				switch ( code ) {
+					case Utils.keyboard.KB_ENTER:
+					case Utils.keyboard.KB_ESC:
+						instance.fire('keydown', ev);
+						break;
 				}
 			});
 
+			result.on('blur', function(ev) {
+				instance.fire('keydown', { "keyCode": 13, "charCode": 13, "preventDefault": function() { }, "stopPropagation": function() { } });
+				setTimeout(function() {
+					if ( instance.form.activeElement === null ) {
+						instance.owner.owner['active'] = true;
+					}
+				}, 1);
+			});
 		}
 
 		return result;
@@ -270,10 +281,22 @@ class UI_Column_Editor extends UI implements IFocusable {
 		(function(me) {
 
 			me.on( 'keydown', function( ev ) {
-				var code = ev.keyCode || ev.charCode;
-				if ( code == 13 && me.editMode ) {
-					me.doSave();
+
+				if ( me.editMode ) {
+
+					var code = ev.keyCode || ev.charCode;
+
+					switch ( code ) {
+						case Utils.keyboard.KB_ENTER:
+							me.doSave();
+							break;
+						case Utils.keyboard.KB_ESC:
+							me.editMode = false;
+							break;
+					}
+
 				}
+
 			});
 
 		})(this);

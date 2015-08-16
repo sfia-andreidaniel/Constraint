@@ -30,6 +30,7 @@
 
 /// <reference path="UI/Color.ts" />
 /// <reference path="UI/Event.ts" />
+/// <reference path="UI/Timer.ts" />
 /// <reference path="UI/Throttler.ts" />
 /// <reference path="UI.ts" />
 
@@ -63,6 +64,7 @@
 /// <reference path="UI/RadioBox.ts" />
 /// <reference path="UI/TextBox.ts" />
 /// <reference path="UI/DropDown.ts" />
+/// <reference path="UI/Spinner.ts" />
 
 /// <reference path="UI/DateBox.ts" />
 /// <reference path="UI/DateBox/DigitGroup.ts" />

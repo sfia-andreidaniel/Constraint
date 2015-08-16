@@ -1,0 +1,23 @@
+{$N UI.UI_Spinner}
+.ui.UI_Spinner {
+	display: block;
+	width: ${defaults.width}px;
+	height: ${defaults.height}px;
+	background-color: ${background.inactive};
+	border: 1px solid ${border.color};
+}
+
+.ui.UI_Spinner.focused {
+	background-color: ${background.enabled};
+}
+
+.ui.UI_Spinner > input[type=text] {
+	border: none;
+	width: calc(100% - 4px);
+	height: 100%;
+	padding: 0;
+	margin: 0px 2px;
+	background-color: transparent;
+	outline: none !important;
+	display: block;
+}
