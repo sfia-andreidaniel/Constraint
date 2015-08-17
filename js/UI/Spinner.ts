@@ -2,7 +2,7 @@
  * The UI_Spinner control is the cross-browser implementation of a
  * <input type="number" /> of HTML5. For consistency use this implementation.
  */
-class UI_Spinner extends UI implements IFocusable {
+class UI_Spinner extends UI implements IFocusable, IInput {
 
 	public static _theme = {
 		defaults: {
@@ -45,10 +45,11 @@ class UI_Spinner extends UI implements IFocusable {
 	};
 
 	constructor( owner: UI ) {
-		super(owner, ['IFocusable'], Utils.dom.create('div', 'ui UI_Spinner'));
+		super(owner, ['IFocusable', 'IInput'], Utils.dom.create('div', 'ui UI_Spinner'));
 		this.width = UI_Spinner._theme.defaults.width;
 		this.height= UI_Spinner._theme.defaults.height;
 		this._initDom_();
+		this.value = 0;
 	}
 	
 	get min(): number {
@@ -56,7 +57,7 @@ class UI_Spinner extends UI implements IFocusable {
 	}
 
 	set min( min: number ) {
-		min = parseFloat( String( min || '' ) );
+		if ( min !== 0 ) min = parseFloat( String( min || '' ) );
 		if ( !isNaN( min ) ) {
 			this._min = min;
 		} else {
@@ -69,7 +70,7 @@ class UI_Spinner extends UI implements IFocusable {
 	}
 
 	set max( max: number ) {
-		max = parseFloat( String( max || '' ) );
+		if ( max !== 0 ) max = parseFloat( String( max || '' ) );
 		if ( !isNaN( max ) ) {
 			this._max = max;
 		} else {
@@ -154,7 +155,7 @@ class UI_Spinner extends UI implements IFocusable {
 			v = max;
 		}
 
-		this.value = v;
+		this.value = parseFloat( v.toFixed(this._precision) );
 	}
 
 	get readOnly(): boolean {
@@ -216,30 +217,30 @@ class UI_Spinner extends UI implements IFocusable {
 				me._dom.input.disabled = on;
 			} );
 
-			me._incrementer = new UI_Timer( 500 );
-			me._decrementer = new UI_Timer( 500 );
+			me._incrementer = new UI_Timer( 520 );
+			me._decrementer = new UI_Timer( 520 );
 
 			me._incrementer.on( 'tick', function() {
 				me.doStep( 1 );
 				// some acceleration
-				if ( me._incrementer.frequency > 200 ) {
-					me._incrementer.frequency -= 10;
+				if ( me._incrementer.frequency > 20 ) {
+					me._incrementer.frequency -= 100;
 				}
 			} );
 
 			me._decrementer.on( 'tick', function() {
 				me.doStep( -1 );
 				// some acceleration
-				if ( me._decrementer.frequency > 200 ) {
-					me._decrementer.frequency -= 10;
+				if ( me._decrementer.frequency > 20 ) {
+					me._decrementer.frequency -= 100;
 				}
 			} );
 
 			var mouseUpWatcher = function( ev ) {
 				me._decrementer.running = false;
 				me._incrementer.running = false;
-				me._decrementer.frequency = 500;
-				me._incrementer.frequency = 500;
+				me._decrementer.frequency = 520;
+				me._incrementer.frequency = 520;
 				document.body.removeEventListener( 'mouseup', mouseUpWatcher, true );
 			}
 
@@ -319,6 +320,12 @@ class UI_Spinner extends UI implements IFocusable {
 					}
 
 					me.fire( 'change' );
+				}
+			}, true );
+
+			me._root.addEventListener( 'mousewheel', function( ev ) {
+				if ( me.active && !me.readOnly && !me.disabled ) {
+					me.doStep( ev.deltaY > 0 ? 1 : -1 );
 				}
 			}, true );
 

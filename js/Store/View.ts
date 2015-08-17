@@ -182,5 +182,8 @@ class Store_View extends Store {
 		}
 	}
 
+	public canEditProperty( item: Store_Item, propertyName: string ): boolean {
+		return this._owner.canEditProperty( item, propertyName );
+	}
 
 }

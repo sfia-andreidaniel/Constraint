@@ -211,13 +211,16 @@
 											"name": "Music",
 											"children": [
 												{
-													"name": "Beattles - Let it be.mp3"
+													"name": "Beattles - Let it be.mp3",
+													"size": 123123123
 												},
 												{
-													"name": "Vaya con dios - Ney nah nah nah.mp3"
+													"name": "Vaya con dios - Ney nah nah nah.mp3",
+													"size": 450123
 												},
 												{
-													"name": "Avril Lavigne - Complicated.mp3"
+													"name": "Avril Lavigne - Complicated.mp3",
+													"size": 1902832
 												}
 											]
 										}

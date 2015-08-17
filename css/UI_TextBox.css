@@ -22,3 +22,7 @@
 	outline: none !important;
 	display: block;
 }
+
+.ui.UI_TextBox.disabled > input {
+	color: ${color.disabled};
+}

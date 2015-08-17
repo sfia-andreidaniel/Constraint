@@ -28,4 +28,5 @@
 	-ms-pointer-events: all;
 	-moz-pointer-events: all;
 	-o-pointer-events: all;
+	background-color: ${input.background.color};
 }

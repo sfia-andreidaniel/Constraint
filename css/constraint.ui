@@ -215,6 +215,7 @@
 				normal: $normalFontColor;
 				selected: $selectedItemColor;
 				selectedInactive: $selectedInactiveItemColor;
+				disabled: $disabledFontColor;
 			};
 		};
 
@@ -342,6 +343,12 @@
 			color: black;
 		};
 
+		input: {
+			background: {
+				color: $enabledControlBackgroundColor;
+			};
+		};
+
 	};
 
 	@Theme UI_TextBox {
@@ -356,6 +363,10 @@
 
 		border: {
 			color: $enabledControlBorderColor;
+		};
+
+		color: {
+			disabled: $disabledFontColor;
 		};
 	};
 
@@ -511,6 +522,10 @@
 		buttons: {
 			decrement: 'ui-resource Constraint menuitem_scroll_prev-10x5';
 			increment: 'ui-resource Constraint menuitem_scroll_next-10x5';
+		};
+
+		color: {
+			disabled: $disabledFontColor;
 		};
 
 	};

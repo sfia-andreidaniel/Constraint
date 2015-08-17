@@ -1,4 +1,4 @@
-class UI_ListBox extends UI_Canvas implements IFocusable, IRowInterface {
+class UI_ListBox extends UI_Canvas implements IFocusable, IRowInterface, IInput {
 	
 	public static _theme: any = {
 		optionHeight: $I.number('UI.UI_ListBox/option.height'),
@@ -44,7 +44,7 @@ class UI_ListBox extends UI_Canvas implements IFocusable, IRowInterface {
 
 
 	constructor( owner: UI ) {
-		super( owner, [ 'IFocusable', 'IRowInterface' ] );
+		super( owner, [ 'IFocusable', 'IRowInterface', 'IInput' ] );
 		Utils.dom.addClass( this._root, 'UI_ListBox' );
 		this._options = new Store('id');
 		this._setupExtendedEvents_();

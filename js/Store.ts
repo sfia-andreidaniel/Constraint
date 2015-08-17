@@ -525,4 +525,24 @@ class Store extends UI_Event {
 		return this._length;
 	}
 
+	/**
+	 * Even if a column is editable, we need to know if a row has an editable property. For example, we
+	 * might want in a grid to be able to enter the editMode on column corresponding with the "online" property
+	 * only on the files, but not on the items of type folder.
+	 *
+	 * The user should hook to the "before-change" event, and throw an exception in order to disable
+	 * changes on specific rows.
+	 *
+	 * @event "before-change"( item: Store_Item, propertyName: string, value: any )
+	 *
+	 */
+	public canEditProperty( item: Store_Item, propertyName: string ): boolean {
+		try {
+			this.fire( 'before-change', item, propertyName );
+			return true;
+		} catch ( error ) {
+			return false;
+		}
+	}
+
 }

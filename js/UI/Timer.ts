@@ -51,19 +51,6 @@ class UI_Timer extends UI_Event {
 		}
 
 		this._frequency = frequency;
-
-		if ( this._running ) {
-			
-			this._tickId++;
-			
-			(function(me) {
-
-				setTimeout(function() {
-					me.tick(me._tickId);
-				}, me._frequency);
-			
-			})(this);
-		}
 	}
 
 }

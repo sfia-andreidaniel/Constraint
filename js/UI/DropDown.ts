@@ -7,7 +7,7 @@
  * those options.
  *
  */
-class UI_DropDown extends UI implements IFocusable {
+class UI_DropDown extends UI implements IFocusable, IInput {
 
 	/** 
 	 * DropDown theme 
@@ -101,7 +101,7 @@ class UI_DropDown extends UI implements IFocusable {
 	 * Constructor. Creates a new UI_DropDown.
 	 */
 	constructor( owner: UI ) {
-		super( owner, [ 'IFocusable' ], Utils.dom.create( 'div', 'ui UI_DropDown' ) );
+		super( owner, [ 'IFocusable', 'IInput' ], Utils.dom.create( 'div', 'ui UI_DropDown' ) );
 		
 		this._root.appendChild( this._dom.view );
 		this._root.appendChild( this._dom.expander );
@@ -628,7 +628,10 @@ class UI_DropDown extends UI implements IFocusable {
 
 			me.on( 'disabled', function( on: boolean ) {
 				if ( on ) {
+					Utils.dom.addClass( me._dom.icon, 'disabled' );
 					me.expanded = false;
+				} else {
+					Utils.dom.removeClass( me._dom.icon, 'disabled' );
 				}
 			} );
 

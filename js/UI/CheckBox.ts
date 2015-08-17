@@ -1,4 +1,4 @@
-class UI_CheckBox extends UI implements IFocusable {
+class UI_CheckBox extends UI implements IFocusable, IInput {
 	
 	public static _theme = {
 		"defaultWidth": $I.number('UI.UI_CheckBox/width'),
@@ -20,7 +20,7 @@ class UI_CheckBox extends UI implements IFocusable {
 	protected _triState: boolean = false;
 
 	constructor( owner: UI ) {
-		super( owner, [ 'IFocusable' ], Utils.dom.create('div', 'ui UI_CheckBox v-false' ) );
+		super( owner, [ 'IFocusable', 'IInput' ], Utils.dom.create('div', 'ui UI_CheckBox v-false' ) );
 		this._root.appendChild( this._dom.input );
 		this._root.appendChild( this._dom.caption );
 		this._dom.caption.appendChild( document.createTextNode( this._caption ) );
@@ -86,8 +86,10 @@ class UI_CheckBox extends UI implements IFocusable {
 					this.value = this._triState ? null : true;
 					break;
 				
-				this.fire( 'click' );
 			}
+			
+			this.fire( 'click' );
+			this.fire( 'change' );
 		}
 
 	}

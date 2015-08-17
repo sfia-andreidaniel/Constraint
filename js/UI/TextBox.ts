@@ -1,4 +1,4 @@
-class UI_TextBox extends UI implements IFocusable {
+class UI_TextBox extends UI implements IFocusable, IInput {
 
 	public static _theme = {
 		defaultWidth: $I.number('UI.UI_TextBox/defaultWidth'),
@@ -18,7 +18,7 @@ class UI_TextBox extends UI implements IFocusable {
 
 	constructor( owner: UI ) {
 		
-		super( owner, [ 'IFocusable' ], Utils.dom.create('div', 'ui UI_TextBox') );
+		super( owner, [ 'IFocusable', 'IInput' ], Utils.dom.create('div', 'ui UI_TextBox') );
 
 		this.__initDom__();
 

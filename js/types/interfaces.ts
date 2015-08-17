@@ -120,3 +120,7 @@ interface IOption {
 	text : string;
 	selected?: boolean;
 }
+
+interface IInput {
+	value: any;
+}

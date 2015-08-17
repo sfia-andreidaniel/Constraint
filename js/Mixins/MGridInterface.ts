@@ -13,6 +13,7 @@ interface IGridInterface {
 	indexPaintStart : number;
 	indexPaintEnd   : number;
 	editable        : boolean;
+	canEditProperty : ( item: Store_Item, propertyName: string ) => boolean;
 
 	freezedColumns  : UI_Column[];
 	freeColumns     : UI_Column[];
@@ -48,7 +49,8 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 	 * on the target, even if they are implemented in this mixin
 	 */
 	public static skipProperties: string[] = [
-		'itemAt'
+		'itemAt',
+		'canEditProperty'
 	];
 
 	/**
@@ -509,6 +511,8 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 			}
 		} );
 
+		// when the user press left or right 
+
 	}
 
 	public columns( freezed: boolean = null ): UI_Column[] {
@@ -798,6 +802,10 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 		for ( i=0; i<len; i++ ) {
 			columns[i].disposeEditor();
 		}
+	}
+
+	public canEditProperty( item: Store_Item, propertyName: string ): boolean {
+		throw new Error( 'Method should be implemented on mixin target!' );
 	}
 
 }

@@ -105,6 +105,10 @@ class Store_Item {
 			throw new Error( 'Item is in garbage collection state!' );
 		}
 
+		if ( propertyName ) {
+			this.$store.fire( 'before-change', this, propertyName );
+		}
+
 		if ( this.$store.writable ) {
 			if ( this.data && !this.data.prototype ) {
 				// it's object

@@ -62,6 +62,23 @@ class UI_Tree_Grid extends UI_Tree implements IGridInterface {
 		}
 	}
 
+	/**
+	 * Returns true if a specific property can be edited on a specific item.
+	 */
+	public canEditProperty( item: Store_Item, propertyName: string ): boolean {
+		return !this.disabled && this._items.canEditProperty( item, propertyName );
+	}
+
+	/**
+	 * Install a callback that can deny a property editing.
+	 */
+	public addEditPropertyFilter( callback: ( item: Store_Item, propertyName: string, value: any ) => boolean ) {
+		this._items.on( 'before-change', function( item: Store_Item, propertyName: string, value: any = null ) {
+			if ( !callback( item, propertyName, value) ) {
+				throw new Error('Property "' + propertyName + '" is not editable!');
+			}
+		} );
+	}
 
 }
 

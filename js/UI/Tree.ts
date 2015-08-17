@@ -4,7 +4,7 @@
 
  */
 
-class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
+class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface, IInput {
 
 	public static _theme: any = {
 		option: {
@@ -55,7 +55,7 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 
 	constructor( owner: UI, mixins: string[] = [] ) {
 	    
-	    super( owner, Utils.array.merge( [ 'IFocusable', 'IRowInterface' ], mixins ) );
+	    super( owner, Utils.array.merge( [ 'IFocusable', 'IRowInterface', 'IInput' ], mixins ) );
 	    
 	    Utils.dom.addClass( this._root, 'UI_Tree' );
 	    this._items = new Store_Tree('id','parent','isLeaf');
@@ -167,6 +167,10 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface {
 					me._selectedIndexPath.push( ( <Store_Node>me._view.itemAt( me.selectedIndex ) ).id );
 				}
 
+			} );
+
+			me._items.on( 'change', function() {
+				me.render();
 			} );
 
 			me._view.on( 'change', function() {

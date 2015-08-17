@@ -1,7 +1,7 @@
 /**
  * This is a Date Picker control, allowing the user to input dates.
  */
-class UI_DateBox extends UI implements IFocusable {
+class UI_DateBox extends UI implements IFocusable, IInput {
 
 	/**
 	 * Theme imported from css/constraint.ui file
@@ -101,7 +101,7 @@ class UI_DateBox extends UI implements IFocusable {
 	 * Input constructor
 	 */
 	constructor( owner: UI ) {
-		super( owner, [ 'IFocusable' ], Utils.dom.create( 'div', 'ui UI_DateBox' ) );
+		super( owner, [ 'IFocusable', 'IInput' ], Utils.dom.create( 'div', 'ui UI_DateBox' ) );
 
 		this._root.appendChild( this._dom.view );
 		this._root.appendChild( this._dom.expander );
@@ -212,7 +212,7 @@ class UI_DateBox extends UI implements IFocusable {
 	/**
 	 * Returns a specific date part value from the input
 	 */
-	public getDatePart( part: EDatePart ): number {
+	public getDatePart( part: EDatePart, absoluteValue: boolean = true ): number {
 		var i: number,
 			len: number = this._groups.length,
 			d: Date;
@@ -223,30 +223,38 @@ class UI_DateBox extends UI implements IFocusable {
 			}
 		}
 
-		d = new Date();
+		if ( absoluteValue ) {
 
-		switch ( part ) {
-			case EDatePart.YEAR:
-				return d.getFullYear();
-				break;
-			case EDatePart.MONTH:
-				return d.getMonth();
-				break;
-			case EDatePart.DAY:
-				return d.getDate();
-				break;
-			case EDatePart.HOUR:
-				return d.getHours();
-				break;
-			case EDatePart.MINUTE:
-				return d.getMinutes();
-				break;
-			case EDatePart.SECOND:
-				return d.getSeconds();
-				break;
-			default:
-				return null;
-				break;
+			d = new Date();
+
+			switch ( part ) {
+				case EDatePart.YEAR:
+					return d.getFullYear();
+					break;
+				case EDatePart.MONTH:
+					return d.getMonth();
+					break;
+				case EDatePart.DAY:
+					return d.getDate();
+					break;
+				case EDatePart.HOUR:
+					return d.getHours();
+					break;
+				case EDatePart.MINUTE:
+					return d.getMinutes();
+					break;
+				case EDatePart.SECOND:
+					return d.getSeconds();
+					break;
+				default:
+					return null;
+					break;
+			}
+
+		} else {
+
+			return null;
+
 		}
 
 	}
@@ -661,6 +669,13 @@ class UI_DateBox extends UI implements IFocusable {
 			} );
 
 			me.on( 'disabled', function( on: boolean ) {
+
+				if ( on ) {
+					Utils.dom.addClass( me._dom.icon, 'disabled' );
+				} else {
+					Utils.dom.removeClass( me._dom.icon, 'disabled' );
+				}
+
 				me.expanded = false;
 			} );
 

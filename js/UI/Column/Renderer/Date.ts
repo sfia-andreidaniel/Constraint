@@ -63,7 +63,7 @@ class UI_Column_Renderer_Date extends UI_Column_Renderer {
 
 			value = opt.get( propertyName );
 
-			valueDate = Utils.date.parse( value, inputFormat );
+			valueDate = value instanceof Date ? value : Utils.date.parse( value, inputFormat );
 
 			if ( valueDate )
 				ctx.fillText( ctx.dotDotDot( Utils.date.format( valueDate, outputFormat ), width4 ), paintX, startY + ~~( rowHeight / 2 ) );

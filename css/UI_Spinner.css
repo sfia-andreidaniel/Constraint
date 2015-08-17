@@ -26,9 +26,8 @@
 	position: absolute;
 	right: 0px;
 	top: 0px;
-	height: calc(50% - 2px);
+	height: 50%;
 	width: 20px;
-	border: 1px solid ${border.color};
 	text-align: center;
 }
 
@@ -36,9 +35,8 @@
 	position: absolute;
 	right: 0px;
 	bottom: 0px;
-	height: calc(50% - 2px);
+	height: 50%;
 	width: 20px;
-	border: 1px solid ${border.color};
 	text-align: center;
 }
 
@@ -50,5 +48,9 @@
 	-ms-pointer-events: none;
 	-moz-pointer-events: none;
 	-o-pointer-events: none;
-	margin-top: calc( 50% - 8px );
+	margin-top: calc( 50% - 7px );
+}
+
+.ui.UI_Spinner.disabled > input[type=text] {
+	color: ${color.disabled};
 }

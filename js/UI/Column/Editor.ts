@@ -30,6 +30,12 @@ class UI_Column_Editor extends UI implements IFocusable {
 	public includeInFocus: boolean;
 
 	/**
+	 * If the column of the row we're editing is affected by a sort in the store, we
+	 * don't want to save when the RowIndex changes.
+	 */
+	protected saveOnRowIndexChange: boolean = true;
+
+	/**
 	 * Class constructor
 	 */
 	constructor( owner: UI ) {
@@ -57,7 +63,12 @@ class UI_Column_Editor extends UI implements IFocusable {
 	set rowIndex( index: number ) {
 		index = ~~index;
 		if ( index != this._rowIndex ) {
+
+			if ( this.saveOnRowIndexChange )
+				this.doSave();
+
 			this._rowIndex = index;
+			this.doLoad();
 			this.onRepaint();
 		}
 	}
@@ -190,15 +201,17 @@ class UI_Column_Editor extends UI implements IFocusable {
 
 	set editMode( on: boolean ) {
 		var result: UI;
-
 		on = !!on;
 		if ( on != this.editMode ) {
 			if ( !on ) {
 				this._children[0].remove();
 			} else {
-				result = this.insert( UI_Column_Editor.createEditor( this ) );
-				result.left = result.right = result.top = result.bottom = 0;
-				result['active'] = true;
+				if ( this._column.name && this._column.grid.canEditProperty( this._column.grid.itemAt( this._rowIndex), this._column.name ) ) {
+					result = this.insert( UI_Column_Editor.createEditor( this ) );
+					result.left = result.right = result.top = result.bottom = 0;
+					result['active'] = true;
+					this.doLoad();
+				}
 			}
 		}
 	}
@@ -216,10 +229,10 @@ class UI_Column_Editor extends UI implements IFocusable {
 				result = new UI_TextBox(instance);
 				break;
 			case EColumnType.INT:
-				result = new UI_TextBox(instance);
+				result = new UI_Spinner(instance);
 				break;
 			case EColumnType.FLOAT:
-				result = new UI_TextBox(instance);
+				result = new UI_Spinner(instance);
 				break;
 			case EColumnType.STRING:
 				result = new UI_TextBox(instance);
@@ -229,14 +242,18 @@ class UI_Column_Editor extends UI implements IFocusable {
 				(<UI_CheckBox>result).caption = '';
 				break;
 			case EColumnType.BYTES:
-				result = new UI_TextBox(instance);
+				result = new UI_Spinner(instance);
+				(<UI_Spinner>result).min = 0;
+				(<UI_Spinner>result).precision = 0;
 				break;
 			case EColumnType.DATE:
 				result = new UI_DateBox(instance);
+				(<UI_DateBox>result).displayFormat = instance._column.outputFormat;
 				break;
 			default:
 				result = null;
 				break;
+			
 		}
 
 		if ( result ) {
@@ -250,17 +267,24 @@ class UI_Column_Editor extends UI implements IFocusable {
 				}
 			});
 
-			result.on('blur', function(ev) {
-				instance.fire('keydown', { "keyCode": 13, "charCode": 13, "preventDefault": function() { }, "stopPropagation": function() { } });
+			result.on('blur', function() {
 				setTimeout(function() {
 					if ( instance.form.activeElement === null ) {
 						instance.owner.owner['active'] = true;
 					}
-				}, 1);
+				}, 0);
 			});
+
+			result.on( 'focus', function() {
+				Utils.dom.addClass( instance._column.grid._root, 'focused' );
+			} );
 		}
 
 		return result;
+	}
+
+	get input(): IInput {
+		return <IInput>this['_children'+''][0] || null;
 	}
 
 	public doSave() {
@@ -270,10 +294,18 @@ class UI_Column_Editor extends UI implements IFocusable {
 			var value: any;
 			
 			if ( this.editMode ) {
-
+				this.saveOnRowIndexChange = false;
+				this._column.grid.itemAt( this._rowIndex ).set( this._column.name, this.input.value );
+				this.saveOnRowIndexChange = true;
 			}
 		}
 
+	}
+
+	public doLoad() {
+		if ( this.editMode ) {
+			this.input.value = this._column.grid.itemAt( this._rowIndex ).get( this._column.name );
+		}
 	}
 
 	protected _initialize_() {
@@ -289,6 +321,7 @@ class UI_Column_Editor extends UI implements IFocusable {
 					switch ( code ) {
 						case Utils.keyboard.KB_ENTER:
 							me.doSave();
+							me.editMode = false;
 							break;
 						case Utils.keyboard.KB_ESC:
 							me.editMode = false;

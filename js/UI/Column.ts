@@ -150,7 +150,6 @@ class UI_Column extends UI {
 
 			switch ( this._type ) {
 				case EColumnType.ROW_NUMBER:
-				case EColumnType.BYTES:
 					return false;
 					break;
 				default:

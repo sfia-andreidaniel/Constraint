@@ -341,6 +341,16 @@
 		this._owner.setDatePart(EDatePart.MONTH, month);
 		this._owner.setDatePart(EDatePart.YEAR, year);
 
+		if ( this._owner.hasDatePart( EDatePart.HOUR ) && this._owner.getDatePart( EDatePart.HOUR, false ) === null ) {
+			this._owner.setDatePart( EDatePart.HOUR, 0 );
+		}
+		if ( this._owner.hasDatePart( EDatePart.MINUTE ) && this._owner.getDatePart( EDatePart.MINUTE, false ) === null ) {
+			this._owner.setDatePart( EDatePart.MINUTE, 0 );
+		}
+		if ( this._owner.hasDatePart( EDatePart.SECOND ) && this._owner.getDatePart( EDatePart.SECOND, false ) === null ) {
+			this._owner.setDatePart( EDatePart.SECOND, 0 );
+		}
+
 		this.close();
 
 	}
