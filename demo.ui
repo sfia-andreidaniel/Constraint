@@ -115,8 +115,8 @@
 				left: 10;
 				top: DropDown1 bottom 10;
 				right: 10;
-				minDate: date(yesterday);
-				maxDate: date(tomorrow);
+				minDate: date(-2W);
+				maxDate: date(+3M);
 			};
 
 			@UI_Spinner Spin1 {
@@ -124,10 +124,10 @@
 				top: Date1 bottom 10;
 				right: 10;
 				value: 0;
-				min: -10;
-				max: 10;
+				min: -1000;
+				max: 1000;
 				step: 2;
-			}
+			};
 		};
 
 		@UI_Tab Tab0 {

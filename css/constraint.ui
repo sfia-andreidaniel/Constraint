@@ -509,8 +509,8 @@
 		};
 
 		buttons: {
-			decrement: 'Constraint/menuitem_scroll_prev/10x5';
-			increment: 'Constraint/menuitem_scroll_next/10x5';
+			decrement: 'ui-resource Constraint menuitem_scroll_prev-10x5';
+			increment: 'ui-resource Constraint menuitem_scroll_next-10x5';
 		};
 
 	};

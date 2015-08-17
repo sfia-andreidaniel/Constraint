@@ -47,4 +47,10 @@ class Utils {
 	 */
 	public static keyboard = Utils_Keyboard;
 
+	/**
+	 * Helpers for manipulating numbers
+	 */
+
+	public static number = Utils_Number;
+
 }

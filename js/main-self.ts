@@ -10,6 +10,7 @@
 /// <reference path="Utils/Dom.ts" />
 /// <reference path="Utils/String.ts" />
 /// <reference path="Utils/Keyboard.ts" />
+/// <reference path="Utils/Number.ts" />
 /// <reference path="Utils.ts" />
 
 

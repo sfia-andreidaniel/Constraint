@@ -107,9 +107,52 @@ class Utils_Keyboard {
 		    out: string[] = [];
 
 		if ( !ctrl && !alt ) {
+
 			if ( code && typeof Utils_Keyboard.keyBindings[ code ] != 'undefined' ) {
 				return Utils_Keyboard.keyBindings[ code ][ ~~shift ];
 			}
+
+			if ( shift ) {
+				out.push( 'shift' );
+			}
+
+			switch ( code ) {
+				case Utils_Keyboard.KB_BACKSPACE: 	out.push('backspace'); break;
+				case Utils_Keyboard.KB_TAB: 		out.push('tab'); break;
+				case Utils_Keyboard.KB_ENTER: 		out.push('enter'); break;
+				case Utils_Keyboard.KB_BREAK: 		out.push('break'); break;
+				case Utils_Keyboard.KB_CAPS_LOCK: 	out.push('caps_lock'); break;
+				case Utils_Keyboard.KB_ESC: 		out.push('esc'); break;
+				case Utils_Keyboard.KB_PAGE_UP: 	out.push('page_up'); break;
+				case Utils_Keyboard.KB_PAGE_DOWN: 	out.push('page_down'); break;
+				case Utils_Keyboard.KB_END: 		out.push('end'); break;
+				case Utils_Keyboard.KB_HOME: 		out.push('home'); break;
+				case Utils_Keyboard.KB_LEFT: 		out.push('left'); break;
+				case Utils_Keyboard.KB_UP: 			out.push('up'); break;
+				case Utils_Keyboard.KB_RIGHT: 		out.push('right'); break;
+				case Utils_Keyboard.KB_DOWN: 		out.push('down'); break;
+				case Utils_Keyboard.KB_INSERT: 		out.push('insert'); break;
+				case Utils_Keyboard.KB_DELETE: 		out.push('delete'); break;
+				case Utils_Keyboard.KB_F1: 			out.push('f1'); break;
+				case Utils_Keyboard.KB_F2: 			out.push('f2'); break;
+				case Utils_Keyboard.KB_F3: 			out.push('f3'); break;
+				case Utils_Keyboard.KB_F4: 			out.push('f4'); break;
+				case Utils_Keyboard.KB_F5: 			out.push('f5'); break;
+				case Utils_Keyboard.KB_F6: 			out.push('f6'); break;
+				case Utils_Keyboard.KB_F7: 			out.push('f7'); break;
+				case Utils_Keyboard.KB_F8: 			out.push('f8'); break;
+				case Utils_Keyboard.KB_F9: 			out.push('f9'); break;
+				case Utils_Keyboard.KB_F10: 		out.push('f10'); break;
+				case Utils_Keyboard.KB_F11: 		out.push('f11'); break;
+				case Utils_Keyboard.KB_F12: 		out.push('f12'); break;
+				case Utils_Keyboard.KB_NUM_LOCK: 	out.push('num_lock'); break;
+				case Utils_Keyboard.KB_SCROLL_LOCK: out.push('scroll_lock'); break;
+				default:
+					return '';
+			}
+
+			return out.join( ' ' );
+
 		} else {
 			
 			if ( ctrl )

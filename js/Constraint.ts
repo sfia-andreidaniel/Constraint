@@ -68,7 +68,7 @@ class Constraint {
 		// date format is:
 		// date( date_string [ ; date_format ] ), using [a-zA-Z0-9/\:-] in both date_string and both date_format
 		"type_date": {
-			"regex": /^date\((?:[ ]+)?([a-zA-Z\d\:\/\- ]+?((?:[ ]+)?;(?:[ ]+)?(?:[a-zA-Z\d\:\-\/ ]+?))?)(?:[ ]+)?\)/,
+			"regex": /^date\((?:[ ]+)?([a-zA-Z\d\:\/\-\+ ]+?((?:[ ]+)?;(?:[ ]+)?(?:[a-zA-Z\d\:\-\/ ]+?))?)(?:[ ]+)?\)/,
 			"return": 1
 		},
 		// matches any json structure

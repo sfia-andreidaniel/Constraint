@@ -4,10 +4,328 @@
  */
 class UI_Spinner extends UI implements IFocusable {
 
+	public static _theme = {
+		defaults: {
+			width: 	   $I.number('UI.UI_Spinner/defaults.width'),
+			height:    $I.number('UI.UI_Spinner/defaults.height')
+		},
+		background: {
+			enabled:   $I.string('UI.UI_Spinner/background.enabled'),
+			disabled:  $I.string('UI.UI_Spinner/background.disabled'),
+			inactive:  $I.string('UI.UI_Spinner/background.inactive')
+		},
+		border: {
+			color:     $I.string('UI.UI_Spinner/border.color')
+		},
+		buttons: {
+			decrement: $I.string('UI.UI_Spinner/buttons.decrement'),
+			increment: $I.string('UI.UI_Spinner/buttons.increment')
+		}
+	};
+
+	/** IFocusable properties 
+	 */
+	public    active: boolean; // the active is overrided by the MFocusable mixin
+	public    wantTabs: boolean = false;
+	public    tabIndex: number = 0;
+	public    includeInFocus: boolean = true;
+
+	protected _min: number = null;
+	protected _max: number = null;
+	protected _step: number = 1;
+	protected _precision: number = 2;
+
+	protected _incrementer: UI_Timer;
+	protected _decrementer: UI_Timer;
+
+	protected _dom = {
+		input: Utils.dom.create('input'),
+		spinUp: Utils.dom.create('div', 'decrement'),
+		spinDn: Utils.dom.create('div', 'increment')
+	};
+
 	constructor( owner: UI ) {
 		super(owner, ['IFocusable'], Utils.dom.create('div', 'ui UI_Spinner'));
+		this.width = UI_Spinner._theme.defaults.width;
+		this.height= UI_Spinner._theme.defaults.height;
+		this._initDom_();
 	}
 	
+	get min(): number {
+		return this._min;
+	}
+
+	set min( min: number ) {
+		min = parseFloat( String( min || '' ) );
+		if ( !isNaN( min ) ) {
+			this._min = min;
+		} else {
+			this._min = null;
+		}
+	}
+
+	get max(): number {
+		return this._max;
+	}
+
+	set max( max: number ) {
+		max = parseFloat( String( max || '' ) );
+		if ( !isNaN( max ) ) {
+			this._max = max;
+		} else {
+			this._max = null;
+		}
+	}
+
+	get step(): number {
+		return this._step;
+	}
+
+	set step( step: number ) {
+		step = parseFloat( String( step || '' ) );
+		if ( isNaN( step ) ) {
+			this._step = 1;
+		} else {
+			this._step = Math.abs( step );
+		}
+	}
+
+	get value(): number {
+		var v = parseFloat( this._dom.input.value );
+		if ( !isNaN( v ) ) {
+			return v;
+		} else {
+			return null;
+		}
+	}
+
+	set value( value: number ) {
+		value = parseFloat( String( value ) );
+		
+		if ( isNaN( value ) ) {
+			this._dom.input.value = '';
+		} else {
+			this._dom.input.value = String( value );
+		}
+	}
+
+	get precision(): number {
+		return this._precision;
+	}
+
+	set precision( maxDigits: number ) {
+		maxDigits = Math.abs( ~~maxDigits );
+		this._precision = maxDigits;
+	}
+
+	protected doStep( direction: number ) {
+		
+		var v: number = this.value,
+		    min: number = this.min,
+		    max: number = this.max;
+		
+		if ( direction > 0 ) {
+			if ( v === null ) {
+				if ( min === null ) {
+					v = 0;
+				} else {
+					v = min;
+				}
+			} else {
+				v += this.step;
+			}
+		} else {
+			if ( v === null ) {
+				if ( max === null ) {
+					v = 0;
+				} else {
+					v = max;
+				}
+			} else {
+				v -= this.step;
+			}
+		}
+
+		if ( min !== null && v < min ) {
+			v = min;
+		}
+
+		if ( max !== null && v > max ) {
+			v = max;
+		}
+
+		this.value = v;
+	}
+
+	get readOnly(): boolean {
+		return this._dom.input.readOnly;
+	}
+
+	set readOnly( on: boolean ) {
+		this._dom.input.readOnly = !!on;
+	}
+
+	protected _initDom_() {
+		this._dom.input.setAttribute('type', 'text');
+		this._root.appendChild( this._dom.input );
+		this._root.appendChild( this._dom.spinUp );
+		this._root.appendChild( this._dom.spinDn );
+		this._dom.spinUp.appendChild( Utils.dom.create('div', UI_Spinner._theme.buttons.decrement ) );
+		this._dom.spinDn.appendChild( Utils.dom.create('div', UI_Spinner._theme.buttons.increment ) );
+
+		( function( me ) {
+
+			me._dom.input.addEventListener( 'mousedown', function(evt) {
+				evt.stopPropagation();
+			}, true );
+
+			me._dom.input.addEventListener( 'focus', function( evt ) {
+				if ( me.form.disabled ) {
+					return;
+				}
+				if ( !me.active ) {
+					me.active = true;
+				}
+			}, true );
+
+			me._dom.input.addEventListener( 'blur', function( evt ) {
+				if ( me.form.disabled ) {
+					return;
+				}
+				if ( me.active ) {
+					me.form.activeElement = null;
+				}
+			}, true );
+
+			me.on( 'blur', function() {
+				me._dom.input.blur();
+			} );
+
+			me.on( 'focus', function() {
+				me._dom.input.focus();
+			} );
+
+			me.on( 'disabled', function( on ) {
+				if ( on ) {
+					Utils.dom.addClass( me._dom.spinUp.firstChild, 'disabled' );
+					Utils.dom.addClass( me._dom.spinDn.firstChild, 'disabled' );
+				} else {
+					Utils.dom.removeClass( me._dom.spinUp.firstChild, 'disabled' );
+					Utils.dom.removeClass( me._dom.spinDn.firstChild, 'disabled' );
+				}
+				me._dom.input.disabled = on;
+			} );
+
+			me._incrementer = new UI_Timer( 500 );
+			me._decrementer = new UI_Timer( 500 );
+
+			me._incrementer.on( 'tick', function() {
+				me.doStep( 1 );
+				// some acceleration
+				if ( me._incrementer.frequency > 200 ) {
+					me._incrementer.frequency -= 10;
+				}
+			} );
+
+			me._decrementer.on( 'tick', function() {
+				me.doStep( -1 );
+				// some acceleration
+				if ( me._decrementer.frequency > 200 ) {
+					me._decrementer.frequency -= 10;
+				}
+			} );
+
+			var mouseUpWatcher = function( ev ) {
+				me._decrementer.running = false;
+				me._incrementer.running = false;
+				me._decrementer.frequency = 500;
+				me._incrementer.frequency = 500;
+				document.body.removeEventListener( 'mouseup', mouseUpWatcher, true );
+			}
+
+			me._dom.spinUp.addEventListener( 'mousedown', function( ev ) {
+				if ( !me.disabled ) {
+					me._decrementer.running = true;
+					document.body.addEventListener( 'mouseup', mouseUpWatcher, true );
+				}
+			}, true );
+
+			me._dom.spinDn.addEventListener( 'mousedown', function( ev ) {
+				if ( !me.disabled ) {
+					me._incrementer.running = true;
+					document.body.addEventListener( 'mouseup', mouseUpWatcher, true );
+				}
+			}, true );
+
+			me.on( 'keydown', function( ev ) {
+				
+				if ( me.disabled ) {
+					return;
+				}
+
+				var code = ev.keyCode || ev.charCode,
+				    key: string,
+				    caretPosition: number,
+				    strValue: string[],
+				    newValue: string,
+				    newNumber: number;
+
+				switch ( code ) {
+					case Utils.keyboard.KB_UP:
+						me.doStep(-1);
+						ev.preventDefault();
+						break;
+					case Utils.keyboard.KB_DOWN:
+						me.doStep(1);
+						ev.preventDefault();
+						break;
+					default:
+						key = Utils.keyboard.eventToString( ev );
+						caretPosition = Utils.dom.getCaretPosition( me._dom.input );
+						
+						if ( /^[\d\+\-\.]/.test( key ) && key.length == 1 ) {
+							
+							strValue = ( me._dom.input.value || '' ).split('');
+							strValue.splice( caretPosition || 0, 0, key );
+							newValue = strValue.join('');
+
+							if ( !Utils.number.isFloat( newValue ) && ['.','+', '-' ].indexOf( newValue ) == -1 ) {
+								ev.preventDefault();
+								ev.stopPropagation();
+							}
+
+						} else {
+							if ( key.length == 1 )
+							ev.preventDefault();
+						}
+
+						
+
+						break;
+				}
+			}, true );
+
+			me._dom.input.addEventListener('input', function( ev ) {
+				if ( !me.disabled && !me.readOnly ) {
+					
+					// fix the precision.
+					var t = me._dom.input.value.split('.');
+					
+					if ( t.length == 2 ) {
+						if ( t[1].length > me._precision || me._precision == 0 ) {
+							t[1] = t[1].slice( 0, me._precision );
+							me._dom.input.value = t[1].length ? t[0] + '.' + t[1] : t[0];
+						}
+					}
+
+					me.fire( 'change' );
+				}
+			}, true );
+
+
+		} )( this );
+	}
+
 }
 
 Mixin.extend('UI_Spinner', 'MFocusable');
@@ -43,6 +361,10 @@ Constraint.registerClass( {
 		{
 			"name": "step",
 			"type": "number"
+		},
+		{
+			"name": "readOnly",
+			"type": "boolean"
 		}
 	]
 } );
