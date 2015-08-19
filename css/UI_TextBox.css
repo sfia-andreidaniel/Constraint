@@ -21,6 +21,8 @@
 	background-color: transparent;
 	outline: none !important;
 	display: block;
+	font-size: ${font.size}px;
+	font-family: '${font.family}';
 }
 
 .ui.UI_TextBox.disabled > input {

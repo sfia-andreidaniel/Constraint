@@ -511,7 +511,133 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 			}
 		} );
 
-		// when the user press left or right 
+		function focusColumn( relative: number ) {
+			relative = ~~relative;
+
+			if ( relative != -1 && relative != 1 ) {
+				throw new Error( 'Accepted values are -1, 1' );
+			}
+
+			if ( !node['columns' ] || !node.editable ) {
+				return;
+			}
+
+			var columns: UI_Column[] = Utils.array.merge( node['columns']( true ), node['columns']( false ), false ),
+			    i: number,
+			    len: number = columns.length,
+			    editorIndex: number = -1,
+			    newEditorIndex: number = -1,
+			    indexes: number[] = [];
+
+			for ( i=0; i<len; i++ ) {
+
+				if ( columns[i].visible && !columns[i].disabled ) {
+					indexes.push( i );
+
+					if ( !!columns[i].editor )
+						editorIndex = indexes.length - 1;
+
+				}
+
+			}
+
+			if ( !indexes.length ) {
+				return;
+			}
+
+			if ( editorIndex == -1 ) {
+
+				switch ( relative ) {
+					case -1:
+						newEditorIndex = indexes[ indexes.length - 1 ];
+						break;
+					case 1:
+						newEditorIndex = indexes[ 0 ];
+						break;
+				}
+
+			} else {
+
+				newEditorIndex = editorIndex + relative;
+				
+				if ( newEditorIndex < 0 ) {
+					newEditorIndex = 0;
+				} else
+				if ( newEditorIndex >= indexes.length )
+					newEditorIndex = indexes.length - 1;
+
+				newEditorIndex = indexes[ newEditorIndex ];
+
+			}
+
+
+			if ( editorIndex != -1 ) {
+				columns[ editorIndex ].disposeEditor();
+			}
+
+			if ( newEditorIndex != -1 ) {
+				columns[ newEditorIndex ].createEditor();
+			}
+
+
+		}
+
+		function enterEditMode() {
+			if ( !node['columns'] || !node.editable ) {
+				return;
+			}
+
+			var columns: UI_Column[] = node['columns']( null ),
+			    i: number,
+			    len: number = columns.length;
+
+			for ( i=0; i<len; i++ ) {
+				if ( columns[i].visible && !columns[i].disabled && !!columns[i].editor ) {
+					if ( !columns[i].editor.editMode ) {
+						columns[i].editor.editMode = true;
+						break;
+					}
+				}
+			}
+		}
+
+		function forwardKeyboardEvent( ev: KeyboardEvent ) {
+			if ( !node['columns'] ) {
+				return;
+			}
+
+			var columns: UI_Column[] = node['columns']( null ),
+			    i: number,
+			    len: number = columns.length;
+
+			for ( i=0; i<len; i++ ) {
+				if ( columns[i].visible && !columns[i].disabled ) {
+					columns[i].onKeyDown( ev );
+				}
+			}
+		}
+
+		// when the user press left or right arrows, we move the editable editor 
+		node.on( 'keydown', function( ev ) {
+
+			var code = ev.keyCode || ev.charCode;
+
+			switch ( code ) {
+				case Utils.keyboard.KB_LEFT:
+					focusColumn( -1 );
+					break;
+				case Utils.keyboard.KB_RIGHT:
+					focusColumn( 1 );
+					break;
+				case Utils.keyboard.KB_F2:
+					enterEditMode();
+					break;
+				default:
+					forwardKeyboardEvent( ev );
+					break;
+			}
+
+		} );
 
 	}
 
@@ -530,6 +656,7 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 					result.push( <UI_Column>this._children[i] );
 				}
 			}
+			return result;
 		}
 	}
 
@@ -568,7 +695,7 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 		    stop       : number = this.indexPaintEnd,
 
 		    isDisabled : boolean = this.disabled,
-		    isActive   : boolean = this['active'] && ( this.form ? this.form.active : true ),
+		    isActive   : boolean = ( this['active'] || this.contains( this.form ? this.form.activeElement : null ) ) && ( this.form ? this.form.active : true ),
 		    i          : number,
 		    item       : Store_Item,
 		    rowHeight  : number = this.rowHeight,
@@ -612,7 +739,7 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 		    stop       : number = this.indexPaintEnd,
 
 		    isDisabled : boolean = this.disabled,
-		    isActive   : boolean = this['active'] && ( this.form ? this.form.active : true ),
+		    isActive   : boolean = ( this['active'] || this.contains( this.form ? this.form.activeElement : null ) ) && ( this.form ? this.form.active : true ),
 		    i          : number,
 		    item       : Store_Item,
 		    rowHeight  : number = this.rowHeight,
@@ -686,7 +813,7 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 			rowHeight     : number = this.rowHeight;
 
 		/* Paint the selectedIndex */
-		if ( selectedIndex >= start && selectedIndex < stop && this['active'] && ( this.form ? this.form.active : true ) && this['multiple'] ) {
+		if ( selectedIndex >= start && selectedIndex < stop && ( this['active'] || this.contains( this.form ? this.form.activeElement : null ) ) && ( this.form ? this.form.active : true ) && this['multiple'] ) {
 			body.strokeStyle = 'black';
 			body.lineWidth   = 1;
 			body.strokeRect( .5, yPaintStart + ( selectedIndex - start ) * rowHeight, this.viewportWidth - 1, rowHeight - 1 )

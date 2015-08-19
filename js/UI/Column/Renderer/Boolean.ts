@@ -22,7 +22,7 @@ class UI_Column_Renderer_Boolean extends UI_Column_Renderer {
 		    opt 			: Store_Item,
 		    propertyName    : string = this._column.name,
 
-		    isActive 		: boolean = !!this._column.grid['active'] && this._column.grid.form.active,
+		    isActive 		: boolean = this.active && this._column.grid.form.active,
 		    isDisabled 		: boolean = this._column.grid.disabled,
 		    value           : number,
 		    color           : string,

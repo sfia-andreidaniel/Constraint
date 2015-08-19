@@ -733,7 +733,7 @@ class UI_Form extends UI implements IFocusable {
 	set activeElement( node: UI ) {
 		if ( ( node || null ) != this._activeElement ) {
 			
-			var prevElement: UI = this._activeElement;
+			var prevElement: UI = this._activeElement || null;
 
 			this._activeElement = node || null;
 

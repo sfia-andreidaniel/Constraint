@@ -33,7 +33,7 @@ class UI_Column_Renderer_Tree extends UI_Column_Renderer {
 		    opt 			: Store_Node,
 		    rowHeight       : number = this._column.grid.rowHeight,
 
-		    isActive 		: boolean = !!this._column.grid['active'] && this._column.grid.form.active,
+		    isActive 		: boolean = this.active && this._column.grid.form.active,
 		    isDisabled 		: boolean = this._column.grid.disabled,
 		    paddingLeft 	: number,
 		    ci 				: number,

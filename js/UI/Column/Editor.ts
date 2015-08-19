@@ -123,13 +123,17 @@ class UI_Column_Editor extends UI implements IFocusable {
 	 * See UI.remove().
 	 */
 	public remove(): UI {
+		
 		if ( this.editMode ) {
 			this.doSave();
 		}
+
 		super.remove();
+		
 		if ( this._root.parentNode ) {
 			this._root.parentNode.removeChild( this._root );
 		}
+
 		return this;
 	}
 
@@ -204,6 +208,9 @@ class UI_Column_Editor extends UI implements IFocusable {
 		on = !!on;
 		if ( on != this.editMode ) {
 			if ( !on ) {
+				if ( this._children[0] && this._children[0]['active'] ) {
+					this.owner.owner['active'] = true;
+				}
 				this._children[0].remove();
 			} else {
 				if ( this._column.name && this._column.grid.canEditProperty( this._column.grid.itemAt( this._rowIndex), this._column.name ) ) {
@@ -268,16 +275,12 @@ class UI_Column_Editor extends UI implements IFocusable {
 			});
 
 			result.on('blur', function() {
-				setTimeout(function() {
-					if ( instance.form.activeElement === null ) {
-						instance.owner.owner['active'] = true;
-					}
-				}, 0);
+				instance.fire('dispose');
+				if ( instance.form.activeElement != instance.owner.owner ) {
+					instance.editMode = false;
+				}
 			});
 
-			result.on( 'focus', function() {
-				Utils.dom.addClass( instance._column.grid._root, 'focused' );
-			} );
 		}
 
 		return result;
@@ -331,6 +334,11 @@ class UI_Column_Editor extends UI implements IFocusable {
 				}
 
 			});
+
+			me.on( 'dispose', function() {
+				if ( me.form.activeElement === null )
+				me.owner.owner['active'] = true;
+			} );
 
 		})(this);
 			

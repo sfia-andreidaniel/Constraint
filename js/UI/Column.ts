@@ -569,6 +569,7 @@ class UI_Column extends UI {
 	 */
 	public disposeEditor() {
 		if ( this._editor ) {
+			this._editor.fire('dispose');
 			this._editor.remove();
 			this._editor = undefined;
 		}
@@ -626,6 +627,27 @@ class UI_Column extends UI {
 				this._type == EColumnType.DATE ? this._inputFormat : null
 			);
 		}
+	}
+
+	/**
+	 * Handles a keyDown event forwarded by the grid interface.
+	 */
+	public onKeyDown( ev: KeyboardEvent ) {
+
+		var code = ev.keyCode || ev.charCode;
+
+		switch ( true ) {
+			case code == Utils.keyboard.KB_F3 && this._type == EColumnType.TREE:
+				
+				try {
+					(<UI_Tree>this._owner)['toggleNode']();
+				} catch( e ) {
+					console.warn( 'Failed to toggle tree column node: ', e );
+				}
+
+				break;
+		}
+
 	}
 
 	/**

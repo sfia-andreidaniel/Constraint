@@ -57,7 +57,6 @@ class UI_Column_Renderer {
 	 */
 	public onClick    ( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {}
 
-
 	/**
 	 * Handles a double click event in the colum body.
 	 */
@@ -100,5 +99,15 @@ class UI_Column_Renderer {
 				return new UI_Column_Renderer( inColumn );
 				break;
 		}
+	}
+
+	/**
+	 * Use this property in order to know how to implement the rendering.
+	 * This is needed because grid should be painted as active even if it contains focused subchildren.
+	 * If you would use the this._column.owner.active property, you would not catch the case when
+	 * sub-children of the grid ( typically column editors ) are active.
+	 */
+	get active(): boolean {
+		return this._column && this._column.owner && ( this._column.owner['active'] || ( this._column.owner.owner && this._column.form && this._column.owner.owner.contains( this._column.owner.form.activeElement ) ) );
 	}
 }

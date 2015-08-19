@@ -66,67 +66,62 @@
 		right: 20;
 		bottom: 40;
 
-		@UI_Tab Tab_Text {
+		@UI_Tab Teb_Grid {
+			caption: 'Grid';
 
-			caption: 'Text inputs';
+			@UI_Grid Grid0 {
+				left: 20;
+				top: 20;
+				right: 20;
+				bottom: 20;
+				editable: true;
 
-			@UI_TextBox Text1 {
-				value: 'Input value';
-				placeholder: 'Input placeholder';
-				left: 10;
-				top: 10;
-				right: 10;
-			};
+				items: <![JSON
 
-			@UI_TextBox Text2 {
-				value: 'Disabled Input value';
-				placeholder: 'Input placeholder';
-				left: 10;
-				top: Text1 bottom 10;
-				right: 10;
-				disabled: true;
-			};
+					[
+						{
+							"id": 1,
+							"name": "Item 1"
+						},
+						{
+							"id": 2,
+							"name": "Item 2"
+						},
+						{
+							"id": 3,
+							"name": "Item 3"
+						},
+						{
+							"id": 4,
+							"name": "Item 4"
+						},
+						{
+							"id": 5,
+							"name": "Item 5"
+						},
+						{
+							"id": 6,
+							"name": "Item 6"
+						},
+						{
+							"id": 7,
+							"name": "Item 7"
+						},
+						{
+							"id": 8,
+							"name": "Item 8"
+						},
+						{
+							"id": 9,
+							"name": "Item 9"
+						},
+						{
+							"id": 10,
+							"name": "Item 10"
+						}
+					]
 
-			@UI_DropDown DropDown1 {
-				left: 10;
-				top: Text2 bottom 10;
-				right: 10;
-				options: <![JSON[ [
-					{
-						"value": "",
-						"text" : "Pick an option"
-					},
-					{
-						"value": "1",
-						"text": "Option # 1"
-					},
-					{
-						"value": "2",
-						"text" : "Option #2"
-					},
-					{
-						"value": "3",
-						"text": "Option #3"
-					}
-				] ]]>;
-			};
-
-			@UI_DateBox Date1 {
-				left: 10;
-				top: DropDown1 bottom 10;
-				right: 10;
-				minDate: date(-2W);
-				maxDate: date(+3M);
-			};
-
-			@UI_Spinner Spin1 {
-				left: 10;
-				top: Date1 bottom 10;
-				right: 10;
-				value: 0;
-				min: -1000;
-				max: 1000;
-				step: 2;
+				]]>;
 			};
 		};
 
@@ -314,6 +309,69 @@
 
 		};
 
+		@UI_Tab Tab_Text {
+
+			caption: 'Text inputs';
+
+			@UI_TextBox Text1 {
+				value: 'Input value';
+				placeholder: 'Input placeholder';
+				left: 10;
+				top: 10;
+				right: 10;
+			};
+
+			@UI_TextBox Text2 {
+				value: 'Disabled Input value';
+				placeholder: 'Input placeholder';
+				left: 10;
+				top: Text1 bottom 10;
+				right: 10;
+				disabled: true;
+			};
+
+			@UI_DropDown DropDown1 {
+				left: 10;
+				top: Text2 bottom 10;
+				right: 10;
+				options: <![JSON[ [
+					{
+						"value": "",
+						"text" : "Pick an option"
+					},
+					{
+						"value": "1",
+						"text": "Option # 1"
+					},
+					{
+						"value": "2",
+						"text" : "Option #2"
+					},
+					{
+						"value": "3",
+						"text": "Option #3"
+					}
+				] ]]>;
+			};
+
+			@UI_DateBox Date1 {
+				left: 10;
+				top: DropDown1 bottom 10;
+				right: 10;
+				minDate: date(-2W);
+				maxDate: date(+3M);
+			};
+
+			@UI_Spinner Spin1 {
+				left: 10;
+				top: Date1 bottom 10;
+				right: 10;
+				value: 0;
+				min: -1000;
+				max: 1000;
+				step: 2;
+			};
+		};
 
 		@UI_Tab Tab1 {
 			caption: 'Layout';

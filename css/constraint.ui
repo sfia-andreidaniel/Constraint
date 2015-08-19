@@ -368,6 +368,11 @@
 		color: {
 			disabled: $disabledFontColor;
 		};
+
+		font: {
+			size: $fontSize;
+			family: $fontFamily;
+		};
 	};
 
 	@Theme UI_DateBox {
