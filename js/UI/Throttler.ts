@@ -31,9 +31,13 @@ class UI_Throttler extends UI_Event {
 			if ( this.lastRun < now ) {
 				// run immediately
 				this.lastRun = now;
-				this.nextRun = null;
+				this.nextRun = this.lastRun + this.frequency;
 
-				this.callback();
+				setTimeout( function() {
+					self.callback();
+					self.nextRun = null;
+				}, this.nextRun - this.lastRun );
+				
 
 			} else {
 				// run in the future

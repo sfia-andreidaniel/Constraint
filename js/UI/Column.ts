@@ -316,6 +316,11 @@ class UI_Column extends UI {
 			this._type = type;
 			this._renderer = UI_Column_Renderer.createForType( this._type, this );
 			if ( this._owner ) {
+
+				if ( type == EColumnType.TREE && !( this._owner instanceof UI_Tree_Grid ) ) {
+					throw new Error( 'A TREE column can be inserted only inside of a UI_Tree_Grid' );
+				}
+
 				this._owner.fire( 'column-changed', this );
 			}
 		}

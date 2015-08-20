@@ -76,7 +76,7 @@
 				bottom: 20;
 				editable: true;
 
-				items: <![JSON
+				items: <![JSON[
 
 					[
 						{
@@ -122,6 +122,32 @@
 					]
 
 				]]>;
+
+				@UI_Column {
+					caption: '#';
+					freezed: true;
+					type: ROW_NUMBER;
+					width: 30;
+					textAlign: RIGHT;
+				};
+
+				@UI_Column {
+					name: 'id';
+					freezed: true;
+					type: INT;
+					width: 50;
+					caption: 'ID';
+					textAlign: RIGHT;
+				};
+
+				@UI_Column {
+					name: 'name';
+					freezed: false;
+					type: STRING;
+					width: 50;
+					caption: 'Type';
+					editable: yes;
+				};
 			};
 		};
 

@@ -593,7 +593,7 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 
 			for ( i=0; i<len; i++ ) {
 				if ( columns[i].visible && !columns[i].disabled && !!columns[i].editor ) {
-					if ( !columns[i].editor.editMode ) {
+					if ( columns[i].editable && !columns[i].editor.editMode ) {
 						columns[i].editor.editMode = true;
 						break;
 					}

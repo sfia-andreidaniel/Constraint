@@ -99,15 +99,15 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface, IInput {
 
 				switch ( code ) {
 					// LEFT
-					case 37:
+					case Utils.keyboard.KB_LEFT:
 						me.collapseNode();
 						break;
 					// RIGHT
-					case 39:
+					case Utils.keyboard.KB_RIGHT:
 						me.expandNode();
 						break;
 					// SPACE
-					case 32:
+					case Utils.keyboard.KB_SPACE:
 						me.toggleNode();
 						break;
 				}
@@ -156,7 +156,7 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface, IInput {
 				me.paint(); 
 			}, 1 );
 
-			me._view.on( 'before-change', function() {
+			me._view.on( 'before-update', function() {
 				
 				// SAVE selectedIndex
 				me._selectedIndexPath = ( me.selectedIndex == -1 )

@@ -71,6 +71,11 @@ class Store extends UI_Event {
 	private $sortFields: ISortOption[];
 
 	/**
+	 * allows reading from store even if the store is write-locked.
+	 */
+	private _allowReadingAlways: boolean = false;
+
+	/**
 	 * Store constructor.
 	 * @param uniqueKeyName The name of the "id" key in the objects the store holds.
 	 *                       If this key is NULL, an auto-increment id will be used.
@@ -160,6 +165,8 @@ class Store extends UI_Event {
 	 */
 	protected sort( requestChange: boolean = true ) {
 		if ( this.$sorter && this._length ) {
+			
+			this.fire( 'before-sort' );
 			
 			this._items.sort( function( a: Store_Item, b: Store_Item ): number {
 				return a.compare(b);
@@ -254,7 +261,7 @@ class Store extends UI_Event {
 		this._sorting.set( '__insertion__', true );
 
 		if ( this._wr_locks == 0 )
-		this.requestChange();
+			this.requestChange();
 
 		return item;
 
@@ -279,15 +286,22 @@ class Store extends UI_Event {
 
 		this.clear();
 
+		this.lock(true);
+		this.setEventingState( false );
+		this._allowReadingAlways = true;
+
 		if ( len ) {
-			this.lock(true);
+
 
 			for ( i=0; i<len; i++ ) {
 				this.insert( items[i] );
 			}
 
-			this.unlock(true);
 		}
+
+		this._allowReadingAlways = false;
+		this.unlock(true);
+		this.setEventingState( true );
 
 		this.requestChange();
 	}
@@ -321,11 +335,11 @@ class Store extends UI_Event {
 	 * inside sub-nodes.
 	 */
 	public itemAt( index: number ): Store_Item {
-		if ( this._wr_locks > 0 ) {
+		if ( this._wr_locks > 0 && !this._allowReadingAlways ) {
 			throw new Error( 'Store is locked for writing!' );
 		}
 		if ( index < 0 || index > this._length - 1 ) {
-			throw new Error( 'Index out of bounds' );
+			throw new Error( 'Index ' + index + ' is out of bounds' );
 		} else {
 			return this._items[index];
 		}
@@ -417,11 +431,19 @@ class Store extends UI_Event {
 	 *
 	 */
 	public clear() {
+
 		this.lock(true);
+		this.setEventingState( false );
+		this._allowReadingAlways = true;
+
 		this.walk( function( index: number ): ETraverseSignal { this.die(); return 0; } );
 		this._items.splice( 0, this._length );
 		this._length = 0;
+		
+		this._allowReadingAlways = false;
+		this.setEventingState( true );
 		this.unlock(true);
+
 		this.requestChange();
 	}
 

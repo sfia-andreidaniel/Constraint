@@ -148,7 +148,7 @@ class Store_View extends Store {
 			return;
 		}
 
-		this.fire( 'before-change' );
+		this.fire( 'before-update' );
 		
 		var _oldLength: number = this._length,
 		    _nowIndex: number = 0,

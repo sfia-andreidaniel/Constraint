@@ -87,6 +87,7 @@
 /// <reference path="UI/MenuItem.ts" />
 /// <reference path="UI/Tree.ts" />
 /// <reference path="UI/Tree/Grid.ts" />
+/// <reference path="UI/Grid.ts" />
 
 /// <reference path="UI/Column.ts" />
 /// <reference path="UI/Column/Renderer.ts" />
