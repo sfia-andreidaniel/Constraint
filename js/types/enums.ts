@@ -196,3 +196,11 @@ enum EInvalidDate {
 	DATE_TOO_BIG,
 	DATE_TOO_SMALL
 }
+
+/**
+ * Orientation enumerator
+ */
+enum EOrientation {
+	HORIZONTAL,
+	VERTICAL
+}

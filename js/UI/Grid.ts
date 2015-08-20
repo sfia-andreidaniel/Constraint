@@ -1,3 +1,6 @@
+/**
+ * The UI_Grid component is an (editable) Grid control.
+ */
 class UI_Grid extends UI_Canvas implements IRowInterface, IGridInterface, IFocusable {
 
 	public static _theme: any = {

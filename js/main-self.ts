@@ -66,6 +66,7 @@
 /// <reference path="UI/TextBox.ts" />
 /// <reference path="UI/DropDown.ts" />
 /// <reference path="UI/Spinner.ts" />
+/// <reference path="UI/VerticalSlider.ts" />
 
 /// <reference path="UI/DateBox.ts" />
 /// <reference path="UI/DateBox/DigitGroup.ts" />
