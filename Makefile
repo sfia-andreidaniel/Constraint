@@ -18,16 +18,16 @@ resources::
 demo:: build
 	constraint --src:demo.ui --http-include-path:demo --make
 
-dts_install:
+dts_install::
 	npm install -g dts-generator
 
-dts:
+dts::
 	dts-generator --name Constraint --baseDir . --out Constraint.d.ts js/main-self.ts
 
-doc_install:
+doc_install::
 	npm install -g typedoc
 
-doc:
+doc::
 	rm -rf docs
 	typedoc --name Constraint  --theme default --readme README.md --target es5 --mode file --out ./docs ./js/main.ts
 

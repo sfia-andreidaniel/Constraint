@@ -10,6 +10,26 @@ class UI_Form extends UI implements IFocusable {
 		"menubarHeight": $I.number('UI.UI_Form/menuBar.height')
 	};
 
+	private   _dom = {
+		"inner": Utils.dom.create( 'div', 'inner' ),
+		"body": Utils.dom.create('div', 'body'),
+		"titlebar": Utils.dom.create('div', 'titlebar'),
+		"caption": Utils.dom.create('div', 'caption' ),
+		"buttons": Utils.dom.create( 'div', 'buttons' ),
+		"n": Utils.dom.create('div', 'resizer n' ),
+		"s": Utils.dom.create('div', 'resizer s' ),
+		"w": Utils.dom.create('div', 'resizer w' ),
+		"e": Utils.dom.create('div', 'resizer e' ),
+		"nw": Utils.dom.create( 'div', 'resizer nw' ),
+		"ne": Utils.dom.create( 'div', 'resizer ne' ),
+		"sw": Utils.dom.create( 'div', 'resizer sw' ),
+		"se": Utils.dom.create( 'div', 'resizer se' ),
+		"btnClose": Utils.dom.create('div', 'button close' ),
+		"btnMinimize": Utils.dom.create( 'div', 'button minimize' ),
+		"btnMaximize": Utils.dom.create( 'div', 'button maximize' ),
+		"menuBar": null
+	};
+
 	// MINIMIZED, MAXIMIZED, CLOSED, NORMAL
 	protected _state: EFormState = EFormState.NORMAL;
 	
@@ -46,25 +66,10 @@ class UI_Form extends UI implements IFocusable {
 	public tabIndex: number;
 	public includeInFocus: boolean = false;
 
-	private   _dom = {
-		"inner": Utils.dom.create( 'div', 'inner' ),
-		"body": Utils.dom.create('div', 'body'),
-		"titlebar": Utils.dom.create('div', 'titlebar'),
-		"caption": Utils.dom.create('div', 'caption' ),
-		"buttons": Utils.dom.create( 'div', 'buttons' ),
-		"n": Utils.dom.create('div', 'resizer n' ),
-		"s": Utils.dom.create('div', 'resizer s' ),
-		"w": Utils.dom.create('div', 'resizer w' ),
-		"e": Utils.dom.create('div', 'resizer e' ),
-		"nw": Utils.dom.create( 'div', 'resizer nw' ),
-		"ne": Utils.dom.create( 'div', 'resizer ne' ),
-		"sw": Utils.dom.create( 'div', 'resizer sw' ),
-		"se": Utils.dom.create( 'div', 'resizer se' ),
-		"btnClose": Utils.dom.create('div', 'button close' ),
-		"btnMinimize": Utils.dom.create( 'div', 'button minimize' ),
-		"btnMaximize": Utils.dom.create( 'div', 'button maximize' ),
-		"menuBar": null
-	};
+	protected _mdiForms: UI_Form[] = [];
+	protected _mdiParent: UI_Form = null;
+
+	private   _mdiChildStateChangedHandler: ( child: UI_Form, newState: EFormState ) => void;
 
 	// Form constructor.
 	constructor( ) {
@@ -164,6 +169,7 @@ class UI_Form extends UI implements IFocusable {
 				UI_DialogManager.get.desktop.appendChild( self._root );
 				self.onRepaint();
 				UI_DialogManager.get.onWindowOpened( self );
+				self.fire( 'open' );
 
 			} );
 
@@ -183,6 +189,9 @@ class UI_Form extends UI implements IFocusable {
 		this._state = EFormState.CLOSED;
 
 		UI_DialogManager.get.onWindowClosed( this );
+
+		this.fire( 'close' );
+
 	}
 
 	get menuBar(): UI_MenuBar {
@@ -276,6 +285,8 @@ class UI_Form extends UI implements IFocusable {
 			}
 
 			this.onRepaint();
+
+			this.fire( 'state-changed', this, this._state );
 		}
 	}
 
@@ -688,6 +699,10 @@ class UI_Form extends UI implements IFocusable {
 
 			} );
 
+			form._mdiChildStateChangedHandler = function( child: UI_Form, state: EFormState ) {
+				form.onMDIChildStateChanged( child, state );
+			};
+
 		} )( this );
 	}
 
@@ -893,6 +908,50 @@ class UI_Form extends UI implements IFocusable {
 			// object is embracing.
 			this.fire( 'disabled', on );
 		}
+	}
+
+	get mdiParent(): UI_Form {
+		return this._mdiParent;
+	}
+
+	set mdiParent( parent: UI_Form ) {
+		parent = parent || null;
+		
+		if ( parent != this._mdiParent ) {
+
+			if ( this._mdiParent ) {
+				this._mdiParent.removeMDIChild( this );
+			}
+
+			this._mdiParent = parent;
+
+			if ( parent ) {
+				this._mdiParent.addMDIChild( this );
+			}
+
+		}
+	}
+
+	protected addMDIChild( form: UI_Form ) {
+		
+		if ( form && this._mdiForms.indexOf( form ) == -1 ) {
+			this._mdiForms.push( form );
+			form.on( 'state-changed', this._mdiChildStateChangedHandler );
+		}
+
+	}
+
+	protected removeMDIChild( form: UI_Form ) {
+		var index: number = 0;
+
+		if ( form && ( index = this._mdiForms.indexOf( form ) ) > -1 ) {
+			this._mdiForms.splice( index, 1 );
+			form.off( 'state-changed', this._mdiChildStateChangedHandler );
+		}
+	}
+
+	protected onMDIChildStateChanged( child: UI_Form, newChildState: EFormState ) {
+		console.log( 'MDI Child state changed: ', child.caption, 'state', newChildState );
 	}
 
 }

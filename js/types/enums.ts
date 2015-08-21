@@ -204,3 +204,13 @@ enum EOrientation {
 	HORIZONTAL,
 	VERTICAL
 }
+
+/**
+ * Standard Dialogs. Message box types
+ */
+enum EMessageBoxType {
+	MB_INFO,
+	MB_WARNING,
+	MB_ALERT,
+	MB_ERROR
+}

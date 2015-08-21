@@ -81,6 +81,12 @@
 				right: 20;
 			};
 
+			@UI_ColorBox Color1 {
+				left: Slider1 right 20;
+				top: Slider2 bottom 20;
+				right: 20;
+			};
+
 		};
 
 		@UI_Tab Tab_Grid {
