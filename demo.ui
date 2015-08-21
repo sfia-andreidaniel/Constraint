@@ -66,7 +66,24 @@
 		right: 20;
 		bottom: 40;
 
-		@UI_Tab Teb_Grid {
+		@UI_Tab Tab_Sliders {
+			caption: 'Sliders';
+
+			@UI_VerticalSlider Slider1 {
+				left: 20;
+				top: 20;
+				bottom: 20;
+			};
+
+			@UI_HorizontalSlider Slider2 {
+				left: Slider1 right 20;
+				top: 20;
+				right: 20;
+			};
+
+		};
+
+		@UI_Tab Tab_Grid {
 			caption: 'Grid';
 
 			@UI_Grid Grid0 {

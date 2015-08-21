@@ -562,6 +562,17 @@
 
 	};
 
+	@Theme UI_Slider {
+		defaults: {
+			width: 20;
+			height: 100;
+		};
+		thumb: {
+			color: $object3dColor;
+			border: $object3dBorderColor;
+		};
+	};
+
 	@Theme UI_Scrollbar {
 		background: #ddd;
 		draggerBackground: #333;
