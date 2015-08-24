@@ -12,6 +12,10 @@ class Constraint {
 			"regex": /^([a-z_\$]([a-z_\$\d]+)?)?/i,
 			"return": 1
 		},
+		"tok_method": {
+			"regex": /^(([a-z_\$])([a-z_\$\d]+)?)\(\)/i,
+			"return": 1
+		},
 		// matches standard html colors by their name
 		"type_color_named": {
 			"regex": /^(aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|rebeccapurple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|snow|springgreen|steelblue|tan|teal|thistle|tomato|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen)/,
@@ -196,6 +200,18 @@ class Constraint {
 				"tok_instruction_end"
 			]
 		},
+
+		"method_assignment": {
+			"flow": [
+				"tok_identifier",
+				"tok_white_space_opt",
+				"tok_attrib",
+				"tok_white_space_opt",
+				"tok_method",
+				"tok_white_space_opt",
+				"tok_instruction_end"
+			]
+		},
 		
 		"object_assignment": {
 			"flow": [
@@ -327,7 +343,8 @@ class Constraint {
 				"scope",
 				"white_space",
 				"resource_file",
-				"awaits"
+				"awaits",
+				"method_assignment"
 			]
 		},
 
@@ -469,6 +486,11 @@ class Constraint {
 	// @alias of this.scope.assign( k, v )
 	public asgn( k: string, v: ITokenResult ) {
 		this.scope.assign( k, v );
+	}
+
+	// @alias of this.scope.addMethod( k, v )
+	public masgn( propertyName: string, methodName: string ) {
+		this.scope.addMethod( propertyName, methodName );
 	}
 
 	public resource( v: ITokenResult ) {

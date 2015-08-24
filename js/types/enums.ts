@@ -62,6 +62,13 @@ enum EFormPlacement {
 }
 
 /**
+ * Types of animations a form can execute
+ */
+enum EFormAnimation {
+	SHAKE
+}
+
+/**
  * The EResize type defines a type of resizing operation:
  * * N - North
  * * S - South
@@ -208,9 +215,22 @@ enum EOrientation {
 /**
  * Standard Dialogs. Message box types
  */
-enum EMessageBoxType {
+enum EDialogBoxType {
 	MB_INFO,
 	MB_WARNING,
 	MB_ALERT,
 	MB_ERROR
+}
+
+/**
+ * Standard Dialog Button types
+ */
+enum EDialogButtonTypes {
+	BTN_OK,
+	BTN_CANCEL,
+	BTN_YES,
+	BTN_NO,
+	BTN_ABORT,
+	BTN_RETRY,
+	BTN_IGNORE
 }

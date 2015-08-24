@@ -164,7 +164,9 @@ try {
 				"fileName": form.$name + '.ts',
 				"childProperties": form.$properties,
 				"anonymousCode": [],
-				"awaits": form.$awaits ? JSON.stringify( form.$awaits ) : null
+				"awaits": form.$awaits ? JSON.stringify( form.$awaits ) : null,
+				"methods": form.$methods,
+				"localMethods": form.methods
 			};
 
 			if ( justForm && form._name != justForm ) {
@@ -188,15 +190,17 @@ try {
 					"type": scopes[i].$type,
 					"in":   scopes[i].parent == form ? null : scopes[i].$parentName,
 					"properties": scopes[i].$properties,
-					"anonymous": scopes[i].$anonymous
+					"anonymous": scopes[i].$anonymous,
+					"methods": scopes[i].methods || []
 				});
+
 			}
 
 			/* BUILD ANONYMOUS CODE */
 
 			for ( var i=0, len = scopes.length; i<len; i++ ) {
 				if ( scopes[i].$anonymous && scopes[i].parentOwnName ) {
-					frm.anonymousCode.push( scopes[i].$anonymousStub( scopes[i].parent === form ? 'this' : 'this.' + scopes[i].parentOwnName, 8 ) );
+					frm.anonymousCode.push( scopes[i].$anonymousStub( scopes[i].parent === form ? 'form' : 'form.' + scopes[i].parentOwnName, 12 ) );
 				}
 			}
 
@@ -208,22 +212,61 @@ try {
 
 	var salvage = new Salvage( fs.readFileSync( 'js/compiler/form.salvage' ) + '' );
 
-	function patchFile( destinationFile, withBuffer, fileName ) {
+	function patchFile( destinationFile, withBuffer, fileName, ensureMethods: string[] ) {
+
+		ensureMethods = ensureMethods || [];
+
 		var contents = fs.readFileSync( destinationFile ) + '',
 		    matchesSrc: string[] = [],
 		    matchesDest: string[] = [],
-		    regexpDest: RegExp; // convert to string.
+		    regexpDest: RegExp,
+		    methodName: string; // convert to string.
 		
-		while ( matchesSrc = /\/\* \$hint\: ([a-z\d\-]+) \*\/([\s\S]+?)\/\* \$hint\: end \*\//.exec( withBuffer ) ) {
-			regexpDest = new RegExp('\\/\\* \\$hint\\: ' + matchesSrc[1].replace(/\-/g, '\\-' ) + ' \\*\\/([\\s\\S]+?)\\/\\* \\$hint\\: end \\*\\/' );
 
-			if ( !( matchesDest = regexpDest.exec( contents ) ) ) {
-				throw Error( 'Failed to find hint ' + JSON.stringify( matchesSrc[1] ) + ' in target file: ' + JSON.stringify( destinationFile ) );
+		contents = contents.replace( /\}([\s]+)?$/, '' );
+
+		while ( matchesSrc = /\/\* \$hint\: ([a-z\d\-\$A-Z_]+) \*\/([\s\S]+?)\/\* \$hint\: end \*\//.exec( withBuffer ) ) {
+
+			if ( !/^method\-[a-zA-Z\d\_\$]+/.test( matchesSrc[1] ) ) {
+
+				console.log( 'do hint: ', matchesSrc[1] );
+
+				regexpDest = new RegExp('\\/\\* \\$hint\\: ' + matchesSrc[1].replace(/\-/g, '\\-' ) + ' \\*\\/([\\s\\S]+?)\\/\\* \\$hint\\: end \\*\\/' );
+
+				if ( !( matchesDest = regexpDest.exec( contents ) ) ) {
+					throw Error( 'Failed to find hint ' + JSON.stringify( matchesSrc[1] ) + ' in target file: ' + JSON.stringify( destinationFile ) );
+				} else {
+					contents = contents.replace( matchesDest[0], matchesSrc[0] );
+					withBuffer = withBuffer.replace( matchesSrc[0], '' );
+				}
+
 			} else {
-				contents = contents.replace( matchesDest[0], matchesSrc[0] );
+
+				methodName = matchesSrc[1].substr( 7 ); // 'method-abas' -> 'abas'
+
+				if ( ensureMethods.indexOf( methodName ) > -1 ) {
+
+					regexpDest = new RegExp( '\\/\\* \\$hint\\: ' + matchesSrc[1].replace(/\-/g, '\\-' ) + ' \\*\\/([\\s\\S]+?)\\/\\* \\$hint\\: end \\*\\/' );
+
+					if ( !( matchesDest = regexpDest.exec( contents ) ) ) {
+						contents = contents + '\n    ' + matchesSrc[0] + '\n\n';
+					}
+
+				} else {
+					// append a new method called "methodName" in the destination form
+					
+					console.log( 'patch add: ', methodName );
+				}
+
 				withBuffer = withBuffer.replace( matchesSrc[0], '' );
+
 			}
+
 		}
+
+		contents = contents.replace( /[\s]+$/g, '' );
+
+		contents = contents + '\n}';
 
 		//console.log( contents );
 		writeFiles.push({
@@ -253,7 +296,7 @@ try {
 		// console.log( JSON.stringify( app.forms[i], undefined, 4 ) );
 
 		if ( fs.existsSync( destFile = ( destDir + '/' + app.forms[i].fileName ) ) ) {
-			patchFile( destFile, salvage.parse( app.forms[i] ), app.forms[i].fileName );
+			patchFile( destFile, salvage.parse( app.forms[i] ), app.forms[i].fileName, app.forms[i].methods );
 		} else {
 			writeFile( destFile, salvage.parse( app.forms[i] ), app.forms[i].fileName );
 		}

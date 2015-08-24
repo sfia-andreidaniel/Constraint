@@ -18,6 +18,7 @@ class MFocusable extends UI implements IFocusable {
 		} );
 
 		node._root.addEventListener( 'mousedown', function(evt) {
+			
 			if ( !node.disabled ) {
 				(<MFocusable>node).active = true;
 				evt.preventDefault();

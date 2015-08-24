@@ -21,6 +21,11 @@ interface IProperty {
 	value: any;
 }
 
+interface IScopeMethod {
+	eventName: string;
+	methodName: string;
+}
+
 interface IAnchor {
 	target: string;
 	alignment: EAlignment;

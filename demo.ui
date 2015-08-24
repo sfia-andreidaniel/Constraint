@@ -66,6 +66,43 @@
 		right: 20;
 		bottom: 40;
 
+		@UI_Tab StdDialogs {
+
+			caption: 'Dialogs';
+
+			@UI_Button ButtonAlert {
+				left: 20;
+				top: 20;
+				caption: 'Alert';
+
+				click: showMessageBox();
+			};
+
+			@UI_Button ButtonError {
+				left: ButtonAlert right 20;
+				top: 20;
+				caption: 'Error';
+
+				click: showMessageBox();
+			};
+
+			@UI_Button ButtonInfo {
+				left: 20;
+				top:  ButtonAlert bottom 20;
+				caption: 'Info';
+
+				click: showMessageBox();
+			};
+
+			@UI_Button ButtonWarning {
+				left: ButtonInfo right 20;
+				top: ButtonError bottom 20;
+				caption: 'Warning';
+
+				click: showMessageBox();
+			};
+		};
+
 		@UI_Tab Tab_Sliders {
 			caption: 'Sliders';
 

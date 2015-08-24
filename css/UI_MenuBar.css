@@ -9,7 +9,8 @@
 	user-select: none;
 }
 
-.ui.UI_Form.focus-active > .inner > .menubar {
+.ui.UI_Form.focus-active > .inner > .menubar,
+.ui.UI_Form.mdi-active > .inner > .menubar {
 	background-color: ${titlebar.activeBgColor};
 	color: ${titlebar.activeColor};
 }
@@ -41,6 +42,8 @@
 }
 
 .ui.UI_Form:not(.disabled).focus-active > .inner > .menubar > .UI_MenuBar:not(.disabled) > .UI_MenuItem:hover:not(.disabled),
-.ui.UI_Form:not(.disabled).focus-active > .inner > .menubar > .UI_MenuBar.focused:not(.disabled) > .UI_MenuItem.focused:not(.disabled) {
+.ui.UI_Form:not(.disabled).focus-active > .inner > .menubar > .UI_MenuBar.focused:not(.disabled) > .UI_MenuItem.focused:not(.disabled),
+.ui.UI_Form:not(.disabled).mdi-active > .inner > .menubar > .UI_MenuBar:not(.disabled) > .UI_MenuItem:hover:not(.disabled),
+.ui.UI_Form:not(.disabled).mdi-active > .inner > .menubar > .UI_MenuBar.focused:not(.disabled) > .UI_MenuItem.focused:not(.disabled) {
 	background-color: white;
 }

@@ -1,3 +1,5 @@
+/// <reference path="../Utils/Array.ts" />
+
 class Constraint_Scope {
 
 	public static _anonymousId: number = 0;
@@ -20,6 +22,8 @@ class Constraint_Scope {
 	protected strict: boolean = false;
 	protected anonObjStack: any[] = [];
 	protected anonObjProps: string[] = [];
+
+	public    methods: IScopeMethod[] = [];
 
 	protected _awaits = {
 		"resource": []
@@ -156,6 +160,13 @@ class Constraint_Scope {
 		this.properties.push({
 			"name": k,
 			"value": Constraint_Type.create( value, this, this.getPropertyType( k ), this.strict )
+		});
+	}
+
+	public addMethod( eventName: string, methodName: string ) {
+		this.methods.push({
+			eventName: eventName,
+			methodName: methodName
 		});
 	}
 
@@ -586,6 +597,10 @@ class Constraint_Scope {
 			out.push( this.children[i].$anonymousStub( 'self', indentation + 4 ) );
 		}
 
+		for ( i=0, len = this.methods.length; i<len; i++ ) {
+			out.push( indent + '    self.on(' + JSON.stringify( this.methods[i].eventName ) + ', function() { form.' + this.methods[i].methodName + '( self ); } );' );
+		}
+
 		out.push( includeEnd );
 		out.push( indent );
 
@@ -633,6 +648,28 @@ class Constraint_Scope {
 			}
 		}
 		return out;
+	}
+
+
+	/**
+	 * Returns a list with the unique method names that should be created 
+	 */
+	get $methods(): string[] {
+
+		var out: string[] = [],
+		    i: number =0,
+		    len: number = this.methods.length;
+
+		for ( i=0; i<len; i++ ) {
+			out.push( this.methods[i].methodName );
+		}
+
+		for ( i=0, len = this.children.length; i<len; i++ ) {
+			out = Utils_Array.merge( out, this.children[i].$methods, false );
+		}
+
+		return out;
+
 	}
 
 }

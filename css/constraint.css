@@ -29,6 +29,41 @@ html, body {
 	position: relative;
 }
 
+.ui.animation-shake {
+	-webkit-animation-name: animation-shaker;
+	-webkit-animation-duration: 0.5s;
+	-webkit-animation-count: 3;
+	animation-name: animation-shaker;
+	animation-duration: 0.5s;
+	animation-count: 3;
+}
+
+@keyframes animation-shaker {
+	0% {
+		transform: translate(-5px,0px);
+	}
+
+	5% {
+		transform: translate(5px,0px);
+	}
+
+	10% {
+		transform: translate(0px,0px);
+	}
+
+	90% {
+		transform: translate(0px,-5px);
+	}
+
+	95% {
+		transform: translate(0px,5px);
+	}
+
+	100% {
+		transform: translate(0px,0px);
+	}
+}
+
 /* These files are "Required" at building stage */
 {$R css/UI_Screen.css}
 {$R css/UI_Form.css}

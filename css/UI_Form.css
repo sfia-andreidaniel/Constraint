@@ -62,7 +62,29 @@
 	height: ${titlebar.height}px;
 }
 
-.ui.UI_Form.focus-active > .inner > .titlebar > .caption {
+.ui.UI_Form:not(.mdi-parent):not(.focus-active) {
+	z-index: 1000;
+}
+
+.ui.UI_Form.mdi-active {
+	z-index: 9000;
+}
+
+.ui.UI_Form.mdi-locked > .inner > .body,
+.ui.UI_Form.mdi-locked > .inner > .menubar {
+	pointer-events: none !important;
+	-webkit-pointer-events: none !important;
+	-moz-pointer-events: none !important;
+	-ms-pointer-events: none !important;
+	-o-pointer-events: none !important;
+}
+
+.ui.UI_Form.focus-active {
+	z-index: 10000;
+}
+
+.ui.UI_Form.focus-active > .inner > .titlebar > .caption,
+.ui.UI_Form.mdi-active > .inner > .titlebar > .caption {
 	color: ${titlebar.activeColor};
 }
 
@@ -214,12 +236,14 @@
 	cursor: se-resize;
 }
 
-.ui.UI_Form.focus-active > .inner > .resizer {
+.ui.UI_Form.focus-active > .inner > .resizer,
+.ui.UI_Form.mdi-active > .inner > .resizer {
 	background-color: ${border.activeColor};
 	z-index: 1;
 }
 
-.ui.UI_Form.focus-active > .inner > .titlebar {
+.ui.UI_Form.focus-active > .inner > .titlebar,
+.ui.UI_Form.mdi-active > .inner > .titlebar {
 	background-color: ${titlebar.activeBgColor};
 }
 
@@ -255,54 +279,66 @@
 }
 
 .ui.UI_Form > .inner > .titlebar > .buttons > .button.minimize > .icon,
-.ui.UI_Form.focus-active > .inner > .titlebar > .buttons > .button.minimize:hover > .icon {
+.ui.UI_Form.focus-active > .inner > .titlebar > .buttons > .button.minimize:hover > .icon,
+.ui.UI_Form.mdi-active > .inner > .titlebar > .buttons > .button.minimize:hover > .icon {
 	background-position: -34px -20px;
 }
 
 .ui.UI_Form > .inner > .titlebar > .buttons > .button.maximize > .icon,
-.ui.UI_Form.focus-active > .inner > .titlebar > .buttons > .button.maximize:hover > .icon {
+.ui.UI_Form.focus-active > .inner > .titlebar > .buttons > .button.maximize:hover > .icon,
+.ui.UI_Form.mdi-active > .inner > .titlebar > .buttons > .button.maximize:hover > .icon {
 	background-position: -34px -40px;
 }
 
 .ui.UI_Form.state-maximized > .inner > .titlebar > .buttons > .button.maximize > .icon,
-.ui.UI_Form.state-maximized.focus-active > .inner > .titlebar > .buttons > .button.maximize:hover > .icon {
+.ui.UI_Form.state-maximized.focus-active > .inner > .titlebar > .buttons > .button.maximize:hover > .icon,
+.ui.UI_Form.state-maximized.mdi-active > .inner > .titlebar > .buttons > .button.maximize:hover > .icon {
 	background-position: -34px -57px;
 }
 
 .ui.UI_Form > .inner > .titlebar > .buttons > .button.restore > .icon,
-.ui.UI_Form.focus-active > .inner > .titlebar > .buttons > .button.restore:hover > .icon {
+.ui.UI_Form.focus-active > .inner > .titlebar > .buttons > .button.restore:hover > .icon,
+.ui.UI_Form.mdi-active > .inner > .titlebar > .buttons > .button.restore:hover > .icon {
 	background-position: -34px -57px;
 }
 
 .ui.UI_Form > .inner > .titlebar > .buttons > .button.close > .icon,
-.ui.UI_Form.focus-active > .inner > .titlebar > .buttons > .button.close:hover > .icon {
+.ui.UI_Form.focus-active > .inner > .titlebar > .buttons > .button.close:hover > .icon,
+.ui.UI_Form.mdi-active > .inner > .titlebar > .buttons > .button.close:hover > .icon {
 	background-position: -34px -5px;
 }
 
-.ui.UI_Form.focus-active > .inner > .titlebar > .buttons > .button.close {
+.ui.UI_Form.focus-active > .inner > .titlebar > .buttons > .button.close,
+.ui.UI_Form.mdi-active > .inner > .titlebar > .buttons > .button.close {
 	background-color: #C6504F;
 }
-.ui.UI_Form.focus-active > .inner > .titlebar > .buttons > .button.close:active {
+.ui.UI_Form.focus-active > .inner > .titlebar > .buttons > .button.close:active,
+.ui.UI_Form.mdi-active > .inner > .titlebar > .buttons > .button.close:active {
 	background-color: #964C4C;
 }
 
-.ui.UI_Form.focus-active > .inner > .titlebar > .buttons > .button.minimize > .icon {
+.ui.UI_Form.focus-active > .inner > .titlebar > .buttons > .button.minimize > .icon,
+.ui.UI_Form.mdi-active > .inner > .titlebar > .buttons > .button.minimize > .icon {
 	background-position: -10px -20px;
 }
 
-.ui.UI_Form.focus-active > .inner > .titlebar > .buttons > .button.maximize > .icon {
+.ui.UI_Form.focus-active > .inner > .titlebar > .buttons > .button.maximize > .icon,
+.ui.UI_Form.mdi-active > .inner > .titlebar > .buttons > .button.maximize > .icon {
 	background-position: -10px -40px;
 }
 
-.ui.UI_Form.state-maximized.focus-active > .inner > .titlebar > .buttons > .button.maximize > .icon {
+.ui.UI_Form.state-maximized.focus-active > .inner > .titlebar > .buttons > .button.maximize > .icon,
+.ui.UI_Form.state-maximized.mdi-active > .inner > .titlebar > .buttons > .button.maximize > .icon {
 	background-position: -10px -57px;
 }
 
-.ui.UI_Form.focus-active > .inner > .titlebar > .buttons > .button.restore > .icon {
+.ui.UI_Form.focus-active > .inner > .titlebar > .buttons > .button.restore > .icon,
+.ui.UI_Form.mdi-active > .inner > .titlebar > .buttons > .button.restore > .icon {
 	background-position: -10px -57px;
 }
 
-.ui.UI_Form.focus-active > .inner > .titlebar > .buttons > .button.close > .icon {
+.ui.UI_Form.focus-active > .inner > .titlebar > .buttons > .button.close > .icon,
+.ui.UI_Form.mdi-active > .inner > .titlebar > .buttons > .button.close > .icon {
 	background-position: -10px -5px;
 }
 

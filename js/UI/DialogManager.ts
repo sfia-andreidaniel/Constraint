@@ -93,14 +93,27 @@ class UI_DialogManager extends UI_Event {
 	}
 
 	set activeWindow( form: UI_Form ) {
+		
 		if ( form != this._activeWindow ) {
+			
 			if ( this._activeWindow ) {
 				this._activeWindow.active = false;
+
+				if ( this._activeWindow.mdiParent )
+					this._activeWindow.mdiParent['mdiUnfocusChain']();
+
 			}
 			this._activeWindow = form || null;
 		}
+
 		if ( this._activeWindow && !this.activeWindow.active ) {
 			this._activeWindow.active = true;
+		}
+
+		if ( this._activeWindow ) {
+			if ( this._activeWindow.mdiParent ) {
+				this._activeWindow.mdiParent['mdiFocusChain']();
+			}
 		}
 	}
 
@@ -205,7 +218,8 @@ class UI_DialogManager extends UI_Event {
 
 					manager.desktop.addEventListener( 'mousedown', function( evt ) {
 
-						var target: any = evt.target || evt.srcElement;
+						var target: any = evt.target || evt.srcElement,
+						    win: UI_Form;
 
 						if ( manager.screen.visible ) {
 							return;
@@ -214,9 +228,17 @@ class UI_DialogManager extends UI_Event {
 						while ( target && target != document.documentElement ) {
 							if ( target.getAttribute('data-role') == 'UI_Form' ) {
 								
-								manager.activeWindow = manager.getWindowById(
+								win = manager.getWindowById(
 									target.getAttribute('data-form-id' )
 								);
+
+								if ( win["_mdiLocks"] > 0 ) {
+									win.mdiFocusChild();
+
+									return;
+								} else {
+									manager.activeWindow = win;
+								}
 
 								return;
 
@@ -224,7 +246,7 @@ class UI_DialogManager extends UI_Event {
 							target = target.parentNode;
 						}
 
-						manager.activeWindow = null;
+						//manager.activeWindow = null;
 
 					}, true );
 

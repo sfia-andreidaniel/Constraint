@@ -38,7 +38,12 @@ class {{name}} extends UI_Form {
 
     // Initializes the form UI element properties
     protected onInitialize() {
-        
+        /* $hint: form-events */
+{{#each localMethods}}
+        this.on( '{{eventName}}', function() { this.{{methodName}}( this ); } );
+{{#end}}
+        /* $hint: end */
+
         /* $hint: child-properties */
         // WARNING: Any code written inside of this hint is overrided by constraint compiler!
 {{#each childProperties}}
@@ -49,15 +54,28 @@ class {{name}} extends UI_Form {
         // WARNING: Any code written inside of this hint is overrided by constraint compiler!
 {{#if properties}}{{#each properties}}{{#unless anonymous}}{{#each properties}}
         this.{{../name}}.{{name}} = {{#if literal}}{{{value}}};{{#else}}{{{valueJSON}}};{{#end}}{{#end}}
-        {{#end}}{{#end}}{{#end}}
+        {{#end}}{{#unless anonymous}}{{#if methods}}{{#each methods}}
+        ( function( form ) { form.{{../name}}.on('{{eventName}}', function() { form.{{methodName}}( this ); } ); } )( this );
+        {{#end}}{{#end}}{{#end}}{{#end}}{{#end}}
         /* $hint: end */
 
         /* $hint: anonymous-properties */
         // WARNING: Any code written inside of this hint is overrided by constraint compiler!
-{{#if anonymousCode}}{{#each anonymousCode}}
+{{#if anonymousCode}}        ( function( form ) {
+{{#each anonymousCode}}
 {{{this}}}
-{{#end}}{{#end}}        /* $hint: end */
+{{#end}}
+        })( this );{{#end}}
+        /* $hint: end */
     
     }
+
+{{#each methods}}
+    /* $hint: method-{{this}} */
+    public {{this}}( sender: UI_Event ) {
+
+    }
+    /* $hint: end */
+{{#end}}
 
 }

@@ -190,6 +190,10 @@ class Constraint_Flow {
 				inConstraint.asgn( rstart[0].result, rstart[4] );
 				break;
 
+			case 'method_assignment':
+				inConstraint.masgn( rstart[0].result, rstart[4].result );
+				break;
+
 			case 'scope':
 				inConstraint.pops();
 				break;

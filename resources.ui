@@ -39,8 +39,13 @@
 	grid_sorter_desc            from '../vendor/self/sorter_desc.png'             16x10 disabled;
 
 	/* SYSTEM ICONS */
-
 	folder                      from '../vendor/gnome/Gnome-folder.png'           16x16 20x20 disabled;
 	file                        from '../vendor/gnome/Gnome-text-x-preview.png'   16x16 20x20 disabled;
+
+	/* DIALOG BOXES */
+	mb_alert                    from '../vendor/self/mb-alert.png'                64x64;
+	mb_error                    from '../vendor/self/mb-error.png'                64x64;
+	mb_info                     from '../vendor/self/mb-info.png'                 64x64;
+	mb_warning                  from '../vendor/self/mb-warning.png'              64x64;
 
 };

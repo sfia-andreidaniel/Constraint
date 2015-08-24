@@ -59,11 +59,23 @@ class UI_Button extends UI implements IFocusable {
 
 	protected _initDom_() {
 		( function( me ) {
+			
 			me._root.addEventListener( 'click', function( e ){
 				if ( !me.disabled ) {
 					me.fire( 'click' );
 				}
 			}, false );
+
+			me.on( 'keydown', function( ev ) {
+
+				var code = ev.keyCode || ev.charCode;
+
+				if ( !me.disabled && ( code == Utils.keyboard.KB_SPACE || code == Utils.keyboard.KB_ENTER ) ) {
+					me.fire( 'click' );
+				}
+
+			} );
+
 		} )( this );
 	}
 

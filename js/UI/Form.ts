@@ -68,6 +68,8 @@ class UI_Form extends UI implements IFocusable {
 
 	protected _mdiForms: UI_Form[] = [];
 	protected _mdiParent: UI_Form = null;
+	protected _mdiLocks: number = 0;
+	protected _modal: boolean = false;
 
 	private   _mdiChildStateChangedHandler: ( child: UI_Form, newState: EFormState ) => void;
 
@@ -184,6 +186,10 @@ class UI_Form extends UI implements IFocusable {
 		
 		if ( this._root.parentNode ) {
 			this._root.parentNode.removeChild( this._root );
+		}
+
+		if ( this.mdiParent && this.active ) {
+			this.mdiParent.active = true;
 		}
 
 		this._state = EFormState.CLOSED;
@@ -392,8 +398,11 @@ class UI_Form extends UI implements IFocusable {
 	}
 
 	set active( on: boolean ) {
+		
 		on = !!on;
+
 		if ( on != this._active ) {
+
 			this._active = on;
 			if ( this._active ) {
 				Utils.dom.addClass( this._root, 'focus-active' );
@@ -434,7 +443,13 @@ class UI_Form extends UI implements IFocusable {
 			
 			// SETUP FOCUSING
 			form._root.addEventListener( 'mousedown', function() {
-				form.focused = true; 
+				
+				if ( form._mdiLocks == 0 ) {
+					form.focused = true; 
+				} else {
+					form.mdiFocusChild();
+				}
+
 			}, true );
 
 			// SETUP RESIZING
@@ -610,8 +625,14 @@ class UI_Form extends UI implements IFocusable {
 			}
 
 			form._dom.caption.addEventListener( 'mousedown', function( evt ) {
+
 				if ( form.state != EFormState.NORMAL || form.placement != EFormPlacement.AUTO ) {
 					// invalid move states
+					return;
+				}
+
+				if ( form._mdiLocks > 0 ) {
+					form.runAnimation( EFormAnimation.SHAKE );
 					return;
 				}
 
@@ -628,11 +649,20 @@ class UI_Form extends UI implements IFocusable {
 
 				if ( form.formStyle == EFormStyle.FORM ) {
 
-					if ( form.state == EFormState.NORMAL ) {
-						form.state = EFormState.MAXIMIZED;
-					} else
-					if ( form.state == EFormState.MAXIMIZED ) {
-						form.state = EFormState.NORMAL;
+					if ( form._mdiLocks == 0 ) {
+
+						if ( form.state == EFormState.NORMAL ) {
+							form.state = EFormState.MAXIMIZED;
+						} else
+						if ( form.state == EFormState.MAXIMIZED ) {
+							form.state = EFormState.NORMAL;
+						}
+
+					} else {
+
+						form.runAnimation( EFormAnimation.SHAKE );
+						return;
+
 					}
 
 				}
@@ -641,26 +671,50 @@ class UI_Form extends UI implements IFocusable {
 
 			form._dom.btnMinimize.addEventListener( 'click', function() {
 				if ( form.formStyle != EFormStyle.MDI && form.state != EFormState.MINIMIZED ) {
-					form.state = EFormState.MINIMIZED;
-				}
-			}, true );
 
-			form._dom.btnMaximize.addEventListener( 'click', function() {
-				if ( form.formStyle != EFormStyle.MDI ) {
-					switch ( form.state ) {
-						case EFormState.MAXIMIZED:
-							form.state = EFormState.NORMAL;
-							break;
-						case EFormState.NORMAL:
-							form.state = EFormState.MAXIMIZED;
-							break;
+					if ( form._mdiLocks == 0 ) {
+
+						form.state = EFormState.MINIMIZED;
+
+					} else {
+
+						form.runAnimation( EFormAnimation.SHAKE );
+						return;
+
 					}
 				}
 			}, true );
 
+			form._dom.btnMaximize.addEventListener( 'click', function() {
+
+				if ( form.formStyle != EFormStyle.MDI ) {
+
+					if ( form._mdiLocks == 0 ) {
+
+						switch ( form.state ) {
+							case EFormState.MAXIMIZED:
+								form.state = EFormState.NORMAL;
+								break;
+							case EFormState.NORMAL:
+								form.state = EFormState.MAXIMIZED;
+								break;
+						}
+					} else {
+						form.runAnimation( EFormAnimation.SHAKE );
+						return;
+					}
+				}
+
+			}, true );
+
 			form._dom.btnClose.addEventListener( 'click', function() {
 				if ( form.onClose() ) {
-					form.close();
+					if ( form._mdiLocks == 0 ) {
+						form.close();
+					} else {
+						form.runAnimation( EFormAnimation.SHAKE );
+						return;
+					}
 				}
 			}, true );
 
@@ -935,7 +989,17 @@ class UI_Form extends UI implements IFocusable {
 	protected addMDIChild( form: UI_Form ) {
 		
 		if ( form && this._mdiForms.indexOf( form ) == -1 ) {
+			
 			this._mdiForms.push( form );
+			
+			if ( form.modal ) {
+				this.mdiParentLock();
+			}
+
+			if ( this._mdiForms.length == 1 ) {
+				Utils.dom.addClass( this._root, 'mdi-parent' );
+			}
+
 			form.on( 'state-changed', this._mdiChildStateChangedHandler );
 		}
 
@@ -945,13 +1009,132 @@ class UI_Form extends UI implements IFocusable {
 		var index: number = 0;
 
 		if ( form && ( index = this._mdiForms.indexOf( form ) ) > -1 ) {
+			
+			if ( form.modal ) {
+				this.mdiParentUnlock();
+			}
+
 			this._mdiForms.splice( index, 1 );
+
 			form.off( 'state-changed', this._mdiChildStateChangedHandler );
+
+			if ( this._mdiForms.length == 0 ) {
+				Utils.dom.removeClass( this._root, 'mdi-parent' );
+			}
 		}
+	}
+
+	protected containsMDIChild( form: UI_Form ): boolean {
+		for ( var i=0, len = this._mdiForms.length; i<len; i++ ) {
+			if ( this._mdiForms[i] == form || this._mdiForms[i].containsMDIChild( form ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	protected onMDIChildStateChanged( child: UI_Form, newChildState: EFormState ) {
 		console.log( 'MDI Child state changed: ', child.caption, 'state', newChildState );
+	}
+
+	protected mdiParentLock() {
+		this._mdiLocks += 1;
+
+		if ( this._mdiLocks == 1 ) {
+			Utils.dom.addClass( this._root, 'mdi-locked' );
+		}
+
+		if ( this.mdiParent ) {
+			this.mdiParent.mdiParentLock();
+		}
+	}
+
+	protected mdiParentUnlock() {
+		if ( this._mdiLocks > 0 ) {
+			
+			this._mdiLocks--;
+			
+			if ( this._mdiLocks == 0 ) {
+				Utils.dom.removeClass( this._root, 'mdi-locked' );
+			}
+
+			if ( this.mdiParent ) {
+				this.mdiParent.mdiParentUnlock();
+			}
+		}
+	}
+
+	protected mdiFocusChain() {
+		
+		Utils.dom.addClass( this._root, 'mdi-active' );
+
+		if ( this.mdiParent ) {
+			this.mdiParent.mdiFocusChain();
+		}
+	}
+
+	protected mdiUnfocusChain() {
+		
+		Utils.dom.removeClass( this._root, 'mdi-active' );
+
+		if ( this.mdiParent ) {
+			this.mdiParent.mdiUnfocusChain();
+		}
+
+	}
+
+	public mdiFocusChild() {
+
+		for ( var i=0, len = this._mdiForms.length; i<len; i++ ) {
+			if ( this._mdiForms[i].modal ) {
+				this._mdiForms[i].mdiFocusChild();
+				return;
+			}
+		}
+
+		this.active = true;
+
+	}
+
+	get modal(): boolean {
+		return this._modal;
+	}
+
+	set modal( modal: boolean ) {
+		modal = !!modal;
+		if ( modal != this._modal ) {
+			this._modal = modal;
+			if ( modal ) {
+				if ( this.mdiParent )
+					this.mdiParent.mdiParentLock();
+			} else {
+				if ( this.mdiParent ) {
+					this.mdiParent.mdiParentUnlock();
+				}
+			}
+		}
+	}
+
+	public runAnimation( type: EFormAnimation ) {
+
+		Utils.dom.removeClass( this._root, 'animation-shake' );
+
+		switch ( type ) {
+
+			case EFormAnimation.SHAKE:
+				
+				( function( self ) {
+
+					Utils.dom.addClass( self._root, 'animation-shake' );
+
+					setTimeout( function() {
+						Utils.dom.removeClass( self._root, 'animation-shake' );
+					}, 1500 );
+
+				} )( this );
+
+				break;
+		}
 	}
 
 }
