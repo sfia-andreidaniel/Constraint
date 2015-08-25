@@ -101,6 +101,14 @@
 
 				click: showMessageBox();
 			};
+
+			@UI_Button ButtonColor {
+				left: 20;
+				top: ButtonInfo bottom 20;
+				caption: 'Color';
+
+				click: showColorBox();
+			};
 		};
 
 		@UI_Tab Tab_Sliders {

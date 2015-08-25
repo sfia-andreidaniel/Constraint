@@ -598,6 +598,15 @@
 		background: #ddd;
 		draggerBackground: #333;
 		size: 16;
-	}
+	};
+
+	@Theme UI_Text {
+		font: {
+			family: $fontFamily;
+			size  : 12;
+			color : $fontColor;
+			disabled: $disabledFontColor;
+		};
+	};
 
 };

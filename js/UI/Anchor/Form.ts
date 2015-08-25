@@ -86,20 +86,43 @@ class UI_Anchor_Form extends UI_Anchor {
 
 					case EFormPlacement.CENTER:
 
-						switch ( this._type ) {
-							case EAlignment.LEFT:
-								return ~~( ( UI_DialogManager.get.desktopWidth / 2 ) - ( owner.offsetRect.width / 2 ) + UI_Form._theme.borderWidth );
-								break;
-							case EAlignment.TOP:
-								return ~~( 
-									( UI_DialogManager.get.desktopHeight / 2 ) - ( owner.offsetRect.height / 2 )
-									+ ( owner.borderStyle == EBorderStyle.NORMAL ? UI_Form._theme.titlebarHeight : 0 )
-									+ UI_Form._theme.borderWidth 
-									+ ~~( !!owner.menuBar ) * UI_Form._theme.menubarHeight
-								);
-								break;
-							default:
-								return 0;
+						if ( (<UI_Form>owner).mdiParent && [ EFormState.MAXIMIZED, EFormState.FULLSCREEN ].indexOf( ( <UI_Form>owner ).mdiParent.state ) == -1 ) {
+
+							switch ( this._type ) {
+								case EAlignment.LEFT:
+									return ~~( (<UI_Form>owner).mdiParent.left.distance + ( (<UI_Form>owner).mdiParent.width / 2 ) - ( owner.offsetRect.width / 2 ) + UI_Form._theme.borderWidth );
+									break;
+								case EAlignment.TOP:
+									return ~~( 
+										(<UI_Form>owner).mdiParent.top.distance +
+										( (<UI_Form>owner).mdiParent.height / 2 ) - ( owner.height / 2 )
+										+ ( owner.borderStyle == EBorderStyle.NORMAL ? UI_Form._theme.titlebarHeight : 0 )
+										+ UI_Form._theme.borderWidth 
+										+ ~~( !!owner.menuBar ) * UI_Form._theme.menubarHeight
+									);
+									break;
+								default:
+									return 0;
+							}
+
+						} else {
+
+							switch ( this._type ) {
+								case EAlignment.LEFT:
+									return ~~( ( UI_DialogManager.get.desktopWidth / 2 ) - ( owner.offsetRect.width / 2 ) + UI_Form._theme.borderWidth );
+									break;
+								case EAlignment.TOP:
+									return ~~( 
+										( UI_DialogManager.get.desktopHeight / 2 ) - ( owner.offsetRect.height / 2 )
+										+ ( owner.borderStyle == EBorderStyle.NORMAL ? UI_Form._theme.titlebarHeight : 0 )
+										+ UI_Form._theme.borderWidth 
+										+ ~~( !!owner.menuBar ) * UI_Form._theme.menubarHeight
+									);
+									break;
+								default:
+									return 0;
+							}
+
 						}
 
 						break;

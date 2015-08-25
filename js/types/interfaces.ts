@@ -129,3 +129,15 @@ interface IOption {
 interface IInput {
 	value: any;
 }
+
+interface IAccelerator {
+	keyAsString?: string;
+	keyAsNumber?: number;
+	action: string;
+}
+
+interface IRGBPixel {
+	r: number;
+	g: number;
+	b: number;
+}

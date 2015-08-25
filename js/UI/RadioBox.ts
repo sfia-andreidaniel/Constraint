@@ -112,7 +112,7 @@ class UI_RadioBox extends UI implements IFocusable, IInput {
 
 			this.value = true;
 
-			this.fire( 'click' );
+			this.fire( 'change' );
 
 		}
 
@@ -122,14 +122,18 @@ class UI_RadioBox extends UI implements IFocusable, IInput {
 		( function( me ) {
 			
 			me._root.addEventListener( 'click', function( e ){
-					me.click();
+				me.fire( 'click' );
 			}, false );
 
 			me.on( 'keydown', function( ev ) {
 				var code = ev.keyCode || ev.charCode;
-				if ( code == 32 ) {
-					me.click();
+				if ( code == 32 || code == 13 ) {
+					me.fire( 'click' );
 				}
+			} );
+
+			me.on( 'click', function() {
+				me.click();
 			} );
 
 		} )( this );

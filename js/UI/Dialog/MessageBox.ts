@@ -11,6 +11,7 @@ class UI_Dialog_MessageBox extends UI_Form {
 	public static __awaits__ = { "resource": [ "Constraint" ] };
 
 	protected icon: UI_Icon;
+	protected text: UI_Text;
 	
 	protected BTN_OK     : UI_Button;
 	protected BTN_CANCEL : UI_Button;
@@ -32,6 +33,9 @@ class UI_Dialog_MessageBox extends UI_Form {
 		    len: number;
 
 		this.icon = new UI_Icon( this );
+		this.text = new UI_Text( this );
+
+		this.borderStyle = EBorderStyle.NONE;
 
 		switch ( this._boxType ) {
 
@@ -90,24 +94,31 @@ class UI_Dialog_MessageBox extends UI_Form {
 			switch ( this._boxButtons[i] ) {
 				case EDialogButtonTypes.BTN_OK:
 					this.BTN_OK = this.BTN_OK || new UI_Button( this );
+					this.BTN_OK.accelerators = 'enter';
 					break;
 				case EDialogButtonTypes.BTN_CANCEL:
 					this.BTN_CANCEL = this.BTN_CANCEL || new UI_Button( this );
+					this.BTN_CANCEL.accelerators = 'esc'
 					break;
 				case EDialogButtonTypes.BTN_YES:
 					this.BTN_YES = this.BTN_YES || new UI_Button( this );
+					this.BTN_YES.accelerators = 'enter';
 					break;
 				case EDialogButtonTypes.BTN_NO:
 					this.BTN_NO = this.BTN_NO || new UI_Button( this );
+					this.BTN_NO.accelerators = 'esc';
 					break;
 				case EDialogButtonTypes.BTN_ABORT:
 					this.BTN_ABORT = this.BTN_ABORT || new UI_Button( this );
+					this.BTN_ABORT.accelerators = 'alt a';
 					break;
 				case EDialogButtonTypes.BTN_RETRY:
 					this.BTN_RETRY = this.BTN_RETRY || new UI_Button( this );
+					this.BTN_RETRY.accelerators = 'alt r';
 					break;
 				case EDialogButtonTypes.BTN_IGNORE:
 					this.BTN_IGNORE = this.BTN_IGNORE || new UI_Button( this );
+					this.BTN_IGNORE.accelerators = 'alt i';
 					break;
 			}
 		}
@@ -125,6 +136,12 @@ class UI_Dialog_MessageBox extends UI_Form {
 		this.icon.top  = 20;
 		this.icon.width = 64;
 		this.icon.height= 64;
+
+		this.text.caption = this._boxText || '';
+
+		this.text.top = 20;
+		this.text.right = 20;
+		this.text.left = UI_Anchor_Literal.create({ "alignment": EAlignment.RIGHT, "target": "icon", "distance": 20 });
 
 		if ( this.BTN_IGNORE ) {
 			this.BTN_IGNORE.caption = 'Ignore';
@@ -189,8 +206,8 @@ class UI_Dialog_MessageBox extends UI_Form {
 			prevButton = 'BTN_YES';
 		}
 
-		if ( width < 300 ) {
-			width = 300;
+		if ( width < 400 ) {
+			width = 400;
 		}
 
 		this.placement = EFormPlacement.CENTER;
@@ -238,7 +255,7 @@ class UI_Dialog_MessageBox extends UI_Form {
 
 			if ( self.BTN_IGNORE ) {
 				self.BTN_IGNORE.on('click', function() {
-					self.fire( 'ignore', EDialogButtonTypes.BTN_IGNORE );
+					self.fire( 'message', EDialogButtonTypes.BTN_IGNORE );
 				} );
 			}
 
@@ -270,13 +287,31 @@ class UI_Dialog_MessageBox extends UI_Form {
 				box.mdiParent = asMDIInForm;
 
 				box.on( 'close', function() {
-					console.log( 'closed...' );
 					box.mdiParent = null;
 				} );
 
 			}
 			
-			box.open();
+			box.open().then( function( box ) {
+
+				var height: number = box.text.textHeight;
+				
+				if ( height > 300 )
+					height = 300;
+
+
+				box.text.height = height;
+
+				if ( height < 64 ) {
+					box.text.top = UI_Anchor_Literal.create( { "alignment": EAlignment.CENTER, "target": "icon" } );
+				} else {
+					box.icon.top = UI_Anchor_Literal.create( { "alignment": EAlignment.CENTER, "target": "text" } );
+				}
+
+
+				box.height = ( height < 100 ? 100 : height ) + 50;
+
+			} );
 		});
 
 	}

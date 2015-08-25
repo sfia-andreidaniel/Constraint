@@ -14,6 +14,10 @@
 	border: 1px solid ${borderColor};
 }
 
+.ui.UI_Button.default-button {
+	outline: 1px solid black;
+}
+
 .ui.UI_Button > .caption {
 	white-space: pre;
 	text-overflow: ellipsis;
@@ -45,9 +49,9 @@
 	text-align: right;
 }
 
-.ui.UI_Button.focused {
+.ui.UI_Form.focus-active .ui.UI_Button.focused > .caption {
 	outline: 1px dotted black;
-  	outline-offset: 1px;
+	outline-offset: 3px;
 }
 
 .ui.UI_Form:not(.focus-active) .ui.UI_Button.focused {

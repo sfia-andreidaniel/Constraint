@@ -448,7 +448,7 @@ class UI extends UI_Event {
 			 if ( rValid ) {
 			 	out.right = this._right.distance;
 			 	out.width = this._width;
-			 	out.left  = rect.width - out.width - out.left;
+			 	out.left  = rect.width - out.width - out.right;
 			 } else
 			 if ( !lValid && !rValid ) {
 			 	out.left = 0;

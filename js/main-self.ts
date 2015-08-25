@@ -70,6 +70,8 @@
 /// <reference path="UI/HorizontalSlider.ts" />
 /// <reference path="UI/ColorBox.ts" />
 /// <reference path="UI/Icon.ts" />
+/// <reference path="UI/Text.ts" />
+/// <reference path="UI/Div.ts" />
 
 /// <reference path="UI/DateBox.ts" />
 /// <reference path="UI/DateBox/DigitGroup.ts" />
@@ -106,4 +108,8 @@
 /// <reference path="UI/Column/Editor.ts" />
 /// <reference path="UI/Column/Editor/Tree.ts" />
 
+/// <reference path="UI/Color/HSLCanvas.ts" />
+/// <reference path="UI/Color/HSLPalette.ts" />
+
 /// <reference path="UI/Dialog/MessageBox.ts" />
+/// <reference path="UI/Dialog/ColorBox.ts" />

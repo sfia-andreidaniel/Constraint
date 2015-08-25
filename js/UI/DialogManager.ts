@@ -189,6 +189,22 @@ class UI_DialogManager extends UI_Event {
 	// sends the key to activeForm.activeElement
 	protected handleRegularKey( ev ) {
 		if ( this._activeWindow && this._activeWindow.activeElement ) {
+			
+			var keyAsString: string = Utils.keyboard.eventToString( ev ),
+			    keyAsNumber: number = ev.keyCode || ev.charCode,
+			    i: number = 0,
+			    len: number = this._activeWindow.focusComponents.length;
+
+			for ( i=0; i<len; i++ ) {
+
+				if ( this._activeWindow.focusComponents[i]['__runAccelerator__']( keyAsNumber, keyAsString ) ) {
+					return;
+				}
+
+			}
+
+			// see if there are any accelerators matching the key.
+			// if there are no accelerators, send the key to activeElement
 			this._activeWindow.activeElement.fire( 'keydown', ev );
 		}
 	}

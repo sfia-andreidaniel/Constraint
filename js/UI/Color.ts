@@ -212,6 +212,35 @@ class UI_Color {
         return p;
 	}
 
+	/**
+	 * Converts a HSL color to a RGB color
+	 * @paarm hue: 0..1
+	 * @param sat: 0..1
+	 * @param lum: 0..1
+	 */
+	public static HSL2RGB( hue: number, sat: number, lum: number ): IRGBPixel {
+	  
+	  hue *= 6;
+	  
+	  var vals = [
+	    lum += sat *= lum < .5 ?
+	      lum :
+	      1 - lum,
+	    lum - hue % 1 * sat * 2,
+	    lum -= sat *= 2,
+	    lum,
+	    lum + hue % 1 * sat,
+	    lum + sat
+	  ];
+	  
+	  return {
+	    r: Math.round( vals[ ~~hue    % 6 ] * 255 ),  // red
+	    g: Math.round( vals[ (hue|16) % 6 ] * 255 ),  // green
+	    b: Math.round( vals[ (hue|8)  % 6 ] * 255 )   // blue
+	  };
+
+	}
+
 	private _maintainRGB() {
 		var r: number,
 		    g: number,

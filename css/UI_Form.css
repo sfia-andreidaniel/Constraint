@@ -1,5 +1,8 @@
 {$N UI.UI_Form}
 .ui.UI_Form {
+	-webkit-box-shadow: 3px 4px 28px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 3px 4px 28px 0px rgba(0,0,0,0.75);
+	box-shadow: 3px 4px 28px 0px rgba(0,0,0,0.75);
 }
 
 .ui.UI_Form > .inner {
@@ -391,4 +394,24 @@
 .ui.UI_Form.border-none.has-menu > .inner > .resizer.w,
 .ui.UI_Form.border-none.has-menu > .inner > .resizer.e {
 	top: -${menuBar.height}px;
+}
+
+.ui.UI_Form.animation-shake {
+	-webkit-animation-name: animation-shaker;
+	-webkit-animation-duration: 0.5s;
+	-webkit-animation-count: 3;
+	animation-name: animation-shaker;
+	animation-duration: 0.5s;
+	animation-count: 3;
+}
+
+.ui.UI_Form.animation-blink > .inner > .titlebar,
+.ui.UI_Form.animation-blink > .inner > .resizer {
+	-webkit-animation-name: animation-blinker;
+	-webkit-animation-duration: 0.5s;
+	-webkit-animation-count: 3;
+	animation-name: animation-blinker;
+	animation-duration: 0.5s;
+	animation-count: 3;
+
 }

@@ -29,39 +29,26 @@ html, body {
 	position: relative;
 }
 
-.ui.animation-shake {
-	-webkit-animation-name: animation-shaker;
-	-webkit-animation-duration: 0.5s;
-	-webkit-animation-count: 3;
-	animation-name: animation-shaker;
-	animation-duration: 0.5s;
-	animation-count: 3;
+@keyframes animation-shaker {
+	0% {transform: translate(-5px,0px); }
+ 	5% {transform: translate(5px,0px); }
+	10% {transform: translate(0px,0px); }
+	90% {transform: translate(0px,-5px); }
+	95% {transform: translate(0px,5px); }
+	100% {transform: translate(0px,0px); }
 }
 
-@keyframes animation-shaker {
-	0% {
-		transform: translate(-5px,0px);
-	}
-
-	5% {
-		transform: translate(5px,0px);
-	}
-
-	10% {
-		transform: translate(0px,0px);
-	}
-
-	90% {
-		transform: translate(0px,-5px);
-	}
-
-	95% {
-		transform: translate(0px,5px);
-	}
-
-	100% {
-		transform: translate(0px,0px);
-	}
+@keyframes animation-blinker {
+	10%  { background-color: black; color: white; }
+	20%  { background-color: white; color: black; }
+	30%  { background-color: black; color: white; }
+	40%  { background-color: white; color: black; }
+	50%  { background-color: black; color: white; }
+	60%  { background-color: white; color: black; }
+	70%  { background-color: black; color: white; }
+	80%  { background-color: white; color: black; }
+	90%  { background-color: black; color: white; }
+	100% { background-color: white; color: black; }
 }
 
 /* These files are "Required" at building stage */
@@ -84,3 +71,4 @@ html, body {
 {$R css/UI_Spinner.css}
 {$R css/UI_Slider.css}
 {$R css/UI_ColorBox.css}
+{$R css/UI_Text.css}

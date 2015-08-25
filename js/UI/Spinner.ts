@@ -156,6 +156,8 @@ class UI_Spinner extends UI implements IFocusable, IInput {
 		}
 
 		this.value = parseFloat( v.toFixed(this._precision) );
+
+		this.fire( 'change' );
 	}
 
 	get readOnly(): boolean {

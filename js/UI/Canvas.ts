@@ -250,7 +250,6 @@ class UI_Canvas extends UI {
 
 	// renders something on the canvas before the main render is started.
 	public prerender() {
-
 	}
 
 	// renders something on the canvas.

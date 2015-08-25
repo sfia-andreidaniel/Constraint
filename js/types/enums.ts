@@ -65,7 +65,8 @@ enum EFormPlacement {
  * Types of animations a form can execute
  */
 enum EFormAnimation {
-	SHAKE
+	SHAKE,
+	BLINK
 }
 
 /**

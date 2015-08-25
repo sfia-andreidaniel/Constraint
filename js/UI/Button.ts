@@ -18,6 +18,7 @@ class UI_Button extends UI implements IFocusable {
 	public    wantTabs: boolean = false;
 	public    tabIndex: number = 0;
 	public    includeInFocus: boolean = true;
+	public    accelerators: string;
 
 	constructor ( owner: UI ) {
 		
@@ -73,6 +74,23 @@ class UI_Button extends UI implements IFocusable {
 				if ( !me.disabled && ( code == Utils.keyboard.KB_SPACE || code == Utils.keyboard.KB_ENTER ) ) {
 					me.fire( 'click' );
 				}
+
+			} );
+
+			me.on( 'accelerators-changed', function() {
+
+				if ( this._accelerators ) {
+
+					for ( var i=0, len = this._accelerators.length; i<len; i++ ) {
+						if ( ( this._accelerators[i].keyAsString == 'enter' || this._accelerators[i].keyAsNumber == 13 ) && this._accelerators[i].action == 'click' ) {
+							Utils.dom.addClass( this._root, 'default-button' );
+							return;
+						}
+					}
+
+				}
+
+				Utils.dom.removeClass( this._root, 'default-button' );
 
 			} );
 

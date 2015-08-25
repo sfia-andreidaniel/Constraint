@@ -172,7 +172,7 @@ class UI_Form extends UI implements IFocusable {
 				self.onRepaint();
 				UI_DialogManager.get.onWindowOpened( self );
 				self.fire( 'open' );
-
+				return self;
 			} );
 
 
@@ -569,6 +569,11 @@ class UI_Form extends UI implements IFocusable {
 							return;
 						}
 
+						if ( form._mdiLocks > 0 ) {
+							form.runAnimation( EFormAnimation.BLINK );
+							return;
+						}
+
 						resize.type = handleMappings[ handleName ];
 						resize.prevPoint.x = evt.clientX || evt.pageX;
 						resize.prevPoint.y = evt.clientY || evt.pageY;
@@ -595,7 +600,9 @@ class UI_Form extends UI implements IFocusable {
 				    newX: number = evt.clientX || evt.pageX,
 				    newY: number = evt.clientY || evt.pageY,
 				    deltaX: number = move.x - newX,
-				    deltaY: number = move.y - newY;
+				    deltaY: number = move.y - newY,
+				    i: number,
+				    len: number = form._mdiForms.length;
 
 				if ( deltaX != 0 || deltaY != 0 ) {
 					
@@ -611,6 +618,12 @@ class UI_Form extends UI implements IFocusable {
 					form.paintable = true;
 
 					form.onRepaint();
+
+					for ( i=0; i<len; i++ ) {
+						form._mdiForms[i]._disableChildPainting = true;
+						form._mdiForms[i].onRepaint();
+						form._mdiForms[i]._disableChildPainting = false;
+					}
 
 					form._disableChildPainting = false;
 
@@ -628,11 +641,6 @@ class UI_Form extends UI implements IFocusable {
 
 				if ( form.state != EFormState.NORMAL || form.placement != EFormPlacement.AUTO ) {
 					// invalid move states
-					return;
-				}
-
-				if ( form._mdiLocks > 0 ) {
-					form.runAnimation( EFormAnimation.SHAKE );
 					return;
 				}
 
@@ -660,7 +668,7 @@ class UI_Form extends UI implements IFocusable {
 
 					} else {
 
-						form.runAnimation( EFormAnimation.SHAKE );
+						form.runAnimation( EFormAnimation.BLINK );
 						return;
 
 					}
@@ -678,7 +686,7 @@ class UI_Form extends UI implements IFocusable {
 
 					} else {
 
-						form.runAnimation( EFormAnimation.SHAKE );
+						form.runAnimation( EFormAnimation.BLINK );
 						return;
 
 					}
@@ -700,7 +708,7 @@ class UI_Form extends UI implements IFocusable {
 								break;
 						}
 					} else {
-						form.runAnimation( EFormAnimation.SHAKE );
+						form.runAnimation( EFormAnimation.BLINK );
 						return;
 					}
 				}
@@ -712,7 +720,7 @@ class UI_Form extends UI implements IFocusable {
 					if ( form._mdiLocks == 0 ) {
 						form.close();
 					} else {
-						form.runAnimation( EFormAnimation.SHAKE );
+						form.runAnimation( EFormAnimation.BLINK );
 						return;
 					}
 				}
@@ -1118,6 +1126,7 @@ class UI_Form extends UI implements IFocusable {
 	public runAnimation( type: EFormAnimation ) {
 
 		Utils.dom.removeClass( this._root, 'animation-shake' );
+		Utils.dom.removeClass( this._root, 'animation-blink' );
 
 		switch ( type ) {
 
@@ -1129,6 +1138,20 @@ class UI_Form extends UI implements IFocusable {
 
 					setTimeout( function() {
 						Utils.dom.removeClass( self._root, 'animation-shake' );
+					}, 1500 );
+
+				} )( this );
+
+				break;
+
+			case EFormAnimation.BLINK:
+				
+				( function( self ) {
+
+					Utils.dom.addClass( self._root, 'animation-blink' );
+
+					setTimeout( function() {
+						Utils.dom.removeClass( self._root, 'animation-blink' );
 					}, 1500 );
 
 				} )( this );
