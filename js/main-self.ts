@@ -113,3 +113,5 @@
 
 /// <reference path="UI/Dialog/MessageBox.ts" />
 /// <reference path="UI/Dialog/ColorBox.ts" />
+/// <reference path="UI/Color/List.ts" />
+/// <reference path="UI/Color/Sample.ts" />

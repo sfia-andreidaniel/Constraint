@@ -43,8 +43,6 @@ class UI_Color_HSLPalette extends UI_Canvas {
 
 		ctx.putImageData( imageData, 0, 0 );
 
-		console.log( light );
-
 	}
 
 	get hue(): number {

@@ -609,4 +609,20 @@
 		};
 	};
 
+	@Theme UI_Color_List {
+		defaults: {
+			colorBoxWidth: 16;
+			colorBoxHeight: 16;
+			colorBoxMargin: 5;
+		};
+		border: {
+			color: $object3dBorderColor;
+			selected: black;
+		};
+	};
+
+	@Theme UI_Color_Sample {
+		border: $object3dBorderColor;
+	};
+
 };

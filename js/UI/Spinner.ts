@@ -101,6 +101,7 @@ class UI_Spinner extends UI implements IFocusable, IInput {
 	}
 
 	set value( value: number ) {
+		
 		value = parseFloat( String( value ) );
 		
 		if ( isNaN( value ) ) {

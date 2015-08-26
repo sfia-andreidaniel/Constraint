@@ -125,12 +125,9 @@ class UI_VerticalSlider extends UI implements IInput, IFocusable {
 
 		if ( value != this._value ) {
 			this._value = value;
-			this.fire( 'change', value );
+			// compute the thumb position in percents.
+			this.onRepaint();
 		}
-
-		// compute the thumb position in percents.
-		this.onRepaint();
-
 	}
 
 	/**
@@ -201,28 +198,34 @@ class UI_VerticalSlider extends UI implements IInput, IFocusable {
 					case Utils.keyboard.KB_LEFT:
 						if ( me.orientation == EOrientation.HORIZONTAL ) {
 							me.step--;
+							me.fire( 'change' );
 						}
 						break;
 					case Utils.keyboard.KB_RIGHT:
 						if ( me.orientation == EOrientation.HORIZONTAL ) {
 							me.step++;
+							me.fire( 'change' );
 						}
 						break;
 					case Utils.keyboard.KB_UP:
 						if ( me.orientation == EOrientation.VERTICAL ) {
 							me.step--;
+							me.fire( 'change' );
 						}
 						break;
 					case Utils.keyboard.KB_DOWN:
 						if ( me.orientation == EOrientation.VERTICAL ) {
 							me.step++;
+							me.fire( 'change' );
 						}
 						break;
 					case Utils.keyboard.KB_HOME:
 						me.value = me.min;
+						me.fire( 'change' );
 						break;
 					case Utils.keyboard.KB_END:
 						me.value = me.max;
+						me.fire( 'change' );
 						break;
 
 				}
@@ -261,6 +264,7 @@ class UI_VerticalSlider extends UI implements IInput, IFocusable {
 					} else {
 						point.y += delta;
 					}
+					me.fire( 'change' );
 				}
 
 			}

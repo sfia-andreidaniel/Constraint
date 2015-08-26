@@ -1,0 +1,18 @@
+{$N UI.UI_Color_Sample}
+.ui.UI_Color_Sample {
+	display: block;
+	position: absolute;
+	padding: 0;
+	margin: 0;
+	border: 1px solid ${border};
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAB3RJTUUH3wgVCzIcjS8P6QAAACpJREFUGNNjrK+v/8+ABhoaGhjRxZgYiAQDqJDx/38MvzA0NDT8H4qeAQBx9QmMa5V4XAAAAABJRU5ErkJggg==);
+}
+
+.ui.UI_Color_Sample > .inner {
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	height: 100%;
+	position: relative;
+	cursor: default;
+}

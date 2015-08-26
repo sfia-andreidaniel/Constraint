@@ -31,12 +31,10 @@ class UI_ColorBox extends UI implements IInput, IFocusable {
 		this._setupDom_();
 	}
 
-	private colorChanged( fireChangeEvent: boolean = true ) {
+	private colorChanged() {
 		
 		this._dom.colorInner.style.backgroundColor = this.color.toString(null);
 		
-		if ( fireChangeEvent )
-			this.fire( 'change' );
 	}
 
 	get value(): string {
@@ -191,7 +189,7 @@ class UI_ColorBox extends UI implements IInput, IFocusable {
 		Utils.dom.addClass( this._dom.icon, 'icon' );
 		this._dom.expander.appendChild( this._dom.icon );
 
-		this.colorChanged( false );
+		this.colorChanged();
 
 		this.width = UI_ColorBox._theme.defaults.width;
 		this.height= UI_ColorBox._theme.defaults.height;
@@ -205,6 +203,44 @@ class UI_ColorBox extends UI implements IInput, IFocusable {
 					Utils.dom.addClass( me._dom.icon, 'disabled' );
 				}
 			});
+
+			me._root.addEventListener( 'click', function( ev ) {
+				
+				if ( me.disabled ) {
+					return;
+				}
+
+				UI_Dialog_ColorBox.create( me.form, me.color ).then( function( color: UI_Color ) {
+					if ( color && !me.disabled ) {
+						me.value = color.toString(null);
+						me.fire( 'change' );
+					}
+				} );
+
+			}, false );
+
+			me.on( 'keydown', function( ev ) {
+
+				if ( me.disabled ) {
+					return;
+				}
+
+				var code: number = ev.keyCode || ev.charCode;
+
+				switch ( code ) {
+
+					case Utils.keyboard.KB_F4:
+					case Utils.keyboard.KB_SPACE:
+						UI_Dialog_ColorBox.create( me.form, me.color ).then( function( color: UI_Color ) {
+							if ( color && !me.disabled ) {
+								me.value = color.toString(null);
+								me.fire( 'change' );
+							}
+						} );
+						break;
+				}
+
+			} );
 
 		} )( this );
 	}

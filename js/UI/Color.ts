@@ -400,6 +400,14 @@ class UI_Color {
 		this._maintainRGB();
 	}
 
+	get toPixel(): IRGBPixel {
+		return {
+			r: this._red,
+			g: this._green,
+			b: this._blue
+		}
+	}
+
 }
 
 function rgb( red: number, green: number, blue: number ): string {
