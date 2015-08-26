@@ -141,3 +141,26 @@ interface IRGBPixel {
 	g: number;
 	b: number;
 }
+
+interface IPropertyGroupNested {
+	name: string;
+	caption: string;
+
+	// If this key is defined, it means we're speaking about a group of properties
+	children?: IPropertyGroupNested[];
+
+	// If the property is a group, this key is took in consideration
+	expanded?: boolean;
+
+	// If this key is defined, it means this property is not a group
+	input?: {
+		type: EColumnType;
+		value?: any;
+		min?: number;
+		max?: number;
+		inputFormat?: string;
+		outputFormat?: string;
+		disabled?: boolean;
+		precision?: number;
+	};
+}

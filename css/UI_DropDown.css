@@ -8,6 +8,7 @@
 	background-color: ${background.inactive};
 	border: 1px solid ${border.color};
 	overflow: hidden;
+	box-sizing: border-box;
 }
 
 .ui.UI_DropDown.focused {

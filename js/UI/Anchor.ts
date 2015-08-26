@@ -66,13 +66,11 @@ class UI_Anchor {
 
 					if ( this._type == EAlignment.TOP || this._type == EAlignment.BOTTOM ){
 						parentSize = ~~( rect.height / 2 );
-						mySize = ~~( this._owner.height / 2 );
 					} else {
 						parentSize = ~~( rect.width / 2 );
-						mySize = ~~( this._owner.width / 2 );
 					}
 
-					return parentSize - mySize;
+					return parentSize;
 				
 				} else {
 					

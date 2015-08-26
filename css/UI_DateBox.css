@@ -13,6 +13,7 @@
 	-o-user-select: none;
 	-moz-user-select: none;
 	user-select: none;
+	box-sizing: border-box;
 }
 
 .ui.UI_Form.focus-active .ui.UI_DateBox.focused {

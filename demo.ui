@@ -111,29 +111,6 @@
 			};
 		};
 
-		@UI_Tab Tab_Sliders {
-			caption: 'Sliders';
-
-			@UI_VerticalSlider Slider1 {
-				left: 20;
-				top: 20;
-				bottom: 20;
-			};
-
-			@UI_HorizontalSlider Slider2 {
-				left: Slider1 right 20;
-				top: 20;
-				right: 20;
-			};
-
-			@UI_ColorBox Color1 {
-				left: Slider1 right 20;
-				top: Slider2 bottom 20;
-				right: 20;
-			};
-
-		};
-
 		@UI_Tab Tab_Grid {
 			caption: 'Grid';
 
@@ -141,7 +118,7 @@
 				left: 20;
 				top: 20;
 				right: 20;
-				bottom: 20;
+				bottom: center;
 				editable: true;
 
 				items: <![JSON[
@@ -212,19 +189,15 @@
 					name: 'name';
 					freezed: false;
 					type: STRING;
-					width: 50;
+					width: 450;
 					caption: 'Type';
 					editable: yes;
 				};
 			};
-		};
 
-		@UI_Tab Tab0 {
-			caption: 'Tree';
-
-			@UI_Tree_Grid FS_Tree {
+			@UI_Tree_Grid Tree0 {
 				left: 20;
-				top: 20;
+				top: Grid0 bottom 10;
 				right: 20;
 				bottom: 20;
 				editable: true;
@@ -405,29 +378,20 @@
 
 		@UI_Tab Tab_Text {
 
-			caption: 'Text inputs';
+			caption: 'Standard Inputs';
 
 			@UI_TextBox Text1 {
 				value: 'Input value';
 				placeholder: 'Input placeholder';
 				left: 10;
 				top: 10;
-				right: 10;
-			};
-
-			@UI_TextBox Text2 {
-				value: 'Disabled Input value';
-				placeholder: 'Input placeholder';
-				left: 10;
-				top: Text1 bottom 10;
-				right: 10;
-				disabled: true;
+				right: 240;
 			};
 
 			@UI_DropDown DropDown1 {
 				left: 10;
-				top: Text2 bottom 10;
-				right: 10;
+				top: Text1 bottom 10;
+				right: 240;
 				options: <![JSON[ [
 					{
 						"value": "",
@@ -451,7 +415,7 @@
 			@UI_DateBox Date1 {
 				left: 10;
 				top: DropDown1 bottom 10;
-				right: 10;
+				right: 240;
 				minDate: date(-2W);
 				maxDate: date(+3M);
 			};
@@ -459,12 +423,87 @@
 			@UI_Spinner Spin1 {
 				left: 10;
 				top: Date1 bottom 10;
-				right: 10;
+				right: 240;
 				value: 0;
 				min: -1000;
 				max: 1000;
 				step: 2;
 			};
+
+			@UI_ColorBox Color1 {
+				left: 10;
+				top: Spin1 bottom 10;
+				right: 240;
+			};
+
+			@UI_HorizontalSlider Slider2 {
+				left: 10;
+				top: Color1 bottom 10;
+				right: 240;
+			};
+
+			@UI_VerticalSlider Slider1 {
+				right: 10;
+				top: 10;
+				bottom: 10;
+			};
+
+
+			@UI_CheckBox Check1 {
+				caption: 'I''m a checkbox';
+				right: 40;
+				top: 20;
+				width: 180;
+			};
+
+			@UI_CheckBox Check2 {
+				caption: 'I''m a disabled checkbox';
+				right: 40;
+				top: Check1 bottom 20;
+				width: 180;
+
+				disabled: true;
+			};
+
+			@UI_CheckBox Check3 {
+				caption: 'I''m a tri-state checkbox';
+				right: 40;
+				top: Check2 bottom 20;
+				width: 180;
+
+				value: null;
+				triState: true;
+			};
+
+			@UI_RadioBox Radio1 {
+				caption: 'I''m a radiobox';
+				right: 40;
+				top: Check3 bottom 20;
+				width: 180;
+			};
+
+			@UI_RadioBox Radio2 {
+				caption: 'I''m a radiobox too, but I''m disabled';
+				right: 40;
+				top: Radio1 bottom 20;
+				width: 180;
+
+				disabled: true;
+				value: true;
+			};
+
+			@UI_RadioBox Radio3 {
+				caption: 'I''m a radioBox too';
+				right: 40;
+				top: Radio2 bottom 20;
+				width: 180;
+
+				value: false;
+			};
+
+
+
+
 		};
 
 		@UI_Tab Tab1 {
@@ -500,65 +539,6 @@
 					left: center;
 				};
 
-			};
-
-		};
-		
-		@UI_Tab Tab2 {
-
-			caption: 'CheckBox, Radio';
-
-
-			@UI_CheckBox Check1 {
-				caption: 'I''m a checkbox';
-				left: 20;
-				top: 20;
-				right: 20;
-			};
-
-			@UI_CheckBox Check2 {
-				caption: 'I''m a disabled checkbox';
-				left: 20;
-				top: Check1 bottom 20;
-				right: 20;
-
-				disabled: true;
-			};
-
-			@UI_CheckBox Check3 {
-				caption: 'I''m a tri-state checkbox';
-				left: 20;
-				top: Check2 bottom 20;
-				right: 20;
-
-				value: null;
-				triState: true;
-			};
-
-			@UI_RadioBox Radio1 {
-				caption: 'I''m a radiobox';
-				left: 20;
-				top: Check3 bottom 20;
-				right: 20;
-			};
-
-			@UI_RadioBox Radio2 {
-				caption: 'I''m a radiobox too, but I''m disabled';
-				left: 20;
-				top: Radio1 bottom 20;
-				right: 20;
-
-				disabled: true;
-				value: true;
-			};
-
-			@UI_RadioBox Radio3 {
-				caption: 'I''m a radioBox too';
-				left: 20;
-				top: Radio2 bottom 20;
-				right: 20;
-
-				value: false;
 			};
 
 		};

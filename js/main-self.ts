@@ -94,6 +94,10 @@
 /// <reference path="UI/Tree.ts" />
 /// <reference path="UI/Tree/Grid.ts" />
 /// <reference path="UI/Grid.ts" />
+/// <reference path="UI/PropertyGrid.ts" />
+/// <reference path="UI/PropertyGrid/Row.ts" />
+/// <reference path="UI/PropertyGrid/Row/Group.ts" />
+/// <reference path="UI/PropertyGrid/Row/Input.ts" />
 
 /// <reference path="UI/Column.ts" />
 /// <reference path="UI/Column/Renderer.ts" />
