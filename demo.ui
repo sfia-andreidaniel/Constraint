@@ -66,6 +66,81 @@
 		right: 20;
 		bottom: 40;
 
+		@UI_Tab AdvControls {
+
+			caption: 'Advanced Controls';
+
+			@UI_PropertyGrid PropGrid0 {
+				left: 20;
+				top: 20;
+				right: 20;
+				bottom: 20;
+
+				properties: <![JSON[
+					[
+						{
+							"name": "details",
+							"caption": "Database Details",
+							"children": [
+								{
+									"name": "host",
+									"caption": "Host Name",
+									"input": {
+										"type": "string",
+										"value": "localhost"
+									}
+								},
+								{
+									"name": "port",
+									"caption": "Port",
+									"input": {
+										"type": "int",
+										"min": 0,
+										"max": 65535,
+										"value": "9306"
+									}
+								},
+								{
+									"name": "user",
+									"caption": "User Name",
+									"input": {
+										"type": "string",
+										"value": "root"
+									}
+								},
+								{
+									"name": "password",
+									"caption": "Password",
+									"input": {
+										"type": "string",
+										"value": "",
+										"password": true
+									}
+								}
+							]
+						},
+						{
+							"name": "id",
+							"caption": "ID",
+							"input": {
+								"type": "STRING",
+								"value": "001293899120309123123123"
+							}
+						},
+						{
+							"name": "enabled",
+							"caption": "Enabled",
+							"input": {
+								"type": "boolean",
+								"value": true
+							}
+						}
+					]
+				]]>;
+			};
+
+		};
+
 		@UI_Tab StdDialogs {
 
 			caption: 'Dialogs';

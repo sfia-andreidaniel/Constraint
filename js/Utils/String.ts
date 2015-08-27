@@ -44,4 +44,15 @@ class Utils_String {
 		return result;
 	}
 
+	public static repeat( times: number, sequence: string ): string {
+		var result = '',
+		    i: number;
+
+		for ( i=0; i<times; i++ ) {
+			result += sequence;
+		}
+
+		return result;
+	}
+
 }

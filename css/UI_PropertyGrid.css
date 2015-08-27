@@ -1,0 +1,4 @@
+.ui.UI_PropertyGrid > .viewport > .canvas-size > div {
+	border: none;
+	outline: none;
+}

@@ -38,6 +38,8 @@ class UI_Spinner extends UI implements IFocusable, IInput {
 	protected _incrementer: UI_Timer;
 	protected _decrementer: UI_Timer;
 
+	public    keyIncrement: boolean = true;
+
 	protected _dom = {
 		input: Utils.dom.create('input'),
 		spinUp: Utils.dom.create('div', 'decrement'),
@@ -276,12 +278,16 @@ class UI_Spinner extends UI implements IFocusable, IInput {
 
 				switch ( code ) {
 					case Utils.keyboard.KB_UP:
-						me.doStep(-1);
-						ev.preventDefault();
+						if ( me.keyIncrement || ( ev.ctrlKey || ev.altKey || ev.shiftKey ) ) {
+							me.doStep(-1);
+							ev.preventDefault();
+						}
 						break;
 					case Utils.keyboard.KB_DOWN:
-						me.doStep(1);
-						ev.preventDefault();
+						if ( me.keyIncrement || ( ev.ctrlKey || ev.altKey || ev.shiftKey ) ) {
+							me.doStep(1);
+							ev.preventDefault();
+						}
 						break;
 					default:
 						key = Utils.keyboard.eventToString( ev );

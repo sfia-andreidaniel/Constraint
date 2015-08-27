@@ -98,6 +98,11 @@
 /// <reference path="UI/PropertyGrid/Row.ts" />
 /// <reference path="UI/PropertyGrid/Row/Group.ts" />
 /// <reference path="UI/PropertyGrid/Row/Input.ts" />
+/// <reference path="UI/PropertyGrid/Row/Input/DATE.ts" />
+/// <reference path="UI/PropertyGrid/Row/Input/BOOLEAN.ts" />
+/// <reference path="UI/PropertyGrid/Row/Input/FLOAT.ts" />
+/// <reference path="UI/PropertyGrid/Row/Input/INT.ts" />
+/// <reference path="UI/PropertyGrid/Row/Input/STRING.ts" />
 
 /// <reference path="UI/Column.ts" />
 /// <reference path="UI/Column/Renderer.ts" />

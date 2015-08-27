@@ -142,7 +142,7 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface, IInput {
 					me.onRowExpanderClick( rowIndex );
 				}
 
-			}, true );
+			} );
 
 		})( this );
 	}

@@ -19,6 +19,7 @@
 	$declare enabledControlBackgroundColor: white;
 	$declare enabledInactiveControlBackgroundColor: #eee;
 	$declare enabledControlBorderColor: #acacac;
+	$declare disabledControlBorderColor: #efefef;
 
 	$declare formColor: white;
 	
@@ -623,6 +624,31 @@
 
 	@Theme UI_Color_Sample {
 		border: $object3dBorderColor;
+	};
+
+	@Theme UI_PropertyGrid {
+		defaults: {
+			rowHeight: 25;
+			depthUnitWidth: 25;
+		};
+
+		border: {
+			enabled: $enabledControlBorderColor;
+			disabled: $disabledControlBorderColor;
+		};
+
+		option: {
+			background: {
+				selected: $selectedItemBackgroundColor;
+				selectedInactive: $inactiveSelectedItemBackgroundColor;
+				disabled: $selectedDisabledItemBackgroundColor;
+			};
+		};
+
+		expander: {
+			expanded:  'Constraint/collapsed_sign/20x20';
+			collapsed: 'Constraint/menuitem_expander/20x20';
+		};
 	};
 
 };
