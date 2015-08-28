@@ -71,7 +71,9 @@ class UI_TextBox extends UI implements IFocusable, IInput {
 
 			me.on( 'focus', function() {
 				if ( !me.disabled ) {
-					me._dom.input.focus();
+					setTimeout( function() {
+						me._dom.input.focus();
+					}, 1);
 				}
 			} );
 
@@ -87,6 +89,7 @@ class UI_TextBox extends UI implements IFocusable, IInput {
 				if ( me.form.activeElement != me ) {
 					me.active = true;
 				}
+				Utils.dom.selectText( me._dom.input, 0 );
 			}, true );
 
 			me._dom.input.addEventListener('blur', function(ev) {

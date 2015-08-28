@@ -14,7 +14,7 @@ class UI_Anchor {
 		this._owner = owner;
 		this._type = type;
 
-		if ( type == EAlignment.CENTER )
+		if ( type == EAlignment.CENTER || type == EAlignment.HALF )
 			throw Error('Bad anchor direction EAlignment.CENTER');
 
 	}
@@ -66,11 +66,13 @@ class UI_Anchor {
 
 					if ( this._type == EAlignment.TOP || this._type == EAlignment.BOTTOM ){
 						parentSize = ~~( rect.height / 2 );
+						mySize = ~~( this._owner.height / 2 );
 					} else {
 						parentSize = ~~( rect.width / 2 );
+						mySize = ~~( this._owner.width / 2 );
 					}
 
-					return parentSize;
+					return parentSize - mySize;
 				
 				} else {
 					
@@ -267,6 +269,59 @@ class UI_Anchor {
 					}
 
 				}
+
+			case EAlignment.HALF:
+				// target edge: "half"
+
+				if ( this._target === null || this._target === this._owner ) {
+
+					// compute center inside of parent.
+					rect = this._owner.parentClientRect;
+
+					if ( this._type == EAlignment.TOP || this._type == EAlignment.BOTTOM ){
+						parentSize = ~~( rect.height / 2 );
+					} else {
+						parentSize = ~~( rect.width / 2 );
+					}
+
+					return parentSize + this._distance;
+				
+				} else {
+					
+					bBox = this._target.boundingBox;
+
+					switch ( this._type ) {
+
+						case EAlignment.TOP:
+
+							return ~~( bBox.top + ( bBox.height / 2 ) + this._distance );
+
+							break;
+
+						case EAlignment.LEFT:
+
+							return ~~( bBox.left + ( bBox.width / 2 ) + this._distance );
+
+							break;
+
+						case EAlignment.BOTTOM:
+
+							return ~~( bBox.bottom + ( bBox.height / 2 ) + this._distance );
+
+							break;
+
+						case EAlignment.RIGHT:
+
+							return ~~( bBox.right + ( bBox.width / 2 ) + this._distance );
+
+							break;
+
+					}
+
+				}
+
+
+				break;
 
 			default:
 				return this._distance;

@@ -1,14 +1,10 @@
+/**
+ * An abstract class representing a Property Grid input row.
+ */
 class UI_PropertyGrid_Row_Input extends UI_PropertyGrid_Row implements IInput {
 
-	protected _type: EColumnType;
 	protected _value: any = null;
-	protected min: number = null;
-	protected max: number = null;
-	protected inputFormat: string = 'MS';
-	protected outputFormat: string = Utils.date.DEFAULT_DATE_FORMAT;
-	protected precision: number;
 	protected _disabled: boolean = false;
-	protected password: boolean = false;
 
 	constructor( config: IPropertyGroupNested, grid: UI_PropertyGrid, parent: UI_PropertyGrid_Row_Group = null ) {
 
@@ -16,30 +12,6 @@ class UI_PropertyGrid_Row_Input extends UI_PropertyGrid_Row implements IInput {
 
 		if ( typeof config.input.value != 'undefined' ) {
 			this._value = config.input.value;
-		}
-
-		if ( typeof config.input.min != 'undefined' ) {
-			this.min = isNaN( config.input.min ) ? null : parseFloat( String( config.input.min || 0 ) );
-		}
-
-		if ( typeof config.input.max != 'undefined' ) {
-			this.max = isNaN( config.input.max ) ? null : parseFloat( String( config.input.max || 0 ) );
-		}
-
-		if ( typeof config.input.inputFormat != 'undefined' ) {
-			this.inputFormat = String( config.input.inputFormat || '' ) || null;
-		}
-
-		if ( typeof config.input.outputFormat != 'undefined' ) {
-			this.outputFormat = String( config.input.outputFormat || '' ) || null;
-		}
-
-		if ( typeof config.input.precision != 'undefined' ) {
-			this.precision = ~~config.input.precision;
-		}
-
-		if ( typeof config.input.password != 'undefined' ) {
-			this.password = !!config.input.password;
 		}
 
 		this.on( 'disabled', function( on: boolean ) {
@@ -60,16 +32,19 @@ class UI_PropertyGrid_Row_Input extends UI_PropertyGrid_Row implements IInput {
 		if ( this._input ) {
 			this._input['value'] = value;
 		}
+
+		this._grid.render();
 	}
 
-	public paintAt( x: number, y: number, height: number, isDisabled: boolean, isActive: boolean, splitWidth: number, ctx: UI_Canvas_ContextMapper ) {
+	public paintAt( x: number, y: number, height: number, isDisabled: boolean, isActive: boolean, splitWidth: number, isScrollbarX: boolean, isScrollbarY: boolean, ctx: UI_Canvas_ContextMapper ) {
 		
-		super.paintAt( x, y, height, isDisabled, isActive, splitWidth, ctx );
+		super.paintAt( x, y, height, isDisabled, isActive, splitWidth, isScrollbarX, isScrollbarY, ctx );
 		
 		if ( this._input ) {
-			this._input.left  = splitWidth;
-			this._input.top   = y + this._grid.scrollTop;
-			this._input.width = ctx.width - splitWidth;
+			this._input.left  = splitWidth + 1;
+			this._input.top   = y + this._grid.scrollTop + 1;
+			this._input.width = ctx.width - splitWidth - 2 - ~~isScrollbarY * Utils.dom.scrollbarSize;
+			this._input.height = height - 2;
 		}
 	}
 
@@ -100,6 +75,9 @@ class UI_PropertyGrid_Row_Input extends UI_PropertyGrid_Row implements IInput {
 
 			editor.on( 'blur', function() {
 				me._grid.render();
+				if ( me._grid.form.activeElement != me._grid ) {
+					me._grid.fire( 'blur' );
+				}
 			} );
 
 			editor.on( 'keydown', function( ev ) {
@@ -135,6 +113,12 @@ class UI_PropertyGrid_Row_Input extends UI_PropertyGrid_Row implements IInput {
 				break;
 			case "STRING":
 				return new UI_PropertyGrid_Row_Input_STRING( config, grid, parent );
+				break;
+			case "SELECT":
+				return new UI_PropertyGrid_Row_Input_SELECT( config, grid, parent );
+				break;
+			case "COLOR":
+				return new UI_PropertyGrid_Row_Input_COLOR( config, grid, parent );
 				break;
 			default:
 				throw new Error( 'Don\'t know how to create a PropertyGrid input row of type "' + inputType + '"' );

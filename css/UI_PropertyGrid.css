@@ -2,3 +2,7 @@
 	border: none;
 	outline: none;
 }
+
+.ui.UI_PropertyGrid > .viewport > .canvas-size > .UI_DropDown {
+	background-color: transparent !important;
+}

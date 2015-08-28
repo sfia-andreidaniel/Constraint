@@ -127,9 +127,13 @@ class Utils_Dom {
 		return result;
 	}
 
-	public static selectText( input: any, start: number, length: number ) {
+	public static selectText( input: any, start: number, length: number = null ) {
 
 		if ( input ) {
+
+			if ( length === null ) {
+				length = input.value.length - start;
+			}
 
 			if ( input.createTextRange ) {
 				var selRange = input.createTextRange();

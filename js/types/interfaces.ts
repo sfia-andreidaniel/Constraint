@@ -159,6 +159,7 @@ interface IPropertyGroupNested {
 		value?: any;
 		min?: number;
 		max?: number;
+		options?: IOption[];
 		inputFormat?: string;
 		outputFormat?: string;
 		precision?: number;

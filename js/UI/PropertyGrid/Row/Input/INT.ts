@@ -1,8 +1,23 @@
+/**
+ * A property grid input row, that knows how to edit and render an integer value.
+ */
 class UI_PropertyGrid_Row_Input_INT extends UI_PropertyGrid_Row_Input {
 
+	protected min: number = null;
+	protected max: number = null;
+
 	constructor( config: IPropertyGroupNested, grid: UI_PropertyGrid, parent: UI_PropertyGrid_Row_Group = null ) {
+
 		super( config, grid, parent );
-		this._type = EColumnType.INT;
+
+		if ( typeof config.input.min != 'undefined' ) {
+			this.min = isNaN( config.input.min ) ? null : parseFloat( String( config.input.min || 0 ) );
+		}
+
+		if ( typeof config.input.max != 'undefined' ) {
+			this.max = isNaN( config.input.max ) ? null : parseFloat( String( config.input.max || 0 ) );
+		}
+
 	}
 
 	protected createEditor(): UI {
@@ -23,16 +38,14 @@ class UI_PropertyGrid_Row_Input_INT extends UI_PropertyGrid_Row_Input {
 		return result;
 	}
 
-	public paintAt( x: number, y: number, height: number, isDisabled: boolean, isActive: boolean, splitWidth: number, ctx: UI_Canvas_ContextMapper ) {
-		super.paintAt( x, y, height, isDisabled, isActive, splitWidth, ctx );
+	public paintAt( x: number, y: number, height: number, isDisabled: boolean, isActive: boolean, splitWidth: number, isScrollbarX: boolean, isScrollbarY: boolean, ctx: UI_Canvas_ContextMapper ) {
+		super.paintAt( x, y, height, isDisabled, isActive, splitWidth, isScrollbarX, isScrollbarY, ctx );
 		
 		if ( !this._input ) {
 			
 			var numStr: number = parseInt( String( this._value ) || '0' );
 
 			numStr = isNaN( numStr ) || !isFinite( numStr )? 0 : numStr;
-
-
 
 			ctx.fillText( ctx.dotDotDot( String( numStr ), ctx.width - splitWidth - 4 ), x + splitWidth + 2, y + ~~( height / 2 ) );
 

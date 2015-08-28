@@ -132,6 +132,8 @@ class UI_Color_HSLCanvas extends UI_Canvas implements IFocusable {
 
 				dragging = true;
 
+				me.fire( 'mousemove', point );
+
 				document.body.addEventListener( 'mouseup', endDrag );
 
 			} );

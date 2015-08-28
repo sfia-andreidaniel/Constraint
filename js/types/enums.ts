@@ -14,7 +14,8 @@ enum EAlignment {
 	LEFT,	
 	RIGHT,	
 	BOTTOM,
-	CENTER
+	CENTER,
+	HALF
 }
 
 /**

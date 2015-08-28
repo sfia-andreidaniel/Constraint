@@ -1,8 +1,26 @@
+/**
+ * A property grid input row that knows how to edit and render a float based-number
+ */
 class UI_PropertyGrid_Row_Input_FLOAT extends UI_PropertyGrid_Row_Input {
+
+	protected min: number = null;
+	protected max: number = null;
+	protected precision: number;
 
 	constructor( config: IPropertyGroupNested, grid: UI_PropertyGrid, parent: UI_PropertyGrid_Row_Group = null ) {
 		super( config, grid, parent );
-		this._type = EColumnType.FLOAT;
+
+		if ( typeof config.input.min != 'undefined' ) {
+			this.min = isNaN( config.input.min ) ? null : parseFloat( String( config.input.min || 0 ) );
+		}
+
+		if ( typeof config.input.max != 'undefined' ) {
+			this.max = isNaN( config.input.max ) ? null : parseFloat( String( config.input.max || 0 ) );
+		}
+
+		if ( typeof config.input.precision != 'undefined' ) {
+			this.precision = ~~config.input.precision;
+		}
 	}
 
 	protected createEditor(): UI {
@@ -26,8 +44,8 @@ class UI_PropertyGrid_Row_Input_FLOAT extends UI_PropertyGrid_Row_Input {
 	}
 
 
-	public paintAt( x: number, y: number, height: number, isDisabled: boolean, isActive: boolean, splitWidth: number, ctx: UI_Canvas_ContextMapper ) {
-		super.paintAt( x, y, height, isDisabled, isActive, splitWidth, ctx );
+	public paintAt( x: number, y: number, height: number, isDisabled: boolean, isActive: boolean, splitWidth: number, isScrollbarX: boolean, isScrollbarY: boolean, ctx: UI_Canvas_ContextMapper ) {
+		super.paintAt( x, y, height, isDisabled, isActive, splitWidth, isScrollbarX, isScrollbarY, ctx );
 		
 		if ( !this._input ) {
 		}

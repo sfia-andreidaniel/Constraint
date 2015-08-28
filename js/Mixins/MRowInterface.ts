@@ -7,6 +7,9 @@ interface IRowInterface {
 	selectRow: ( rowIndex: number, on: boolean ) => void;
 	onRowIndexClick: ( rowIndex: number, shiftKey: boolean, ctrlKey: boolean ) => void;
 	scrollIntoRow: ( rowIndex: number ) => void;
+
+	isHandlingNavigationKeys?: boolean;
+
 }
 
 class MRowInterface extends UI implements IRowInterface {
@@ -53,7 +56,7 @@ class MRowInterface extends UI implements IRowInterface {
 
 			 RI.on( 'keydown', function( ev ) {
 
-			 	if ( RI.disabled || !RI.length ) {
+			 	if ( RI.disabled || !RI.length || !!RI['isHandlingNavigationKeys'] ) {
 			 		return;
 			 	}
 
@@ -66,43 +69,37 @@ class MRowInterface extends UI implements IRowInterface {
 			 	    itemsPerPage: number = this.itemsPerPage,
 			 	    handle: boolean = true;
 
-			 	// 40 = down
-			 	// 38 = up
-			 	// 34 = page down
-			 	// 33 = page up
-			 	// 36 = home
-			 	// 35 = end
 			 	
 		 		switch ( code ) {
 		 			// DOWN
-		 			case 40:
-		 				selIndex = selIndex == -1 ? 0 : ( selIndex < len - 1 ? selIndex + 1 : selIndex );
+		 			case Utils.keyboard.KB_DOWN:
+	 					selIndex = selIndex == -1 ? 0 : ( selIndex < len - 1 ? selIndex + 1 : selIndex );
 		 				break;
 
 		 			// UP
-		 			case 38:
+		 			case Utils.keyboard.KB_UP:
 		 				selIndex = selIndex > 1 ? selIndex - 1 : 0;
 		 				break;
 
 		 			// HOME
-		 			case 36:
+		 			case Utils.keyboard.KB_HOME:
 		 				selIndex = 0;
 		 				break;
 
 		 			// END
-		 			case 35:
+		 			case Utils.keyboard.KB_END:
 		 				selIndex = len - 1;
 		 				break;
 
 		 			// PAGE UP
-		 			case 33:
+		 			case Utils.keyboard.KB_PAGE_UP:
 		 				selIndex = selIndex - itemsPerPage >= 0
 		 					? selIndex - itemsPerPage
 		 					: 0;
 		 				break;
 
 		 			// PAGE DOWN
-		 			case 34:
+		 			case Utils.keyboard.KB_PAGE_DOWN:
 		 				selIndex = selIndex + itemsPerPage < len
 		 					? selIndex + itemsPerPage
 		 					: len;

@@ -351,6 +351,8 @@
 			this._owner.setDatePart( EDatePart.SECOND, 0 );
 		}
 
+		this._owner.fire( 'change' );
+
 		this.close();
 
 	}

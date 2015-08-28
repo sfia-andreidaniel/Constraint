@@ -103,6 +103,9 @@
 /// <reference path="UI/PropertyGrid/Row/Input/FLOAT.ts" />
 /// <reference path="UI/PropertyGrid/Row/Input/INT.ts" />
 /// <reference path="UI/PropertyGrid/Row/Input/STRING.ts" />
+/// <reference path="UI/PropertyGrid/Row/Input/SELECT.ts" />
+/// <reference path="UI/PropertyGrid/Row/Input/COLOR.ts" />
+
 
 /// <reference path="UI/Column.ts" />
 /// <reference path="UI/Column/Renderer.ts" />

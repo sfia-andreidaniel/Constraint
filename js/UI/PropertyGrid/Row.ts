@@ -1,3 +1,6 @@
+/**
+ * UI_PropertyGrid internal class, representing a generic input row.
+ */
 class UI_PropertyGrid_Row extends UI_Event {
 	
 	protected _name: string = '';
@@ -63,7 +66,7 @@ class UI_PropertyGrid_Row extends UI_Event {
 		this._grid.render();
 	}
 
-	get children(): UI_PropertyGrid_Row_Input[] {
+	get children(): UI_PropertyGrid_Row[] {
 		return null;
 	}
 
@@ -115,28 +118,28 @@ class UI_PropertyGrid_Row extends UI_Event {
 		}
 	}
 
-	public paintAt( x: number, y: number, height: number, isDisabled: boolean, isActive: boolean, splitWidth: number, ctx: UI_Canvas_ContextMapper ) {
+	public paintAt( x: number, y: number, height: number, isDisabled: boolean, isActive: boolean, splitWidth: number, isScrollbarX: boolean, isScrollbarY: boolean, ctx: UI_Canvas_ContextMapper ) {
 
 		var padding: number = ( this.depth ) * UI_PropertyGrid._theme.defaults.depthUnitWidth,
 		    expanderPadding: number = ~~!!this.length * UI_PropertyGrid._theme.defaults.depthUnitWidth;
 
 		ctx.strokeStyle = isDisabled ? UI_PropertyGrid._theme.border.disabled : UI_PropertyGrid._theme.border.enabled;
-		ctx.strokeRect( x + padding, y, ctx.width - .5 - padding, height );
+		
+		if ( splitWidth > padding ) {
+			ctx.strokeRect( x + padding + .5, y + .5, ctx.width - padding, height );
+		} else {
+			ctx.strokeRect( splitWidth + .5, y + .5, ctx.width - splitWidth, height );
+		}
 
 		if ( padding ) {
 			ctx.fillStyle = UI_Canvas._theme.background.disabled;
-			ctx.fillRect( x, y, padding, height );
+			ctx.fillRect( x, y + .5, Math.min( padding, splitWidth ), height - .5 );
 		}
 
-		if ( !this.children ) {
-			
-			ctx.strokeStyle = isDisabled ? UI_PropertyGrid._theme.border.disabled : UI_PropertyGrid._theme.border.enabled;
-
-			ctx.moveTo( splitWidth, y );
-			ctx.lineTo( splitWidth, y + height );
-			ctx.stroke();
-
-		}
+		ctx.strokeStyle = isDisabled ? UI_PropertyGrid._theme.border.disabled : UI_PropertyGrid._theme.border.enabled;
+		ctx.moveTo( splitWidth, y );
+		ctx.lineTo( splitWidth, y + height );
+		ctx.stroke();
 
 		if ( this._selected ) {
 			
@@ -147,7 +150,12 @@ class UI_PropertyGrid_Row extends UI_Event {
 					: UI_PropertyGrid._theme.option.background.selectedInactive
 				);
 
-			ctx.fillRect( x + padding + 1, y + 1, ( !!this.children ? ctx.width : splitWidth ) - padding - 2, height - 2 );
+			if ( splitWidth > padding ) 
+				ctx.fillRect( x + padding + 1, y + 1.5, splitWidth - padding - 2, height - 2 );
+			
+			if ( !!this.children ) {
+				ctx.fillRect( splitWidth + 1, y + 1.5, ctx.width - splitWidth - 2, height - 2 );
+			}
 
 			ctx.fillStyle = isActive
 				? UI_Canvas._theme.font.color.selectedEnabled
@@ -161,7 +169,7 @@ class UI_PropertyGrid_Row extends UI_Event {
 
 		}
 
-		if ( expanderPadding ) {
+		if ( expanderPadding && ( splitWidth > padding + expanderPadding + 15 ) ) {
 			
 			UI_Resource.createSprite(
 				UI_PropertyGrid._theme.expander[ (<UI_PropertyGrid_Row_Group>this).expanded ? 'expanded' : 'collapsed' ]
@@ -169,7 +177,9 @@ class UI_PropertyGrid_Row extends UI_Event {
 
 		}
 
-		ctx.fillText( ctx.dotDotDot( this._caption, splitWidth - padding - expanderPadding - 4 ), x + padding + expanderPadding + 2, y + ~~( height / 2 ) );
+		if ( splitWidth > padding + expanderPadding + 15 ) {
+			ctx.fillText( ctx.dotDotDot( this._caption, splitWidth - padding - expanderPadding - 4 ), x + padding + expanderPadding + 2, y + ~~( height / 2 ) );
+		}
 
 		if ( isDisabled ) {
 			ctx.fillStyle = UI_Canvas._theme.font.color.disabled;
@@ -211,9 +221,12 @@ class UI_PropertyGrid_Row extends UI_Event {
 				if ( this._input ) {
 					this._input['active'] = true;
 				}
-
 			}
 		}
+	}
+
+	get isHandlingUpDown(): boolean {
+		return false;
 	}
 
 	protected createEditor(): UI {

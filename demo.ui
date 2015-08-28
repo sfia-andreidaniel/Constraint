@@ -109,6 +109,21 @@
 									}
 								},
 								{
+									"name": "advanced",
+									"caption": "Advanced settings",
+									"expanded": false,
+									"children": [
+										{
+											"name": "passwordHash",
+											"caption": "Password Hashing",
+											"input": {
+												"type": "string",
+												"value": "*(#(OLKSDLKAKLASD"
+											}
+										}
+									]
+								},
+								{
 									"name": "password",
 									"caption": "Password",
 									"input": {
@@ -134,6 +149,44 @@
 								"type": "boolean",
 								"value": true
 							}
+						},
+						{
+							"name": "onlineDate",
+							"caption": "Online Date",
+							"input": {
+								"type": "date",
+								"value": "now"
+							}
+						},
+						{
+							"name": "multiple",
+							"caption": "DropDown Input",
+							"input": {
+								"type": "select",
+								"options": [
+									{
+										"value": null,
+										"text": "- Select -"
+									},
+									{
+										"value": 1,
+										"text": "One"
+									},
+									{
+										"value": 2,
+										"text": "Two"
+									}
+								],
+								"value": 1
+							}
+						},
+						{
+							"name": "statusColor",
+							"caption": "Status Color",
+							"input": {
+								"type": "color",
+								"value": "red"
+							}
 						}
 					]
 				]]>;
@@ -143,7 +196,7 @@
 
 		@UI_Tab StdDialogs {
 
-			caption: 'Dialogs';
+			caption: 'Standard Dialogs';
 
 			@UI_Button ButtonAlert {
 				left: 20;
@@ -193,7 +246,7 @@
 				left: 20;
 				top: 20;
 				right: 20;
-				bottom: center;
+				bottom: half;
 				editable: true;
 
 				items: <![JSON[
@@ -577,6 +630,23 @@
 			};
 
 
+			@UI_ListBox List1 {
+				left: 10;
+				top: Slider2 bottom 10;
+				right: 240;
+				bottom: 10;
+
+				options: [
+					{
+						id: 0;
+						name: 'Option 1';
+					},
+					{
+						id: 1;
+						name: 'Option 2';
+					}
+				];
+			};
 
 
 		};
@@ -614,30 +684,6 @@
 					left: center;
 				};
 
-			};
-
-		};
-
-		@UI_Tab Tab3 {
-
-			caption: 'DropDowns';
-
-			@UI_ListBox List1 {
-				left: 20;
-				top: 20;
-				right: 20;
-				height: 100;
-
-				options: [
-					{
-						id: 0;
-						name: 'Option 1';
-					},
-					{
-						id: 1;
-						name: 'Option 2';
-					}
-				];
 			};
 
 		};

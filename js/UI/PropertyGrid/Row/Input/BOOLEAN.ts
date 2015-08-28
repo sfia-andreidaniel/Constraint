@@ -1,8 +1,10 @@
+/**
+ * A property grid input row, that knows how to render and edit a boolean value.
+ */
 class UI_PropertyGrid_Row_Input_BOOLEAN extends UI_PropertyGrid_Row_Input {
 
 	constructor( config: IPropertyGroupNested, grid: UI_PropertyGrid, parent: UI_PropertyGrid_Row_Group = null ) {
 		super( config, grid, parent );
-		this._type = EColumnType.BOOLEAN;
 	}
 
 	protected createEditor(): UI {
@@ -13,8 +15,8 @@ class UI_PropertyGrid_Row_Input_BOOLEAN extends UI_PropertyGrid_Row_Input {
 		return result;
 	}
 
-	public paintAt( x: number, y: number, height: number, isDisabled: boolean, isActive: boolean, splitWidth: number, ctx: UI_Canvas_ContextMapper ) {
-		super.paintAt( x, y, height, isDisabled, isActive, splitWidth, ctx );
+	public paintAt( x: number, y: number, height: number, isDisabled: boolean, isActive: boolean, splitWidth: number, isScrollbarX: boolean, isScrollbarY: boolean, ctx: UI_Canvas_ContextMapper ) {
+		super.paintAt( x, y, height, isDisabled, isActive, splitWidth, isScrollbarX, isScrollbarY, ctx );
 		
 		if ( !this._input ) {
 			if ( !!this._value ) {

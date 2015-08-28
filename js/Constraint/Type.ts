@@ -128,17 +128,16 @@ class Constraint_Type {
 		    },
 		    matches: string[];
 
-		if ( str == 'center' || str == 'middle' ) {
-			result.alignment = EAlignment.CENTER;
+		if ( str == 'center' || str == 'half' ) {
+			result.alignment = str == 'center' ? EAlignment.CENTER : EAlignment.HALF;
 			return UI_Anchor_Literal.create( result );
 		} else {
 
 		    matches = Constraint.tokens.type_anchor.regex.exec( str );
 
 		    switch ( true ) {
-		    	case (matches[6] == 'center' || matches[6] == 'middle') &&
-		    	     ( !!matches[3] ):
-		    	     result.alignment = EAlignment.CENTER;
+		    	case (matches[6] == 'center' || matches[6] == 'half') && ( !!matches[3] ):
+		    	     result.alignment = matches[6] == 'center' ? EAlignment.CENTER : EAlignment.HALF;
 		    	     result.target    = matches[3];
 
 		    	     break;
@@ -158,6 +157,9 @@ class Constraint_Type {
 		    		 		break;
 		    		 	case 'bottom':
 		    		 		result.alignment = EAlignment.BOTTOM;
+		    		 		break;
+		    		 	case 'half':
+		    		 		result.alignment = EAlignment.HALF;
 		    		 		break;
 		    		 }
 

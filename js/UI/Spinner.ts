@@ -186,9 +186,12 @@ class UI_Spinner extends UI implements IFocusable, IInput {
 			}, true );
 
 			me._dom.input.addEventListener( 'focus', function( evt ) {
-				if ( me.form.disabled ) {
+				if ( me.disabled ) {
 					return;
 				}
+
+				Utils.dom.selectText( me._dom.input, 0 );
+
 				if ( !me.active ) {
 					me.active = true;
 				}
@@ -208,7 +211,9 @@ class UI_Spinner extends UI implements IFocusable, IInput {
 			} );
 
 			me.on( 'focus', function() {
-				me._dom.input.focus();
+				setTimeout(function(){
+					me._dom.input.focus();
+				}, 1);
 			} );
 
 			me.on( 'disabled', function( on ) {

@@ -108,6 +108,6 @@ class UI_Column_Renderer {
 	 * sub-children of the grid ( typically column editors ) are active.
 	 */
 	get active(): boolean {
-		return this._column && this._column.owner && ( this._column.owner['active'] || ( this._column.owner.owner && this._column.form && this._column.owner.owner.contains( this._column.owner.form.activeElement ) ) );
+		return this._column && this._column.owner && ( this._column.owner['active'] || ( this._column.owner.owner && this._column.form && this._column.owner.contains( this._column.owner.form.activeElement ) ) );
 	}
 }

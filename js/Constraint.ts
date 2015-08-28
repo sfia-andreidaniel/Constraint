@@ -12,6 +12,10 @@ class Constraint {
 			"regex": /^([a-z_\$]([a-z_\$\d]+)?)?/i,
 			"return": 1
 		},
+		"tok_event_name": {
+			"regex": /^([a-z_\$]([a-z_\$\d\-]+)?)/i,
+			"return": 1
+		},
 		"tok_method": {
 			"regex": /^(([a-z_\$])([a-z_\$\d]+)?)\(\)/i,
 			"return": 1
@@ -37,7 +41,7 @@ class Constraint {
 			"return": 0
 		},
 		"type_anchor": {
-			"regex": /^((([a-zA-Z_\$]([a-zA-Z_\$\d]+)?)([\s]+))?(center|middle)|((([a-zA-Z_\$]([a-zA-Z_\$\d]+)?)[\s]+)?(top|left|right|bottom)[\s]+((\-)?[\d]+)))/,
+			"regex": /^((([a-zA-Z_\$]([a-zA-Z_\$\d]+)?)([\s]+))?(center|half)|((([a-zA-Z_\$]([a-zA-Z_\$\d]+)?)[\s]+)?(top|left|right|bottom|half)[\s]+((\-)?[\d]+)))/,
 			"return": 0
 		},
 		// matches yes, no, true, false
@@ -203,7 +207,7 @@ class Constraint {
 
 		"method_assignment": {
 			"flow": [
-				"tok_identifier",
+				"tok_event_name",
 				"tok_white_space_opt",
 				"tok_attrib",
 				"tok_white_space_opt",

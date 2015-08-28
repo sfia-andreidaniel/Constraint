@@ -96,6 +96,14 @@ class UI_DropDown extends UI implements IFocusable, IInput {
 	 */
 	public    includeInFocus: boolean = true;
 
+	/**
+	 * By default, the user presses UP / DOWN to navigate inside the dropdown values.
+	 * When placing the DropDown control inside of a PropertyGrid control, the UP / DOWN keys
+	 * change their roles, in order to allow the user to navigate through the Property Grid control.
+	 * Set this value to FALSE in order to ignore the UP / DOWN arrows on the DropDown control.
+	 */
+	public    keyIncrement: boolean = true;
+
 
 	/**
 	 * Constructor. Creates a new UI_DropDown.
@@ -308,6 +316,13 @@ class UI_DropDown extends UI implements IFocusable, IInput {
 			}
 
 		}
+	}
+
+	/**
+	 * Public read-only alias of expanded property
+	 */
+	get isExpanded(): boolean {
+		return this.expanded;
 	}
 
 	/**
@@ -557,15 +572,20 @@ class UI_DropDown extends UI implements IFocusable, IInput {
 				switch ( code ) {
 
 					case Utils.keyboard.KB_SPACE:
+					case Utils.keyboard.KB_F4:
 						this.expanded = !this.expanded;
 						break;
 
 					case Utils.keyboard.KB_UP:
-						this.changeIndex( -1 );
+						if ( this.keyIncrement || this.expanded || ( !this.keyIncrement && ( ev.ctrlKey || ev.altKey || ev.shiftKey ) ) ) {
+							this.changeIndex( -1 );
+						}
 						break;
 
 					case Utils.keyboard.KB_DOWN:
-						this.changeIndex( +1 );
+						if ( this.keyIncrement || this.expanded || ( !this.keyIncrement && ( ev.ctrlKey || ev.altKey || ev.shiftKey ) ) ) {
+							this.changeIndex( +1 );
+						}
 						break;
 
 					case Utils.keyboard.KB_ENTER:
@@ -633,6 +653,10 @@ class UI_DropDown extends UI implements IFocusable, IInput {
 				} else {
 					Utils.dom.removeClass( me._dom.icon, 'disabled' );
 				}
+			} );
+
+			me.on( 'blur', function() {
+				me.expanded = false;
 			} );
 
 		} )( this );

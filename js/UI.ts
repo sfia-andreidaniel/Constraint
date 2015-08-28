@@ -693,7 +693,7 @@ class UI extends UI_Event {
 	}
 
 	/**
-	 * Returns true if this component contains other component
+	 * Returns true if this component contains other UI component
 	 */
 	public contains( child: UI ): boolean {
 		if (child) {

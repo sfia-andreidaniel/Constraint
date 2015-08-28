@@ -51,6 +51,10 @@ html, body {
 	100% { background-color: white; color: black; }
 }
 
+input::-ms-clear {
+    display: none;
+}
+
 /* These files are "Required" at building stage */
 {$R css/UI_Screen.css}
 {$R css/UI_Form.css}

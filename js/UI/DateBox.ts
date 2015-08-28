@@ -66,6 +66,14 @@ class UI_DateBox extends UI implements IFocusable, IInput {
 	public wantTabs: boolean = true;
 
 	/**
+	 * By default, the user presses UP / DOWN to increment / decrement the date digit groups.
+	 * When placing the DateBox control inside of a PropertyGrid control, the UP / DOWN keys
+	 * change their roles, in order to allow the user to navigate through the Property Grid control.
+	 * Set this value to FALSE in order to ignore the UP / DOWN arrows on the date control.
+	 */
+	public    keyIncrement: boolean = true;
+
+	/**
 	 * The format of the date
 	 */
 	protected _displayFormat: string = null;
@@ -588,11 +596,15 @@ class UI_DateBox extends UI implements IFocusable, IInput {
 						break;
 
 					case Utils.keyboard.KB_UP:
-						me._groups[ me.currentGroup ].decrement();
+						if ( me.keyIncrement || ( !me.keyIncrement && ( ev.ctrlKey || ev.altKey || ev.shiftKey ) ) ) {
+							me._groups[ me.currentGroup ].decrement();
+						}
 						break;
 
 					case Utils.keyboard.KB_DOWN:
-						me._groups[ me.currentGroup ].increment();
+						if ( me.keyIncrement || ( !me.keyIncrement && ( ev.ctrlKey || ev.altKey || ev.shiftKey ) ) ) {
+							me._groups[ me.currentGroup ].increment();
+						}
 						break;
 
 					case Utils.keyboard.KB_RIGHT:
