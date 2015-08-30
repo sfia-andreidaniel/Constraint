@@ -236,3 +236,25 @@ enum EDialogButtonTypes {
 	BTN_RETRY,
 	BTN_IGNORE
 }
+
+/**
+ * Possible DOM events
+ */
+enum EEventType {
+	
+	MOUSE_DOWN,
+	MOUSE_UP,
+	MOUSE_MOVE,
+	MOUSE_WHEEL,
+	CLICK,
+	DBLCLICK,
+
+	KEY_UP,
+	KEY_DOWN,
+	KEY_PRESS,
+
+	FOCUS,
+	BLUR,
+	INPUT
+
+}

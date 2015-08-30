@@ -50,7 +50,11 @@ class Utils {
 	/**
 	 * Helpers for manipulating numbers
 	 */
-
 	public static number = Utils_Number;
+
+	/**
+	 * Helpers for manipulating events
+	 */
+	public static event = Utils_Event;
 
 }

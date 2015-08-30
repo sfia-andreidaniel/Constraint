@@ -64,6 +64,7 @@ class UI_TextBox extends UI implements IFocusable, IInput {
 	}
 
 	protected __initDom__() {
+		
 		this._dom.input.setAttribute('type', 'text');
 		this._root.appendChild( this._dom.input );
 

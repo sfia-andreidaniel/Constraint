@@ -3,6 +3,11 @@
 
 /// <reference path="Mixin.ts" />
 
+/// <reference path="UI/Color.ts" />
+/// <reference path="UI/Event.ts" />
+/// <reference path="UI/Timer.ts" />
+/// <reference path="UI/Throttler.ts" />
+
 /// <reference path="Utils/Date.ts" />
 /// <reference path="Utils/Array.ts" />
 /// <reference path="Utils/Object.ts" />
@@ -11,6 +16,11 @@
 /// <reference path="Utils/String.ts" />
 /// <reference path="Utils/Keyboard.ts" />
 /// <reference path="Utils/Number.ts" />
+/// <reference path="Utils/Event.ts" />
+/// <reference path="Utils/Event/Unbinder.ts" />
+/// <reference path="Utils/Event/Generic.ts" />
+/// <reference path="Utils/Event/Keyboard.ts" />
+/// <reference path="Utils/Event/Mouse.ts" />
 /// <reference path="Utils.ts" />
 
 
@@ -29,10 +39,6 @@
 /// <reference path="UI/Sprite.ts" />
 /// <reference path="UI/Sprite/Null.ts" />
 
-/// <reference path="UI/Color.ts" />
-/// <reference path="UI/Event.ts" />
-/// <reference path="UI/Timer.ts" />
-/// <reference path="UI/Throttler.ts" />
 /// <reference path="UI.ts" />
 
 /// <reference path="Mixins/MFocusable.ts" />

@@ -134,7 +134,7 @@ class UI extends UI_Event {
 		"bottom" : 0,
 		"height" : 0
 	};
-	
+
 
 	constructor( owner: UI, mixins: string[] = [], rootNode: HTMLDivElement = null ) {
 		super();
@@ -766,6 +766,18 @@ class UI extends UI_Event {
 
 	public implements( interfaceName: string ): boolean {
 		return this._embrace && this._embrace[ interfaceName ] === true;
+	}
+
+	/**
+	 * Destructor. Unbinds all events (DOM/UI_Event) allocated on the UI element.
+	 */
+	public free() {
+		if ( this._children ) {
+			for (var i = 0, len = this._children.length; i < len; i++ ) {
+				this._children[i].free();
+			}
+		}
+		super.free();
 	}
 
 }
