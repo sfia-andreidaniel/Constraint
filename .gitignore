@@ -53,6 +53,8 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+resources/Constraint.res
+
 vendor/self/collapsed.png
 vendor/self/expanded.png
 
