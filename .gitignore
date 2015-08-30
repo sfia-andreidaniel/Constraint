@@ -52,15 +52,15 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
-vendor/self/menuitem-checked.png
-vendor/self/menuitem-expander-hover.png
-vendor/self/menuitem-checked.png
-vendor/self/menuitem-expander.png
-vendor/self/mb-warning.png
-vendor/self/mb-error.png
-vendor/self/menuitem-expander.png
-vendor/self/menuitem-expander-hover.png
-vendor/self/menuitem-expander-hover.png
-vendor/self/menuitem-expander.png
-vendor/self/mb-info.png
+
 vendor/self/collapsed.png
+vendor/self/expanded.png
+
+vendor/self/mb-alert.png
+vendor/self/mb-error.png
+vendor/self/mb-info.png
+vendor/self/mb-warning.png
+
+vendor/self/menuitem-checked.png
+vendor/self/menuitem-expander-hover.png
+vendor/self/menuitem-expander.png
