@@ -246,6 +246,9 @@ enum EEventType {
 	MOUSE_UP,
 	MOUSE_MOVE,
 	MOUSE_WHEEL,
+	MOUSE_OVER,
+	MOUSE_OUT,
+	SCROLL,
 	CLICK,
 	DBLCLICK,
 
@@ -255,6 +258,18 @@ enum EEventType {
 
 	FOCUS,
 	BLUR,
-	INPUT
+	INPUT,
+	RESIZE,
+	LOAD,
+	ERROR
 
+}
+
+/**
+ * Layout types.
+ */
+enum ELayoutType {
+	NONE,
+	LEFT_TO_RIGHT,
+	TOP_TO_BOTTOM
 }

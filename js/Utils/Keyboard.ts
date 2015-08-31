@@ -99,7 +99,7 @@ class Utils_Keyboard {
 		"187": [ '=', '+' ]
 	}
 
-	public static eventToString( ev ): string {
+	public static eventToString( ev: KeyboardEvent ): string {
 		var code = ev.keyCode || ev.charCode,
 		    shift= ev.shiftKey,
 		    ctrl = ev.ctrlKey,

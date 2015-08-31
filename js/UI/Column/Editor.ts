@@ -264,8 +264,8 @@ class UI_Column_Editor extends UI implements IFocusable {
 		}
 
 		if ( result ) {
-			result.on('keydown', function(ev) {
-				var code = ev.keyCode || ev.charCode;
+			result.on('keydown', function(ev: Utils_Event_Keyboard) {
+				var code = ev.code;
 				switch ( code ) {
 					case Utils.keyboard.KB_ENTER:
 					case Utils.keyboard.KB_ESC:
@@ -315,11 +315,11 @@ class UI_Column_Editor extends UI implements IFocusable {
 
 		(function(me) {
 
-			me.on( 'keydown', function( ev ) {
+			me.on( 'keydown', function( ev: Utils_Event_Keyboard ) {
 
 				if ( me.editMode ) {
 
-					var code = ev.keyCode || ev.charCode;
+					var code = ev.code;
 
 					switch ( code ) {
 						case Utils.keyboard.KB_ENTER:

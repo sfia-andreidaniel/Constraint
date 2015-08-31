@@ -358,7 +358,7 @@ class UI_Canvas extends UI {
 			var prevScrollLeft: number = me.scrollLeft,
 			    prevScrollTop : number = me.scrollTop;
 
-			me._dom.viewport.addEventListener( 'scroll', function( e ) {
+			me.onDOMEvent( me._dom.viewport, EEventType.SCROLL, function( e: Utils_Event_Mouse ) {
 
 				var x: boolean = false,
 				    y: boolean = false;
@@ -382,16 +382,17 @@ class UI_Canvas extends UI {
 				}
 
 				me.render();
+
 			}, true );
 
-			me._root.addEventListener( 'mousemove', function( e ) {
-
+			me.onDOMEvent( me._root, EEventType.MOUSE_MOVE, function( e: Utils_Event_Mouse ) {
+				
 				if ( me.disabled ) {
 					return;
 				}
 
-				var x = e.offsetX,
-				    y = e.offsetY,
+				var x = e.offset.x,
+				    y = e.offset.y,
 
 				    result = me.translateMouseEvent( x, y, e.target );
 
@@ -399,45 +400,48 @@ class UI_Canvas extends UI {
 					me.fire( 'mousemove', result, e.which, e.ctrlKey, e.altKey, e.shiftKey );
 
 			}, true );
-
-			me._root.addEventListener( 'mousedown', function( e ) {
+			
+			me.onDOMEvent( me._root, EEventType.MOUSE_DOWN, function( e: Utils_Event_Mouse ) {
 
 				if ( me.disabled ) {
 					return;
 				}
 
-				var x = e.offsetX,
-					y = e.offsetY,
+				var x = e.offset.x,
+					y = e.offset.y,
 					result = me.translateMouseEvent( x, y, e.target );
 
-				if ( result )
+				if ( result ) {
 					me.fire( 'mousedown', result, e.which, e.ctrlKey, e.altKey, e.shiftKey );
+					e.handled = true;
+				}
 
 			} );
 
-			me._root.addEventListener( 'mouseup', function( e ) {
+			me.onDOMEvent( me._root, EEventType.MOUSE_UP, function( e: Utils_Event_Mouse ) {
 
 				if ( me.disabled ) {
 					return;
 				}
 
-				var x = e.offsetX,
-				    y = e.offsetY,
+				var x = e.offset.x,
+				    y = e.offset.y,
 				    result = me.translateMouseEvent( x, y, e.target );
 
-				if ( result )
+				if ( result ) {
 					me.fire( 'mouseup', result, e.which, e.ctrlKey, e.altKey, e.shiftKey );
+					e.handled = true;
+				}
 
 			} );
 
-			me._root.addEventListener( 'click', function( e ) {
-
+			me.onDOMEvent( me._root, EEventType.CLICK, function( e: Utils_Event_Mouse ) {
 				if ( me.disabled ) {
 					return;
 				}
 
-				var x = e.offsetX,
-				    y = e.offsetY,
+				var x = e.offset.x,
+				    y = e.offset.y,
 				    result = me.translateMouseEvent( x, y, e.target );
 
 				if ( result )
@@ -445,21 +449,19 @@ class UI_Canvas extends UI {
 
 			} );
 
-			me._root.addEventListener( 'dblclick', function( e ) {
-
+			me.onDOMEvent( me._root, EEventType.DBLCLICK, function( e: Utils_Event_Mouse ) {
 				if ( me.disabled ) {
 					return;
 				}
 
-				var x = e.offsetX,
-				    y = e.offsetY,
+				var x = e.offset.x,
+				    y = e.offset.y,
 				    result = me.translateMouseEvent( x, y, e.target );
 
 				if ( result )
 					me.fire( 'dblclick', result, e.which, e.ctrlKey, e.altKey, e.shiftKey );
-
 			} );
-
+			
 		} )( this );
 
 	}

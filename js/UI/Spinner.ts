@@ -181,11 +181,11 @@ class UI_Spinner extends UI implements IFocusable, IInput {
 
 		( function( me ) {
 
-			me._dom.input.addEventListener( 'mousedown', function(evt) {
+			me.onDOMEvent( me._dom.input, EEventType.MOUSE_DOWN, function( evt: Utils_Event_Mouse ) {
 				evt.stopPropagation();
 			}, true );
 
-			me._dom.input.addEventListener( 'focus', function( evt ) {
+			me.onDOMEvent( me._dom.input, EEventType.FOCUS, function( evt: Utils_Event_Generic ) {
 				if ( me.disabled ) {
 					return;
 				}
@@ -195,9 +195,10 @@ class UI_Spinner extends UI implements IFocusable, IInput {
 				if ( !me.active ) {
 					me.active = true;
 				}
+
 			}, true );
 
-			me._dom.input.addEventListener( 'blur', function( evt ) {
+			me.onDOMEvent( me._dom.input, EEventType.BLUR, function( evt: Utils_Event_Generic ) {
 				if ( me.form.disabled ) {
 					return;
 				}
@@ -246,35 +247,37 @@ class UI_Spinner extends UI implements IFocusable, IInput {
 				}
 			} );
 
-			var mouseUpWatcher = function( ev ) {
-				me._decrementer.running = false;
-				me._incrementer.running = false;
-				me._decrementer.frequency = 520;
-				me._incrementer.frequency = 520;
-				document.body.removeEventListener( 'mouseup', mouseUpWatcher, true );
-			}
-
-			me._dom.spinUp.addEventListener( 'mousedown', function( ev ) {
+			me.onDOMEvent( me._dom.spinUp, EEventType.MOUSE_DOWN, function( ev: Utils_Event_Mouse ) {
 				if ( !me.disabled ) {
 					me._decrementer.running = true;
-					document.body.addEventListener( 'mouseup', mouseUpWatcher, true );
+					me.onDOMEvent( document.body, EEventType.MOUSE_UP, function( ev: Utils_Event_Mouse ) {
+						me._decrementer.running = false;
+						me._incrementer.running = false;
+						me._decrementer.frequency = 520;
+						me._incrementer.frequency = 520;
+					}, true, true );
 				}
 			}, true );
 
-			me._dom.spinDn.addEventListener( 'mousedown', function( ev ) {
+			me.onDOMEvent( me._dom.spinDn, EEventType.MOUSE_DOWN, function( ev: Utils_Event_Mouse ) {
 				if ( !me.disabled ) {
 					me._incrementer.running = true;
-					document.body.addEventListener( 'mouseup', mouseUpWatcher, true );
+					me.onDOMEvent( document.body, EEventType.MOUSE_UP, function( ev: Utils_Event_Mouse ) {
+						me._decrementer.running = false;
+						me._incrementer.running = false;
+						me._decrementer.frequency = 520;
+						me._incrementer.frequency = 520;
+					}, true, true );
 				}
 			}, true );
 
-			me.on( 'keydown', function( ev ) {
+			me.on( 'keydown', function( ev: Utils_Event_Keyboard ) {
 				
 				if ( me.disabled ) {
 					return;
 				}
 
-				var code = ev.keyCode || ev.charCode,
+				var code = ev.code,
 				    key: string,
 				    caretPosition: number,
 				    strValue: string[],
@@ -295,7 +298,7 @@ class UI_Spinner extends UI implements IFocusable, IInput {
 						}
 						break;
 					default:
-						key = Utils.keyboard.eventToString( ev );
+						key = ev.keyName;
 						caretPosition = Utils.dom.getCaretPosition( me._dom.input );
 						
 						if ( /^[\d\+\-\.]/.test( key ) && key.length == 1 ) {
@@ -307,11 +310,12 @@ class UI_Spinner extends UI implements IFocusable, IInput {
 							if ( !Utils.number.isFloat( newValue ) && ['.','+', '-' ].indexOf( newValue ) == -1 ) {
 								ev.preventDefault();
 								ev.stopPropagation();
+								ev.handled = true;
 							}
 
 						} else {
 							if ( key.length == 1 )
-							ev.preventDefault();
+								ev.preventDefault();
 						}
 
 						
@@ -320,7 +324,8 @@ class UI_Spinner extends UI implements IFocusable, IInput {
 				}
 			}, true );
 
-			me._dom.input.addEventListener('input', function( ev ) {
+			me.onDOMEvent( me._dom.input, EEventType.INPUT, function( ev: Utils_Event_Generic ) {
+
 				if ( !me.disabled && !me.readOnly ) {
 					
 					// fix the precision.
@@ -337,9 +342,12 @@ class UI_Spinner extends UI implements IFocusable, IInput {
 				}
 			}, true );
 
-			me._root.addEventListener( 'mousewheel', function( ev ) {
+			me.onDOMEvent( me._root, EEventType.MOUSE_WHEEL, function( ev: Utils_Event_Mouse ) {
 				if ( me.active && !me.readOnly && !me.disabled ) {
-					me.doStep( ev.deltaY > 0 ? 1 : -1 );
+					me.doStep( ev.delta.y > 0 ? 1 : -1 );
+					ev.preventDefault();
+					ev.stopPropagation();
+					ev.handled = true;
 				}
 			}, true );
 

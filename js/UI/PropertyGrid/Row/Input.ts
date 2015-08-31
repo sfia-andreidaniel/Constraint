@@ -80,8 +80,8 @@ class UI_PropertyGrid_Row_Input extends UI_PropertyGrid_Row implements IInput {
 				}
 			} );
 
-			editor.on( 'keydown', function( ev ) {
-				var code: number = ev.keyCode || ev.charCode;
+			editor.on( 'keydown', function( ev: Utils_Event_Keyboard ) {
+				var code: number = ev.code;
 
 				if ( ( code == Utils.keyboard.KB_UP || code == Utils.keyboard.KB_DOWN ) && ( !ev.ctrlKey && !ev.altKey && !ev.shiftKey ) ) {
 					me._grid.fire( 'keydown', ev );

@@ -151,32 +151,32 @@ class UI_MenuBar extends UI implements IFocusable {
 
 		( function( menuBar ) {
 
-			menuBar.on( 'keydown', function( evt ) {
-				var code = evt.keyCode || evt.charCode,
+			menuBar.on( 'keydown', function( evt: Utils_Event_Keyboard ) {
+				var code = evt.code,
 				    handled: boolean = false;
 				
 				switch ( code ) {
 					// LEFT:
-					case 37:
+					case Utils.keyboard.KB_LEFT:
 						menuBar.focusItem( -1 );
 						handled = true;
 						break;
 					// RIGHT:
-					case 39:
+					case Utils.keyboard.KB_RIGHT:
 						menuBar.focusItem( 1 );
 						handled = true;
 						break;
 					// ESC:
-					case 27:
+					case Utils.keyboard.KB_ESC:
 						menuBar.form.activeElement = null;
 						break;
 					// ENTER:
-					case 13:
+					case Utils.keyboard.KB_ENTER:
 						if ( menuBar.focusedItem ) {
 							menuBar.focusedItem.click();
 						}
 						break;
-					case 40: // DOWN
+					case Utils.keyboard.KB_DOWN: // DOWN
 						if ( menuBar.focusedItem ) {
 							menuBar.focusedItem.open();
 						}

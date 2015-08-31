@@ -49,9 +49,23 @@
 	text-align: right;
 }
 
-.ui.UI_Form.focus-active .ui.UI_Button.focused > .caption {
+.ui.UI_Form.focus-active .ui.UI_Button.focused > .focus-ring {
 	outline: 1px dotted black;
-	outline-offset: 3px;
+	content: ' ';
+	width: calc(100% - 4px);
+	height: calc( 100% - 4px);
+	top: 2px;
+	left: 2px;
+	display: block;
+	position: absolute;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	pointer-events: none;
+	-ms-pointer-events: none;
+	-moz-pointer-events: none;
+	-o-pointer-events: none;
 }
 
 .ui.UI_Form:not(.focus-active) .ui.UI_Button.focused {

@@ -293,13 +293,13 @@ class UI_Color_List extends UI_Canvas implements IInput, IFocusable {
 
 		( function( me ) {
 
-			me.on( 'keydown', function( ev ) {
+			me.on( 'keydown', function( ev: Utils_Event_Keyboard ) {
 
 				if ( this.disabled ) {
 					return;
 				}
 
-				var code = ev.keyCode || ev.charCode;
+				var code = ev.code;
 
 				switch ( code ) {
 

@@ -442,8 +442,8 @@ class UI_Form extends UI implements IFocusable {
 		( function( form ) {
 			
 			// SETUP FOCUSING
-			form._root.addEventListener( 'mousedown', function() {
-				
+			form.onDOMEvent( form._root, EEventType.MOUSE_DOWN, function( evt: Utils_Event_Mouse ) {
+
 				if ( form._mdiLocks == 0 ) {
 					form.focused = true; 
 				} else {
@@ -474,9 +474,9 @@ class UI_Form extends UI implements IFocusable {
 			    	}
 			    };
 
-			function onResizeRun( evt ) {
-				var newX = evt.clientX || evt.pageX,
-				    newY = evt.clientY || evt.pageY,
+			function onResizeRun( evt: Utils_Event_Mouse ) {
+				var newX = evt.page.x,
+				    newY = evt.page.y,
 				    deltaX = resize.prevPoint.x - newX,
 				    deltaY = resize.prevPoint.y - newY,
 				    width = form.width,
@@ -552,17 +552,12 @@ class UI_Form extends UI implements IFocusable {
 
 			}
 
-			function onResizeEnd( evt ) {
-				document.body.removeEventListener( 'mousemove', onResizeRun, true );
-				document.body.removeEventListener( 'mouseup',   onResizeEnd, true );
-			}
-
 			for ( i=0; i<len; i++ ) {
 				( function( handleName: string ) {
 
 					var handle: any = form._dom[ handleName ];
 
-					handle.addEventListener( 'mousedown', function( evt ) {
+					form.onDOMEvent( handle, EEventType.MOUSE_DOWN, function( evt: Utils_Event_Mouse ) {
 						
 						if ( form.formStyle != EFormStyle.FORM || form.state != EFormState.NORMAL /* || form.placement != EFormPlacement.AUTO */ ) {
 							// Invalid resize states.
@@ -575,11 +570,15 @@ class UI_Form extends UI implements IFocusable {
 						}
 
 						resize.type = handleMappings[ handleName ];
-						resize.prevPoint.x = evt.clientX || evt.pageX;
-						resize.prevPoint.y = evt.clientY || evt.pageY;
+						resize.prevPoint.x = evt.page.x;
+						resize.prevPoint.y = evt.page.y;
 
-						document.body.addEventListener( 'mousemove', onResizeRun, true );
-						document.body.addEventListener( 'mouseup',   onResizeEnd, true );
+						var mouseMove: Utils_Event_Unbinder = form.onDOMEvent( document.body, EEventType.MOUSE_MOVE, onResizeRun, true );
+						
+						form.onDOMEvent( document.body, EEventType.MOUSE_UP, function() {
+							mouseMove.remove();
+							mouseMove = undefined;
+						}, true, true );
 
 					}, true );
 
@@ -593,12 +592,12 @@ class UI_Form extends UI implements IFocusable {
 				"y": 0
 			};
 
-			function onMoveRun( evt ) {
+			function onMoveRun( evt: Utils_Event_Mouse ) {
 
 				var left: number = form._left.distance,
 				    top : number = form._top.distance,
-				    newX: number = evt.clientX || evt.pageX,
-				    newY: number = evt.clientY || evt.pageY,
+				    newX: number = evt.page.x,
+				    newY: number = evt.page.y,
 				    deltaX: number = move.x - newX,
 				    deltaY: number = move.y - newY,
 				    i: number,
@@ -632,29 +631,27 @@ class UI_Form extends UI implements IFocusable {
 				}
 			}
 
-			function onMoveEnd( evt ) {
-				document.body.removeEventListener( 'mousemove', onMoveRun, true );
-				document.body.removeEventListener( 'mouseup',   onMoveEnd, true );
-			}
-
-			form._dom.caption.addEventListener( 'mousedown', function( evt ) {
+			form.onDOMEvent( form._dom.caption, EEventType.MOUSE_DOWN, function( evt: Utils_Event_Mouse ) {
 
 				if ( form.state != EFormState.NORMAL || form.placement != EFormPlacement.AUTO ) {
 					// invalid move states
 					return;
 				}
 
-				move.x = evt.clientX || evt.pageX;
-				move.y = evt.clientY || evt.pageY;
+				move.x = evt.page.x;
+				move.y = evt.page.y;
 
-				document.body.addEventListener( 'mousemove', onMoveRun, true );
-				document.body.addEventListener( 'mouseup',   onMoveEnd, true );
+				var mouseMove: Utils_Event_Unbinder = form.onDOMEvent( document.body, EEventType.MOUSE_MOVE, onMoveRun, true );
 
+				form.onDOMEvent( document.body, EEventType.MOUSE_UP, function( evt: Utils_Event_Mouse ) {
+					mouseMove.remove();
+					mouseMove = undefined;
+				}, true, true );
+				
 			}, true );
 
 			// SETUP MAXIMIZATION ON CAPTION DOUBLECLICK
-			form._dom.caption.addEventListener( 'dblclick', function( evt ) {
-
+			form.onDOMEvent( form._dom.caption, EEventType.DBLCLICK, function( evt: Utils_Event_Mouse ) {
 				if ( form.formStyle == EFormStyle.FORM ) {
 
 					if ( form._mdiLocks == 0 ) {
@@ -677,7 +674,8 @@ class UI_Form extends UI implements IFocusable {
 
 			}, true );
 
-			form._dom.btnMinimize.addEventListener( 'click', function() {
+			form.onDOMEvent( form._dom.btnMinimize, EEventType.CLICK, function( evt: Utils_Event_Mouse ) {
+
 				if ( form.formStyle != EFormStyle.MDI && form.state != EFormState.MINIMIZED ) {
 
 					if ( form._mdiLocks == 0 ) {
@@ -693,7 +691,7 @@ class UI_Form extends UI implements IFocusable {
 				}
 			}, true );
 
-			form._dom.btnMaximize.addEventListener( 'click', function() {
+			form.onDOMEvent( form._dom.btnMaximize, EEventType.CLICK, function( evt: Utils_Event_Mouse ) {
 
 				if ( form.formStyle != EFormStyle.MDI ) {
 
@@ -715,7 +713,7 @@ class UI_Form extends UI implements IFocusable {
 
 			}, true );
 
-			form._dom.btnClose.addEventListener( 'click', function() {
+			form.onDOMEvent( form._dom.btnClose, EEventType.CLICK, function( evt: Utils_Event_Mouse ) {
 				if ( form.onClose() ) {
 					if ( form._mdiLocks == 0 ) {
 						form.close();
@@ -734,14 +732,14 @@ class UI_Form extends UI implements IFocusable {
 				form.onChildRemoved(node);
 			});
 
-			form.on( 'child-keydown', function( evt ) {
+			form.on( 'child-keydown', function( evt: Utils_Event_Keyboard ) {
 				
-				var key = evt.keyCode || evt.charCode,
+				var key = evt.code,
 				    handled: boolean = false;
 
 				switch ( key ) {
 						// F10:
-						case 121:
+						case Utils.keyboard.KB_F10:
 							if ( form.menuBar ) {
 								form.activeElement = form.menuBar;
 								handled = true;
@@ -757,6 +755,7 @@ class UI_Form extends UI implements IFocusable {
 				if ( handled ) {
 					evt.preventDefault();
 					evt.stopPropagation();
+					evt.handled = true;
 				}
 
 			} );

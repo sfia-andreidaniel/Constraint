@@ -186,14 +186,6 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 		}
 
 		/**
-		 * Dettaches the resize event from the document body, when the user release the mouse button
-		 */
-		function resizeRelease( ev ) {
-			isResizing = false;
-			document.body.removeEventListener( 'mouseup', resizeRelease, true );
-		}
-
-		/**
 		 * Computes details about columns, their displaying in the header, their widths, etc.
 		 * This function is called each time a column emits the "column-changed" event.
 		 */
@@ -346,7 +338,10 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 				isResizing = true;
 				prevX = point.x;
 
-				document.body.addEventListener( 'mouseup', resizeRelease );
+				node.onDOMEvent( document.body, EEventType.MOUSE_UP, function( e: Utils_Event_Mouse ) {
+					isResizing = false;
+				}, true, true );
+				
 			}
 
 			if ( !isResizing ) {
@@ -601,7 +596,7 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 			}
 		}
 
-		function forwardKeyboardEvent( ev: KeyboardEvent ) {
+		function forwardKeyboardEvent( ev: Utils_Event_Keyboard ) {
 			if ( !node['columns'] ) {
 				return;
 			}
@@ -618,9 +613,9 @@ class MGridInterface extends UI_Canvas implements IGridInterface {
 		}
 
 		// when the user press left or right arrows, we move the editable editor 
-		node.on( 'keydown', function( ev ) {
+		node.on( 'keydown', function( ev: Utils_Event_Keyboard ) {
 
-			var code = ev.keyCode || ev.charCode;
+			var code = ev.code;
 
 			switch ( code ) {
 				case Utils.keyboard.KB_LEFT:

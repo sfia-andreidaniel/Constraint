@@ -96,13 +96,14 @@ class UI_CheckBox extends UI implements IFocusable, IInput {
 	protected _initDom_() {
 		( function( me ) {
 			
-			me._root.addEventListener( 'click', function( e ){
+			me.onDOMEvent( me._root, EEventType.CLICK, function( e: Utils_Event_Mouse ) {
 				me.fire( 'click' );
+				e.handled = true;
 			}, false );
 
-			me.on( 'keydown', function( ev ) {
-				var code = ev.keyCode || ev.charCode;
-				if ( code == 32 || code == 13 ) {
+			me.on( 'keydown', function( ev: Utils_Event_Keyboard ) {
+				var code: number = ev.code;
+				if ( code == Utils.keyboard.KB_SPACE || code == Utils.keyboard.KB_ENTER ) {
 					me.fire( 'click' );
 				}
 			} );

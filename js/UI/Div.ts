@@ -13,8 +13,9 @@ class UI_Div extends UI implements IFocusable {
 	protected _setupEvents_() {
 		( function( me ){
 
-			me._root.addEventListener( 'click', function( ev ) {
-				me.fire( 'click' );
+			me.onDOMEvent( me._root, EEventType.CLICK, function( ev: Utils_Event_Mouse ) {
+				if ( !me.disabled )
+					me.fire( 'click' );
 			} );
 
 		} )( self );

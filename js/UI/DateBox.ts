@@ -146,6 +146,7 @@ class UI_DateBox extends UI implements IFocusable, IInput {
 
 			// remove groups nodes from parent container.
 			for ( i=0, len = this._groups.length; i<len; i++ ) {
+				this._groups[i].free();
 				this._groups[i].node.parentNode.removeChild( this._groups[i].node );
 			}
 
@@ -565,7 +566,7 @@ class UI_DateBox extends UI implements IFocusable, IInput {
 				me.expanded = false;
 			} );
 
-			me.on( 'keydown', function( ev ) {
+			me.on( 'keydown', function( ev: Utils_Event_Keyboard ) {
 
 				if ( me.disabled ) {
 					return;
@@ -575,7 +576,7 @@ class UI_DateBox extends UI implements IFocusable, IInput {
 					return;
 				}
 
-				var code = ev.keyCode || ev.charCode,
+				var code = ev.code,
 				    update: boolean,
 				    nowText: string = me.text;
 
@@ -643,7 +644,7 @@ class UI_DateBox extends UI implements IFocusable, IInput {
 
 					default:
 
-						var chr: string = Utils.keyboard.eventToString( ev );
+						var chr: string = ev.keyName;
 
 						if ( chr && chr.length == 1 ) {
 
@@ -697,7 +698,8 @@ class UI_DateBox extends UI implements IFocusable, IInput {
 				Utils.dom.removeClass(this._root, 'expanded');
 			} );
 
-			me._dom.expander.addEventListener( 'mousedown', function( ev ) {
+			me.onDOMEvent( me._dom.expander, EEventType.MOUSE_DOWN, function( ev: Utils_Event_Mouse ) {
+				
 				if ( me.disabled ){ 
 					return;
 				}
@@ -709,6 +711,8 @@ class UI_DateBox extends UI implements IFocusable, IInput {
 				ev.stopPropagation();
 
 				me.expanded = true;
+
+				ev.handled = true;
 
 			}, true );
 

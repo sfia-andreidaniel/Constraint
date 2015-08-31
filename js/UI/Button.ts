@@ -25,6 +25,7 @@ class UI_Button extends UI implements IFocusable {
 		super( owner, [ 'IFocusable' ], Utils.dom.create( 'div', 'ui UI_Button ta-center' ) );
 
 		this._root.appendChild( this._dom.caption );
+		this._root.appendChild( Utils.dom.create( 'div', 'focus-ring' ) );
 		this._dom.caption.appendChild( document.createTextNode( this._caption ) );
 		this._root.appendChild( this._dom.icon );
 
@@ -61,15 +62,15 @@ class UI_Button extends UI implements IFocusable {
 	protected _initDom_() {
 		( function( me ) {
 			
-			me._root.addEventListener( 'click', function( e ){
+			me.onDOMEvent( me._root, EEventType.CLICK, function( ev: Utils_Event_Mouse ) {
 				if ( !me.disabled ) {
 					me.fire( 'click' );
 				}
 			}, false );
 
-			me.on( 'keydown', function( ev ) {
+			me.on( 'keydown', function( ev: Utils_Event_Keyboard ) {
 
-				var code = ev.keyCode || ev.charCode;
+				var code = ev.code;
 
 				if ( !me.disabled && ( code == Utils.keyboard.KB_SPACE || code == Utils.keyboard.KB_ENTER ) ) {
 					me.fire( 'click' );

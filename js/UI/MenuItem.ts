@@ -136,7 +136,7 @@ class UI_MenuItem extends UI {
 
 		( function( me ) {
 
-			me._menuBarRootNode.addEventListener( 'mousedown', function( evt ) {
+			me.onDOMEvent( me._menuBarRootNode, EEventType.MOUSE_DOWN, function( evt: Utils_Event_Mouse ) {
 
 				if ( !me.disabled && me.owner ) {
 					me.form.activeElement = me.owner;
@@ -145,7 +145,7 @@ class UI_MenuItem extends UI {
 
 			}, true );
 
-			me._menuBarRootNode.addEventListener( 'mouseover', function( ev ) {
+			me.onDOMEvent( me._menuBarRootNode, EEventType.MOUSE_OVER, function( ev: Utils_Event_Mouse ) {
 
 				if ( !me.disabled && me.owner ) {
 					(<UI_MenuBar>me.owner).fire( 'request-item-focus', me );
@@ -153,13 +153,13 @@ class UI_MenuItem extends UI {
 
 			}, true );
 
-			me._menuBarRootNode.addEventListener( 'click', function( evt ) {
+			me.onDOMEvent( me._menuBarRootNode, EEventType.CLICK, function( ev: Utils_Event_Mouse ) {
+
 				me.click();
 
 				if ( !me.isOpened ) {
 					me.open();
 				} else {
-					console.log( 'close...' );
 					me.close();
 				}
 			}, true );
@@ -244,18 +244,18 @@ class UI_MenuItem extends UI {
 				}
 			});
 
-			menuItem.on( 'keydown', function( evt ) {
+			menuItem.on( 'keydown', function( evt: Utils_Event_Keyboard ) {
 
-				var code = evt.keyCode || evt.charCode;
+				var code = evt.code;
 
 				switch ( code ) {
 					//UP
-					case 38:
+					case Utils.keyboard.KB_UP:
 						menuItem.modifySelectedIndex( -1 );
 						break;
 
 					//DOWN
-					case 40:
+					case Utils.keyboard.KB_DOWN:
 						menuItem.modifySelectedIndex( 1 );
 						break;
 				}
@@ -598,25 +598,24 @@ class UI_MenuItem extends UI {
 
 	}
 
-	public onScreenKeyDown( evt ) {
+	public onScreenKeyDown( evt: Utils_Event_Keyboard ) {
 
-		var code = evt.keyCode || evt.charCode;
+		var code = evt.code;
 
 		switch ( code ) {
-			case 27:
+			case Utils.keyboard.KB_ESC:
 				this.close( true );
 				break;
 			// UP
-			case 38:
+			case Utils.keyboard.KB_UP:
 				this.modifySelectedIndex( -1 );
 				break;
 			// DOWN
-			case 40:
+			case Utils.keyboard.KB_DOWN:
 				this.modifySelectedIndex( 1 );
 				break;
 			// LEFT
-			case 37:
-
+			case Utils.keyboard.KB_LEFT:
 				if ( this.selectedIndex == -1 && this.owner instanceof UI_MenuBar ) {
 					this.owner.fire( 'keydown', evt );
 				} else {
@@ -625,7 +624,7 @@ class UI_MenuItem extends UI {
 
 				break;
 			// Right
-			case 39:
+			case Utils.keyboard.KB_RIGHT:
 				if ( this.selectedIndex > -1 ) {
 					(<UI_MenuItem>this._children[ this.selectedIndex ]).open();
 					(<UI_MenuItem>this._children[ this.selectedIndex ]).modifySelectedIndex(1);
@@ -639,8 +638,8 @@ class UI_MenuItem extends UI {
 				break;
 			
 			// ENTER, SPACE triggers click
-			case 13:
-			case 32:
+			case Utils.keyboard.KB_ENTER:
+			case Utils.keyboard.KB_SPACE:
 				if ( this._selectedIndex != -1 ) {
 					(<UI_MenuItem>this._children[ this._selectedIndex ]).click();
 				}
@@ -736,7 +735,7 @@ class UI_MenuItem extends UI {
 						me._overlay = null;
 					} );
 
-					me._overlay.on( 'keydown', function( evt ) {
+					me._overlay.on( 'keydown', function( evt: Utils_Event_Keyboard ) {
 						me.onScreenKeyDown( evt );
 					} );
 

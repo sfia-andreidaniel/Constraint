@@ -18,13 +18,15 @@ class MFocusable extends UI implements IFocusable {
 			}
 		} );
 
-		node._root.addEventListener( 'mousedown', function(evt) {
-			
+		node.onDOMEvent( node._root, EEventType.MOUSE_DOWN, function( evt: Utils_Event_Mouse ) {
+
 			if ( !node.disabled ) {
 				(<MFocusable>node).active = true;
 				evt.preventDefault();
 				evt.stopPropagation();
+				evt.handled = true;
 			}
+
 		}, false );
 
 		node.on( 'blur', function() {

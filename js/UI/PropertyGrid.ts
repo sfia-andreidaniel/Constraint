@@ -527,11 +527,6 @@ class UI_PropertyGrid extends UI_Canvas implements IFocusable, IRowInterface {
 
 			} );
 
-			function onResizeDone() {
-				isResizing = false;
-				document.body.removeEventListener( 'mouseup', onResizeDone, true );
-			}
-
 			me.on( 'mousedown', function( point: IPoint, which: number, ctrlKey: boolean, altKey: boolean, shiftKey: boolean ) {
 
 				if ( this.disabled || which != 1 || point.y < 0 ) {
@@ -566,7 +561,7 @@ class UI_PropertyGrid extends UI_Canvas implements IFocusable, IRowInterface {
 
 		    			currentSplitWidth = this.splitWidth;
 
-		    			document.body.addEventListener( 'mouseup', onResizeDone, true );
+		    			me.onDOMEvent( document.body, EEventType.MOUSE_UP, function( evt: Utils_Event_Mouse ) { isResizing = false; }, true, true );
 
 		    			isResizing = true;
 
@@ -576,13 +571,13 @@ class UI_PropertyGrid extends UI_Canvas implements IFocusable, IRowInterface {
 
 			} );
 
-			me.on( 'keydown', function( ev: KeyboardEvent ) {
+			me.on( 'keydown', function( ev: Utils_Event_Keyboard ) {
 
 				if ( this.disabled ) {
 					return;
 				}
 
-				var code: number = ev.keyCode || ev.charCode;
+				var code: number = ev.code;
 
 				if ( ev.altKey || ev.shiftKey || ev.ctrlKey ) {
 					return;

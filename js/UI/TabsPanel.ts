@@ -59,6 +59,8 @@ class UI_TabsPanel extends UI implements IFocusable {
 				(<UI_Tab>child).visible = false;
 			}
 
+			this.layoutDirty = true;
+
 			return result;
 		}
 	}
@@ -71,11 +73,14 @@ class UI_TabsPanel extends UI implements IFocusable {
 
 	set activeTab( tab: UI_Tab ) {
 		if ( tab != this._activeTab ) {
+
 			if ( this._activeTab ) {
 				Utils.dom.removeClass( this._activeTab.tabElement, 'active' );
 				this._activeTab.visible = false;
 			}
+
 			this._activeTab = tab;
+			this._activeTab['layoutDirty'] = true;
 
 			if ( this._activeTab ) {
 				Utils.dom.addClass( this._activeTab.tabElement, 'active' );
@@ -93,17 +98,17 @@ class UI_TabsPanel extends UI implements IFocusable {
 				}
 			} );
 
-			me.on( 'keydown', function( e ) {
+			me.on( 'keydown', function( e: Utils_Event_Keyboard ) {
 
-				var code: number = e.keyCode || e.charCode;
+				var code: number = e.code;
 
 				switch ( code ) {
 					// LEFT
-					case 37:
+					case Utils.keyboard.KB_LEFT:
 						me.focusTab( -1 );
 						break;
 					// RIGHT
-					case 39:
+					case Utils.keyboard.KB_RIGHT:
 						me.focusTab( 1 );
 						break;
 				}
@@ -190,6 +195,14 @@ class UI_TabsPanel extends UI implements IFocusable {
 			this._dom.body.appendChild( node._root );
 		}
 		return node;
+	}
+
+	get layoutType(): ELayoutType {
+		return ELayoutType.NONE;
+	}
+
+	set layoutType( type: ELayoutType ) {
+		// nothing
 	}
 
 

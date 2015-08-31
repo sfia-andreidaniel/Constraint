@@ -92,62 +92,59 @@ class UI_VerticalSplitter extends UI {
 				y: 0
 			};
 
-			function onMouseMove( evt ) {
-
-				var nowX: number = evt.pageX || evt.clientX,
-				    nowY: number = evt.pageY || evt.clientY,
-				    deltaX: number = resize.x - nowX,
-				    deltaY: number = resize.y - nowY,
-				    amount: number = 0,
-				    distance: number = node.anchor.distance;
-
-				switch ( node._anchorType ) {
-					case EAlignment.LEFT:
-						amount = -deltaX;
-						break;
-					case EAlignment.RIGHT:
-						amount = deltaX;
-						break;
-					case EAlignment.TOP:
-						amount = -deltaY;
-						break;
-					case EAlignment.BOTTOM:
-						amount = deltaY;
-						break;
-				}
-
-				if ( amount ) {
-					distance += amount;
-					if ( distance < node.minDistance ) {
-						distance = node.minDistance;
-					}
-					resize.x = nowX;
-					resize.y = nowY;
-					node.anchor.distance = distance;
-					
-					if ( node.owner )
-						node.owner.onRepaint();
-				}
-			}
-
-			function onMouseUp( evt ) {
-				document.body.removeEventListener( 'mousemove', onMouseMove, true );
-				document.body.removeEventListener( 'mouseup',   onMouseUp, true );
-
-				Utils.dom.removeClass( node._root, 'dragging' );
-			}
-
-			node._root.addEventListener( 'mousedown', function( e ) {
+			node.onDOMEvent( node._root, EEventType.MOUSE_DOWN, function( e: Utils_Event_Mouse ) {
 
 				if ( node.disabled ) {
 					return;
 				}
 
-				resize.x = e.pageX || e.clientX;
-				resize.y = e.pageY || e.clientY;
+				resize.x = e.page.x;
+				resize.y = e.page.y;
+				
+				var mousemove: Utils_Event_Unbinder = node.onDOMEvent( document.body, EEventType.MOUSE_MOVE, function( evt: Utils_Event_Mouse ) {
 
-				document.body.addEventListener( 'mousemove', onMouseMove, true );
-				document.body.addEventListener( 'mouseup',   onMouseUp, true );
+					var nowX: number = evt.page.x,
+					    nowY: number = evt.page.y,
+					    deltaX: number = resize.x - nowX,
+					    deltaY: number = resize.y - nowY,
+					    amount: number = 0,
+					    distance: number = node.anchor.distance;
+
+					switch ( node._anchorType ) {
+						case EAlignment.LEFT:
+							amount = -deltaX;
+							break;
+						case EAlignment.RIGHT:
+							amount = deltaX;
+							break;
+						case EAlignment.TOP:
+							amount = -deltaY;
+							break;
+						case EAlignment.BOTTOM:
+							amount = deltaY;
+							break;
+					}
+
+					if ( amount ) {
+						distance += amount;
+						if ( distance < node.minDistance ) {
+							distance = node.minDistance;
+						}
+						resize.x = nowX;
+						resize.y = nowY;
+						node.anchor.distance = distance;
+						
+						if ( node.owner )
+							node.owner.onRepaint();
+					}
+
+				}, true );
+
+				node.onDOMEvent( document.body, EEventType.MOUSE_UP, function( evt: Utils_Event_Mouse ) {
+					mousemove.remove();
+					mousemove = undefined;
+					Utils.dom.removeClass( node._root, 'dragging' );
+				}, true, true );
 
 				Utils.dom.addClass( node._root, 'dragging' );
 

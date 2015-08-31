@@ -204,8 +204,8 @@ class UI_ColorBox extends UI implements IInput, IFocusable {
 				}
 			});
 
-			me._root.addEventListener( 'click', function( ev ) {
-				
+			me.onDOMEvent( me._root, EEventType.CLICK, function( ev: Utils_Event_Mouse ) {
+
 				if ( me.disabled ) {
 					return;
 				}
@@ -217,15 +217,17 @@ class UI_ColorBox extends UI implements IInput, IFocusable {
 					}
 				} );
 
+				ev.handled = true;
+
 			}, false );
 
-			me.on( 'keydown', function( ev ) {
+			me.on( 'keydown', function( ev: Utils_Event_Keyboard ) {
 
 				if ( me.disabled ) {
 					return;
 				}
 
-				var code: number = ev.keyCode || ev.charCode;
+				var code: number = ev.code;
 
 				switch ( code ) {
 
@@ -237,6 +239,7 @@ class UI_ColorBox extends UI implements IInput, IFocusable {
 								me.fire( 'change' );
 							}
 						} );
+						ev.handled = true;
 						break;
 				}
 

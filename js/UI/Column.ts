@@ -637,9 +637,9 @@ class UI_Column extends UI {
 	/**
 	 * Handles a keyDown event forwarded by the grid interface.
 	 */
-	public onKeyDown( ev: KeyboardEvent ) {
+	public onKeyDown( ev: Utils_Event_Keyboard ) {
 
-		var code = ev.keyCode || ev.charCode;
+		var code = ev.code;
 
 		switch ( true ) {
 			case code == Utils.keyboard.KB_F3 && this._type == EColumnType.TREE:

@@ -103,11 +103,6 @@ class UI_Color_HSLCanvas extends UI_Canvas implements IFocusable {
 
 			var dragging: boolean = false;
 
-			function endDrag( ev ) {
-				document.body.removeEventListener( 'mouseup', endDrag, true );
-				dragging = false;
-			}
-
 			me.on( 'mousemove', function( point: IPoint ) {
 
 				if ( !dragging || me.disabled ) {
@@ -134,38 +129,44 @@ class UI_Color_HSLCanvas extends UI_Canvas implements IFocusable {
 
 				me.fire( 'mousemove', point );
 
-				document.body.addEventListener( 'mouseup', endDrag );
+				me.onDOMEvent( document.body, EEventType.MOUSE_UP, function( evt: Utils_Event_Mouse ) {
+					dragging = false;
+				}, true, true );
 
 			} );
 
-			me.on( 'keydown', function( ev ) {
+			me.on( 'keydown', function( ev: Utils_Event_Keyboard ) {
 
 				if ( me.disabled ){
 					return;
 				}
 
-				var code = ev.keyCode || ev.charCode;
+				var code = ev.code;
 
 				switch ( code ) {
 
 					case Utils.keyboard.KB_LEFT:
 						me.hue -= ev.ctrlKey ? 1 : 10;
 						me.fire( 'change' );
+						ev.handled = true;
 						break;
 
 					case Utils.keyboard.KB_RIGHT:
 						me.hue += ev.ctrlKey ? 1 : 10;
 						me.fire( 'change' );
+						ev.handled = true;
 						break;
 
 					case Utils.keyboard.KB_DOWN:
 						me.sat -= ev.ctrlKey ? 1 : 10;
 						me.fire( 'change' );
+						ev.handled = true;
 						break;
 
 					case Utils.keyboard.KB_UP:
 						me.sat += ev.ctrlKey ? 1 : 10;
 						me.fire( 'change' );
+						ev.handled = true;
 						break;
 
 				}

@@ -53,6 +53,8 @@ class UI_Tab extends UI {
 			this.owner.fire( 'tab-removed', this.createDOM().tab );
 		}
 
+		this.layoutDirty = true;
+
 		return result;
 	}
 
@@ -66,7 +68,8 @@ class UI_Tab extends UI {
 
 	public _setupEvents_() {
 		( function( me ) {
-			me.tabElement.addEventListener( 'click', function(e) {
+
+			me.onDOMEvent( me.tabElement, EEventType.MOUSE_DOWN, function( e: Utils_Event_Mouse ) {
 				if ( !me.disabled && me.owner ) {
 					(<UI_TabsPanel>me.owner).activeTab = me;
 				}

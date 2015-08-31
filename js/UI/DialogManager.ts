@@ -187,11 +187,11 @@ class UI_DialogManager extends UI_Event {
 	}
 
 	// sends the key to activeForm.activeElement
-	protected handleRegularKey( ev ) {
+	protected handleRegularKey( ev: Utils_Event_Keyboard ) {
 		if ( this._activeWindow && this._activeWindow.activeElement ) {
 			
-			var keyAsString: string = Utils.keyboard.eventToString( ev ),
-			    keyAsNumber: number = ev.keyCode || ev.charCode,
+			var keyAsString: string = ev.keyName,
+			    keyAsNumber: number = ev.code,
 			    i: number = 0,
 			    len: number = this._activeWindow.focusComponents.length;
 
@@ -210,11 +210,11 @@ class UI_DialogManager extends UI_Event {
 	}
 
 	public focusNextElement( force: boolean = false ) {
-		this.handleTabKey({ "keyCode": 8, "charCode": 8, "preventDefault": function() {}, "stopPropagation": function() {} }, force);
+		this.handleTabKey(Utils_Event_Keyboard.createFrom( { "keyCode": 8, "charCode": 8 } ), force);
 	}
 
 	public focusPreviousElement( force: boolean = false ) {
-		this.handleTabKey({ "keyCode": 8, "charCode": 8, "preventDefault": function(){}, "stopPropagation": function(){}, "shiftKey": true }, force);
+		this.handleTabKey(Utils_Event_Keyboard.createFrom( { "keyCode": 8, "charCode": 8, "shiftKey": true } ), force);
 	}
 
 	private _setupEvents_() {
@@ -222,7 +222,7 @@ class UI_DialogManager extends UI_Event {
 
 			if ( typeof window != 'undefined' ) {
 
-				window.addEventListener( 'load', function() {
+				manager.onDOMEvent( window, EEventType.LOAD, function( e: Utils_Event_Generic ) {
 					
 					// setup the default manager.
 					manager.desktop = document.body;
@@ -232,9 +232,9 @@ class UI_DialogManager extends UI_Event {
 
 					manager.screen.open( manager.desktop );
 
-					manager.desktop.addEventListener( 'mousedown', function( evt ) {
+					manager.onDOMEvent( manager.desktop, EEventType.MOUSE_DOWN, function( evt: Utils_Event_Mouse ) {
 
-						var target: any = evt.target || evt.srcElement,
+						var target: any = evt.target,
 						    win: UI_Form;
 
 						if ( manager.screen.visible ) {
@@ -266,58 +266,61 @@ class UI_DialogManager extends UI_Event {
 
 					}, true );
 
-					manager.desktop.addEventListener( 'keydown', function( ev ) {
+					manager.onDOMEvent( manager.desktop, EEventType.KEY_DOWN, function( ev: Utils_Event_Keyboard ) {
 						
 						if ( manager.screen.visible ) {
 							manager.screen.handleKeyDown( ev );
 						} else {
-							var code = ev.keyCode || ev.charCode;
-							if ( code == 9 ) {
+							
+							var code = ev.code;
+
+							if ( code == Utils.keyboard.KB_TAB ) {
 								manager.handleTabKey( ev );
 							} else {
 								manager.handleRegularKey( ev );
 							}
-							if ( code == 8 && !document.activeElement || [ 'input', 'textarea' ].indexOf( document.activeElement.nodeName.toLowerCase() ) == -1 ) {
+							if ( code == Utils.keyboard.KB_BACKSPACE && !document.activeElement || [ 'input', 'textarea' ].indexOf( document.activeElement.nodeName.toLowerCase() ) == -1 ) {
 								ev.preventDefault();
 							}
 						}
 					}, true );
 
-					manager.desktop.addEventListener( 'mousemove', function( ev ){
+					manager.onDOMEvent( manager.desktop, EEventType.MOUSE_MOVE, function( ev: Utils_Event_Mouse ) {
 						
-						manager._pointerX = ev.pageX;
-						manager._pointerY = ev.pageY;
+						manager._pointerX = ev.page.x;
+						manager._pointerY = ev.page.y;
 
 						if ( manager.screen.visible ) {
 							manager.screen.handleMouseMove( ev );
 						}
+
 					}, true );
 
-					manager.desktop.addEventListener( 'mousedown', function( ev ) {
+					manager.onDOMEvent( manager.desktop, EEventType.MOUSE_DOWN, function( ev: Utils_Event_Mouse ) {
 						if ( manager.screen.visible ) {
 							manager.screen.handleMouseDown( ev );
 						}
 					}, true );
 
-					manager.desktop.addEventListener( 'mouseup', function( ev ) {
+					manager.onDOMEvent( manager.desktop, EEventType.MOUSE_UP, function( ev: Utils_Event_Mouse ) {
 						if ( manager.screen.visible ) {
 							manager.screen.handleMouseUp( ev );
 						}
 					}, true );
 
-					manager.desktop.addEventListener( 'click', function( ev ) {
+					manager.onDOMEvent( manager.desktop, EEventType.CLICK, function( ev: Utils_Event_Mouse ) {
 						if ( manager.screen.visible ) {
 							manager.screen.handleMouseClick( ev );
 						}
 					}, true );
 
-					manager.desktop.addEventListener( 'dblclick', function( ev ) {
+					manager.onDOMEvent( manager.desktop, EEventType.DBLCLICK, function( ev: Utils_Event_Mouse ) {
 						if ( manager.screen.visible ) {
 							manager.screen.handleDoubleClick( ev );
 						}
 					}, true );
 
-					manager.desktop.addEventListener( 'mousewheel', function( ev ) {
+					manager.onDOMEvent( manager.desktop, EEventType.MOUSE_WHEEL, function( ev: Utils_Event_Mouse ) {
 						if ( manager.screen.visible ) {
 							manager.screen.handleScroll( ev );
 						}
@@ -325,7 +328,7 @@ class UI_DialogManager extends UI_Event {
 
 				}, true );
 
-				window.addEventListener( 'resize', function() {
+				manager.onDOMEvent( window, EEventType.RESIZE, function( ev: Utils_Event_Generic ) {
 
 					if ( manager.desktop ) {
 						manager._desktopHeight = manager.desktop.offsetHeight;

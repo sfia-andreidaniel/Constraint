@@ -432,9 +432,9 @@
 				me._overlay.render();
 			});
 
-			me._overlay.on( 'keydown', function( ev ) {
+			me._overlay.on( 'keydown', function( ev: Utils_Event_Keyboard ) {
 
-				var code: number = ev.keyCode || ev.charCode;
+				var code: number = ev.code;
 
 				switch ( code ) {
 					

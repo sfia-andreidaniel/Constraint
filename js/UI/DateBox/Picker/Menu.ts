@@ -178,14 +178,16 @@
 				}
 			});
 
-			me._overlay.on('keydown', function(ev) {
-				var code = ev.keyCode || ev.charCode;
+			me._overlay.on('keydown', function(ev: Utils_Event_Keyboard) {
+				var code = ev.code;
 				switch ( code ) {
 					case Utils.keyboard.KB_UP:
 						me.select(-1);
+						ev.handled = true;
 						break;
 					case Utils.keyboard.KB_DOWN:
 						me.select(1);
+						ev.handled = true;
 						break;
 					case Utils.keyboard.KB_LEFT:
 					case Utils.keyboard.KB_RIGHT:
@@ -194,9 +196,11 @@
 						break;
 					case Utils.keyboard.KB_ENTER:
 						me.onButtonClick();
+						ev.handled = true;
 						break;
 					case Utils.keyboard.KB_ESC:
 						me.close();
+						ev.handled = true;
 						break;
 				}
 			});

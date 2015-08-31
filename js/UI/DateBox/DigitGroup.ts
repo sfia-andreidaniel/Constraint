@@ -4,7 +4,7 @@
  *
  * This class is not intended to be used explicitly by the programmer.
  */
-class UI_DateBox_DigitGroup {
+class UI_DateBox_DigitGroup extends UI_Event {
 	
 	private _value: number = null;
 	private _active: boolean = false;
@@ -17,16 +17,24 @@ class UI_DateBox_DigitGroup {
 	};
 
 	constructor( private minValue: number, private maxValue: number, private mask: string, public _ending: string, public datePart: EDatePart, public owner: UI_Event ) {
+		super();
+		
 		this._dom.node.appendChild(this._dom.value);
 		this._dom.node.appendChild(this._dom.ending);
 		this.value = null;
 		( function( me ) {
-			me._dom.value.addEventListener('mousedown', function() {
+
+			me.onDOMEvent( me._dom.value, EEventType.MOUSE_DOWN, function( evt: Utils_Event_Mouse ) {
 				me.owner.fire( 'focus-group', me.index );
-			} );
-			me._dom.value.addEventListener('mousewheel', function( ev ) {
-				me.owner.fire( 'wheel-group', ( ev.deltaY || -ev.wheelDeltaY ) < 0 ? -1 : 1, me.index );
 			}, false );
+
+			me.onDOMEvent( me._dom.value, EEventType.MOUSE_WHEEL, function( ev: Utils_Event_Mouse ) {
+				me.owner.fire( 'wheel-group', ev.delta.y < 0 ? -1 : 1, me.index );
+				ev.preventDefault();
+				ev.stopPropagation();
+				ev.handled = true;
+			}, false );
+
 		} )( this );
 	}
 

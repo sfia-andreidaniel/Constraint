@@ -178,14 +178,14 @@ class UI_Screen extends UI_Event {
 		}
 	}
 
-	public handleMouseDown( ev ): boolean {
+	public handleMouseDown( ev: Utils_Event_Mouse ): boolean {
 
 		if ( this._isScrolling ){
 			return true;
 		}
 
-		var x: number = ev.pageX,
-		    y: number = ev.pageY,
+		var x: number = ev.page.x,
+		    y: number = ev.page.y,
 		    len: number = this._windows.length,
 		    i: number,
 		    handled: boolean = false;
@@ -226,19 +226,20 @@ class UI_Screen extends UI_Event {
 		} else {
 			ev.preventDefault();
 			ev.stopPropagation();
+			ev.handled = true;
 		}
 
 		return handled;
 	}
 
-	public handleMouseMove( ev ): boolean {
+	public handleMouseMove( ev: Utils_Event_Mouse ): boolean {
 
 		if ( this._isScrolling ) {
 			return true;
 		}
 
-		var x: number = ev.pageX,
-		    y: number = ev.pageY,
+		var x: number = ev.page.x,
+		    y: number = ev.page.y,
 		    len: number = this._windows.length,
 		    i: number,
 		    handled: boolean = false;
@@ -267,6 +268,7 @@ class UI_Screen extends UI_Event {
 		} else {
 			ev.preventDefault();
 			ev.stopPropagation();
+			ev.handled = true;
 		}
 
 		this.pointerEvents = handled;
@@ -274,14 +276,14 @@ class UI_Screen extends UI_Event {
 		return handled;
 	}
 
-	public handleDoubleClick( ev ): boolean {
+	public handleDoubleClick( ev: Utils_Event_Mouse ): boolean {
 
 		if ( this._isScrolling ) {
 			return true;
 		}
 
-		var x: number = ev.pageX,
-		    y: number = ev.pageY,
+		var x: number = ev.page.x,
+		    y: number = ev.page.y,
 		    len: number = this._windows.length,
 		    i: number,
 		    handled: boolean = false;
@@ -310,20 +312,21 @@ class UI_Screen extends UI_Event {
 		} else {
 			ev.preventDefault();
 			ev.stopPropagation();
+			ev.handled = true;
 		}
 
 		return handled;
 
 	}
 
-	public handleMouseUp( ev ): boolean {
+	public handleMouseUp( ev: Utils_Event_Mouse ): boolean {
 		
 		if ( this._isScrolling ) {
 			return true;
 		}
 
-		var x: number = ev.pageX,
-		    y: number = ev.pageY,
+		var x: number = ev.page.x,
+		    y: number = ev.page.y,
 		    len: number = this._windows.length,
 		    i: number,
 		    handled: boolean = false;
@@ -352,25 +355,26 @@ class UI_Screen extends UI_Event {
 		} else {
 			ev.preventDefault();
 			ev.stopPropagation();
+			ev.handled = true;
 		}
 
 		return handled;
 
 	}
 
-	public handleScroll( ev ): boolean {
+	public handleScroll( ev: Utils_Event_Mouse ): boolean {
 
 		if ( this._isScrolling ) {
 			return true;
 		}
 
-		var x: number = ev.pageX,
-		    y: number = ev.pageY,
+		var x: number = ev.page.x,
+		    y: number = ev.page.y,
 		    len: number = this._windows.length,
 		    i: number,
 		    handled: boolean = false,
-		    wheelX: number = - ( ev.wheelDeltaX || -ev.deltaX || 0 ),
-		    wheelY: number = - ( ev.wheelDeltaY || -ev.deltaY || 0 );
+		    wheelX: number = ev.delta.x * 20,
+		    wheelY: number = ev.delta.y * 20;
 
 		for ( i = len - 1; i >= 0; i-- ) {
 			if ( this._windows[i].ctx.containsAbsolutePoint( x, y ) ) {
@@ -384,20 +388,21 @@ class UI_Screen extends UI_Event {
 		} else {
 			ev.preventDefault();
 			ev.stopPropagation();
+			ev.handled = true;
 		}
 
 		return handled;
 
 	}
 
-	public handleMouseClick( ev ): boolean {
+	public handleMouseClick( ev: Utils_Event_Mouse ): boolean {
 
 		if ( this._isScrolling ) {
 			return true;
 		}
 
-		var x: number = ev.pageX,
-		    y: number = ev.pageY,
+		var x: number = ev.page.x,
+		    y: number = ev.page.y,
 		    len: number = this._windows.length,
 		    i: number,
 		    handled: boolean = false;
@@ -425,26 +430,26 @@ class UI_Screen extends UI_Event {
 		} else {
 			ev.preventDefault();
 			ev.stopPropagation();
+			ev.handled = true;
 		}
 
 		return handled;
 
 	}
 
-	public handleKeyDown( ev ) {
+	public handleKeyDown( ev: Utils_Event_Keyboard ) {
 
 		if ( this._windows && this._windows.length ) {
 			this._windows[ this._windows.length - 1 ].fire( 'keydown', ev );
 			ev.preventDefault();
 			ev.stopPropagation();
+			ev.handled = true;
 		}
 	}
 
 	private _setupEvents_() {
 		( function( self ) {
 			
-			self.on( 'keydown', function( ev ) {} );
-
 			self._repainter = new UI_Throttler( function() {
 				self.render();
 			} );

@@ -135,6 +135,12 @@ class UI extends UI_Event {
 		"height" : 0
 	};
 
+	/**
+	 * The type of layout this item has
+	 */
+	protected _layout: UI_Layout;
+	protected _layoutDirty: boolean = false;
+
 
 	constructor( owner: UI, mixins: string[] = [], rootNode: HTMLDivElement = null ) {
 		super();
@@ -163,7 +169,7 @@ class UI extends UI_Event {
 		}
 
 		( function( node ) {
-			node.on( 'keydown', function( ev ) {
+			node.on( 'keydown', function( ev: Utils_Event_Mouse ) {
 				if ( node != node.form ) {
 					node.form.fire( 'child-keydown', ev );
 				}
@@ -172,79 +178,192 @@ class UI extends UI_Event {
 
 	}
 
-	get top(): any 			 	{ return this._top; }
+	/**
+	 * TOP anchor
+	 */
+	get top(): any { 
+		return this._top; 
+	}
 
-	set top( value: any ) 	 	{ this._top.load( value ); }
+	/**
+	 * TOP anchor.
+	 * @param value  int | IAnchor
+	 */
+	set top( value: any ) 	 	{
+		this.layoutDirty = true;
+		this._top.load( value );
+	}
 
-	get left(): any 		 	{ return this._left; }
+	/**
+	 * LEFT anchor
+	 */
+	get left(): any { 
+		return this._left;
+	}
 
-	set left( value: any )   	{ this._left.load( value ); }
+	/**
+	 * LEFT anchor.
+	 * @param value  int | IAnchor
+	 */
+	set left( value: any ) { 
+		this.layoutDirty = true; this._left.load( value ); 
+	}
 
-	get right(): any 		 	{ return this._right; }
+	/**
+	 * RIGHT anchor.
+	 */
+	get right(): any { 
+		return this._right; 
+	}
 
-	set right( value: any )  	{ this._right.load( value ); }
+	/**
+	 * RIGHT anchor.
+	 * @param value    int | IAnchor
+	 */
+	set right( value: any ) {
+		this.layoutDirty = true;
+		this._right.load( value );
+	}
 
-	get bottom(): any 		 	{ return this._bottom; }
+	/**
+	 * BOTTOM anchor
+	 */
+	get bottom(): any {
+		return this._bottom;
+	}
 
-	set bottom( value: any ) 	{ this._bottom.load( value ); }
+	/**
+	 * BOTTOM anchor.
+	 * @param value int | IAnchor
+	 */
+	set bottom( value: any ) { 
+		this.layoutDirty = true; 
+		this._bottom.load( value );
+	}
 
-	get width(): number 	 	{ return this._width; }
+	/**
+	 * Returns the width of the element in pixels.
+	 */
+	get width(): number { 
+		return this._width;
+	}
 
+	/**
+	 * Sets the width of the element in pixels.
+	 */
 	set width( value: number ) {
 		value = ~~value;
+
 		if ( value != this._width ) {
+
 			this._width = value;
+			this.layoutDirty = true;
+
 			this.onRepaint();
 		}
 	}
 
-	get height(): number 		{ return this._height; }
+	/**
+	 * Returns the height of the element in pixels.
+	 */
+	get height(): number { 
+		return this._height;
+	}
 
+	/**
+	 * Sets the height of the element in pixels.
+	 */
 	set height( value: number ) {
+
 		value = ~~value;
+
 		if ( value != this._height ) {
+
 			this._height = value;
+			this.layoutDirty = true;
+
 			this.onRepaint();
+
 		}
 	}
 
-	get minWidth(): number 		{ return this._minWidth; }
+	/**
+	 * Returns the minimum allowed width of the element in pixels
+	 */
+	get minWidth(): number { 
+		return this._minWidth; 
+	}
 
+	/**
+	 * Sets the minimum allowed width of the element in pixels
+	 */
 	set minWidth( w: number) {
 		w = ~~w;
 		if ( w != this._minWidth ) {
 			this._minWidth = w;
 			if ( this._width < this._minWidth ) {
 				this._width = this._minWidth;
+				this.layoutDirty = true;
 				this.onRepaint();
 			}
 		}
 	}
 
-	get minHeight(): number 	{ return this._minHeight; }
+	/**
+	 * Returns the minimum allowed height of the element in pixels
+	 */
+	get minHeight(): number { 
+		return this._minHeight; 
+	}
 
+	/**
+	 * Sets the minimum allowed height of the element in pixels
+	 */
 	set minHeight( h: number ) {
 		h = ~~h;
 		if ( h != this._minHeight ) {
 			this._minHeight = h;
 			if ( this._height < this._minHeight ) {
 				this._height = this._minHeight;
+				this.layoutDirty = true;
 				this.onRepaint();
 			}
 		}
 	}
 
-	get padding(): UI_Padding 	{ return this._padding; }
+	/**
+	 * Returns the padding settings of the element
+	 */
+	get padding(): UI_Padding { 
+		return this._padding; 
+	}
 
-	// form is the current "dialog" in which this element is inserted.
-	get form(): UI_Form 		{ return this._owner ? this._owner.form : <UI_Form>this; }
+	/**
+	 * Return the current "window" ( aka. form or dialog) in which this element is inserted.
+	 */
+	get form(): UI_Form { 
+		return this._owner ? this._owner.form : <UI_Form>this; 
+	}
 
-	// owner is the "parent" of the current UI element.
-	get owner(): UI 			{ return this._owner; }
-	set owner( owner: UI ) 		{ this._owner = owner; }
+	/**
+	 * Returns the direct parent of the UI element ( in DOM this property is called parentNode )
+	 */
+	get owner(): UI { 
+		return this._owner; 
+	}
 
-	// removes the UI element from it's parent.
+	/**
+	 * Sets the owner ( parent element ) of the UI element.
+	 */
+	set owner( owner: UI ) { 
+		this._owner = owner; 
+	}
+
+	/**
+	 * removes the UI element from it's parent (ui element).
+	 */
 	public remove(): UI {
+
 		if ( this.form )
 			this.form.fire('child-removed', this);
 		
@@ -264,10 +383,14 @@ class UI extends UI_Event {
 			this._root.parentNode.removeChild(this._root);
 		}
 
+		this.layoutDirty = true;
+
 		return this;
 	}
 
-	// inserts an UI element inside the current UI element
+	/**
+	 * inserts an UI element inside the current UI element
+	 */
 	public insert( child: UI ): UI {
 
 		if ( !child )
@@ -286,9 +409,16 @@ class UI extends UI_Event {
 			child.onParentDisableStateChange( this._parentsDisabled + ~~this._disabled );
 		}
 
+		this.layoutDirty = true;
+
 		return child;
 	}
 
+	/**
+	 * Insert the root DOM element of the UI node, inside the root of this UI element.
+	 * This is because some UI elements might have the default insertion DOM node other
+	 * then their _root DOM element.
+	 */
 	protected insertDOMNode( node: UI ): UI {
 		if ( this._root && node._root ) {
 			this._root.appendChild( node._root );
@@ -296,7 +426,9 @@ class UI extends UI_Event {
 		return node;
 	}
 
-	// this is called each time the element needs to be repainted.
+	/**
+	 * this is called each time the element needs to be repainted.
+	 */
 	public onRepaint(): boolean {
 
 		if ( !this._visible ) {
@@ -306,6 +438,7 @@ class UI extends UI_Event {
 		if ( !this._paintable ) {
 		
 			this._needPaint = true;
+			
 			return false;
 		
 		} else {
@@ -373,14 +506,21 @@ class UI extends UI_Event {
 					this._root.style.display = '';
 				}
 
-				if ( !!!this._disableChildPainting ) {
-					// If the widget has child nodes, paint them
-					for ( var i=0, len = this._children.length; i<len; i++ ) {
-						this._children[i].onRepaint();
-					}
+			}
+
+			if ( !!!this._disableChildPainting ) {
+
+				if ( this._layoutDirty && this.layoutType != ELayoutType.NONE ) {
+					this._layout.compute();
+					this.layoutDirty = false;
 				}
 
+				// If the widget has child nodes, paint them
+				for ( var i=0, len = this._children.length; i<len; i++ ) {
+					this._children[i].onRepaint();
+				}
 			}
+
 
 			this._needPaint = false;
 
@@ -389,7 +529,9 @@ class UI extends UI_Event {
 		}
 	}
 
-	// returns the exterior width and height of the UI element.
+	/**
+	 * returns the exterior width and height of the UI element.
+	 */
 	get offsetRect(): IRect {
 		return {
 			"width": this.offsetWidth,
@@ -397,7 +539,9 @@ class UI extends UI_Event {
 		}
 	}
 
-	// retrieves this UI element interior width and height
+	/**
+	 * retrieves this UI element interior width and height
+	 */
 	get clientRect(): IRect {
 		var outer: IRect = this.offsetRect;
 		return {
@@ -406,7 +550,9 @@ class UI extends UI_Event {
 		};
 	}
 
-	// retrieves the parent width and height.
+	/**
+	 * retrieves the parent client ( inner ) width and height.
+	 */
 	get parentClientRect(): IRect {
 		if ( this._owner ) {
 			return this._owner.clientRect;
@@ -418,6 +564,9 @@ class UI extends UI_Event {
 		}
 	}
 
+	/**
+	 * Returns the bounding box size of the current UI element.
+	 */
 	get boundingBox(): IBoundingBox {
 		var rect: IRect,
 		    out: IBoundingBox = {
@@ -484,7 +633,9 @@ class UI extends UI_Event {
 		return out;
 	}
 
-	// returns the exterior width of the UI element
+	/**
+	 * returns the exterior width of the UI element
+	 */
 	get offsetWidth(): number {
 		var clientRect: IRect = this.parentClientRect;
 
@@ -498,7 +649,9 @@ class UI extends UI_Event {
 		}
 	}
 
-	// returns the exterior height of the UI element
+	/**
+	 * returns the exterior height of the UI element
+	 */
 	get offsetHeight(): number {
 		var clientRect: IRect = this.parentClientRect;
 
@@ -512,6 +665,11 @@ class UI extends UI_Event {
 		}
 	}
 
+	/**
+	 * Returns true if this element is paintable or not.
+	 * If the element is not paintable, the onRepaint method won't bother to paint
+	 * the element or it's children.
+	 */
 	get paintable(): boolean {
 		return this._paintable;
 	}
@@ -764,8 +922,65 @@ class UI extends UI_Event {
 		return matches[1] || null;
 	}
 
+	/**
+	 * Returns TRUE if this UI object implements an interface
+	 */
 	public implements( interfaceName: string ): boolean {
 		return this._embrace && this._embrace[ interfaceName ] === true;
+	}
+
+	/**
+	 * Returns the type of the layout this UI element has.
+	 */
+	get layoutType(): ELayoutType {
+		return this._layout ? this._layout.type : ELayoutType.NONE;
+	}
+
+	/**
+	 * Returns a layout instance of this UI element.
+	 */
+	get layout(): UI_Layout {
+		return this._layout || ( this._layout = new UI_Layout( this ) );
+	}
+
+	protected get layoutDirty(): boolean {
+		return this._layoutDirty;
+	}
+
+	protected set layoutDirty( on: boolean ) {
+		on = !!on;
+
+		this._layoutDirty = on;
+
+		if ( on && this._children && this._children.length ) {
+			for ( var i=0, len = this._children.length; i<len; i++ ) {
+				this._children[i].layoutDirty = true;
+			}
+		}
+	}
+
+	set layoutType( type: ELayoutType ) {
+		
+		switch ( type ) {
+			case ELayoutType.LEFT_TO_RIGHT:
+			case ELayoutType.TOP_TO_BOTTOM:
+				break;
+			default:
+				type = ELayoutType.NONE;
+				break;
+		}
+
+		if ( type != this.layoutType ) {
+			
+			if ( type == ELayoutType.NONE ) {
+				this._layout.free();
+				this._layout = undefined;
+			} else {
+				this._layout = new UI_Layout( this );
+				this._layout.type = type;
+			}
+
+		}
 	}
 
 	/**
@@ -803,7 +1018,44 @@ Constraint.registerClass( {
 			"name": "left",
 			"type": "UI_Anchor"
 		},
-		
+
+		// LAYOUT
+		{
+			"name": "layoutType",
+			"type": "enum:ELayoutType"
+		},
+		{
+			"name": "layout",
+			"type": "UI_Layout"
+		},
+		{
+			"name": "layout.marginLeft",
+			"type": "number"
+		},
+		{
+			"name": "layout.marginRight",
+			"type": "number"
+		},
+		{
+			"name": "layout.marginTop",
+			"type": "number"
+		},
+		{
+			"name": "layout.marginBottom",
+			"type": "number"
+		},
+		{
+			"name": "layout.columns",
+			"type": "number|number[]"
+		},
+		{
+			"name": "layout.rows",
+			"type": "number|number[]"
+		},
+		{
+			"name": "layout.type",
+			"type": "enum:ELayoutType"
+		},
 		// DIMENSIONS
 		{
 			"name": "width",

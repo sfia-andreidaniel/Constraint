@@ -49,8 +49,20 @@ class Utils_Event {
 				}
 				evType = 'mouse';
 				break;
+			case EEventType.SCROLL:
+				evName = 'scroll';
+				evType = 'mouse';
+				break;
 			case EEventType.MOUSE_MOVE:
 				evName = 'mousemove';
+				evType = 'mouse';
+				break;
+			case EEventType.MOUSE_OVER:
+				evName = 'mouseover';
+				evType = 'mouse';
+				break;
+			case EEventType.MOUSE_OUT:
+				evName = 'mouseout';
 				evType = 'mouse';
 				break;
 			case EEventType.CLICK:
@@ -84,6 +96,19 @@ class Utils_Event {
 				break;
 			case EEventType.INPUT:
 				evName = 'input';
+				evType = 'generic';
+				break;
+			case EEventType.RESIZE:
+				evName = 'resize';
+				evType = 'generic';
+				break;
+
+			case EEventType.LOAD:
+				evName = 'load';
+				evType = 'generic';
+				break;
+			case EEventType.ERROR:
+				evName = 'error';
 				evType = 'generic';
 				break;
 

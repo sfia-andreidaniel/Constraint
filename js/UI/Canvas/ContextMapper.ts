@@ -370,11 +370,12 @@ class UI_Canvas_ContextMapper extends UI_Event {
 					var canvas = me.ctx.canvas,
 					    prevPoint: number = mousePoint;
 
-					function onmousemove( ev ) {
-						var target = ev.target || ev.srcElement,
+					var mousemove: Utils_Event_Unbinder = me.onDOMEvent( canvas, EEventType.MOUSE_MOVE, function( ev: Utils_Event_Mouse ) {
+
+						var target = ev.target,
 						    point: number,
-						    x: number = ev.layerX || ev.offsetX,
-						    y: number = ev.layerY || ev.offsetY,
+						    x: number = ev.layer.x,
+						    y: number = ev.layer.y,
 						    delta: number,
 						    newScrollPos: number,
 						    currentScrollPos: number = getVal();
@@ -413,18 +414,13 @@ class UI_Canvas_ContextMapper extends UI_Event {
 
 						}
 
+					}, true );
 
-					}
-
-					function onmouseup( ev ) {
-						me.ctx.canvas.removeEventListener( 'mousemove', onmousemove, true );
-						document.body.removeEventListener( 'mouseup',   onmouseup,   true );
+					me.onDOMEvent( document.body, EEventType.MOUSE_UP, function( ev: Utils_Event_Mouse ) {
+						mousemove.remove();
+						mousemove = undefined;
 						accept();
-					}
-
-					canvas.addEventListener( 'mousemove', onmousemove, true );
-
-					document.body.addEventListener( 'mouseup', onmouseup, true );
+					}, true, true );
 
 				} );
 

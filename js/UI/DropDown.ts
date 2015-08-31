@@ -453,7 +453,7 @@ class UI_DropDown extends UI implements IFocusable, IInput {
 				me._renderOverlay();
 			} );
 
-			me._overlay.on( 'keydown', function( evt ) {
+			me._overlay.on( 'keydown', function( evt: Utils_Event_Keyboard ) {
 				me.fire( 'keydown', evt );
 			} );
 
@@ -561,13 +561,13 @@ class UI_DropDown extends UI implements IFocusable, IInput {
 
 		( function( me ) {
 
-			me.on( 'keydown', function( ev ) {
+			me.on( 'keydown', function( ev: Utils_Event_Keyboard ) {
 
 				if ( me.disabled ) {
 					return;
 				}
 
-				var code = ev.keyCode || ev.charCode;
+				var code = ev.code;
 
 				switch ( code ) {
 
@@ -636,7 +636,27 @@ class UI_DropDown extends UI implements IFocusable, IInput {
 
 			} );
 
-			me._root.addEventListener( 'mousedown', function( evt ) {
+			me.onDOMEvent( me._root, EEventType.MOUSE_WHEEL, function( ev: Utils_Event_Mouse ) {
+				if ( !me.active || me.disabled ) {
+					return;
+				}
+
+				if ( ev.delta.y != 0 ) {
+
+					if ( ev.delta.y < 0 ) {
+						me.changeIndex( -1 );
+					} else {
+						me.changeIndex( 1 );
+					}
+
+				}
+
+				ev.preventDefault();
+				ev.stopPropagation();
+				ev.handled = true;
+			} );
+
+			me.onDOMEvent( me._root, EEventType.MOUSE_DOWN, function( evt: Utils_Event_Mouse ) {
 
 				if ( me.disabled || me.expanded || evt.which != 1 ) {
 					return;

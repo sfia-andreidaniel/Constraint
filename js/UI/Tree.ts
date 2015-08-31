@@ -89,13 +89,13 @@ class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface, IInput {
 	
 		( function( me ) {
 
-			me.on( 'keydown', function( evt ) {
+			me.on( 'keydown', function( evt: Utils_Event_Keyboard ) {
 
 				if ( me.disabled ) {
 					return;
 				}
 
-				var code = evt.keyCode || evt.charCode;
+				var code = evt.code;
 
 				switch ( code ) {
 					// LEFT

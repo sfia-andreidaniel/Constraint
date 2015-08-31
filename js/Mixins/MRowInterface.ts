@@ -54,13 +54,13 @@ class MRowInterface extends UI implements IRowInterface {
 		 ( function( RI: MRowInterface ) {
 
 
-			 RI.on( 'keydown', function( ev ) {
+			 RI.on( 'keydown', function( ev: Utils_Event_Keyboard ) {
 
 			 	if ( RI.disabled || !RI.length || !!RI['isHandlingNavigationKeys'] ) {
 			 		return;
 			 	}
 
-			 	var code = ev.keyCode || ev.charCode,
+			 	var code = ev.code,
 			 	    shift = ev.shiftKey,
 			 	    ctrl  = ev.ctrlKey,
 			 	    selIndex: number = RI.selectedIndex,

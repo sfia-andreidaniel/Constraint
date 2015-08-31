@@ -187,12 +187,12 @@ class UI_VerticalSlider extends UI implements IInput, IFocusable {
 	protected _setupKeyboard_() {
 		( function( me ) {
 
-			me.on( 'keydown', function( ev: KeyboardEvent ) {
+			me.on( 'keydown', function( ev: Utils_Event_Keyboard ) {
 				if ( me.disabled ) {
 					return;
 				}
 
-				var code: number = ev.keyCode || ev.charCode;
+				var code: number = ev.code;
 
 				switch ( code ) {
 					case Utils.keyboard.KB_LEFT:
@@ -247,44 +247,41 @@ class UI_VerticalSlider extends UI implements IInput, IFocusable {
 				y: 0
 			};
 
-			function onmousemove( ev ) {
-				var x: number = ev.screenX,
-				    y: number = ev.screenY,
-				    deltaX: number = x - point.x,
-				    deltaY: number = y - point.y,
-				    delta: number = me.orientation == EOrientation.HORIZONTAL ? deltaX : deltaY;
-
-				if ( delta == 0 || me.disabled ) {
-					return;
-				}
-
-				if ( delta = me.moveThumb( delta ) ) {
-					if ( me.orientation == EOrientation.HORIZONTAL ) {
-						point.x += delta;
-					} else {
-						point.y += delta;
-					}
-					me.fire( 'change' );
-				}
-
-			}
-
-			function onmouseup( ev ) {
-				document.body.removeEventListener( 'mouseup', onmouseup, true );
-				document.body.removeEventListener( 'mousemove', onmousemove, true );
-			}
-
-			me._dom.thumb.addEventListener( 'mousedown', function( ev ) {
+			me.onDOMEvent( me._dom.thumb, EEventType.MOUSE_DOWN, function( ev: Utils_Event_Mouse ) {
 
 				if ( me.disabled || ev.which != 1 ) {
 					return;
 				}
 
-				document.body.addEventListener( 'mousemove', onmousemove, true );
-				document.body.addEventListener( 'mouseup',   onmouseup,   true );
+				var mouseMove: Utils_Event_Unbinder = me.onDOMEvent( document.body, EEventType.MOUSE_MOVE, function( ev: Utils_Event_Mouse ) {
+					
+					var x: number = ev.page.x,
+					    y: number = ev.page.y,
+					    deltaX: number = x - point.x,
+					    deltaY: number = y - point.y,
+					    delta: number = me.orientation == EOrientation.HORIZONTAL ? deltaX : deltaY;
 
-				point.x = ev.screenX;
-				point.y = ev.screenY;
+					if ( delta == 0 || me.disabled ) {
+						return;
+					}
+
+					if ( delta = me.moveThumb( delta ) ) {
+						if ( me.orientation == EOrientation.HORIZONTAL ) {
+							point.x += delta;
+						} else {
+							point.y += delta;
+						}
+						me.fire( 'change' );
+					}
+
+				}, true );
+				
+				me.onDOMEvent( document.body, EEventType.MOUSE_UP, function( ev: Utils_Event_Mouse ) {
+					mouseMove.remove();
+					mouseMove = undefined;
+				}, true, true );
+
+				point = ev.page;
 
 			}, true );
 
