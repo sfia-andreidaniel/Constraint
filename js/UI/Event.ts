@@ -5,6 +5,9 @@
 /// <reference path="../Utils/Event/Keyboard.ts" />
 /// <reference path="../Utils/Event/Mouse.ts" />
 
+/**
+ * Core eventing class, which stands at the base of most classes in this framework.
+ */
 class UI_Event {
 
 	private $EVENTS_QUEUE : {};
@@ -13,6 +16,13 @@ class UI_Event {
 
 	constructor(){}
 
+	/**
+	 * Adds an event listener to eventName
+	 *
+	 * @param eventName - the name of the event where the callback should run.
+	 * @param callback - a function which is executed each time an event with name eventName is fired. You can use
+	 * this inside the callback.
+	 */
 	public on( eventName: string, callback: ( ...args ) => void ) {
 		
 		this.$EVENTS_QUEUE = this.$EVENTS_QUEUE || {};
@@ -22,16 +32,29 @@ class UI_Event {
 		this.$EVENTS_QUEUE[ eventName ].push( callback );
 	}
 
+	/**
+	 * Removes the event listener callback from event eventName.
+	 *
+	 * @param eventName - if null, all events are removed from the event.
+	 * @param callback - the callback which should be removed. If null, all events binded to eventName are removed.
+	 */
 	public off( eventName: string, callback: ( ... args ) => void ) {
 
 		if ( eventName ) {
 
-			if ( this.$EVENTS_QUEUE && this.$EVENTS_QUEUE[ eventName ] ) {
-				for ( var i=0, len = this.$EVENTS_QUEUE[ eventName ].length; i<len; i++ ) {
-					if ( this.$EVENTS_QUEUE[ eventName ][ i ] == callback ) {
-						this.$EVENTS_QUEUE[ eventName ].splice( i, 1 );
-						return;
+			if ( callback ) {
+
+				if ( this.$EVENTS_QUEUE && this.$EVENTS_QUEUE[ eventName ] ) {
+					for ( var i=0, len = this.$EVENTS_QUEUE[ eventName ].length; i<len; i++ ) {
+						if ( this.$EVENTS_QUEUE[ eventName ][ i ] == callback ) {
+							this.$EVENTS_QUEUE[ eventName ].splice( i, 1 );
+							return;
+						}
 					}
+				}
+			} else {
+				if ( typeof this.$EVENTS_QUEUE[ eventName ] != 'undefined' ) {
+					delete this.$EVENTS_QUEUE[ eventName ];
 				}
 			}
 
@@ -44,7 +67,14 @@ class UI_Event {
 
 	}
 
-	public fire( eventName, ...args ) {
+	/**
+	 * Fires all callbacks associated with event eventName. You can use "this" in the context
+	 * of the callbacks.
+	 *
+	 * @param eventName - the name of the event which should be fired.
+	 * @param ...args - arguments that are applied with the "this" context to each binded callback.
+	 */
+	public fire( eventName: string, ...args ) {
 
 		if ( this.$EVENTS_ENABLED ) {
 
@@ -58,6 +88,11 @@ class UI_Event {
 		}
 	}
 
+	/**
+	 * Adds a DOM Event listener on target, and stores a local event unbinder on this instance.
+	 * When calling the "free" method, all unbinders will be executed, removing memory references and
+	 * allowing the garbage collection to take place.
+	 */
 	public onDOMEvent( target: any, eventType: EEventType, callback: (e:Utils_Event_Generic) => void, phase: boolean = false, once: boolean = false ): Utils_Event_Unbinder {
 
 		var result: Utils_Event_Unbinder,
@@ -83,6 +118,9 @@ class UI_Event {
 		return result;
 	}
 
+	/**
+	 * Destructor. Unbinds all events and all dom event listeners.
+	 */
 	public free() {
 		if ( this.$DOM_EVENTS ) {
 			while ( this.$DOM_EVENTS[0] ) {
@@ -92,7 +130,9 @@ class UI_Event {
 		this.off(null, null);
 	}
 
-	// globally enables or disables all events fired.
+	/**
+	 * A method to enable or disable all events on this object.
+	 */
 	public setEventingState( enabled: boolean ) {
 		this.$EVENTS_ENABLED = !!enabled;
 	}

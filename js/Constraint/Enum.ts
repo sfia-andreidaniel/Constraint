@@ -1,3 +1,6 @@
+/**
+ * Class that is used by the .ui files parser to represent a native typescript enumeration type.
+ */
 class Constraint_Enum {
 	constructor( public value: any, public literal: string ) {}
 

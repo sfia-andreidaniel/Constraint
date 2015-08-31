@@ -1,3 +1,6 @@
+/**
+ * Class that is used by the .ui files parser ( Constraint ) to handle the language syntax.
+ */
 class Constraint_Token {
 
 	protected def: IToken = null;

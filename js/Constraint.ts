@@ -1,4 +1,6 @@
-// Main library file.
+/**
+ * Class that is used to parse .ui files.
+ */
 class Constraint {
 
 	public static tokens = {

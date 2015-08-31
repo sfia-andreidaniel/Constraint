@@ -1,3 +1,6 @@
+/**
+ * Class that is used by the .ui constraint parsers to handle a syntactic flow of instructions.
+ */
 class Constraint_Flow {
 
 	protected tokensStart: Constraint_Token[] = [];

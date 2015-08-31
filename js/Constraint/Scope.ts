@@ -1,5 +1,9 @@
 /// <reference path="../Utils/Array.ts" />
 
+/**
+ * Class that is used by the .ui constraint parser to manage data scopes (namespaces).
+ */
+
 class Constraint_Scope {
 
 	public static _anonymousId: number = 0;

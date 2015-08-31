@@ -4,6 +4,9 @@
 /// <reference path="../Utils/Date.ts" />
 /// <reference path="../Utils/String.ts" />
 
+/**
+ * Class that is used by the .ui file parser class (Constraint) to instantiate a data type.
+ */
 
 class Constraint_Type {
 
