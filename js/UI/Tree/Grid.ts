@@ -1,3 +1,13 @@
+/**
+ * The UI_Tree_Grid is an extended UI_Tree control, which aditionally to displaying
+ * a nested data structure, displays or allows the user to edit aditional properties,
+ * presented into columns.
+ *
+ * Sample UI_Tree_Grid control:
+ *
+ * ![tree1](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Tree_Grid.png "UI_TreeGrid")
+ *
+ */
 class UI_Tree_Grid extends UI_Tree implements IGridInterface {
 
 	private _paintContextColumn: UI_Column = null;

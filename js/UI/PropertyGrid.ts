@@ -1,6 +1,12 @@
 /**
  * The UI_PropertyGrid control allows the user to create in a super-fast time a
- * form for editing data.
+ * form for editing data. This control is typically used in programmer friendly
+ * interfaces.
+ *
+ * A sample UI_PropertyGrid control:
+ *
+ * ![prop1](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_PropertyGrid.png "UI_PropertyGrid")
+ *
  */
 class UI_PropertyGrid extends UI_Canvas implements IFocusable, IRowInterface {
 

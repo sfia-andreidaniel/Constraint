@@ -10,18 +10,9 @@ Constraint is a project that aims to implement an UI Framework for the browser. 
 * Separates UI from the code, by using a text file format called "ui". UI is UI, code is code. This greately improves code reusability and modularity.
 * works on Winows and Linux, because it's using open source projects
 
-## Available widgets set
+## Documentation
 
-
-#### UI_Tree
-See UI_Tree_Grid
-
-#### UI_Tree_Grid
-![tree1](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Tree_Grid.png "UI_TreeGrid")
-![tree2](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Tree_Grid-disabled.png "UI_TreeGrid disabled")
-
-#### UI_PropertyGrid
-![prop1](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_PropertyGrid.png "UI_PropertyGrid")
+An automatically generated documentation of Constraint framework can be found [at this address](http://www.browserfs.com/Constraint/docs/ "Constraint Documentation").
 
 
 ## Installation and usage.
@@ -38,7 +29,6 @@ See UI_Tree_Grid
 
     make resources  
     make demo
-
 
 
 * Load in your browser the repository address

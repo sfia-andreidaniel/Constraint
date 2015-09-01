@@ -1,4 +1,5 @@
-/* The UI_Tree control is a input which is used to represent nested data.
+/**
+ * The UI_Tree control is a input which is used to represent nested data.
  * It's items are either provided by the user via a JSON data, either are
  * automatically imported from a Store_Tree datset.
  *
