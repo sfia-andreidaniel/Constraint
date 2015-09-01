@@ -13,18 +13,6 @@ Constraint is a project that aims to implement an UI Framework for the browser. 
 ## Available widgets set
 
 
-#### UI_Panel
-
-#### UI_RadioBox
-![radiobox](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_RadioBox.png "UI_RadioBox")
-
-#### UI_Spinner
-![spinner1](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Spinner.png "UI_Spinner")
-![spinner2](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Spinner-disabled.png "UI_Spinner disabled")
-
-#### UI_TabsPanel, UI_Tab
-See the UI_Form
-
 #### UI_TextBox
 ![textbox](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_TextBox.png "UI_TextBox")
 ![textbox1](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_TextBox-disabled.png "UI_TextBox disabled")

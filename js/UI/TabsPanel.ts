@@ -1,3 +1,12 @@
+/**
+ * The UI_TabsPanel control allows grouping of multiple user interface pages,
+ * inside of a one-visible-at-a-time region, called Tabs.
+ *
+ * Sample UI_TabsPanel control:
+ *
+ * ![tabspanel](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_TabsPanel.png "UI_TabsPanel")
+ *
+ */
 class UI_TabsPanel extends UI implements IFocusable {
 
 	public static _theme: any = {

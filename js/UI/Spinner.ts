@@ -1,6 +1,18 @@
 /**
  * The UI_Spinner control is the cross-browser implementation of a
- * <input type="number" /> of HTML5. For consistency use this implementation.
+ * input type="number" of HTML5. It allows the user to input a numeric value,
+ * based on some rules / and / or restrictions.
+ *
+ * UI_Spinner samples:
+ *
+ * A normal UI_Spinner control:
+ *
+ * ![spinner1](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Spinner.png "UI_Spinner")
+ *
+ * A disabled UI_Spinner control:
+ *
+ * ![spinner2](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Spinner-disabled.png "UI_Spinner disabled")
+ *
  */
 class UI_Spinner extends UI implements IFocusable, IInput {
 

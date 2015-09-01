@@ -1,3 +1,11 @@
+/**
+ * The UI_RadioBox is a input which allows, in combination with a set of similar
+ * inputs to let the user to select a unique values.
+ *
+ * UI_RadioBox samples:
+ *
+ * ![radiobox](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_RadioBox.png "UI_RadioBox")
+ */
 class UI_RadioBox extends UI implements IFocusable, IInput {
 	
 	public static _theme = {
