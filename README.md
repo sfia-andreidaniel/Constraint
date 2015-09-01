@@ -13,23 +13,6 @@ Constraint is a project that aims to implement an UI Framework for the browser. 
 ## Available widgets set
 
 
-#### UI_HorizontalSlider, UI_VerticalSlider
-![slider2](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_VerticalSlider-active.png "UI_VerticalSlider")
-![slider](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_VerticalSlider-disabled.png "UI_VerticalSlider disabled")
-
-#### UI_HorizontalSplitter, UI_VerticalSplitter
-![splitter](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_HorizontalSplitter.png "UI_HorizontalSplitter")
-![splitter2](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_VerticalSplitter.png "UI_VerticalSplitter")
-
-#### UI_Label
-
-#### UI_ListBox
-![listbox](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_ListBox.png "UI_ListBox")
-![](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_ListBox-inactive.png "UI_ListBox inactive")
-
-#### UI_MenuBar
-See the menubar from the UI_Form
-
 #### UI_Panel
 
 #### UI_RadioBox

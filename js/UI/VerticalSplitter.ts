@@ -1,3 +1,13 @@
+/**
+ * An UI_VerticalSplitter is a control which enables the user to resize a layout section
+ * via a mouse drag operation. It's role is to let the users to customize on their own
+ * the appearence of their layout, depending on their needs.
+ *
+ * An UI_VerticalSplitter sample ( in it's hovered state ):
+ *
+ * ![splitter2](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_VerticalSplitter.png "UI_VerticalSplitter")
+ *
+ */
 class UI_VerticalSplitter extends UI {
 	
 	public static _theme: any = {

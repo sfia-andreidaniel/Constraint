@@ -1,3 +1,9 @@
+/**
+ * An UI_Label is a single-line arbitrary placed text in a form. It is typically
+ * placed near text inputs or other input types, as a hint of what the neighbour
+ * input is doing.
+ *
+ */
 class UI_Label extends UI {
 	
 	public static _theme = {

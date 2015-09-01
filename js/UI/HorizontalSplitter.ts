@@ -1,3 +1,14 @@
+/**
+ * An UI_HorizontalSplitter is a control which enables the user to resize a layout section
+ * via a mouse drag operation. It's role is to let the users to customize on their own
+ * the appearence of their layout, depending on their needs.
+ *
+ * An UI_HorizontalSplitter sample ( in it's hovered state ):
+ *
+ * ![splitter](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_HorizontalSplitter.png "UI_HorizontalSplitter")
+ *
+ */
+
 class UI_HorizontalSplitter extends UI_VerticalSplitter {
 	
 	public static _theme: any = {

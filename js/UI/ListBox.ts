@@ -1,3 +1,15 @@
+/**
+ * An UI_ListBox is a list from which the user can select values or multiple values,
+ * via it's mouse or it's keyboard.
+ *
+ * An UI_ListBox representation:
+ *
+ * ![listbox](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_ListBox.png "UI_ListBox")
+ *
+ * An inactive UI_ListBox representation:
+ *
+ * ![inactivelistbox](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_ListBox-inactive.png "UI_ListBox inactive")
+ */
 class UI_ListBox extends UI_Canvas implements IFocusable, IRowInterface, IInput {
 	
 	public static _theme: any = {

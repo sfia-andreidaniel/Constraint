@@ -1,3 +1,11 @@
+/**
+ * The UI_MenuBar is a component that renders as a window menu, below the titlebar
+ * of a UI_Form.
+ *
+ * Sample menubar:
+ *
+ * ![menubar](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_MenuBar.png "UI_MenuBar")
+ */
 class UI_MenuBar extends UI implements IFocusable {
 
 	// IFocusable interface
