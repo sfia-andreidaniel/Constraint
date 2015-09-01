@@ -13,11 +13,6 @@ Constraint is a project that aims to implement an UI Framework for the browser. 
 ## Available widgets set
 
 
-#### UI_TextBox
-![textbox](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_TextBox.png "UI_TextBox")
-![textbox1](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_TextBox-disabled.png "UI_TextBox disabled")
-![textbox2](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_TextBox-password.png "UI_TextBox password")
-
 #### UI_Tree
 See UI_Tree_Grid
 

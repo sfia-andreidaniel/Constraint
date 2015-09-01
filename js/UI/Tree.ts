@@ -1,7 +1,10 @@
-/*  Events emitted by the tree:
-
-	
-
+/* The UI_Tree control is a input which is used to represent nested data.
+ * It's items are either provided by the user via a JSON data, either are
+ * automatically imported from a Store_Tree datset.
+ *
+ * A representation of a UI_Tree:
+ *
+ * ![tree](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Tree.png "UI_Tree")
  */
 
 class UI_Tree extends UI_Canvas implements IFocusable, IRowInterface, IInput {

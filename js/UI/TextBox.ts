@@ -1,3 +1,21 @@
+/**
+ * The UI_TextBox is a single-line text control, that allows the user to input text.
+ *
+ * Sample UI_TextBox controls:
+ *
+ * Normal UI_TextBox, where user can write into:
+ *
+ * ![textbox](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_TextBox.png "UI_TextBox")
+ *
+ * Disabled UI_TextBox, where user cannot write:
+ *
+ * ![textbox1](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_TextBox-disabled.png "UI_TextBox disabled")
+ *
+ * A password UI_TextBox, where the user can input a password:
+ *
+ * ![textbox2](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_TextBox-password.png "UI_TextBox password")
+ *
+ */
 class UI_TextBox extends UI implements IFocusable, IInput {
 
 	public static _theme = {

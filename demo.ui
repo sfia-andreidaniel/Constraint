@@ -6,7 +6,7 @@
 	 */
 	$awaits resource Constraint;
 
-	
+
 
 	width: 800;
 	height: 400;
@@ -319,7 +319,7 @@
 				};
 			};
 
-			@UI_Tree_Grid Tree0 {
+			@UI_Tree Tree0 {
 				left: 20;
 				top: Grid0 bottom 10;
 				right: 20;
@@ -434,7 +434,7 @@
 						}
 					]
 				]]>;
-
+				
 			    @UI_Column {
 			    	caption: '#';
 			    	freezed: true;
