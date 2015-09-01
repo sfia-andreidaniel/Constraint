@@ -1,0 +1,158 @@
+// [PackageDev] target_format: plist, ext: tmLanguage
+{ "name": "Constraint UI",
+  "scopeName": "source.ui",
+  "fileTypes": ["ui"],
+  "uuid": "23d9f3d7-a282-4afd-9e38-e232e15c03f6",
+
+  "patterns": [
+    { "include": "#expression" }
+  ],
+
+  "repository": {
+
+	"comment-block": {
+      "name": "comment.block.ui",
+      "begin": "/\\*",
+      "end": "\\*/",
+      "captures": {
+        "0": { "name": "punctuation.definition.comment.ui" }
+      }
+    },
+	"comment-line": {
+      "name": "comment.line.double-slash.ui",
+      "match": "(//).*$\n?",
+      "captures": {
+        "1": { "name": "punctuation.definition.comment.ui" }
+      }
+    },
+    "comment-awaits": {
+    	"name": "constant.character.escape.ui",
+    	"begin": "\\$awaits resource",
+    	"end": " "
+    },
+
+    "comment": {
+      "name": "comment.ui",
+      "patterns": [
+        { "include": "#comment-block" },
+        { "include": "#comment-line" },
+        { "include": "#comment-awaits" }
+      ]
+    },
+
+    "string-quoted-single": {
+      "name": "string.quoted.single.ui",
+      "begin": "'",
+      "end": "'",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.string.begin.ui" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.string.end.ui" }
+      },
+      "patterns": [
+        {
+          "name": "constant.character.escape.ts",
+          "match": "\\'\\'"
+        }
+      ]
+    },
+
+    "string-json": {
+    	"name": "string.unquoted.cdata.ui",
+    	"begin": "<!\\[JSON\\[(\\s+)?",
+    	"end": "(\\s+)?\\]\\]>"
+    },
+
+    "string": {
+    	"name": "string.ui",
+    	"patterns": [
+    		{
+    			"include": "#string-quoted-single"
+    		},
+    		{
+    			"include": "#string-json"
+    		},
+    		{
+    			"include": "#string-awaits"
+    		}
+    	]
+    },
+
+    "block-braces-curly": {
+      "name": "meta.expression.braces.curly",
+      "begin": "\\{",
+      "end": "\\}",
+      "beginCaptures": {
+        "0": { "name": "meta.brace.curly.ui" }
+      },
+      "endCaptures": {
+        "0": { "name": "meta.brace.curly.ui" }
+      },
+      "patterns": [
+        { "include": "#expression" }
+      ]
+    },
+
+    "block-braces-square": {
+      "name": "meta.expression.braces.square",
+      "begin": "\\[",
+      "end": "\\]",
+      "beginCaptures": {
+        "0": { "name": "meta.brace.square.ui" }
+      },
+      "endCaptures": {
+        "0": { "name": "meta.brace.square.ui" }
+      },
+      "patterns": [
+        { "include": "#expression" }
+      ]
+    },
+
+    "block": {
+      "name": "block.ui",
+      "patterns": [
+        { "include": "#block-braces-curly" },
+        { "include": "#block-braces-square" }
+      ]
+    },
+
+    "misc-higlighting": {
+    	"name": "misc.ui",
+        "comment": "This patterns are not affecting scope rules and are usefull for higlighting purposes only",
+        "patterns": [
+	        {
+		          "name": "constant.numeric.ui",
+		          "match": "\\b([0-9]+(\\.[0-9]+)?)\\b"
+        	},
+			{
+          		"name": "constant.language.boolean.true.ui",
+          		"match": "\\btrue|yes\\b"
+        	},
+        	{
+          		"name": "constant.language.boolean.false.ui",
+          		"match": "\\bfalse|no\\b"
+        	},
+	        {
+	          "name": "constant.language.null.ui",
+	          "match": "\\bnull\\b"
+	        },
+	        {
+	          "name": "support.function.ui",
+	          "match": "\\b[A-Z_]+\\b"
+	        }
+        ]
+    },
+
+  	"expression": {
+  		"name": "meta.expression.ui",
+  		"comment": "The main building block",
+  		"patterns": [
+  			{ "include": "#comment" },
+  			{ "include": "#string" },
+  			{ "include": "#block" },
+  			{ "include": "#misc-higlighting"}
+  		]
+  	}
+  }
+}
