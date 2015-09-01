@@ -12,7 +12,7 @@ Constraint is a project that aims to implement an UI Framework for the browser. 
 
 ## Documentation
 
-An automatically generated documentation of Constraint framework can be found [at this address](http://www.browserfs.com/Constraint/docs/ "Constraint Documentation").
+An automatically generated documentation of Constraint framework can be found [at this address](http://www.browserfs.com/constraint/ "Constraint Documentation").
 
 
 ## Installation and usage.
