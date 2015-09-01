@@ -12,26 +12,6 @@ Constraint is a project that aims to implement an UI Framework for the browser. 
 
 ## Available widgets set
 
-#### UI_Button
-![button](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Button.png "UI_Button")
-![button-disabled](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Button-disabled.png "UI_Button_Disabled")
-
-#### UI_CheckBox
-![checkbox](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_CheckBox.png "UI_CheckBox")
-
-#### UI_DateBox
-![datebox](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_DateBox.png "UI_DateBox")
-![datebox-disabled](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_DateBox-disabled.png "UI_DateBox disabled")
-![datebox-expanded](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_DateBox-expanded.png "UI_DateBox expanded")
-
-#### UI_DropDown
-![dropdown](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_DropDown.png "UI_DropDown")
-![dropdown-disabled](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_DropDown-disabled.png "UI_DropDown disabled")
-![dropdown-expanded](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_DropDown-expanded.png "UI_DropDown expanded")
-
-
-#### UI_Form
-![form](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/demo_form.png "UI_Form")
 
 #### UI_Grid
 ![grid](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Grid.png "UI_Grid")

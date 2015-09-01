@@ -1,4 +1,19 @@
-/* A form is a dialog in UI Concepts.
+/* An UI_Form is a Window ( aka Dialog, Form, etc. ) implementation in this framework.
+ *
+ * Various UI_Form window types:
+ *
+ * Standard form, with all form buttons ( this.formStyle = EFormStyle.FORM )
+ *
+ * ![form](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Form.png "UI_Form")
+ *
+ * MDI form ( this.formStyle = EFormStyle.MDI )
+ *
+ * ![mdiform](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Form-mdi.png "UI_Form-mdi")
+ *
+ * Form without any borders ( this.borderStyle = EBorderStyle.NONE )
+ *
+ * ![noborderform](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Form-borderstyle-none.png "UI_Form-borderstyle-none")
+ *
  */
 class UI_Form extends UI implements IFocusable {
 	

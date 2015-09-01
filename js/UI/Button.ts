@@ -1,3 +1,14 @@
+/**
+ * The UI_Button class represents a standard user interface button.
+ *
+ * Focused enabled button:
+ *
+ * ![button](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Button.png "UI_Button")
+ *
+ * Disabled button:
+ *
+ * ![button-disabled](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Button-disabled.png "UI_Button_Disabled")
+ */
 class UI_Button extends UI implements IFocusable {
 	
 	public static _theme = {

@@ -1,3 +1,11 @@
+/**
+ * The UI_CheckBox class represent a standard user interface checkbox control. Optionally,
+ * setting it's tri-state property to true, the checkbox can become a tri-state one.
+ *
+ * Sample checkboxes (focused, disabled, and tri-state):
+ *
+ * ![checkbox](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_CheckBox.png "UI_CheckBox")
+ */
 class UI_CheckBox extends UI implements IFocusable, IInput {
 	
 	public static _theme = {

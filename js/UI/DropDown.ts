@@ -1,10 +1,23 @@
 /**
- * The UI_DropDown class represents a [select] DOM node. The difference between a standard
- * [select] DOM node and UI_DropDown is that the options of the UI_DropDown are rendered on
- * the UI_Screen overlay, without filling the dom tree with it's options elements.
+ * The UI_DropDown class is the standard <select> HTML 5 imput implementation. The difference between
+ * the html5 <select> and the UI_DropDown input, is that the options of the UI_DropDown input stores
+ * it's options in memory, without creating DOM nodes, allowing the user to manipulate a larger set
+ * of options (100.000 ?).
  *
- * This way, you can create a dropdown with 20.000 options, without populating the dom with
- * those options.
+ * The expanded overlay of the UI_DropDown is rendered on the UI_Screen canvas, allowing everything
+ * to work and move smooth.
+ *
+ * A standard UI_DropDown input:
+ *
+ * ![dropdown](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_DropDown.png "UI_DropDown")
+ *
+ * A disabled UI_DropDown input:
+ *
+ * ![dropdown-disabled](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_DropDown-disabled.png "UI_DropDown disabled")
+ *
+ * An expanded UI_DropDown input:
+ *
+ * ![dropdown-expanded](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_DropDown-expanded.png "UI_DropDown expanded")
  *
  */
 class UI_DropDown extends UI implements IFocusable, IInput {

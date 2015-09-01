@@ -1,5 +1,18 @@
 /**
- * This is a Date Picker control, allowing the user to input dates.
+ * The UI_DateBox control implements an input where user can input dates and date-times in various formats.
+ *
+ * A non-expanded datebox control:
+ *
+ * ![datebox](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_DateBox.png "UI_DateBox")
+ *
+ * A disabled datebox control:
+ *
+ * ![datebox-disabled](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_DateBox-disabled.png "UI_DateBox disabled")
+ *
+ * An expanded datebox control, where user can pick a date:
+ *
+ * ![datebox-expanded](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_DateBox-expanded.png "UI_DateBox expanded")
+ *
  */
 class UI_DateBox extends UI implements IFocusable, IInput {
 
