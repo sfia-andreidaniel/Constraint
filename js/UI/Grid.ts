@@ -1,5 +1,9 @@
 /**
  * The UI_Grid component is an (editable) Grid control.
+ *
+ * Sample UI_Grid control:
+ *
+ * ![grid](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Grid.png "UI_Grid")
  */
 class UI_Grid extends UI_Canvas implements IRowInterface, IGridInterface, IFocusable {
 

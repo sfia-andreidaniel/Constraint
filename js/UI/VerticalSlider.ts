@@ -1,7 +1,17 @@
 /**
- * The UI_VerticalSlider input is a cross-browser implementation of it's html5
- * input type = range
+ * An UI_VerticalSlider is an input from which the user can select a value from
+ * a range of values by dragging or using it's keyboard arrows.
+ *
+ * Representation of a standard UI_VerticalSlider:
+ *
+ * ![slider2](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_VerticalSlider-active.png "UI_VerticalSlider")
+ *
+ * A disabled UI_VerticalSlider input:
+ *
+ * ![slider](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_VerticalSlider-disabled.png "UI_VerticalSlider disabled")
+ *
  */
+
 class UI_VerticalSlider extends UI implements IInput, IFocusable {
 	
 	public static _theme = {

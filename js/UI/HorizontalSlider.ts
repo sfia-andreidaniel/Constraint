@@ -1,6 +1,17 @@
 /**
- * See UI_VerticalSlider for available properties list.
+ * An UI_HorizontalSlider is an input from which the user can select a value from
+ * a range of values by dragging or using it's keyboard arrows.
+ *
+ * Representation of a standard UI_HorizontalSlider:
+ *
+ * ![slider2](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_HorizontalSlider-active.png "UI_HorizontalSlider")
+ *
+ * A disabled UI_HorizontalSlider input:
+ *
+ * ![slider](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_HorizontalSlider-disabled.png "UI_HorizontalSlider disabled")
+ *
  */
+
 class UI_HorizontalSlider extends UI_VerticalSlider {
 
 	constructor( owner: UI ) {

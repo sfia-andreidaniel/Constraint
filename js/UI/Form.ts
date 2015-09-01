@@ -1,4 +1,5 @@
-/* An UI_Form is a Window ( aka Dialog, Form, etc. ) implementation in this framework.
+/**
+ * An UI_Form is a Window ( aka Dialog, Form, etc. ) implementation in this framework.
  *
  * Various UI_Form window types:
  *
