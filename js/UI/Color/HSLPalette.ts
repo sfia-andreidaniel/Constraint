@@ -1,3 +1,13 @@
+/**
+ * The UI_Color_HSLPalette renders on a canvas all Light variations of a color,
+ * based on it's Hue and Saturation values.
+ *
+ * It is used by the standard dialog UI_Dialog_ColorBox.
+ *
+ * Sample UI_Color_HSLPalette:
+ *
+ * ![hslpalette](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Color_HSLPalette.png "UI_Color_HSLPalette")
+ */
 class UI_Color_HSLPalette extends UI_Canvas {
 	
 	private _hue: number = 0;

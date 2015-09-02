@@ -24,6 +24,7 @@ class UI_Button extends UI implements IFocusable {
 	protected _caption: string = 'Button';
 	protected _icon: string = null;
 	protected _textAlign: EAlignment = EAlignment.CENTER;
+	protected _id: any = null;
 
 	public    active: boolean; // the active is overrided by the MFocusable mixin
 	public    wantTabs: boolean = false;
@@ -68,6 +69,14 @@ class UI_Button extends UI implements IFocusable {
 		if ( name != this._icon ) {
 			this._icon = name;
 		}
+	}
+
+	get id(): any {
+		return this._id;
+	}
+
+	set id( id: any ) {
+		this._id = id;
 	}
 
 	protected _initDom_() {

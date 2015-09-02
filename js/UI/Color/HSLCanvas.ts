@@ -1,3 +1,11 @@
+/**
+ * The UI_Color_HSLCanvas is a canvas Hue / Saturation control, used by the
+ * standard UI_Dialog_ColorBox dialog.
+ *
+ * Sample UI_Color_HSLCanvas control:
+ * 
+ * ![hslcanvas](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Color_HSLCanvas.png "UI_Color_HSLCanvas")
+ */
 class UI_Color_HSLCanvas extends UI_Canvas implements IFocusable {
 	
 	public    active: boolean; // the active is overrided by the MFocusable mixin
