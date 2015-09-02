@@ -19,10 +19,18 @@ class UI_DialogManager extends UI_Event {
 	public  screen: UI_Screen;
 
 	private _activeWindow: UI_Form = null;
+	private _zIndexId: number = 0;
+
+	private _zIndexThrottler: UI_Throttler;
 
 	constructor() {
 		super();
 		this._setupEvents_();
+		(function(me) {
+			me._zIndexThrottler = new UI_Throttler(function() {
+				me.doUpdateZIndex();
+			}, 1);
+		})(this);
 	}
 
 	get pointerX(): number {
@@ -40,6 +48,11 @@ class UI_DialogManager extends UI_Event {
 			}
 		}
 		return ~~this._desktopWidth;
+	}
+
+	get zIndexId(): number {
+		this._zIndexId++;
+		return this._zIndexId;
 	}
 
 	get desktopHeight(): number {
@@ -223,6 +236,73 @@ class UI_DialogManager extends UI_Event {
 		this.handleTabKey(Utils_Event_Keyboard.createFrom( { "keyCode": 8, "charCode": 8, "shiftKey": true } ), force);
 	}
 
+	public updateZIndex() {
+		if ( this._zIndexThrottler ) {
+			this._zIndexThrottler.run();
+		}
+	}
+
+	private doUpdateZIndex() {
+
+		function numberOfParents( form: UI_Form ): number {
+			if ( form.mdiParent ) {
+				return 1 + numberOfParents(form.mdiParent);
+			} else {
+				return 0;
+			}
+		}
+
+		function hasFocusedMDIChild( form: UI_Form ) {
+			if ( form.mdiChildForms ) {
+				for (var i = 0, forms = form.mdiChildForms || [], len = forms.length; i < len; i++ ) {
+					if ( forms[i].active || hasFocusedMDIChild( forms[i] ) ) {
+						return true;
+					}
+				}
+				return false;
+			}
+		}
+
+		function isFocusedParentForm( form: UI_Form ): boolean {
+			return form.active || (form.mdiParent && isFocusedParentForm(form.mdiParent));
+		}
+
+		function isFormActive( form: UI_Form ) {
+			return isFocusedParentForm(form) || hasFocusedMDIChild(form);
+		}
+
+		function walkFormRealFocusOrder( form: UI_Form ): number {
+			var result: number = form.focusOrder;
+
+			if ( form.mdiChildForms ) {
+				for (var forms = form.mdiChildForms || [], len = forms.length, i = 0; i < len; i++ ) {
+					result = Math.max(result, walkFormRealFocusOrder(forms[i]));
+				}
+			} else {
+				return result;
+			}
+		}
+
+		function getFormRealFocusOrder( form: UI_Form ): number {
+			var cursor: UI_Form = form;
+			
+			while ( cursor.mdiParent ) {
+				cursor = cursor.mdiParent;
+			}
+
+			return walkFormRealFocusOrder(cursor);
+		}
+
+		this.windows.sort(function(a: UI_Form, b: UI_Form): number {
+			return getFormRealFocusOrder(b) - getFormRealFocusOrder(a);
+		});
+
+		for (var i = 0, len = this.windows.length; i < len; i++ ) {
+			this.windows[i].zIndex =  ( i * 100 ) + i + (~~isFormActive(this.windows[i]) * 50000) + (numberOfParents(this.windows[i]) * 10) + ~~this.windows[i].active * 1000;
+		}
+
+	}
+
 	private _setupEvents_() {
 		( function( manager ) {
 
@@ -244,7 +324,13 @@ class UI_DialogManager extends UI_Event {
 						    win: UI_Form;
 
 						if ( manager.screen.visible ) {
-							return;
+							
+							if ( !manager.screen.handleMouseDown( evt ) ) {
+								manager.screen.visible = false;
+							} else {
+								return;
+							}
+
 						}
 
 						while ( target && target != document.documentElement ) {
@@ -268,7 +354,7 @@ class UI_DialogManager extends UI_Event {
 							target = target.parentNode;
 						}
 
-						//manager.activeWindow = null;
+						manager.activeWindow = null;
 
 					}, true );
 

@@ -47,7 +47,7 @@ class UI_Screen extends UI_Event {
 					break;
 				case false:
 
-					for ( var i=0, len = this._windows.length; i<len; i++ ) {
+					for ( var i=this._windows.length - 1; i>=0; i-- ) {
 						this._windows[i].close();
 					}
 

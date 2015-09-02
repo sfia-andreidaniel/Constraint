@@ -577,6 +577,8 @@ class UI_Resource extends UI_Event {
 
 			for ( var j=0, n = subscriber.requirements.length; j<n; j++ ) {
 				
+				loaded = 0;
+
 				name = subscriber.requirements[ j ];
 
 				// If anything in the error loop, reject.

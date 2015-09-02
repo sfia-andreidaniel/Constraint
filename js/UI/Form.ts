@@ -86,6 +86,8 @@ class UI_Form extends UI implements IFocusable {
 	protected _mdiParent: UI_Form = null;
 	protected _mdiLocks: number = 0;
 	protected _modal: boolean = false;
+	protected _zIndex: number = 1;
+	private   _focusOrder: number = 0;
 
 	private   _mdiChildStateChangedHandler: ( child: UI_Form, newState: EFormState ) => void;
 
@@ -100,6 +102,7 @@ class UI_Form extends UI implements IFocusable {
 
 		this._root = Utils.dom.create( 'div', 'ui UI_Form state-normal border-normal style-form placement-auto' );
 		this._root.tabIndex = 0; // make the window focusable.
+		this._root.style.zIndex = String( this._zIndex );
 
 		this._root.appendChild( this._dom.inner );
 		this._dom.inner.appendChild( this._dom.n );
@@ -179,15 +182,18 @@ class UI_Form extends UI implements IFocusable {
 				if ( resources.length ) {
 					return UI_Resource.require( resources );
 				} else {
-					return true;
+					return Promise.resolve();
 				}
 			} )
-			.then( function() {
+			.then( function( ) {
+
 				self.paintable = true;
 				UI_DialogManager.get.desktop.appendChild( self._root );
 				self.onRepaint();
+				self.updateFocusOrder( self._focusOrder = UI_DialogManager.get.zIndexId );
 				UI_DialogManager.get.onWindowOpened( self );
 				self.fire( 'open' );
+				UI_DialogManager.get.updateZIndex();
 				return self;
 			} );
 
@@ -422,6 +428,8 @@ class UI_Form extends UI implements IFocusable {
 			this._active = on;
 			if ( this._active ) {
 				Utils.dom.addClass( this._root, 'focus-active' );
+				this.updateFocusOrder( this._focusOrder = UI_DialogManager.get.zIndexId );
+				UI_DialogManager.get.updateZIndex();
 			} else {
 				Utils.dom.removeClass( this._root, 'focus-active' );
 			}
@@ -431,6 +439,10 @@ class UI_Form extends UI implements IFocusable {
 		if ( this._active ) {
 			UI_DialogManager.get.activeWindow = this;
 		}
+	}
+
+	get mdiChildForms(): UI_Form[] {
+		return this._mdiForms || null;
 	}
 
 	/* Read-Only. An auto-increment value, used to unique identify each window
@@ -459,6 +471,8 @@ class UI_Form extends UI implements IFocusable {
 			
 			// SETUP FOCUSING
 			form.onDOMEvent( form._root, EEventType.MOUSE_DOWN, function( evt: Utils_Event_Mouse ) {
+
+				UI_Screen.get.visible = false;
 
 				if ( form._mdiLocks == 0 ) {
 					form.focused = true; 
@@ -1180,6 +1194,31 @@ class UI_Form extends UI implements IFocusable {
 				} )( this );
 
 				break;
+		}
+	}
+
+	get zIndex(): number {
+		return this._zIndex;
+	}
+
+	set zIndex( index: number ) {
+		index = ~~index || 1;
+		if ( index < 1 ) {
+			index = 1;
+		}
+		if ( index != this._zIndex ) {
+			this._zIndex = index;
+			this._root.style.zIndex = String( index );
+		}
+	}
+
+	get focusOrder(): number {
+		return this._focusOrder;
+	}
+
+	protected updateFocusOrder( order: number ) {
+		if ( this._mdiParent ) {
+			this._mdiParent['_focusOrder'] = order;
 		}
 	}
 

@@ -345,6 +345,7 @@
 			color: {
 				normal: $normalFontColor;
 				disabled: $disabledFontColor;
+				inactive: white;
 			};
 		};
 

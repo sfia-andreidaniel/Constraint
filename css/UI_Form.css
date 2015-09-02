@@ -3,6 +3,7 @@
 	-webkit-box-shadow: 3px 4px 28px 0px rgba(0,0,0,0.75);
 	-moz-box-shadow: 3px 4px 28px 0px rgba(0,0,0,0.75);
 	box-shadow: 3px 4px 28px 0px rgba(0,0,0,0.75);
+	z-index: 1;
 }
 
 .ui.UI_Form > .inner {
@@ -65,25 +66,13 @@
 	height: ${titlebar.height}px;
 }
 
-.ui.UI_Form:not(.mdi-parent):not(.focus-active) {
-	z-index: 1000;
-}
-
-.ui.UI_Form.mdi-active {
-	z-index: 9000;
-}
-
 .ui.UI_Form.mdi-locked > .inner > .body,
-.ui.UI_Form.mdi-locked > .inner > .menubar {
+.ui.UI_Form.mdi-locked > .inner > .menubar > * {
 	pointer-events: none !important;
 	-webkit-pointer-events: none !important;
 	-moz-pointer-events: none !important;
 	-ms-pointer-events: none !important;
 	-o-pointer-events: none !important;
-}
-
-.ui.UI_Form.focus-active {
-	z-index: 10000;
 }
 
 .ui.UI_Form.focus-active > .inner > .titlebar > .caption,

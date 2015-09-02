@@ -4,6 +4,12 @@
 	display: block;
 	padding: 0;
 	margin: 0;
+
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
 }
 
 .ui.UI_Toolbar > .ui.UI_Button {
@@ -40,6 +46,16 @@
 	background-color: ${border.inactiveColor};
 }
 
-.ui.UI_Form.focus-active .ui.UI_Toolbar {
+.ui.UI_Form.focus-active .ui.UI_Toolbar,
+.ui.UI_Form.mdi-active .ui.UI_Toolbar {
 	background-color: ${border.activeColor};
+}
+
+.ui.UI_Toolbar > .ui.UI_Button:not(.disabled) > .caption {
+	color: ${titlebar.inactiveColor};
+}
+
+.ui.UI_Form.focus-active .ui.UI_Toolbar > .ui.UI_Button:not(.disabled) > .caption,
+.ui.UI_Form.mdi-active .ui.UI_Toolbar > .ui.UI_Button:not(.disabled) > .caption {
+	color: ${titlebar.activeColor};
 }

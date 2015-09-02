@@ -171,11 +171,20 @@ class UI_Button extends UI implements IFocusable {
 		}
 	}
 
-	public click() {
+	public click( target: any = null ) {
 		if ( !this.disabled ) {
-			this.fire('click');
-			if ( this._action ) {
-				this.form.fire('action', this._action, null, false, this);
+
+			if (target === null || target != this._dom.expander) {
+
+				this.fire('click');
+				if (this._action) {
+					this.form.fire('action', this._action, null, false, this);
+				}
+
+			} else {
+
+				this.expanded = true;
+
 			}
 		}
 	}
@@ -184,7 +193,7 @@ class UI_Button extends UI implements IFocusable {
 		( function( me ) {
 			
 			me.onDOMEvent( me._root, EEventType.CLICK, function( ev: Utils_Event_Mouse ) {
-				me.click();
+				me.click( ev.target );
 				ev.handled = true;
 			}, false );
 
@@ -231,6 +240,12 @@ class UI_Button extends UI implements IFocusable {
 				Utils.dom.removeClass( this._root, 'default-button' );
 
 			} );
+
+			me.on('blur', function() {
+				if ( me.expanded ) {
+					me.expanded = false;
+				}
+			});
 
 		} )( this );
 	}
@@ -295,13 +310,13 @@ class UI_Button extends UI implements IFocusable {
 
 					me._menu.on('open', function() {
 						me.fire('expand');
-						console.log('open...');
+						Utils.dom.addClass(me._root, 'expanded');
 						me.onRepaint();
 					});
 
 					me._menu.on('close', function() {
 						me.fire('collapse');
-						console.log('close...');
+						Utils.dom.removeClass(me._root, 'expanded');
 						me.onRepaint();
 					});
 

@@ -194,6 +194,7 @@ class UI_MenuBar extends UI implements IFocusable {
 			} );
 
 			menuBar.on( 'focus', function() {
+
 				Utils.dom.addClass( this._root, 'focused' );
 				
 				if ( menuBar.focusedItem === null )
