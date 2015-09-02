@@ -41,6 +41,7 @@
 	/* SYSTEM ICONS */
 	folder                      from '../vendor/gnome/Gnome-folder.png'           16x16 20x20 disabled;
 	file                        from '../vendor/gnome/Gnome-text-x-preview.png'   16x16 20x20 disabled;
+	ico_edit_save               from '../vendor/gnome/Gnome-document-save.png'    16x16 20x20 disabled;
 
 	/* DIALOG BOXES */
 	mb_alert                    from '../vendor/self/mb-alert.png'                64x64;

@@ -97,6 +97,12 @@
 			size: $fontSize;
 			family: $fontFamily;
 		};
+
+		expander: {
+			collapsed: 'Constraint/collapsed_sign/20x20';
+			expanded: 'Constraint/expanded_sign/20x20';
+		};
+
 	};
 
 	@Theme UI_CheckBox {
@@ -649,6 +655,27 @@
 			expanded:  'Constraint/collapsed_sign/20x20';
 			collapsed: 'Constraint/menuitem_expander/20x20';
 		};
+	};
+
+	@Theme UI_Toolbar {
+		defaults: {
+			height: 60;
+			margin: 5;
+		};
+
+		/**
+		 * Some defaults for the children of UI_Toolbar.
+		 */
+		components: <![JSON[
+			{
+				"UI_Button": {
+					"width": 40,
+					"menu?": {
+						"width": 60
+					}
+				}
+			}
+		]]>;
 	};
 
 };

@@ -258,7 +258,7 @@ class UI_Layout extends UI_Event {
 
 	set itemFixedWidth( width: number ) {
 		width = ~~width;
-		width = width <= 0 ? null : width;
+		width = width == 0 ? null : ( width < -1 ? -1 : width );
 		if ( width != this._itemFixedWidth ) {
 			this._itemFixedWidth = width;
 			this.compute();
@@ -271,7 +271,7 @@ class UI_Layout extends UI_Event {
 
 	set itemFixedHeight( height: number ) {
 		height = ~~height;
-		height = height <= 0 ? null : height;
+		height = height == 0 ? null : ( height < -1 ? -1 : height );
 		if ( height != this._itemFixedHeight ) {
 			this._itemFixedHeight = height;
 			this.compute();
@@ -379,18 +379,33 @@ class UI_Layout extends UI_Event {
 
 		for ( i=0; i<len; i++ ) {
 
-			currentWidth = cols[ col ] <= 1
-				? ~~( rect.width * cols[ col ] )
-				: cols[ col ];
+			if (this._itemFixedWidth !== -1) {
+				currentWidth = cols[col] <= 1
+					? ~~(rect.width * cols[col])
+					: cols[col];
+			} else {
+				currentWidth = children[i].width;
+			}
 
-			currentHeight = rows[ row ] <= 1
-				? ~~( rect.height * rows[ row ] )
-				: rows[ row ];
+			if ( this._itemFixedHeight !== -1 ) {
+				currentHeight = rows[ row ] <= 1
+					? ~~( rect.height * rows[ row ] )
+					: rows[ row ];
+			} else {
+				currentHeight = children[i].height;
+			}
 
 			children[ i ].left = currentLeft;
 			children[ i ].top  = currentTop;
-			children[ i ].width = this._itemFixedWidth === null ? currentWidth : this._itemFixedWidth;
-			children[ i ].height = this._itemFixedHeight === null ? currentHeight : this._itemFixedHeight;
+			
+			if ( this._itemFixedWidth !== -1 ) {
+				children[ i ].width = this._itemFixedWidth === null ? currentWidth : this._itemFixedWidth;
+			}
+			
+			if ( this._itemFixedHeight !== -1 ) {
+				children[ i ].height = this._itemFixedHeight === null ? currentHeight : this._itemFixedHeight;
+			}
+
 			children[ i ].right = null;
 			children[ i ].bottom = null;
 

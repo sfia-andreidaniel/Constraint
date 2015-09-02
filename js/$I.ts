@@ -73,6 +73,10 @@ class $I {
 		return <string>$I._get_( path );
 	}
 
+	public static json( path: string ): any {
+		return $I._get_(path);
+	}
+
 	public static color( path: string ): UI_Color {
 		return <UI_Color>$I._get_( path );
 	}
@@ -86,7 +90,7 @@ class $I {
 			.replace( /\{\$R[\s]+([a-zA-Z\/\\\.\-_\$\s]+)([\s]+)?\}/g, function( substr: string, ...matches: any[] ): string {
 				return files[ matches[0] ] || ( files[ matches[0] ] = FS_File.create( matches[0] ).open().contents );
 			} )
-			.replace( /\$I\.(number|string|color)\(\'([^\']+)\'\)/g, function( substr: string, ...matches: any[] ): string {
+			.replace( /\$I\.(number|string|color|json)\(\'([^\']+)\'\)/g, function( substr: string, ...matches: any[] ): string {
 				
 				var result: string,
 				    subst: any;
@@ -100,6 +104,9 @@ class $I {
 						break;
 					case 'color':
 						result = ( subst = resolved[ matches[1] ] || ( resolved[ matches[1] ] = $I.color( matches[1] ) ) );
+						break;
+					case 'json':
+						result = (subst = resolved[matches[1]] || (resolved[matches[1]] = $I.json(matches[1])));
 						break;
 				}
 

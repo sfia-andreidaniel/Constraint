@@ -6,11 +6,6 @@
  * class.
  *
  *
- *
- *
- *
- *
- *
  */
 class UI extends UI_Event {
 
@@ -122,6 +117,13 @@ class UI extends UI_Event {
 	 */
 	protected _visible: boolean = true;
 	
+	/**
+	 * Whether this component accepts keys from it's children. For example, a toolbar will
+	 * want it's button keys in order to correctly respond to the "left" and "right" user
+	 * arrows.
+	 */
+	protected _wantChildKeys: boolean;
+
 	/**
 	 * After we paint the element, it's computed painted size is stored here for caching
 	 * purposes.
@@ -536,6 +538,23 @@ class UI extends UI_Event {
 		return {
 			"width": this.offsetWidth,
 			"height": this.offsetHeight
+		}
+	}
+
+	/**
+	 * Returns the absolute position of the UI element in the browser page.
+	 */
+	get screenWindow(): IWindow {
+		if ( this._root ) {
+			var placement = this._root.getBoundingClientRect();
+			return {
+				x: placement.left,
+				y: placement.top,
+				width: placement.width,
+				height: placement.height
+			}
+		} else {
+			return null;
 		}
 	}
 
@@ -981,6 +1000,15 @@ class UI extends UI_Event {
 			}
 
 		}
+	}
+
+	/**
+	 * Whether this component accepts keys from it's children. For example, a toolbar will
+	 * want it's button keys in order to correctly respond to the "left" and "right" user
+	 * arrows.
+	 */
+	get wantChildKeys(): boolean {
+		return !!this._wantChildKeys;
 	}
 
 	/**

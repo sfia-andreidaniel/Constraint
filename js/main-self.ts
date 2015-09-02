@@ -97,7 +97,11 @@
 /// <reference path="UI/HorizontalSplitter.ts" />
 /// <reference path="UI/Panel.ts" />
 /// <reference path="UI/MenuBar.ts" />
+
 /// <reference path="UI/MenuItem.ts" />
+/// <reference path="UI/Popup.ts" />
+
+/// <reference path="UI/Toolbar.ts" />
 /// <reference path="UI/Tree.ts" />
 /// <reference path="UI/Tree/Grid.ts" />
 /// <reference path="UI/Grid.ts" />

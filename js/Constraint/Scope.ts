@@ -45,8 +45,8 @@ class Constraint_Scope {
 			throw new Error( 'STRICT: Unknown class type "' + type + '" is not declared' );
 		}
 
-		if ( this._isAnonymous && strict && type == 'UI_Form' ) {
-			throw new Error( 'STRICT: Type "UI_Form" cannot be introduced as anonymous (without using a name)' );
+		if ( this._isAnonymous && strict && [ 'UI_Form', 'UI_Popup' ].indexOf( type ) > -1 ) {
+			throw new Error( 'STRICT: Type "' + type + '" cannot be introduced as anonymous (without using a name)' );
 		}
 
 		if ( this._isAnonymous ) {

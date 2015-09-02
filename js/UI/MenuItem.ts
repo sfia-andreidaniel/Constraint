@@ -786,7 +786,7 @@ class UI_MenuItem extends UI {
 		}
 	}
 
-	public open() {
+	public open( ignoredArgument: IPoint = null ) {
 
 		if ( !this._owner || !this._children.length || this.disabled ) {
 			return;
@@ -843,6 +843,11 @@ class UI_MenuItem extends UI {
 Constraint.registerClass( {
 	"name": "UI_MenuItem",
 	"extends": "UI",
+	"parentTypeOnly": [
+		"UI_Popup",
+		"UI_MenuBar",
+		"UI_MenuItem"
+	],
 	"properties": [
 		{
 			"name": "inputType",

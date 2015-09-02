@@ -206,6 +206,12 @@ class UI_DialogManager extends UI_Event {
 			// see if there are any accelerators matching the key.
 			// if there are no accelerators, send the key to activeElement
 			this._activeWindow.activeElement.fire( 'keydown', ev );
+
+			// if the owner of the activeElement want child keys, send the event
+			// also to the owner.
+			if ( this._activeWindow.activeElement.owner && this._activeWindow.activeElement.owner.wantChildKeys && !ev.handled ) {
+				this._activeWindow.activeElement.owner.fire('keydown', ev);
+			}
 		}
 	}
 

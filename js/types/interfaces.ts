@@ -41,6 +41,7 @@ interface IClass {
 	name: string;
 	extends?: string;
 	acceptsOnly?: string[];
+	parentTypeOnly?: string[];
 	properties: IClassProperty[];
 }
 

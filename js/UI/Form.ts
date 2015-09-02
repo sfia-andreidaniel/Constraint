@@ -946,6 +946,14 @@ class UI_Form extends UI implements IFocusable {
 
 				break;
 
+			case child instanceof UI_Popup:
+				
+				// we do not insert the UI_Popup inside the form.
+
+				child.owner = this;
+				return child;
+				break;
+
 			default:
 				return super.insert( child );
 				break;

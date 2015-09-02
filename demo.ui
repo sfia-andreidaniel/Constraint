@@ -14,6 +14,28 @@
 
 	caption: 'Demo form';
 
+	@UI_Popup Popup1 {
+		@UI_MenuItem {
+			caption: 'As csv File';
+			action: 'cmd-save-csv';
+		};
+
+		@UI_MenuItem {
+
+			caption: 'As document';
+
+			@UI_MenuItem {
+				caption: 'Word Document';
+				action: 'cmd-save-word';
+			};
+
+			@UI_MenuItem {
+				caption: 'Excel Document';
+				action: 'cmd-save-excel';
+			};
+		};
+	};
+
 	@UI_MenuBar {
 
 		@UI_MenuItem {
@@ -61,9 +83,28 @@
 
 	};
 
+	@UI_Toolbar Toolbar {
+		@UI_Button {
+			caption: 'New';
+			action: 'cmd_new';
+			icon: 'Constraint/file/20x20';
+		};
+		@UI_Button {
+			caption: 'Open';
+			action: 'cmd_open';
+			icon: 'Constraint/folder/20x20';
+		};
+		@UI_Button {
+			caption: 'Save';
+			action: 'cmd_save';
+			menu: 'Popup1';
+			icon: 'Constraint/ico_edit_save/20x20';
+		};
+	};
+
 	@UI_TabsPanel Tabs1 {
 		left: 20;
-		top: 20;
+		top: Toolbar bottom 20;
 		right: 20;
 		bottom: 40;
 
@@ -318,7 +359,7 @@
 				};
 			};
 
-			@UI_Tree Tree0 {
+			@UI_Tree_Grid Tree0 {
 				left: 20;
 				top: Grid0 bottom 10;
 				right: 20;

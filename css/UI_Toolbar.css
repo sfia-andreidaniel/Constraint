@@ -1,0 +1,45 @@
+{$N UI.UI_Toolbar}
+.ui.UI_Toolbar {
+	position: absolute;
+	display: block;
+	padding: 0;
+	margin: 0;
+}
+
+.ui.UI_Toolbar > .ui.UI_Button {
+	border-color: transparent;
+	background-color: transparent;
+}
+
+.ui.UI_Toolbar > .ui.UI_Button > .caption {
+	font-size: 11px;
+	bottom: 0px;
+	height: 11px;
+	top: auto;
+	margin-top: calc( ${defaults.height}px - 11px - 2 * ${defaults.margin}px );
+	margin-left: 5px;
+}
+
+.ui.UI_Toolbar > .ui.UI_Button.has-icon > .icon {
+	bottom: auto;
+	height: 20px;
+	right: 4px;
+	width: auto;
+}
+
+.ui.UI_Toolbar > .ui.UI_Button.has-icon.has-expander > .icon {
+	right: 24px;
+}
+
+.ui.UI_Toolbar > .ui.UI_Button.has-icon > .icon > div {
+	display: inline-block;
+}
+
+{$N UI.UI_Form}
+.ui.UI_Form .ui.UI_Toolbar {
+	background-color: ${border.inactiveColor};
+}
+
+.ui.UI_Form.focus-active .ui.UI_Toolbar {
+	background-color: ${border.activeColor};
+}

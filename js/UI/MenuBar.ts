@@ -225,6 +225,9 @@ Mixin.extend( 'UI_MenuBar', 'MFocusable' );
 Constraint.registerClass( {
 	"name": "UI_MenuBar",
 	"extends": "UI",
+	"parentTypeOnly": [
+		"UI_Form"
+	],
 	"properties": [
 		{
 			"name": "active",
