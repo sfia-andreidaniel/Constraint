@@ -12,7 +12,7 @@ class UI_Canvas_Button {
 	protected _active: boolean;
 	protected _hover : boolean;
 
-	protected _icon: { width: number, height: number, sprite: string } = null;
+	protected _icon: ICanvasButtonIcon = null;
 	protected _font: string = $I.string('UI.UI_Button/font.size') + 'px ' + $I.string('UI.UI_Button/font.family');
 
 	/**
@@ -207,11 +207,11 @@ class UI_Canvas_Button {
 		}
 	}
 
-	get icon(): { width: number, height: number, sprite: string } {
+	get icon(): ICanvasButtonIcon {
 		return this._icon || null;
 	}
 
-	set icon( icon: { width: number, height: number, sprite: string } ) {
+	set icon( icon: ICanvasButtonIcon ) {
 		this._icon = icon || null;
 	}
 

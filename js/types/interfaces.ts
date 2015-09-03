@@ -167,3 +167,9 @@ interface IPropertyGroupNested {
 		password?: boolean;
 	};
 }
+
+interface ICanvasButtonIcon {
+	width: number;
+	height: number;
+	sprite: string;
+}

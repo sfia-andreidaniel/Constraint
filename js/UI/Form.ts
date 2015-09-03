@@ -265,11 +265,12 @@ class UI_Form extends UI implements IFocusable {
 
 				self.paintable = true;
 				UI_DialogManager.get.desktop.appendChild( self._root );
-				self.onRepaint();
 				self.updateFocusOrder( self._focusOrder = UI_DialogManager.get.zIndexId );
 				UI_DialogManager.get.onWindowOpened( self );
 				self.fire( 'open' );
 				UI_DialogManager.get.updateZIndex();
+				self.onRepaint();
+				self.fullRelayout();
 				return self;
 			} );
 
@@ -1411,6 +1412,27 @@ class UI_Form extends UI implements IFocusable {
 	protected updateFocusOrder( order: number ) {
 		if ( this._mdiParent ) {
 			this._mdiParent['_focusOrder'] = order;
+		}
+	}
+
+	/**
+	 * Force a layout computing on all elements of type UI declared as properties on this form,
+	 * if they have a layoutType != ELayoutType.NONE.
+	 */
+	public fullRelayout() {
+		
+		var property: string;
+		
+		if ( this.layoutType != ELayoutType.NONE ) {
+			this.layout.compute();
+		}
+
+		for ( property in this ) {
+			if ( this[property] && this[property] instanceof UI ) {
+				if ( this[property].layoutType != ELayoutType.NONE ) {
+					this[property].layout.compute();
+				}
+			}
 		}
 	}
 
