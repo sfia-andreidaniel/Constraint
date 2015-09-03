@@ -1,5 +1,10 @@
 /**
- * Standard dialog toolbar implementation.
+ * Standard dialog toolbar implementation. A Toolbar is a grouped set of UI items (typically buttons)
+ * that allows the user to trigger some common commands in an application.
+ *
+ * Sample UI_Toolbar:
+ *
+ * ![uitoolbar](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Toolbar.png "UI_Toolbar")
  */
 class UI_Toolbar extends UI {
 
@@ -29,6 +34,9 @@ class UI_Toolbar extends UI {
 		this._setupEvents_();
 	}
 
+	/**
+	 * @overrides the UI.insert, because we alter the layout of the toolbar each time we insert a item inside it.
+	 */
 	public insert( node: UI ): UI {
 		var result: UI = super.insert(node);
 
@@ -71,6 +79,9 @@ class UI_Toolbar extends UI {
 		return result;
 	}
 
+	/**
+	 * Setups various toolbar events.
+	 */
 	protected _setupEvents_() {
 
 		(function(me) {

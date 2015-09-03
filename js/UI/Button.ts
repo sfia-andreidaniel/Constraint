@@ -25,7 +25,7 @@ class UI_Button extends UI implements IFocusable {
 		"icon"    : Utils.dom.create( 'div', 'icon' ),
 		"i"       : null,  // the icon div of the button
 		"expander": null,  // the expander div of the button, in case the button has a menu attached.
-		"e"      : null    // the expander icon div of the button
+		"e"       : null   // the expander icon div of the button
 	};
 
 	protected _caption: string = 'Button';
@@ -59,10 +59,16 @@ class UI_Button extends UI implements IFocusable {
 		this._initDom_();
 	}
 
+	/**
+	 * The text that is displayed in the button
+	 */
 	get caption(): string {
 		return this._caption;
 	}
 
+	/**
+	 * The text that is displayed in the button
+	 */
 	set caption( cap: string ) {
 		cap = String( cap || '' );
 		if ( cap != this._caption ) {
@@ -72,10 +78,16 @@ class UI_Button extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * The icon (optional) that is displayed in the button
+	 */
 	get icon(): string {
 		return this._icon;
 	}
 
+	/**
+	 * The icon (optional) that is displayed in the button
+	 */
 	set icon( name: string ) {
 		name = String( name || '' ) || null;
 		if ( name != this._icon ) {
@@ -102,14 +114,25 @@ class UI_Button extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * The "action" event type that is fired on the form that contains the button, when this
+	 * button is clicked
+	 */
 	get action(): string {
 		return this._action;
 	}
 
+	/**
+	 * The "action" event type that is fired on the form that contains the button, when this
+	 * button is clicked
+	 */
 	set action( actionId: string ) {
 		this._action = String( actionId || '' ) || null;
 	}
 
+	/**
+	 * Paints the button.
+	 */
 	public onRepaint(): boolean {
 		if ( super.onRepaint() ) {
 
@@ -139,6 +162,9 @@ class UI_Button extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * If the button has an associated popup menu, shows or hides that popup.
+	 */
 	get expanded(): boolean {
 		if ( !this._menu ) {
 			return false;
@@ -147,6 +173,9 @@ class UI_Button extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * If the button has an associated popup menu, shows or hides that popup.
+	 */
 	set expanded( expanded: boolean ) {
 		
 		if ( !this._menu || this.disabled ) {
@@ -171,6 +200,10 @@ class UI_Button extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Fires a "click" event on the button. If the target equals with the
+	 * this._dom.expander DOM node, tries to expand the button instead.
+	 */
 	public click( target: any = null ) {
 		if ( !this.disabled ) {
 
@@ -189,6 +222,9 @@ class UI_Button extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Button initialization
+	 */
 	protected _initDom_() {
 		( function( me ) {
 			
@@ -258,6 +294,11 @@ class UI_Button extends UI implements IFocusable {
 		return this._menu || null;
 	}
 
+	/**
+	 * Sets the associated menu on the button
+	 * @param menu - can be a string representing the name of a UI_Popup object declared
+	 *     as a property in the button form, or directly an UI_Popup object.
+	 */
 	set menu( menu: any ) {
 		
 		menu = menu || null;
