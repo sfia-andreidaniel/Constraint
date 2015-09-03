@@ -9,6 +9,9 @@
  * * **circular** -> **Utils_Circular**
  * * **dom** -> **Utils_Dom**
  * * **string** -> **Utils_String**
+ * * **keyboard** -> **Utils_Keyboard**
+ * * **number** -> **Utils_Number**
+ * * **event** -> **Utils_Event**
  */
 class Utils {
 

@@ -46,49 +46,114 @@ class UI_Form extends UI implements IFocusable {
 		"menuBar": null
 	};
 
-	// MINIMIZED, MAXIMIZED, CLOSED, NORMAL
+	/**
+	 * MINIMIZED, MAXIMIZED, CLOSED, NORMAL
+	 */
 	protected _state: EFormState = EFormState.NORMAL;
 	
-	// Weather it has a titlebar or not. NONE: window decorations aren't displayed.
+	/**
+	 * Weather it has a titlebar or not. NONE: window decorations aren't displayed.
+	 */
 	protected _borderStyle: EBorderStyle = EBorderStyle.NORMAL;
 
-	// Weather it is a FORM or a MDI form. MDI Forms aren't minimizable, maximizable or resizable.
+	/**
+	 * Weather it is a FORM or a MDI form. MDI Forms aren't minimizable, maximizable or resizable.
+	 */
 	protected _formStyle: EFormStyle = EFormStyle.FORM;
 
-	// Form placement on desktop. If CENTER, also the form is not "drag'n droppable".
+	/**
+	 * Form placement on desktop. If CENTER, also the form is not "drag'n droppable".
+	 */
 	protected _placement: EFormPlacement = EFormPlacement.AUTO;
 
-	// Form title
+	/**
+	 * Form title that is rendered on the form titlebar.
+	 */
 	protected _caption: string = '';
 
-	// Weather form is focused or not
+	/**
+	 * Weather form is focused or not. When a form is focused, the UI_DialogManager sends all keystrokes
+	 * to the current form focused input.
+	 */
 	protected _active: boolean = false;
 
-	// Internal, representing the ID of the form
+	/**
+	 * Internal, representing the ID of the form
+	 */
 	protected _id: number = 0;
 
-	// each object that embraces the IFocusable interface that is child of this form
-	// is stored here, in order to implement the tab focusing.
+	/**
+	 * each object that embraces the IFocusable interface that is child of this form
+	 * is stored here, in order to implement the tab focusing.
+	 */
 	protected _focusComponents: UI[] = [];
 
-	// the current element that's active in a form at a single time.
+	/**
+	 * the current element that's active in a form at a single time.
+	 */
 	protected _activeElement: UI = null;
 
-	// weather the form has a menubar or not
+	/**
+	 * whether the form has a menubar or not. When placing a UI_MenuBar inside a form, the
+	 * menubar is inserted in another container of the form, not directly in the form body.
+	 */
 	protected _menuBar: UI_MenuBar;
 
-	// these are not considered but declared for the sake of IFocusable
+	/**
+	 * IFocusable requirement
+	 */
 	public wantTabs: boolean;
+
+	/**
+	 * IFocusable requirement
+	 */
 	public tabIndex: number;
+
+	/**
+	 * IFocusable requirement
+	 */
 	public includeInFocus: boolean = false;
 
+	/**
+	 * A list with all current form's MDI sub-forms. An application for example can
+	 * have a sub-dialog for searching purposes, etc.
+	 */
 	protected _mdiForms: UI_Form[] = [];
+
+	/**
+	 * The owner form of this form, in case this form is a MDI child form.
+	 */
 	protected _mdiParent: UI_Form = null;
+
+	/**
+	 * When a form has opened a mdi sub-form, can become locked if the mdi sub-child
+	 * form is "modal". This variable stores the number of modal mdi child locks placed
+	 * on this form.
+	 */
 	protected _mdiLocks: number = 0;
+
+	/**
+	 * Whether this form is a modal ( blocks all user input operations inside it's owner form while this
+	 * form is opened).
+	 */
 	protected _modal: boolean = false;
+
+	/**
+	 * The css zIndex of the _root DOM node of the form. This property is computed automatically
+	 * by UI_DialogManager class, and should not be used directly.
+	 */
 	protected _zIndex: number = 1;
+
+	/**
+	 * Keeps tracking of the focus events of the form, in order to let the UI_DialogManager to
+	 * properly compute the _zIndex value.
+	 */
 	private   _focusOrder: number = 0;
 
+	/**
+	 * A handler that is installed if this form becomes a MDI child, in order to announce
+	 * it's master form that some state has been changed in this form.
+	 */
 	private   _mdiChildStateChangedHandler: ( child: UI_Form, newState: EFormState ) => void;
 
 	// Form constructor.
@@ -138,6 +203,11 @@ class UI_Form extends UI implements IFocusable {
 		this._setupEvents_();
 	}
 
+	/**
+	 * Returns the list of dependencies that this form is waiting to be ready, before it is opened.
+	 * Some forms depends on resources, which are asynchronous loaded. This list contains the resources
+	 * that needs to be loaded before the form is "opened". The form "open" operation is of type promise.
+	 */
 	public __awaits__( what: string ): string[] {
 		var result = [],
 		    className: string = this.__class__;
@@ -153,8 +223,10 @@ class UI_Form extends UI implements IFocusable {
 
 	}
 
-	// returns an element defined on this instance.
-	// the element must extend the UI interface
+	/**
+	 * returns an element defined as a property on the form class, with the name elementName
+	 * the element must extend the UI interface.
+	 */
 	public getElementByName( elementName ): UI {
 		if (typeof this[ elementName ] != 'undefined' && this[ elementName ] instanceof UI ) {
 			return <UI>this[ elementName ];
@@ -163,13 +235,17 @@ class UI_Form extends UI implements IFocusable {
 		}
 	}
 
-	// @ UI.form
+	/**
+	 * @overrides UI.form
+	 */
 	get form(): UI_Form {
 		return this;
 	}
 
 	/* The open method appends the form's element into the DialogManager desktop ( which by
-	   default is document.body ) in order to make the form visible.
+	 * default is document.body ) in order to make the form visible. The opening process of a
+	 * form is an asynchronous one, because the form must wait first for it's dependency resources
+	 * to become available first.
 	 */
 	public open( ): Thenable<any> {
 
@@ -202,7 +278,8 @@ class UI_Form extends UI implements IFocusable {
 
 	}
 
-	/* Closes the form  (removes it from Dialog Manager's desktop)
+	/**
+	 * Closes the form  (removes it from Dialog Manager's desktop)
 	 */
 	public close() {
 		
@@ -222,6 +299,10 @@ class UI_Form extends UI implements IFocusable {
 
 	}
 
+	/**
+	 * Returns or sets an instance of the form's menubar, if a UI_Menubar is inserted previously in
+	 * the form.
+	 */
 	get menuBar(): UI_MenuBar {
 		return this._menuBar || null;
 	}
@@ -276,8 +357,9 @@ class UI_Form extends UI implements IFocusable {
 		}
 	}
 
-	/* Returns the state of the form, which can be: MINIMIZED, MAXIMIZED, CLOSED, 
-	   or FULLSCREEN 
+	/**
+	 * Returns or sets the state of the form, which can be: MINIMIZED, MAXIMIZED, CLOSED, 
+	 * or FULLSCREEN 
 	 */
 	get state(): EFormState {
 		return this._state;
@@ -318,9 +400,10 @@ class UI_Form extends UI implements IFocusable {
 		}
 	}
 
-	/* Sets weather the form has a titlebar or not.
-	   NORMAL: Form has a titlebar.
-	   NONE: Form doesn't have a titlebar
+	/**
+	 * Sets or returns whether the form has a titlebar or not.
+	 * NORMAL: Form has a titlebar.
+	 * NONE: Form doesn't have a titlebar
 	 */
 	get borderStyle(): EBorderStyle {
 		return this._borderStyle;
@@ -346,9 +429,10 @@ class UI_Form extends UI implements IFocusable {
 		}
 	}
 
-	/* Sets weather this form is a normal one, or a MDI form.
-	   MDI forms are typically child forms of other forms, and usually are not
-	   displayed on OS taskbars.
+	/**
+	 * Sets weather this form is a normal one, or a MDI form.
+	 * MDI forms are typically child forms of other forms, and are not
+	 * displayed on OS taskbars.
 	 */
 	get formStyle(): EFormStyle {
 		return this._formStyle;
@@ -372,10 +456,13 @@ class UI_Form extends UI implements IFocusable {
 		}
 	}
 
-	/* Returns the form placement on the desktop.
-	   AUTO - The form is placed by it's "left" and "top" anchors.
-	   CENTER - The form stays always in the center of it's desktop, and it
-	            cannot be dragged from there.
+	/**
+	 * Returns or sets the form placement on the desktop.
+	 *
+	 * AUTO - The form is placed by it's "left" and "top" anchors.
+	 *
+	 * CENTER - The form stays always in the center of it's desktop, and it
+	 * cannot be dragged from there.
 	 */
 	get placement(): EFormPlacement {
 		return this._placement;
@@ -399,7 +486,8 @@ class UI_Form extends UI implements IFocusable {
 		}
 	}
 
-	/* Sets the caption ( text displayed as title in the titlebar ) of the form.
+	/**
+	 * Returns or sets the caption ( text displayed in the titlebar ) of the form.
 	 */
 	get caption(): string {
 		return this._caption;
@@ -413,7 +501,10 @@ class UI_Form extends UI implements IFocusable {
 		}
 	}
 
-	/* Weather this form is the "active" form on it's desktop or not
+	/**
+	 * Returns or set whether this form is the "active" form on it's desktop or not. There can be only a single
+	 * active form at a time in the desktop, which receives the user keystrokes from the UI_DialogManager
+	 * and sends them to the focused form control, if any.
 	 */
 	get active(): boolean {
 		return this._active;
@@ -441,17 +532,23 @@ class UI_Form extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Returns the list of MDI sub-forms that this form owns.
+	 */
 	get mdiChildForms(): UI_Form[] {
 		return this._mdiForms || null;
 	}
 
-	/* Read-Only. An auto-increment value, used to unique identify each window
+	/**
+	 * Read-Only. An auto-increment value determined by the UI_DialogManager, used to unique 
+	 * identify each window that is opened.
 	 */
 	get id(): number {
 		return this._id;
 	}
 
-	/* @UI.parentClientRect
+	/**
+	 * @overrides UI.parentClientRect, in order to fix anchor measurements.
 	 */
 	get parentClientRect(): IRect {
 		return this._root.parentNode
@@ -465,7 +562,9 @@ class UI_Form extends UI implements IFocusable {
 			}
 	}
 
-	/* Private. Setup up the DOM events of the form */
+	/**
+	 * Setup various events on this form, on it's initialization, like resizing, moving, etc.
+	 */
 	private _setupEvents_() {
 		( function( form ) {
 			
@@ -797,7 +896,9 @@ class UI_Form extends UI implements IFocusable {
 		} )( this );
 	}
 
-	/* @UI.clientRect */
+	/**
+	 * Returns the clientRect of the form.
+	 */
 	get clientRect(): IRect {
 		// if seems that for the UI_Form it's better to rely on browser
 		// info, even if it's more CPU demanding.
@@ -807,24 +908,33 @@ class UI_Form extends UI implements IFocusable {
 		}
 	}
 
-	/* @UI.translateLeft */
+	/**
+	 * Forms are painted "translated", in order to properly place them on the desktop,
+	 * taking in consideration it's border decoration.
+	 */
 	get translateLeft(): number {
 		return this.padding.left;
 	}
 
-	/* @UI.translateTop */
+	/**
+	 * Forms are painted "translated", in order to properly place them on the desktop,
+	 * taking in consideration it's border decoration.
+	 */
 	get translateTop(): number {
 		return this.padding.top;
 	}
 
-	/* Function that, when the "close" button of the form is pressed, returns
-	   true for closing the form, or false for canceling the closing of the form.
+	/**
+	 * Function that, when the "close" button of the form is pressed, returns
+	 * true for closing the form, or false for canceling the closing of the form.
 	 */
 	public onClose(): boolean {
-		return true;
+		return this._mdiLocks > 0 ? false : true;
 	}
 
-	/* @UI.insertDOMNode */
+	/**
+	 * @overrides UI.insertDOMNode
+	 */
 	protected insertDOMNode( node: UI ): UI {
 		if ( node._root ) {
 			this._dom.body.appendChild( node._root );
@@ -832,6 +942,10 @@ class UI_Form extends UI implements IFocusable {
 		return node;
 	}
 
+	/**
+	 * Returns the focused (active) element of this form. The mixin MFocusable is playing
+	 * with this property, and should not be overrided by the programmer.
+	 */
 	get activeElement(): UI {
 		return this._activeElement;
 	}
@@ -852,7 +966,13 @@ class UI_Form extends UI implements IFocusable {
 		}
 	}
 
-	/* Returns the registered to focus components, sorted by their tabIndex property */
+	/**
+	 * When a focusable element is inserted inside the form, that element is registered
+	 * to the form focus group. When the tab key is pressed by the user, only the registered VISIBLE
+	 * elements in the form's focus group are took in consideration.
+	 *
+	 * This property always returns the list in a sorted manner, based on the component's tabIndex.
+	 */
 	get focusGroup(): UI[] {
 		var result: UI[] = [];
 		for ( var i=0, len = this._focusComponents.length; i<len; i++ ) {
@@ -868,11 +988,17 @@ class UI_Form extends UI implements IFocusable {
 		return result;
 	}
 
-	// Returns the registered to focus components, without any sorting.
+	/**
+	 * Returns a non-sorted focusGroup of the form.
+	 */
 	get focusComponents(): UI[] {
 		return this._focusComponents;
 	}
 
+	/**
+	 * This method is fired each time a component is inserted on this form (here we hook registration
+	 * to focusGroup, etc. ).
+	 */
 	protected onChildInserted( node: UI ) {
 
 		var nodes: UI[],
@@ -899,6 +1025,10 @@ class UI_Form extends UI implements IFocusable {
 
 	}
 
+	/**
+	 * This method is fired each time a component is removed from this form (in order to properly unregister
+	 * the component from the form focus group, for example ).
+	 */
 	protected onChildRemoved( node: UI ) {
 
 		var index: number,
@@ -924,8 +1054,11 @@ class UI_Form extends UI implements IFocusable {
 		}
 	}
 
-	// @override the "UI.insert"
-		// inserts an UI element inside the current UI element
+	/** 
+	 * @overrides the "UI.insert"
+	 *
+	 * inserts an UI element inside the current Form.
+	 */
 	public insert( child: UI ): UI {
 
 		var i: number,
@@ -975,6 +1108,10 @@ class UI_Form extends UI implements IFocusable {
 
 	}
 
+	/**
+	 * Gets or sets the disabled state of the form. When a form is disabled, all it's components
+	 * become disabled too.
+	 */
 	get disabled(): boolean {
 		return this._disabled || this._parentsDisabled > 0;
 	}
@@ -1009,6 +1146,9 @@ class UI_Form extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Returns the owner form ( Parent Form ) of this one.
+	 */
 	get mdiParent(): UI_Form {
 		return this._mdiParent;
 	}
@@ -1031,6 +1171,9 @@ class UI_Form extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Each times a child form registers to this form as it's mdi child, this method is triggered.
+	 */
 	protected addMDIChild( form: UI_Form ) {
 		
 		if ( form && this._mdiForms.indexOf( form ) == -1 ) {
@@ -1050,6 +1193,10 @@ class UI_Form extends UI implements IFocusable {
 
 	}
 
+	/**
+	 * Each time a previously registered sub form (mdi child) unregisters from the list of mdi children
+	 * of this form, this method is fired.
+	 */
 	protected removeMDIChild( form: UI_Form ) {
 		var index: number = 0;
 
@@ -1069,6 +1216,9 @@ class UI_Form extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Returns TRUE if a sub-form is a mdi child of this form.
+	 */
 	protected containsMDIChild( form: UI_Form ): boolean {
 		for ( var i=0, len = this._mdiForms.length; i<len; i++ ) {
 			if ( this._mdiForms[i] == form || this._mdiForms[i].containsMDIChild( form ) ) {
@@ -1078,10 +1228,17 @@ class UI_Form extends UI implements IFocusable {
 		return false;
 	}
 
+	/**
+	 * Fired by a mdi child on this form, when it's state is changed.
+	 */
 	protected onMDIChildStateChanged( child: UI_Form, newChildState: EFormState ) {
 		console.log( 'MDI Child state changed: ', child.caption, 'state', newChildState );
 	}
 
+	/**
+	 * Put a MDI lock on this form. Called by a mdi sub-form. When the form has MDI locks,
+	 * it ignores user keyboard and pointer events, until it becomes unlocked again.
+	 */
 	protected mdiParentLock() {
 		this._mdiLocks += 1;
 
@@ -1094,6 +1251,9 @@ class UI_Form extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Cancels one MDI lock on this form, previously placed with mdiParentLock.
+	 */
 	protected mdiParentUnlock() {
 		if ( this._mdiLocks > 0 ) {
 			
@@ -1109,6 +1269,11 @@ class UI_Form extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Recursively adds the "mdi-active" class on the root element of this
+	 * form and to the mdi parents of this forms. This is needed for form css
+	 * styling.
+	 */
 	protected mdiFocusChain() {
 		
 		Utils.dom.addClass( this._root, 'mdi-active' );
@@ -1118,6 +1283,10 @@ class UI_Form extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Recursively removes the "mdi-active" class on the root element of this
+	 * form and it's mdi parents. Needed for CSS styling.
+	 */
 	protected mdiUnfocusChain() {
 		
 		Utils.dom.removeClass( this._root, 'mdi-active' );
@@ -1128,6 +1297,10 @@ class UI_Form extends UI implements IFocusable {
 
 	}
 
+	/**
+	 * When the user attempts to focus a locked MDI form, this method is triggered,
+	 * in order to focus it's first MDI modal child instead.
+	 */
 	public mdiFocusChild() {
 
 		for ( var i=0, len = this._mdiForms.length; i<len; i++ ) {
@@ -1141,6 +1314,10 @@ class UI_Form extends UI implements IFocusable {
 
 	}
 
+	/**
+	 * Gets or sets if this form is modal. If a form is modal and is a MDI child, it blocks
+	 * it's parent keyboard and pointer events.
+	 */
 	get modal(): boolean {
 		return this._modal;
 	}
@@ -1160,6 +1337,9 @@ class UI_Form extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Runs a form animation, in order to attract user attention on this form.
+	 */
 	public runAnimation( type: EFormAnimation ) {
 
 		Utils.dom.removeClass( this._root, 'animation-shake' );
@@ -1197,6 +1377,10 @@ class UI_Form extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Gets or sets the zIndex of this form. This property is automatically handled by the UI_DialogManager,
+	 * and should not be handled by the programmer.
+	 */ 
 	get zIndex(): number {
 		return this._zIndex;
 	}
@@ -1212,10 +1396,18 @@ class UI_Form extends UI implements IFocusable {
 		}
 	}
 
+	/**
+	 * Property needed by the UI_DialogManager, in order to know how to properly set the zIndex of the
+	 * form.
+	 */
 	get focusOrder(): number {
 		return this._focusOrder;
 	}
 
+	/**
+	 * If this form is a MDI child form (has a master form), when the focus order of this
+	 * child changes, it is propagated to the parents of this form too.
+	 */
 	protected updateFocusOrder( order: number ) {
 		if ( this._mdiParent ) {
 			this._mdiParent['_focusOrder'] = order;
@@ -1250,6 +1442,10 @@ Constraint.registerClass({
 		},
 		{
 			"name": "active",
+			"type": "boolean"
+		},
+		{
+			"name": "modal",
 			"type": "boolean"
 		}
 	]

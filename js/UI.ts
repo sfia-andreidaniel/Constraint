@@ -1,5 +1,5 @@
 /**
- * This is the BaseClass of an UI input. All the UI types are deriving from this
+ * This is the BaseClass of all UI controls / items. All the UI types are deriving from this
  * class.
  *
  * Weather it's a form, a grid, a button, etc., everything needs to extend this
