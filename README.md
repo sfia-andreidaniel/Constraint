@@ -13,6 +13,10 @@ decoupled form the code of the application, and it's written on a typed language
 * Separates UI from the code, by using a text file format called "ui". UI is UI, code is code. This greately improves code reusability and modularity.
 * works on Winows and Linux, because it's using open source projects
 
+## Online Demo
+
+You can see a sample Constraint application [at this address](http://www.browserfs.com/Constraint/index.html "Constraint Demo").
+
 ## Documentation
 
 An automatically generated documentation of Constraint framework can be found [at this address](http://www.browserfs.com/constraint/ "Constraint Documentation").
