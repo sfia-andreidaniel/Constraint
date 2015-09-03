@@ -17,7 +17,7 @@ resources::
 	constraint --src:resources.ui --http-include-path:resources
 
 demo:: build
-	constraint --src:demo.ui --http-include-path:demo --make
+	sh constraint --src:demo.ui --http-include-path:demo --make
 
 dts_install::
 	npm install -g dts-generator
