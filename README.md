@@ -17,10 +17,11 @@ decoupled form the code of the application, and it's written on a typed language
 
 You can see a sample Constraint application [at this address](http://www.browserfs.com/Constraint/index.html "Constraint Demo").
 
+Note that the online demo is automatically built from git, and some times it might not be available.
+
 ## Documentation
 
 An automatically generated documentation of Constraint framework can be found [at this address](http://www.browserfs.com/constraint/ "Constraint Documentation").
-
 
 ## Installation and usage.
 
