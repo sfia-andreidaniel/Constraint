@@ -14,7 +14,7 @@ resources::
 	rm -rf ./resources
 	mogrify -format png -background none vendor/self/*.svg
 	mogrify -format png -background none vendor/gnome/*.svg
-	constraint --src:resources.ui --http-include-path:resources
+	sh constraint --src:resources.ui --http-include-path:resources
 
 demo:: build
 	sh constraint --src:demo.ui --http-include-path:demo --make
