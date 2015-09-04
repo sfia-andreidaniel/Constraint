@@ -64,6 +64,7 @@
 /// <reference path="UI/Screen.ts" />
 /// <reference path="UI/Screen/Window.ts" />
 /// <reference path="UI/DialogManager.ts" />
+/// <reference path="UI/Font.ts" />
 
 /// <reference path="UI/Form.ts" />
 /// <reference path="UI/Label.ts" />

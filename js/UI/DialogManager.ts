@@ -6,10 +6,16 @@
 
 class UI_DialogManager extends UI_Event {
 
-	public static instance: UI_DialogManager = null;
+	public static instance : UI_DialogManager = null;
+
+	/**
+	 * Flag that is set to TRUE after the window fires the "ready" event
+	 */
+	public static ready    : boolean = false;
 
 	public  windows: UI_Form[] = [];
 	public  desktop: any = null;
+
 	public  _desktopWidth: number = null;
 	public  _desktopHeight: number = null;
 
@@ -24,13 +30,17 @@ class UI_DialogManager extends UI_Event {
 	private _zIndexThrottler: UI_Throttler;
 
 	constructor() {
+
 		super();
+
 		this._setupEvents_();
+
 		(function(me) {
 			me._zIndexThrottler = new UI_Throttler(function() {
 				me.doUpdateZIndex();
 			}, 1);
 		})(this);
+
 	}
 
 	get pointerX(): number {
@@ -310,6 +320,10 @@ class UI_DialogManager extends UI_Event {
 
 				manager.onDOMEvent( window, EEventType.LOAD, function( e: Utils_Event_Generic ) {
 					
+					UI_DialogManager.ready = true;
+
+					manager.fire('ready');
+
 					// setup the default manager.
 					manager.desktop = document.body;
 
@@ -417,6 +431,12 @@ class UI_DialogManager extends UI_Event {
 							manager.screen.handleScroll( ev );
 						}
 					}, true );
+
+					/**
+					 * Also do some other initializations.
+					 */
+
+					UI_Font.initialize();
 
 				}, true );
 
