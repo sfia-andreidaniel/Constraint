@@ -15,19 +15,19 @@
  *
  * Sample UI_Dialog_MessageBox:
  *
- * * EDialotBoxType.MB_ERROR:
+ * * EDialogBoxType.MB_ERROR:
  *   
  *   ![ui-dialog-messagebox-mb-error](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Dialog_MessageBox-MB_ERROR.png "Error dialog box")
  *
- * * EDialotBoxType.MB_INFO:
+ * * EDialogBoxType.MB_INFO:
  *   
  *   ![ui-dialog-messagebox-mb-info](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Dialog_MessageBox-MB_INFO.png "Information dialog box")
  *
- * * EDialotBoxType.MB_WARNING:
+ * * EDialogBoxType.MB_WARNING:
  *   
  *   ![ui-dialog-messagebox-mb-warning](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Dialog_MessageBox-MB_WARNING.png "Warning dialog box")
  *
- * * EDialotBoxType.MB_ALERT:
+ * * EDialogBoxType.MB_ALERT:
  *   
  *   ![ui-dialog-messagebox-mb-alert](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Dialog_MessageBox-MB_ALERT.png "Alert dialog box")
  */
