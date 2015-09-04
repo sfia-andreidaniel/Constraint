@@ -1,3 +1,16 @@
+/**
+ * Standard Dialog - Color Box - Enables the user to select a color.
+ *
+ * **Usage**
+ *
+ *     UI_Dialog_ColorBox.create( form: UI_Form ).then( function( color: UI_Color ) {
+ *   	 	// color is NULL if the user clicked on the Cancel button, or a valid UI_Color
+ *     } );
+ *
+ * Sample UI_Dialog_ColorBox:
+ *
+ * ![ui-dialog-colorbox](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_Dialog_ColorBox.png "UI_Dialog_ColorBox")
+ */
 class UI_Dialog_ColorBox extends UI_Form {
 
 	public static recentColors: string[] = [

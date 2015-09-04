@@ -79,6 +79,7 @@
 /// <reference path="UI/Icon.ts" />
 /// <reference path="UI/Text.ts" />
 /// <reference path="UI/Div.ts" />
+/// <reference path="UI/ProgressBar.ts" />
 
 /// <reference path="UI/DateBox.ts" />
 /// <reference path="UI/DateBox/DigitGroup.ts" />
