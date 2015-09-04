@@ -8,11 +8,13 @@
 
 
 	width: 800;
-	height: 400;
+	height: 500;
 	left: 10;
 	top: 10;
 
 	caption: 'Demo form';
+
+	action: actionCommand();
 
 	@UI_Popup Popup1 {
 		@UI_MenuItem {
@@ -663,6 +665,19 @@
 				width: 180;
 
 				value: false;
+			};
+
+			@UI_ProgressBar Progress0 {
+				// caption: 'value = %v, min = %min, max = %max ( %p )';
+				caption: '%p';
+				top: Radio3 bottom 20;
+				right: 40;
+				width: 180;
+				
+				min: 0;
+				max: 50;
+				value: 25;
+
 			};
 
 

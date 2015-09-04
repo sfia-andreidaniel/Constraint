@@ -679,4 +679,36 @@
 		]]>;
 	};
 
+	@Theme UI_ProgressBar {
+		
+		defaults: {
+			width: 100;
+			height: 20;
+		};
+		
+		background: {
+			normal: $object3dColor;
+			disabled: $object3dDisabledColor;
+		};
+		
+		border: $object3dBorderColor;
+		
+		bar: {
+			normal: $selectedItemBackgroundColor;
+			disabled: $selectedDisabledItemBackgroundColor;
+			inactive: $inactiveSelectedItemBackgroundColor;
+		};
+
+		label: {
+			normal: $fontColor;
+			disabled: $disabledFontColor;
+			inactive: $selectedInactiveItemColor;
+
+			font: {
+				family: $fontFamily;
+				size: $fontSize;
+			};
+		};
+	};
+
 };

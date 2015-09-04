@@ -6,6 +6,8 @@
 	background-color: ${background.inactive};
 	border: 1px solid ${border.color};
 	box-sizing: border-box;
+
+	overflow: hidden;
 }
 
 .ui.UI_Spinner.focused {

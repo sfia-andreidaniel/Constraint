@@ -27,6 +27,10 @@
 	background-repeat: repeat;
 }
 
+.ui.UI_ColorBox.disabled > .color {
+	opacity: .5;
+}
+
 .ui.UI_ColorBox > .color > .inner {
 	width: 100%;
 	height: 100%;

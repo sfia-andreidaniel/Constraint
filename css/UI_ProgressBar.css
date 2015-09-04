@@ -1,0 +1,96 @@
+{$N UI.UI_ProgressBar}
+
+.ui.UI_ProgressBar {
+	display: block;
+	position: absolute;
+	box-sizing: border-box;
+	width: ${defaults.width}px;
+	height: ${defaults.height}px;
+	border: 1px solid ${border};
+	overflow: hidden;
+}
+
+.ui.UI_ProgressBar > .inner {
+	position: relative;
+	display: block;
+	width: 100%;
+	height: 100%;
+	-webkit-pointer-events: none;
+	-webkit-user-select: none;
+	-ms-pointer-events: none;
+	-ms-user-select: none;
+	-moz-pointer-events: none;
+	-moz-user-select: none;
+	pointer-events: none;
+	user-select: none;
+}
+
+.ui.UI_ProgressBar > .inner > .bar {
+	position: absolute;
+	left: 2px;
+	bottom: 2px;
+	top: 2px;
+	background-color: ${bar.inactive};
+	display: block;
+}
+
+@keyframes animation-undetermined-progressbar {
+	0%  { left: 2px; }
+	50%  { left: calc( 75% - 2px ); }
+	100% { left: 2px; }
+}
+
+
+.ui.UI_ProgressBar.undetermined > .inner > .bar {
+	width: 25%;	
+}
+
+.ui.UI_ProgressBar.undetermined:not(.disabled) > .inner > .bar {
+	-webkit-animation-name: animation-undetermined-progressbar;
+	-webkit-animation-duration: 3s;
+	-webkit-animation-iteration-count: infinite;
+	animation-name: animation-undetermined-progressbar;
+	animation-duration: 3s;
+	animation-iteration-count: infinite;
+}
+
+
+.ui.UI_ProgressBar > .inner > .caption {
+
+	display: block;
+
+	position: absolute;
+
+	left: 50%;
+	top: 50%;
+	
+	-webkit-transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+
+	font-family: '${label.font.family}';
+	font-size: ${label.font.size}px;
+
+	color: ${label.inactive};
+
+	text-shadow: 1px 1px ${bar.inactive};
+
+}
+
+.ui.UI_Form.focus-active .ui.UI_ProgressBar > .inner > .bar {
+	background-color: ${bar.normal};
+}
+
+.ui.UI_Form.focus-active .ui.UI_ProgressBar > .inner > .caption {
+	color: ${label.normal};
+	text-shadow: none;
+}
+
+.ui.UI_ProgressBar.disabled > .inner > .bar {
+	background-color: ${bar.disabled} !important;
+}
+
+.ui.UI_ProgressBar.disabled > .inner > .caption {
+	color: ${label.disabled} !important;
+	text-shadow: none !important;
+}
