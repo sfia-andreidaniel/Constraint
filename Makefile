@@ -8,7 +8,7 @@ build:: clean
 	cp css/constraint.css css/main.css
 	node ./postcompiler.js css/main.css
 	rm -f ./postcompiler.js
-	chmod 755 ./constraint
+	chmod 755 constraint
 
 resources::
 	rm -rf ./resources

@@ -604,6 +604,62 @@ class UI_Canvas_ContextMapper extends UI_Event {
 		return s;
 	}
 
+	public fillTextSearchBoldedStyle( str: string, substrToHighlight: string, caseSensitive: boolean, x: number, y: number ) {
+
+		if ( !str ) {
+			return;
+		}
+
+		var currentFont = this.font,
+			normalFont = currentFont.replace(/^bold (.*)$/, '$1');
+
+		if ( !substrToHighlight ) {
+			this.font = normalFont;
+			this.fillText(str, x, y);
+			return;
+		}
+
+		var boldedFont = 'bold ' + normalFont,
+			x: number = x,
+			y: number = y,
+			
+			s: string = caseSensitive ? str : str.toLowerCase(), // string
+			os: string = str, // original string
+
+			s1: string = caseSensitive ? substrToHighlight : substrToHighlight.toLowerCase(), // substring
+			part: string,
+
+			partLen: number = 0,
+
+			subLen: number = s1.length,
+
+			metrics: any,
+			wasBold = false;
+
+		while (!!s) {
+
+			if ( ( s.substr( 0, subLen ) ) == s1 && !wasBold) {
+				partLen = subLen;
+				part = os.substr(0, subLen);
+				this.font = boldedFont;
+				wasBold = true;
+			} else {
+				part = !wasBold ? os[0] : os;
+				partLen = !wasBold ? 1 : os.length;
+				this.font = normalFont;
+			}
+
+			this.fillText(part, x, y);
+			metrics = this.measureText(part);
+			
+			x += metrics.width;
+
+			s = s.substr(partLen);
+			os = os.substr(partLen);
+		}
+
+	}
+
 	/* CANVAS API METHODS AND PROPERTIES ARE IMPLEMENTED ON UI_Canvas_ContextMapper
 	   All the methods that require coordinates, are translated to local window coordinates 
 	*/

@@ -211,6 +211,7 @@ class UI_DialogManager extends UI_Event {
 
 	// sends the key to activeForm.activeElement
 	protected handleRegularKey( ev: Utils_Event_Keyboard ) {
+
 		if ( this._activeWindow && this._activeWindow.activeElement ) {
 			
 			var keyAsString: string = ev.keyName,

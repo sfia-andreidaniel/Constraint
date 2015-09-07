@@ -4,6 +4,8 @@ class UI_Screen_Window extends UI_Event {
 	private _ctx:      CanvasRenderingContext2D;
 	private _mapper:   UI_Canvas_ContextMapper;
 
+	public ignoreKeyboardInput: boolean = false;
+
 	constructor( screen: UI_Screen, left: number = 0, top: number = 0, width: number = 0, height: number = 0, logicalWidth: number = null, logicalHeight: number = null ) {
 		
 		super();

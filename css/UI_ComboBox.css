@@ -34,3 +34,21 @@
 .ui.UI_Form.focus-active .ui.UI_ComboBox.focused {
 	background-color: ${background.active};
 }
+
+.ui.UI_ComboBox.disabled > input[type=text] {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+
+	-webkit-pointer-events: none;
+	-ms-pointer-events: none;
+	-o-pointer-events: none;
+	-mz-pointer-events: none;
+	pointer-events: none;
+}
+
+.ui.UI_ComboBox.disabled > input {
+	color: ${font.color.disabled};
+}

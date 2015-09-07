@@ -440,10 +440,17 @@ class UI_Screen extends UI_Event {
 	public handleKeyDown( ev: Utils_Event_Keyboard ) {
 
 		if ( this._windows && this._windows.length ) {
-			this._windows[ this._windows.length - 1 ].fire( 'keydown', ev );
-			ev.preventDefault();
-			ev.stopPropagation();
-			ev.handled = true;
+
+			if (!this._windows[this._windows.length - 1].ignoreKeyboardInput) {
+
+				this._windows[this._windows.length - 1].fire('keydown', ev);
+				ev.preventDefault();
+				ev.stopPropagation();
+				ev.handled = true;
+
+			}
+
+			
 		}
 	}
 

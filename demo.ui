@@ -120,6 +120,9 @@
 				width: 150;
 				height: 25;
 
+				change: onComboChanged();
+
+				strictMode: true;
 				caseSensitive: false;
 
 				strings: [

@@ -54,16 +54,24 @@ class Utils_Event_Generic {
 	}
 
 	public abort() {
-		this.event.preventDefault();
-		this.event.stopPropagation();
+		this.preventDefault();
+		this.stopPropagation();
 	}
 
 	public preventDefault() {
-		this.event.preventDefault();
+		try {
+			this.event.preventDefault();
+		} catch(e) {}
 	}
 
 	public stopPropagation() {
-		this.event.stopPropagation();
+		try {
+			this.event.stopPropagation();
+		} catch(e) {}
+	}
+
+	get originalEvent(): any {
+		return this.event;
 	}
 
 }

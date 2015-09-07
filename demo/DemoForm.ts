@@ -4,8 +4,8 @@
 //            By doing so, constraint compiler will fail to 
 //            patch your files, and you will loose data.
 
-// @date:      Mon Sep 07 2015 17:49:50 GMT+0300 (GTB Daylight Time)
-// @hostname:  BUC130220999
+// @date:      Mon Sep 07 2015 23:13:22 GMT+0300 (GTB Daylight Time)
+// @hostname:  web01
 // @nodejs:    v0.12.7
 // @generator: Constraint compiler ( https://github.com/sfia-andreidaniel/Constraint )
 
@@ -144,8 +144,11 @@ class DemoForm extends UI_Form {
         this.Combo1.top = 20;
         this.Combo1.width = 150;
         this.Combo1.height = 25;
+        this.Combo1.strictMode = true;
         this.Combo1.caseSensitive = false;
         this.Combo1.strings = ["Anabelle","Abigail","Alabamma","Becks","Bon Jovi","Bee Gees","Corby","Danemarca","Ethan","Ellie","Fog","Frog","Germany","Hyunday","indian","indianopollis","Jamaica","Kyle","Key","Lamborgini","Lana del Rey","Misc","Microsoft","new","numb","Number","Oprah","orphan","Postman Person","personal","Perfect Job","quantum","Republic of a country","Reunion","South","Twilight","twister","Undiscovered","Venezuela","Vatican","West","we","xerxes","Xandros","Yasminne","Yucatan","Zimbabwe","Zorba","Zg"];
+        
+        ( function( form ) { form.Combo1.on('change', function() { form.onComboChanged( this ); } ); } )( this );
         
         this.AdvControls.caption = "Advanced Controls";
         
@@ -215,8 +218,8 @@ class DemoForm extends UI_Form {
         this.Date1.left = 10;
         this.Date1.top = UI_Anchor_Literal.create({"alignment":3,"target":"DropDown1","distance":10});
         this.Date1.right = 240;
-        this.Date1.minDate = 1440427790331;
-        this.Date1.maxDate = 1449503390331;
+        this.Date1.minDate = 1440447202445;
+        this.Date1.maxDate = 1449522802445;
         
         this.Spin1.left = 10;
         this.Spin1.top = UI_Anchor_Literal.create({"alignment":3,"target":"Date1","distance":10});
@@ -616,6 +619,12 @@ class DemoForm extends UI_Form {
     /* $hint: method-actionCommand */
     public actionCommand( sender: UI_Event ) {
 
+    }
+    /* $hint: end */
+
+    /* $hint: method-onComboChanged */
+    public onComboChanged( sender: UI_Event ) {
+        console.log(this.Combo1.value);
     }
     /* $hint: end */
 }
