@@ -3,6 +3,11 @@
  * UI_DropDown. The user can input some text in the textbox, and a
  * helper dropdown will be shown below the input, from where the user
  * can pick a value.
+ *
+ * Sample UI_ComboBoxes:
+ *
+ * ![combobox](https://github.com/sfia-andreidaniel/Constraint/raw/master/media/UI_ComboBox.png "UI_ComboBox")
+ *
  */
 
 class UI_ComboBox extends UI implements IFocusable, IInput {
