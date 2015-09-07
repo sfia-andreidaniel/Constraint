@@ -4,7 +4,7 @@
 //            By doing so, constraint compiler will fail to 
 //            patch your files, and you will loose data.
 
-// @date:      Mon Sep 07 2015 10:55:30 GMT+0300 (GTB Daylight Time)
+// @date:      Mon Sep 07 2015 17:49:50 GMT+0300 (GTB Daylight Time)
 // @hostname:  BUC130220999
 // @nodejs:    v0.12.7
 // @generator: Constraint compiler ( https://github.com/sfia-andreidaniel/Constraint )
@@ -23,6 +23,8 @@ class DemoForm extends UI_Form {
     public Popup1: UI_Popup;
     public Toolbar: UI_Toolbar;
     public Tabs1: UI_TabsPanel;
+    public FirstTab: UI_Tab;
+    public Combo1: UI_ComboBox;
     public AdvControls: UI_Tab;
     public PropGrid0: UI_PropertyGrid;
     public StdDialogs: UI_Tab;
@@ -67,6 +69,8 @@ class DemoForm extends UI_Form {
         this.Popup1 = new UI_Popup( this );
         this.Toolbar = new UI_Toolbar( this );
         this.Tabs1 = new UI_TabsPanel( this );
+        this.FirstTab = new UI_Tab( this.Tabs1 );
+        this.Combo1 = new UI_ComboBox( this.FirstTab );
         this.AdvControls = new UI_Tab( this.Tabs1 );
         this.PropGrid0 = new UI_PropertyGrid( this.AdvControls );
         this.StdDialogs = new UI_Tab( this.Tabs1 );
@@ -133,6 +137,15 @@ class DemoForm extends UI_Form {
         this.Tabs1.top = UI_Anchor_Literal.create({"alignment":3,"target":"Toolbar","distance":20});
         this.Tabs1.right = 20;
         this.Tabs1.bottom = 40;
+        
+        this.FirstTab.caption = "Other controls";
+        
+        this.Combo1.left = 20;
+        this.Combo1.top = 20;
+        this.Combo1.width = 150;
+        this.Combo1.height = 25;
+        this.Combo1.caseSensitive = false;
+        this.Combo1.strings = ["Anabelle","Abigail","Alabamma","Becks","Bon Jovi","Bee Gees","Corby","Danemarca","Ethan","Ellie","Fog","Frog","Germany","Hyunday","indian","indianopollis","Jamaica","Kyle","Key","Lamborgini","Lana del Rey","Misc","Microsoft","new","numb","Number","Oprah","orphan","Postman Person","personal","Perfect Job","quantum","Republic of a country","Reunion","South","Twilight","twister","Undiscovered","Venezuela","Vatican","West","we","xerxes","Xandros","Yasminne","Yucatan","Zimbabwe","Zorba","Zg"];
         
         this.AdvControls.caption = "Advanced Controls";
         
@@ -202,8 +215,8 @@ class DemoForm extends UI_Form {
         this.Date1.left = 10;
         this.Date1.top = UI_Anchor_Literal.create({"alignment":3,"target":"DropDown1","distance":10});
         this.Date1.right = 240;
-        this.Date1.minDate = 1440402930052;
-        this.Date1.maxDate = 1449478530052;
+        this.Date1.minDate = 1440427790331;
+        this.Date1.maxDate = 1449503390331;
         
         this.Spin1.left = 10;
         this.Spin1.top = UI_Anchor_Literal.create({"alignment":3,"target":"Date1","distance":10});

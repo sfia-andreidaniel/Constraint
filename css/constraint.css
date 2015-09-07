@@ -51,6 +51,14 @@ html, body {
 	100% { background-color: white; color: black; }
 }
 
+@keyframes animation-cursor-blinker {
+	0%  { background-color: rgba(0,0,0,1); }
+	49% { background-color: rgba(0,0,0,1); }
+	50% { background-color: rgba(0,0,0,0); }
+	100% { background-color: rgba(0,0,0,0);}
+}
+
+
 input::-ms-clear {
     display: none;
 }
@@ -81,3 +89,4 @@ input::-ms-clear {
 {$R css/UI_PropertyGrid.css}
 {$R css/UI_Toolbar.css}
 {$R css/UI_ProgressBar.css}
+{$R css/UI_ComboBox.css}

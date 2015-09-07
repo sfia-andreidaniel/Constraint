@@ -127,7 +127,7 @@ class Utils_Dom {
 		return result;
 	}
 
-	public static selectText( input: any, start: number, length: number = null ) {
+	public static selectText( input: any, start: number, length: number = null, reverse: boolean = false ) {
 
 		if ( input ) {
 
@@ -138,16 +138,32 @@ class Utils_Dom {
 			if ( input.createTextRange ) {
 				var selRange = input.createTextRange();
 				selRange.collapse(true);
-				selRange.moveStart( 'character', start );
-				selRange.moveEnd( 'character', start + length );
+				if ( !reverse ) {
+					selRange.moveStart( 'character', start );
+					selRange.moveEnd( 'character', start + length );
+				} else {
+					selRange.moveStart('character', start + length);
+					selRange.moveEnd('character', -length );
+				}
+
 				selRange.select();
+
 			} else
 			if ( input.setSelectionRange ) {
-				input.setSelectionRange( start, start + length );
+				if (!reverse) {
+					input.setSelectionRange(start, start + length);
+				} else {
+					input.setSelectionRange(start, start + length, 'backward' );
+				}
 			} else
 			if ( typeof input.selectionStart != 'undefined' ) {
-				input.selectionStart = start;
-				input.setSelectionEnd = start + length;
+				if ( !reverse ) {
+					input.selectionStart = start;
+					input.selectionEnd = start + length;
+				} else {
+					input.selectionStart = start + length;
+					input.selectionEnd = start;
+				}
 			}
 
 		}

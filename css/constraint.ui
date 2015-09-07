@@ -232,6 +232,47 @@
 		};
 	};
 
+	@Theme UI_ComboBox {
+		
+		defaults: {
+			width: 100;
+			height: 25;
+		};
+
+		border: {
+			color: $enabledControlBorderColor;
+		};
+
+		option: {
+			height: 25;
+		};
+
+		background: {
+			active: $enabledControlBackgroundColor;
+			inactive: $enabledInactiveControlBackgroundColor;
+			disabled: $disabledControlBackgroundColor;
+			selected: $selectedItemBackgroundColor;
+			selectedInactive: $inactiveSelectedItemBackgroundColor;
+		};
+
+		font: {
+			family: $fontFamily;
+			size: $fontSize;
+			color: {
+				normal: $normalFontColor;
+				selected: $selectedItemColor;
+				selectedInactive: $selectedInactiveItemColor;
+				disabled: $disabledFontColor;
+			};
+		};
+
+		expander: {
+			collapsed: 'ui-resource Constraint collapsed_sign-20x20';
+			expanded: 'ui-resource Constraint expanded_sign-20x20';
+		};
+		
+	};
+
 	@Theme UI_Tree {
 		
 		background: {

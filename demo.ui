@@ -110,6 +110,73 @@
 		right: 20;
 		bottom: 40;
 
+		@UI_Tab FirstTab {
+			
+			caption: 'Other controls';
+
+			@UI_ComboBox Combo1 {
+				left: 20;
+				top: 20;
+				width: 150;
+				height: 25;
+
+				caseSensitive: false;
+
+				strings: [
+					'Anabelle',
+					'Abigail',
+					'Alabamma',
+					'Becks',
+					'Bon Jovi',
+					'Bee Gees',
+					'Corby',
+					'Danemarca',
+					'Ethan',
+					'Ellie',
+					'Fog',
+					'Frog',
+					'Germany',
+					'Hyunday',
+					'indian',
+					'indianopollis',
+					'Jamaica',
+					'Kyle',
+					'Key',
+					'Lamborgini',
+					'Lana del Rey',
+					'Misc',
+					'Microsoft',
+					'new',
+					'numb',
+					'Number',
+					'Oprah',
+					'orphan',
+					'Postman Person',
+					'personal',
+					'Perfect Job',
+					'quantum',
+					'Republic of a country',
+					'Reunion',
+					'South',
+					'Twilight',
+					'twister',
+					'Undiscovered',
+					'Venezuela',
+					'Vatican',
+					'West',
+					'we',
+					'xerxes',
+					'Xandros',
+					'Yasminne',
+					'Yucatan',
+					'Zimbabwe',
+					'Zorba',
+					'Zg'
+				];
+			};
+
+		};
+
 		@UI_Tab AdvControls {
 
 			caption: 'Advanced Controls';

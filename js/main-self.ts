@@ -118,6 +118,7 @@
 /// <reference path="UI/PropertyGrid/Row/Input/STRING.ts" />
 /// <reference path="UI/PropertyGrid/Row/Input/SELECT.ts" />
 /// <reference path="UI/PropertyGrid/Row/Input/COLOR.ts" />
+/// <reference path="UI/ComboBox.ts" />
 
 
 /// <reference path="UI/Column.ts" />
