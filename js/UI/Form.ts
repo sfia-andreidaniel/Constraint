@@ -253,14 +253,33 @@ class UI_Form extends UI implements IFocusable {
 
 			var resources: string[] = self.__awaits__('resource');
 
-			return Promise.resolve()
-			.then( function() {
-				if ( resources.length ) {
-					return UI_Resource.require( resources );
-				} else {
-					return Promise.resolve();
-				}
-			} )
+			return Promise.all([
+				
+				Promise.resolve().then(function() {
+					if (resources.length) {
+						return UI_Resource.require(resources);
+					} else {
+						return Promise.resolve();
+					}
+				}),
+
+				new Promise(function( accept, reject ) {
+					if ( UI_Font.ready ) {
+						
+						accept( true );
+					
+					} else {
+
+						var unbinder = function( ) {
+							UI_Font.eventer.off('ready', unbinder);
+							accept(true);
+						}
+
+						UI_Font.eventer.on('ready', unbinder);
+
+					}
+				})
+			])
 			.then( function( ) {
 
 				self.paintable = true;
