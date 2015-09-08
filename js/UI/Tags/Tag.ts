@@ -109,7 +109,7 @@ class UI_Tags_Tag {
 
 		// paint the close sign
 		UI_Resource.createSprite(UI_Tags._theme.icons.close + (this.owner.disabled ? '-disabled' : ''))
-			.paintWin(ctx, closeButton.x = x + width - 15, closeButton.y = y + ~~(UI_Tags._theme.tag.height / 2) - 5 );
+			.paintWin(ctx, this.closeButton.x = x + width - 15, this.closeButton.y = y + ~~(UI_Tags._theme.tag.height / 2) - 5 );
 
 		return width;
 	}
