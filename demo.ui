@@ -127,7 +127,7 @@
 			@UI_ComboBox Combo1 {
 				left: Combo1Label right 20;
 				top: 20;
-				width: 150;
+				right: 20;
 				height: 25;
 
 				change: onComboChanged();
