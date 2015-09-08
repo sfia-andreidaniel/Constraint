@@ -58,8 +58,9 @@ enum EFormStyle {
  *   is not able to move it.
  */
 enum EFormPlacement {
-	AUTO,      // moveable
-	CENTER     // centered, not moveable
+	AUTO,      // managed by UI_DialogManager
+	CENTER,    // centered, not moveable
+	DESIGNED   // fixed, when opening it's origina left and right coordinates are set on the desktop
 }
 
 /**

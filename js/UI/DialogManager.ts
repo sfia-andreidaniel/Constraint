@@ -8,6 +8,8 @@ class UI_DialogManager extends UI_Event {
 
 	public static instance : UI_DialogManager = null;
 
+	public static placementStep: number = $I.number('UI.UI_Form/titlebar.height') + 10;
+
 	/**
 	 * Flag that is set to TRUE after the window fires the "ready" event
 	 */
@@ -28,6 +30,12 @@ class UI_DialogManager extends UI_Event {
 	private _zIndexId: number = 0;
 
 	private _zIndexThrottler: UI_Throttler;
+
+	private placement: IPoint = {
+		x: UI_DialogManager.placementStep,
+		y: UI_DialogManager.placementStep
+	};
+	private placementResets: number = 1;
 
 	constructor() {
 
@@ -311,6 +319,29 @@ class UI_DialogManager extends UI_Event {
 		for (var i = 0, len = this.windows.length; i < len; i++ ) {
 			this.windows[i].zIndex =  ( i * 100 ) + i + (~~isFormActive(this.windows[i]) * 50000) + (numberOfParents(this.windows[i]) * 10) + ~~this.windows[i].active * 1000;
 		}
+
+	}
+
+	/**
+	 * Automatically place a form on the desktop.
+	 */
+	public placeForm( form: UI_Form ) {
+
+		if ( form.width + this.placement.x > this.desktopWidth || form.height + this.placement.y > this.desktopHeight ) {
+			this.placementResets++;
+			this.placement.x = this.placementResets * UI_DialogManager.placementStep;
+			this.placement.y = UI_DialogManager.placementStep;
+			if (form.width + this.placement.x > this.desktopWidth || form.height + this.placement.y > this.desktopHeight) {
+				this.placementResets = 1;
+				this.placement.x = this.placementResets * UI_DialogManager.placementStep;
+			}
+		}
+
+		form.left = this.placement.x;
+		form.top = this.placement.y;
+
+		this.placement.x += UI_DialogManager.placementStep;
+		this.placement.y += UI_DialogManager.placementStep;
 
 	}
 

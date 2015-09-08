@@ -283,12 +283,21 @@ class UI_Form extends UI implements IFocusable {
 			.then( function( ) {
 				self.paintable = true;
 				UI_DialogManager.get.desktop.appendChild( self._root );
+
+				if ( self.placement == EFormPlacement.AUTO ) {
+					UI_DialogManager.get.placeForm(self);
+				}
+
 				self.updateFocusOrder( self._focusOrder = UI_DialogManager.get.zIndexId );
 				UI_DialogManager.get.onWindowOpened( self );
 				self.fire( 'open' );
 				UI_DialogManager.get.updateZIndex();
 				self.onRepaint();
-				self.fullRelayout();
+				
+				setTimeout(function() {
+					self.fullRelayout();
+				}, 20);
+				
 				return self;
 			} );
 
@@ -478,10 +487,12 @@ class UI_Form extends UI implements IFocusable {
 	/**
 	 * Returns or sets the form placement on the desktop.
 	 *
-	 * AUTO - The form is placed by it's "left" and "top" anchors.
+	 * AUTO - The form is placed automatically by UI_DialogManager on desktop
 	 *
 	 * CENTER - The form stays always in the center of it's desktop, and it
 	 * cannot be dragged from there.
+	 *
+	 * DESIGNED - The form is placed at it's left and right coordinates
 	 */
 	get placement(): EFormPlacement {
 		return this._placement;
@@ -489,11 +500,15 @@ class UI_Form extends UI implements IFocusable {
 
 	set placement( fPlacement: EFormPlacement ) {
 		if ( fPlacement != this._placement ) {
-			Utils.dom.removeClasses( this._root, [ 'placement-auto', 'placement-center' ] );
+			Utils.dom.removeClasses( this._root, [ 'placement-auto', 'placement-center', 'placement-designed' ] );
 			switch ( fPlacement ) {
 				case EFormPlacement.AUTO:
 					Utils.dom.addClass( this._root, 'placement-auto' );
 					this._placement = EFormPlacement.AUTO;
+					break;
+				case EFormPlacement.DESIGNED:
+					Utils.dom.addClass(this._root, 'placement-designed');
+					this._placement = EFormPlacement.DESIGNED;
 					break;
 				case EFormPlacement.CENTER:
 				default:

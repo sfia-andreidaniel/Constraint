@@ -127,6 +127,7 @@ class UI_Anchor_Form extends UI_Anchor {
 
 						break;
 
+					case EFormPlacement.DESIGNED:
 					case EFormPlacement.AUTO:
 						return this._distance;
 						break;
