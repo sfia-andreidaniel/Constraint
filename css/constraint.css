@@ -64,6 +64,7 @@ input::-ms-clear {
 }
 
 /* These files are "Required" at building stage */
+{$R css/UI_DialogManager.css}
 {$R css/UI_Screen.css}
 {$R css/UI_Form.css}
 {$R css/UI_Label.css}

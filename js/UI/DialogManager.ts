@@ -359,6 +359,8 @@ class UI_DialogManager extends UI_Event {
 					// setup the default manager.
 					manager.desktop = document.body;
 
+					Utils.dom.addClass(manager.desktop, 'ui UI_DialogManager');
+
 					manager.screen = new UI_Screen();
 					manager.screen.resize( manager.desktopWidth, manager.desktopHeight );
 
