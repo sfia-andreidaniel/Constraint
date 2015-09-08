@@ -100,7 +100,7 @@
 
 .ui.UI_Canvas.focused:not(.disabled) {
 	outline: 1px dotted black;
-	outline-offset: 1px;
+	outline-offset: -3px;
 }
 
 .ui.UI_Form:not(.focus-active) .ui.UI_Canvas.focused:not(.disabled) {

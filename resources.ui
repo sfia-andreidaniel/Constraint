@@ -8,6 +8,10 @@
 	menuitem_scroll_prev        from '../vendor/self/menuitem_scroll_prev.png'    10x5  disabled;
 	menuitem_scroll_next        from '../vendor/self/menuitem_scroll_next.png'    10x5  disabled;
 
+	checkbox_on                 from '../vendor/self/checkbox_on.png'             16x16 disabled;
+	checkbox_off                from '../vendor/self/checkbox_off.png'            16x16 disabled;
+	checkbox_any                from '../vendor/self/checkbox_any.png'            16x16 disabled;
+
 	/* TREE CONNECTORS */
 
 	tree_connector_0            from '../vendor/self/tree-connectors/pen_0.png'   25x25 disabled;
@@ -22,6 +26,7 @@
 	/* DROP DOWNS */
 	collapsed_sign              from '../vendor/self/collapsed.png'               20x20 disabled;
 	expanded_sign               from '../vendor/self/expanded.png'                20x20 disabled;
+	close_sign                  from '../vendor/self/btn_close_10x10.png'         10x10 disabled;
 
 	/* DATE PICKER */
 	datepicker_prev_month       from '../vendor/self/datepicker_prev_month.png'   5x10;

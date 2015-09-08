@@ -119,6 +119,8 @@
 /// <reference path="UI/PropertyGrid/Row/Input/SELECT.ts" />
 /// <reference path="UI/PropertyGrid/Row/Input/COLOR.ts" />
 /// <reference path="UI/ComboBox.ts" />
+/// <reference path="UI/Tags.ts" />
+/// <reference path="UI/Tags/Tag.ts" />
 
 
 /// <reference path="UI/Column.ts" />

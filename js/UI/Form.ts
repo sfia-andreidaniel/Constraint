@@ -555,8 +555,19 @@ class UI_Form extends UI implements IFocusable {
 				Utils.dom.addClass( this._root, 'focus-active' );
 				this.updateFocusOrder( this._focusOrder = UI_DialogManager.get.zIndexId );
 				UI_DialogManager.get.updateZIndex();
+				
+				if ( this.activeElement ) {
+					this.activeElement.fire('form-focus');
+				}
+
 			} else {
+				
 				Utils.dom.removeClass( this._root, 'focus-active' );
+				
+				if ( this.activeElement ) {
+					this.activeElement.fire('form-blur');
+				}
+
 			}
 			this.onRepaint();
 		}

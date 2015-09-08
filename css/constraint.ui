@@ -752,4 +752,40 @@
 		};
 	};
 
+	@Theme UI_Tags {
+		defaults: {
+			width: 100;
+			height: 100;
+		};
+		font: {
+			family: $fontFamily;
+			size: $fontSize;
+		};
+		tag: {
+			height: 20;
+			margin: 5;
+			background: {
+				disabled: $disabledControlBackgroundColor;
+				normal: $enabledControlBackgroundColor;
+				selected: $selectedItemBackgroundColor;
+			};
+			color: {
+				disabled: $disabledFontColor;
+				normal: $fontColor;
+				selected: $selectedItemColor;
+			};
+		};
+		background: {
+			disabled: $disabledControlBackgroundColor;
+			enabled: $enabledControlBackgroundColor;
+			inactive: $enabledInactiveControlBackgroundColor;
+		};
+		icons: {
+			checkbox_on: 'Constraint/checkbox_on/16x16';
+			checkbox_off: 'Constraint/checkbox_off/16x16';
+			checkbox_any: 'Constraint/checkbox_any/16x16';
+			close: 'Constraint/close_sign/10x10';
+		};
+	};
+
 };

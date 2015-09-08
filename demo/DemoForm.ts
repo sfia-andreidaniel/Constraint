@@ -4,7 +4,7 @@
 //            By doing so, constraint compiler will fail to 
 //            patch your files, and you will loose data.
 
-// @date:      Tue Sep 08 2015 12:13:11 GMT+0300 (GTB Daylight Time)
+// @date:      Tue Sep 08 2015 17:56:56 GMT+0300 (GTB Daylight Time)
 // @hostname:  BUC130220999
 // @nodejs:    v0.12.7
 // @generator: Constraint compiler ( https://github.com/sfia-andreidaniel/Constraint )
@@ -24,7 +24,10 @@ class DemoForm extends UI_Form {
     public Toolbar: UI_Toolbar;
     public Tabs1: UI_TabsPanel;
     public FirstTab: UI_Tab;
+    public Combo1Label: UI_Label;
     public Combo1: UI_ComboBox;
+    public LabelTags1: UI_Label;
+    public Tags1: UI_Tags;
     public AdvControls: UI_Tab;
     public PropGrid0: UI_PropertyGrid;
     public StdDialogs: UI_Tab;
@@ -70,7 +73,10 @@ class DemoForm extends UI_Form {
         this.Toolbar = new UI_Toolbar( this );
         this.Tabs1 = new UI_TabsPanel( this );
         this.FirstTab = new UI_Tab( this.Tabs1 );
+        this.Combo1Label = new UI_Label( this.FirstTab );
         this.Combo1 = new UI_ComboBox( this.FirstTab );
+        this.LabelTags1 = new UI_Label( this.FirstTab );
+        this.Tags1 = new UI_Tags( this.FirstTab );
         this.AdvControls = new UI_Tab( this.Tabs1 );
         this.PropGrid0 = new UI_PropertyGrid( this.AdvControls );
         this.StdDialogs = new UI_Tab( this.Tabs1 );
@@ -140,7 +146,13 @@ class DemoForm extends UI_Form {
         
         this.FirstTab.caption = "Other controls";
         
-        this.Combo1.left = 20;
+        this.Combo1Label.left = 20;
+        this.Combo1Label.top = 20;
+        this.Combo1Label.width = 100;
+        this.Combo1Label.caption = "Combo Box";
+        this.Combo1Label.target = "Combo1";
+        
+        this.Combo1.left = UI_Anchor_Literal.create({"alignment":2,"target":"Combo1Label","distance":20});
         this.Combo1.top = 20;
         this.Combo1.width = 150;
         this.Combo1.height = 25;
@@ -149,6 +161,19 @@ class DemoForm extends UI_Form {
         this.Combo1.strings = ["Anabelle","Abigail","Alabamma","Becks","Bon Jovi","Bee Gees","Corby","Danemarca","Ethan","Ellie","Fog","Frog","Germany","Hyunday","indian","indianopollis","Jamaica","Kyle","Key","Lamborgini","Lana del Rey","Misc","Microsoft","new","numb","Number","Oprah","orphan","Postman Person","personal","Perfect Job","quantum","Republic of a country","Reunion","South","Twilight","twister","Undiscovered","Venezuela","Vatican","West","we","xerxes","Xandros","Yasminne","Yucatan","Zimbabwe","Zorba","Zg"];
         
         ( function( form ) { form.Combo1.on('change', function() { form.onComboChanged( this ); } ); } )( this );
+        
+        this.LabelTags1.left = 20;
+        this.LabelTags1.top = UI_Anchor_Literal.create({"alignment":3,"target":"Combo1","distance":20});
+        this.LabelTags1.width = 100;
+        this.LabelTags1.caption = "Tags";
+        this.LabelTags1.target = "Tags1";
+        
+        this.Tags1.left = UI_Anchor_Literal.create({"alignment":2,"target":"LabelTags1","distance":20});
+        this.Tags1.top = UI_Anchor_Literal.create({"alignment":3,"target":"Combo1","distance":20});
+        this.Tags1.right = 20;
+        this.Tags1.height = 75;
+        this.Tags1.strings = ["video","article","featured article","featured video","sports","multimedia","entertainment","website","connection","ftp connection","ssh connection","filesystem","constraint","typescript","ui framework","ui canvas","documentation"];
+        this.Tags1.value = ["fifa","article","featured article","featured video"];
         
         this.AdvControls.caption = "Advanced Controls";
         
@@ -218,8 +243,8 @@ class DemoForm extends UI_Form {
         this.Date1.left = 10;
         this.Date1.top = UI_Anchor_Literal.create({"alignment":3,"target":"DropDown1","distance":10});
         this.Date1.right = 240;
-        this.Date1.minDate = 1440493991651;
-        this.Date1.maxDate = 1449569591652;
+        this.Date1.minDate = 1440514616217;
+        this.Date1.maxDate = 1449590216233;
         
         this.Spin1.left = 10;
         this.Spin1.top = UI_Anchor_Literal.create({"alignment":3,"target":"Date1","distance":10});

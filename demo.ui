@@ -116,8 +116,16 @@
 			
 			caption: 'Other controls';
 
-			@UI_ComboBox Combo1 {
+			@UI_Label Combo1Label {
 				left: 20;
+				top: 20;
+				width: 100;
+				caption: 'Combo Box';
+				target: 'Combo1';
+			};
+
+			@UI_ComboBox Combo1 {
+				left: Combo1Label right 20;
 				top: 20;
 				width: 150;
 				height: 25;
@@ -178,6 +186,32 @@
 					'Zorba',
 					'Zg'
 				];
+			};
+
+			@UI_Label LabelTags1 {
+				left: 20;
+				top: Combo1 bottom 20;
+				width: 100;
+
+				caption: 'Tags';
+
+				target: 'Tags1';
+
+			};
+
+			@UI_Tags Tags1 {
+				left: LabelTags1 right 20;
+				top: Combo1 bottom 20;
+				right: 20;
+				height: 75;
+
+				strings: [ 
+					'video', 'article', 'featured article', 'featured video', 'sports', 'multimedia', 'entertainment',
+				    'website', 'connection', 'ftp connection', 'ssh connection', 'filesystem', 'constraint', 'typescript',
+				    'ui framework', 'ui canvas', 'documentation'
+				];
+
+				value: [ 'fifa', 'article', 'featured article', 'featured video' ];
 			};
 
 		};
