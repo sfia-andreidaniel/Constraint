@@ -406,6 +406,14 @@ class UI_DialogManager extends UI_Event {
 
 					}, true );
 
+					if (typeof window != 'undefined')
+						manager.onDOMEvent(window, EEventType.KEY_DOWN, function(ev: Utils_Event_Keyboard) {
+							if (ev.code == Utils.keyboard.KB_BACKSPACE) {
+								if ( !document.activeElement || [ 'input', 'textarea' ].indexOf( document.activeElement.nodeName.toLowerCase() ) == -1 )
+									ev.preventDefault();
+							}
+						}, true);
+
 					manager.onDOMEvent( manager.desktop, EEventType.KEY_DOWN, function( ev: Utils_Event_Keyboard ) {
 						
 						if ( manager.screen.visible ) {
@@ -418,9 +426,6 @@ class UI_DialogManager extends UI_Event {
 								manager.handleTabKey( ev );
 							} else {
 								manager.handleRegularKey( ev );
-							}
-							if ( code == Utils.keyboard.KB_BACKSPACE && !document.activeElement || [ 'input', 'textarea' ].indexOf( document.activeElement.nodeName.toLowerCase() ) == -1 ) {
-								ev.preventDefault();
 							}
 						}
 					}, true );

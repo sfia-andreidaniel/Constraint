@@ -407,7 +407,7 @@ class UI_ComboBox extends UI implements IFocusable, IInput {
 	 * "opens" the control, making visible it's overlay listbox. if the control is allready
 	 * expanded, a close / reopen is made.
 	 */
-	protected _open( updateJustOverlaySize: boolean = false ) {
+	protected _open() {
 
 		if ( this._overlay ) {
 			this._close();

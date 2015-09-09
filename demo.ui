@@ -211,7 +211,37 @@
 				    'ui framework', 'ui canvas', 'documentation'
 				];
 
-				value: [ 'fifa', 'article', 'featured article', 'featured video' ];
+				change: onTagsChanged();
+
+				value: <![JSON[ 
+					[ 
+						
+						"online",
+						
+						"has video",
+
+						{
+							"label": "boolean",
+							"checked": false
+						},
+						{
+							"label": "string tag"
+						},
+						{
+							"label": "tri-state",
+							"checked": false,
+							"triState": true
+						},
+						{
+							"label": "sticky tag (readonly)",
+							"sticky": true,
+							"checked": false
+						}
+
+					]
+				]]>;
+
+				placeholder: 'Start typing here some values separated via the "," character';
 			};
 
 		};

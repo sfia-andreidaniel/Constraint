@@ -27,6 +27,7 @@
 	collapsed_sign              from '../vendor/self/collapsed.png'               20x20 disabled;
 	expanded_sign               from '../vendor/self/expanded.png'                20x20 disabled;
 	close_sign                  from '../vendor/self/btn_close_10x10.png'         10x10 disabled;
+	edit_sign                   from '../vendor/self/edit_20x20.png'              20x20 disabled;
 
 	/* DATE PICKER */
 	datepicker_prev_month       from '../vendor/self/datepicker_prev_month.png'   5x10;

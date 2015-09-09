@@ -109,7 +109,11 @@ class Utils_Keyboard {
 		if ( !ctrl && !alt ) {
 
 			if ( code && typeof Utils_Keyboard.keyBindings[ code ] != 'undefined' ) {
-				return Utils_Keyboard.keyBindings[ code ][ ~~shift ];
+				if (code == 32) {
+					return shift ? 'shift space' : ' ';
+				} else {
+					return Utils_Keyboard.keyBindings[code][~~shift];
+				}
 			}
 
 			if ( shift ) {

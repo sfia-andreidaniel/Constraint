@@ -760,6 +760,14 @@
 		font: {
 			family: $fontFamily;
 			size: $fontSize;
+
+			// colors for the listbox helper
+			color: {
+				normal: $normalFontColor;
+				selected: $selectedItemColor;
+				selectedInactive: $selectedInactiveItemColor;
+				disabled: $disabledFontColor;
+			};
 		};
 		tag: {
 			height: 20;
@@ -768,11 +776,13 @@
 				disabled: $disabledControlBackgroundColor;
 				normal: $enabledControlBackgroundColor;
 				selected: $selectedItemBackgroundColor;
+				selectedInactive: $inactiveSelectedItemBackgroundColor;
 			};
 			color: {
 				disabled: $disabledFontColor;
 				normal: $fontColor;
 				selected: $selectedItemColor;
+				selectedInactive: $selectedInactiveItemColor;
 			};
 		};
 		background: {
@@ -785,6 +795,11 @@
 			checkbox_off: 'Constraint/checkbox_off/16x16';
 			checkbox_any: 'Constraint/checkbox_any/16x16';
 			close: 'Constraint/close_sign/10x10';
+			edit: 'Constraint/edit_sign/20x20';
+			expander: 'Constraint/collapsed_sign/20x20';
+		};
+		option: {
+			height: 25;
 		};
 	};
 

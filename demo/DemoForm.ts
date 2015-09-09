@@ -4,8 +4,8 @@
 //            By doing so, constraint compiler will fail to 
 //            patch your files, and you will loose data.
 
-// @date:      Tue Sep 08 2015 20:35:51 GMT+0300 (GTB Daylight Time)
-// @hostname:  web01
+// @date:      Wed Sep 09 2015 17:33:44 GMT+0300 (GTB Daylight Time)
+// @hostname:  BUC130220999
 // @nodejs:    v0.12.7
 // @generator: Constraint compiler ( https://github.com/sfia-andreidaniel/Constraint )
 
@@ -173,7 +173,10 @@ class DemoForm extends UI_Form {
         this.Tags1.right = 20;
         this.Tags1.height = 75;
         this.Tags1.strings = ["video","article","featured article","featured video","sports","multimedia","entertainment","website","connection","ftp connection","ssh connection","filesystem","constraint","typescript","ui framework","ui canvas","documentation"];
-        this.Tags1.value = ["fifa","article","featured article","featured video"];
+        this.Tags1.value = ["online","has video",{"label":"boolean","checked":false},{"label":"string tag"},{"label":"tri-state","checked":false,"triState":true},{"label":"sticky tag (readonly)","sticky":true,"checked":false}];
+        this.Tags1.placeholder = "Start typing here some values separated via the \",\" character";
+        
+        ( function( form ) { form.Tags1.on('change', function() { form.onTagsChanged( this ); } ); } )( this );
         
         this.AdvControls.caption = "Advanced Controls";
         
@@ -243,8 +246,8 @@ class DemoForm extends UI_Form {
         this.Date1.left = 10;
         this.Date1.top = UI_Anchor_Literal.create({"alignment":3,"target":"DropDown1","distance":10});
         this.Date1.right = 240;
-        this.Date1.minDate = 1440524151764;
-        this.Date1.maxDate = 1449599751765;
+        this.Date1.minDate = 1440599624561;
+        this.Date1.maxDate = 1449675224562;
         
         this.Spin1.left = 10;
         this.Spin1.top = UI_Anchor_Literal.create({"alignment":3,"target":"Date1","distance":10});
@@ -650,6 +653,12 @@ class DemoForm extends UI_Form {
     /* $hint: method-onComboChanged */
     public onComboChanged( sender: UI_Event ) {
         console.log(this.Combo1.value);
+    }
+    /* $hint: end */
+
+    /* $hint: method-onTagsChanged */
+    public onTagsChanged( sender: UI_Event ) {
+        console.log(this.Tags1.value);
     }
     /* $hint: end */
 }
