@@ -5,6 +5,12 @@ Constraint is a project that aims to implement a professional [UI](https://en.wi
 The advantage of using the Constraint Framework, is that the layout of the application is 
 decoupled form the code of the application, and it's written on a typed language - Typescript.
 
+## Status
+![gitpull](http://www.browserfs.com/emblems/clone.png "git pull origin master") ![make](http://www.browserfs.com/emblems/make.png "make")
+![makeresources](http://www.browserfs.com/emblems/resources.png "make resources") ![makeredoc](http://www.browserfs.com/emblems/docs.png "make doc")
+![makedemo](http://www.browserfs.com/emblems/demo.png "make demo")
+
+
 ## Features
 * Typescript strict library
 * 100% OOP, no "hacks" and no other obfuscations
