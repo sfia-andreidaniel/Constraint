@@ -47,7 +47,7 @@ class UI_Event {
 				if ( this.$EVENTS_QUEUE && this.$EVENTS_QUEUE[ eventName ] ) {
 					for ( var i = this.$EVENTS_QUEUE[ eventName ].length - 1; i>=0; i-- ) {
 						if ( this.$EVENTS_QUEUE[ eventName ][ i ] == callback ) {
-							this.$EVENTS_QUEUE[eventName][i] = null;
+							this.$EVENTS_QUEUE[eventName].splice(i, 1);
 							return;
 						}
 					}
@@ -78,34 +78,21 @@ class UI_Event {
 
 		var hasNull: boolean = false,
 		    i: number,
-		    len: number;
+		    len: number,
+		    queue: any[];
 
 		if ( this.$EVENTS_ENABLED ) {
 
 			if ( this.$EVENTS_QUEUE && this.$EVENTS_QUEUE[ eventName ] ) {
-				for ( i=0, len = this.$EVENTS_QUEUE[ eventName ].length; i<len; i++ ) {
-					if (this.$EVENTS_QUEUE[eventName][i]) {
-						this.$EVENTS_QUEUE[eventName][i].apply(this, args);
-						if (this.$EVENTS_QUEUE && this.$EVENTS_QUEUE[eventName] && this.$EVENTS_QUEUE[eventName][i] === null)
-							hasNull = true;
-					} else {
-						hasNull = true;
-					}
+
+				queue = this.$EVENTS_QUEUE[eventName].slice(0);				
+
+				for ( i=0, len = queue.length; i<len; i++ ) {
+					queue[i].apply(this, args);
 				}
 
-				// Remove nulls
-				if ( hasNull && this.$EVENTS_QUEUE[eventName] && this.$EVENTS_QUEUE[ eventName ]) {
-					for (i = len - 1; i>=0; i-- ) {
-						if ( this.$EVENTS_QUEUE[ eventName ][ i ] === null ) {
-							this.$EVENTS_QUEUE[eventName].splice(i, 1);
-						}
-					}
-					if ( this.$EVENTS_QUEUE[ eventName ].length == 0 ) {
-						delete this.$EVENTS_QUEUE[eventName];
-					}
-				}
 			}
-					}
+		}
 	}
 
 	/**

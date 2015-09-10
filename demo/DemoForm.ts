@@ -4,7 +4,7 @@
 //            By doing so, constraint compiler will fail to 
 //            patch your files, and you will loose data.
 
-// @date:      Wed Sep 09 2015 17:33:44 GMT+0300 (GTB Daylight Time)
+// @date:      Thu Sep 10 2015 12:49:41 GMT+0300 (GTB Daylight Time)
 // @hostname:  BUC130220999
 // @nodejs:    v0.12.7
 // @generator: Constraint compiler ( https://github.com/sfia-andreidaniel/Constraint )
@@ -246,8 +246,8 @@ class DemoForm extends UI_Form {
         this.Date1.left = 10;
         this.Date1.top = UI_Anchor_Literal.create({"alignment":3,"target":"DropDown1","distance":10});
         this.Date1.right = 240;
-        this.Date1.minDate = 1440599624561;
-        this.Date1.maxDate = 1449675224562;
+        this.Date1.minDate = 1440668981476;
+        this.Date1.maxDate = 1449744581477;
         
         this.Spin1.left = 10;
         this.Spin1.top = UI_Anchor_Literal.create({"alignment":3,"target":"Date1","distance":10});
