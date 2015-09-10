@@ -5,9 +5,6 @@ Constraint is a project that aims to implement a professional [UI](https://en.wi
 The advantage of using the Constraint Framework, is that the layout of the application is 
 decoupled form the code of the application, and it's written on a typed language - Typescript.
 
-## Status
-[![Build status](http://www.browserfs.com/emblems/make.png)](http://www.browserfs.com/producs/constraint/)
-
 
 ## Features
 * Typescript strict library
