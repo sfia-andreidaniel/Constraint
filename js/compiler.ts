@@ -229,7 +229,7 @@ try {
 
 			if ( !/^method\-[a-zA-Z\d\_\$]+/.test( matchesSrc[1] ) ) {
 
-				console.log( 'do hint: ', matchesSrc[1] );
+				//console.log( 'do hint: ', matchesSrc[1] );
 
 				regexpDest = new RegExp('\\/\\* \\$hint\\: ' + matchesSrc[1].replace(/\-/g, '\\-' ) + ' \\*\\/([\\s\\S]+?)\\/\\* \\$hint\\: end \\*\\/' );
 
@@ -255,7 +255,7 @@ try {
 				} else {
 					// append a new method called "methodName" in the destination form
 					
-					console.log( 'patch add: ', methodName );
+					//console.log( 'patch add: ', methodName );
 				}
 
 				withBuffer = withBuffer.replace( matchesSrc[0], '' );
