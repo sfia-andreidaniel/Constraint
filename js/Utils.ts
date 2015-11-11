@@ -60,4 +60,19 @@ class Utils {
 	 */
 	public static event = Utils_Event;
 
+	/**
+	 * Helpers for manipulating paths and uri schemes
+	 */
+	public static path = Utils_Path;
+
+	/**
+	 * Helpers for doing ajax transfers
+	 */
+	public static ajax = Utils_Ajax;
+
+	/**
+	 * Helpers for computing base64 strings
+	 */
+	public static base64 = Utils_Base64;
+
 }
