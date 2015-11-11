@@ -1,4 +1,6 @@
+/// <reference path="Browser/Detector.ts" />
 /// <reference path="Global.ts" />
+
 /// <reference path="types.ts" />
 
 /// <reference path="Mixin.ts" />
@@ -23,6 +25,7 @@
 /// <reference path="Utils/Event/Mouse.ts" />
 /// <reference path="Utils.ts" />
 
+/// <reference path="Hash/Crc32.ts" />
 
 /// <reference path="Constraint.ts" />
 /// <reference path="Constraint/Token.ts" />
@@ -144,3 +147,8 @@
 /// <reference path="UI/Dialog/TagBox.ts" />
 /// <reference path="UI/Color/List.ts" />
 /// <reference path="UI/Color/Sample.ts" />
+
+/// <reference path="Frontend.ts" />
+
+/// <reference path="Frontend/Storage.ts" />
+/// <reference path="Frontend/Storage/Cookie.ts" />
