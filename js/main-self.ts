@@ -28,7 +28,9 @@
 /// <reference path="Utils/Event/Mouse.ts" />
 /// <reference path="Utils.ts" />
 
+/// <reference path="Hash/MD5.ts" />
 /// <reference path="Hash/Crc32.ts" />
+/// <reference path="Hash.ts" />
 
 /// <reference path="Constraint.ts" />
 /// <reference path="Constraint/Token.ts" />

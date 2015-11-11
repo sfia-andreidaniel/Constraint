@@ -4,7 +4,7 @@
 //            By doing so, constraint compiler will fail to 
 //            patch your files, and you will loose data.
 
-// @date:      Thu Sep 10 2015 12:49:41 GMT+0300 (GTB Daylight Time)
+// @date:      Wed Nov 11 2015 17:33:02 GMT+0200 (GTB Standard Time)
 // @hostname:  BUC130220999
 // @nodejs:    v0.12.7
 // @generator: Constraint compiler ( https://github.com/sfia-andreidaniel/Constraint )
@@ -246,8 +246,8 @@ class DemoForm extends UI_Form {
         this.Date1.left = 10;
         this.Date1.top = UI_Anchor_Literal.create({"alignment":3,"target":"DropDown1","distance":10});
         this.Date1.right = 240;
-        this.Date1.minDate = 1440668981476;
-        this.Date1.maxDate = 1449744581477;
+        this.Date1.minDate = 1446046382281;
+        this.Date1.maxDate = 1455204782281;
         
         this.Spin1.left = 10;
         this.Spin1.top = UI_Anchor_Literal.create({"alignment":3,"target":"Date1","distance":10});
@@ -604,46 +604,6 @@ class DemoForm extends UI_Form {
     }
 
 
-    /* $hint: method-showMessageBox */
-    public showMessageBox( sender: UI_Event ) {
-
-        switch ( sender ) {
-            case this.ButtonAlert:
-                UI_Dialog_MessageBox.create('Alert text. See the result in console.', 'Alert', EDialogBoxType.MB_ALERT, null, this).then(function( result ) {
-                    console.log(result);
-                });
-                break;
-
-            case this.ButtonError:
-                 UI_Dialog_MessageBox.create('Error text. See the result in console.', 'Error', EDialogBoxType.MB_ERROR, null, this).then(function( result ) {
-                     console.log(result);
-                });
-               break;
-
-            case this.ButtonInfo:
-                UI_Dialog_MessageBox.create('Info text. See the result in console.', 'Info', EDialogBoxType.MB_INFO, null, this).then(function( result ) {
-                    console.log(result);
-                });
-                break;
-
-            case this.ButtonWarning:
-                UI_Dialog_MessageBox.create('Warning text. See the result in console.', 'Warning', EDialogBoxType.MB_WARNING, null, this).then(function( result ) {
-                    console.log(result);
-                });
-                break;
-        }
-
-    }
-    /* $hint: end */
-
-    /* $hint: method-showColorBox */
-    public showColorBox( sender: UI_Event ) {
-        UI_Dialog_ColorBox.create(this).then(function(color: UI_Color) {
-            console.log(!color ? color : color.toString(null));
-        });
-    }
-    /* $hint: end */
-
     /* $hint: method-actionCommand */
     public actionCommand( sender: UI_Event ) {
 
@@ -652,13 +612,25 @@ class DemoForm extends UI_Form {
 
     /* $hint: method-onComboChanged */
     public onComboChanged( sender: UI_Event ) {
-        console.log(this.Combo1.value);
+
     }
     /* $hint: end */
 
     /* $hint: method-onTagsChanged */
     public onTagsChanged( sender: UI_Event ) {
-        console.log(this.Tags1.value);
+
+    }
+    /* $hint: end */
+
+    /* $hint: method-showMessageBox */
+    public showMessageBox( sender: UI_Event ) {
+
+    }
+    /* $hint: end */
+
+    /* $hint: method-showColorBox */
+    public showColorBox( sender: UI_Event ) {
+
     }
     /* $hint: end */
 }

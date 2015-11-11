@@ -142,14 +142,14 @@ class Utils_Base64 {
 (function() {
 
     // browser normalization for atob and btoa
-    if ( typeof window.atob == 'undefined' ) {
-        window.atob = function( s: string ): string {
+    if ( typeof Global.env.atob == 'undefined' ) {
+        Global.env.atob = function( s: string ): string {
             return Utils_Base64.decode(s);
         }
     }
 
-    if ( typeof window.btoa == 'undefined' ) {
-        window.btoa = function( s: string ): string {
+    if ( typeof Global.env.btoa == 'undefined' ) {
+        Global.env.btoa = function( s: string ): string {
             return Utils_Base64.encode(s);
         }
     }

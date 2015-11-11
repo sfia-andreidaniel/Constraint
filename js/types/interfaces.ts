@@ -70,6 +70,7 @@ interface IBoundingBox {
 
 interface IIdentifiable {
 	id: any;
+	[index: string]: any;
 }
 
 interface INameable extends IIdentifiable {
