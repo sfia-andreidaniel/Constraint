@@ -60,12 +60,6 @@ begin
 
 end;
 
-procedure die( message: AnsiString; const errorCode: Byte = 1 );
-begin
-    writeln( stdErr, message );
-    halt( errorCode );
-end;
-
 var compilerSrc: AnsiString;
     nodejs: AnsiString;
     AProcess: TProcess;
@@ -75,7 +69,44 @@ var compilerSrc: AnsiString;
     buffer : array[1..2048] of byte;
     exitCode: integer;
 
+    appDir: AnsiString;
+    currentDir: ansiString;
+
+procedure die( message: AnsiString; const errorCode: Byte = 1 );
 begin
+    chdir( currentDir );
+    writeln( stdErr, message );
+    halt( errorCode );
+end;
+
+function expandPath( path: AnsiString ): AnsiString;
+begin
+    chdir( currentDir );
+    result := ExpandFileName( path );
+    chdir( appDir );
+end;
+
+function translateArgument( arg: AnsiString ): AnsiString;
+begin
+    result := arg;
+
+    if copy( arg, 1, 6 ) = '--src:' then
+    begin
+        result := '--src:' + expandPath( copy( arg, 7, 512 ) );
+    end else
+    if copy( arg, 1, 14 ) = '--project-dir:' then
+    begin
+        result := '--project-dir:' + expandPath( copy( arg, 15, 512 ) );
+    end;
+end;
+
+
+begin
+
+    currentDir := getCurrentDir();
+    appDir := getApplicationDir();
+
+    chdir( appDir );
 
     ENV_PATH := sysutils.getEnvironmentVariable( 'PATH' );
 
@@ -106,7 +137,7 @@ begin
     AProcess.Parameters.Add( compilerSrc );
 
     for i := 1 to paramcount() do
-        AProcess.Parameters.Add( paramstr(i) );
+        AProcess.Parameters.Add( translateArgument( paramstr(i) ) );
     
     AProcess.options := [ poUsePipes ];
     

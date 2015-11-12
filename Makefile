@@ -14,10 +14,10 @@ resources::
 	rm -rf ./resources
 	mogrify -format png -background none vendor/self/*.svg
 	mogrify -format png -background none vendor/gnome/*.svg
-	constraint --src:resources.ui --http-include-path:resources
+	./constraint --src:resources.ui --http-include-path:resources
 
 demo:: build
-	constraint --src:demo.ui --http-include-path:demo --make
+	./constraint --src:demo.ui --http-include-path:demo --make
 
 dts_install::
 	npm install -g dts-generator
