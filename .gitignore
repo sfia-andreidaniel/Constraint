@@ -8,6 +8,7 @@ css/main.css
 vendor/gnome/*.png
 docs/*
 Constraint.d.ts
+constraint.o
 
 # Windows image file caches
 Thumbs.db
