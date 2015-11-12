@@ -34,3 +34,4 @@ doc::
 
 clean::
 	rm -f *.js js/*.js demo/*.js demo/*.res css/main.css Constraint.d.ts constraint.o
+
