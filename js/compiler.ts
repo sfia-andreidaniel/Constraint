@@ -39,7 +39,7 @@ try {
 	}
 
 	if ( !srcFile ) {
-		throw Error( 'Usage: \nconstraint --src:source_file\n\t[--project-dir:project_dir]\n\t[--form:form_name]\n\t[--http-include_path:path]' );
+		throw Error( 'Usage: \nconstraint --src:source_file\n\t[--project-dir:project_dir]\n\t[--form:form_name]\n\t[--http-include-path:path]' );
 	}
 
 	buffer = fs.readFileSync( srcFile );
@@ -58,7 +58,7 @@ try {
 	    resources = [];
 
 	for ( var i=0, len = scopes.length; i<len; i++ ) {
-		if ( constraint.$scope( scopes[i] ).$type == 'UI_Form' ) {
+		if (constraint.$scope(scopes[i]).$type == 'UI_Form') {
 			console.log( '* Found form: ' + JSON.stringify( constraint.$scope( scopes[i] ).name ) );
 			forms.push( constraint.$scope( scopes[i] ) );
 		} else
@@ -68,19 +68,23 @@ try {
 		}
 	}
 
-	//console.log( '* Found ', forms.length, ' forms in "' + srcFile + '"' );
+	console.log( '* Found ', forms.length, ' forms in "' + srcFile + '"' );
 
 	if ( forms.length == 0 && resources.length == 0 ) {
 		console.log( '* Nothing to build. Exiting now.');
 		process.exit();
 	}
 
-	if ( destDir === null ) {
+	console.log('aici 1');
+	
+	if (destDir === null) {
 		destDir = srcFile.replace(/\.[^\.]+$/g, '' );
 		if ( destDir == srcFile ) {
 			destDir = srcFile + "_app";
 		}
 	}
+
+	console.log('aici 1');
 
 	if ( !fs.existsSync( destDir ) ) {
 		try {
