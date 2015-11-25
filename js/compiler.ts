@@ -75,16 +75,12 @@ try {
 		process.exit();
 	}
 
-	console.log('aici 1');
-	
 	if (destDir === null) {
 		destDir = srcFile.replace(/\.[^\.]+$/g, '' );
 		if ( destDir == srcFile ) {
 			destDir = srcFile + "_app";
 		}
 	}
-
-	console.log('aici 1');
 
 	if ( !fs.existsSync( destDir ) ) {
 		try {

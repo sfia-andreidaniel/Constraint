@@ -145,15 +145,19 @@ begin
     
     repeat
     
-        bytesRead := AProcess.Output.Read(buffer, 2048);
-        
-        for i := 1 to bytesRead do write( chr( buffer[i] ) );
+        if ( AProcess.Output.NumBytesAvailable > 0 )
+        then begin
+            bytesRead := AProcess.Output.Read(buffer, 2048);
+            for i := 1 to bytesRead do write( chr( buffer[i] ) );
+        end else bytesRead := 0;
 
-        bytesReadE := AProcess.Stderr.Read( buffer, 2048 );
-        
-        for i := 1 to bytesReadE do write( chr( buffer[i] ) );
+        if ( AProcess.StdErr.NumBytesAvailable > 0 )
+        then begin
+            bytesReadE := AProcess.Stderr.Read( buffer, 2048 );
+            for i := 1 to bytesReadE do write( chr( buffer[i] ) );
+        end else bytesReadE := 0;
 
-    until ( bytesread = 0 ) and ( bytesReadE = 0 );
+    until AProcess.Running = false;
     
     exitCode := AProcess.ExitStatus;
     
