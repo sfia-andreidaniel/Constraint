@@ -30,6 +30,8 @@
 /// <reference path="Utils/Event/Mouse.ts" />
 /// <reference path="Utils.ts" />
 
+/// <reference path="Container/Model.ts" />
+
 /// <reference path="Hash/MD5.ts" />
 /// <reference path="Hash/Crc32.ts" />
 /// <reference path="Hash.ts" />
