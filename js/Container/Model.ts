@@ -46,6 +46,19 @@ class Container_Model extends UI_Event {
 		return result;
 	}
 
+	public keys(): string[] {
+		var out: string[] = [],
+			key: string;
+
+		for ( key in this.data ) {
+			if ( this.data.hasOwnProperty(key) ) {
+				out.push(key);
+			}
+		}
+
+		return out;
+	}
+
 	public save(): Thenable<any> {
 		
 		this.fire('before-save');
