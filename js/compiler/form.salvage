@@ -23,7 +23,7 @@ class {{name}} extends UI_Form {
     public {{name}}: {{type}};{{#end}}{{#end}}{{#else}}{{#end}}
     /* $hint: end */
 
-    constructor() {
+    constructor( Provider: Container = null, InitFlags: string[] = null ) {
         super();
 
         /* $hint: constructor-properties */

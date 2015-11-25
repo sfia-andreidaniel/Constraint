@@ -10,6 +10,8 @@
 /// <reference path="UI/Timer.ts" />
 /// <reference path="UI/Throttler.ts" />
 
+/// <reference path="Container.ts" />
+
 /// <reference path="Utils/Date.ts" />
 /// <reference path="Utils/Array.ts" />
 /// <reference path="Utils/Object.ts" />
