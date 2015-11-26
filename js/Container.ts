@@ -6,7 +6,7 @@ class Container extends UI_Event {
 		super();
 	}
 
-	public get( id: string ): any {
+	public get( id: string ): ( ...args: any[] ) => Thenable<Container_Model> {
 		id = String(id || '') || '';
 		
 		if ( !id ) {
