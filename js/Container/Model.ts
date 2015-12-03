@@ -71,7 +71,8 @@ class Container_Model extends UI_Event {
 					"operation": self.data.id === null
 						? "insert"
 						: "update"
-				}).then( function(pongObject: any /* <IIdentifiable>" */) {
+				}).then( JSON.parse )
+				  .then( function(pongObject: any /* <IIdentifiable>" */) {
 					
 					var key: string;
 
