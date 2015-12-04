@@ -1,0 +1,80 @@
+{$N UI.UI_Upload}
+.ui.UI_Upload {
+	display: block;
+	width: ${defaultWidth}px;
+	height: ${defaultHeight}px;
+	background-color: ${background.inactive};
+	border: 1px solid ${border.color};
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.ui.UI_Upload > input[type=file] {
+	-moz-opacity:0 ;
+	filter:alpha(opacity: 0);
+	opacity: 0;
+	z-index: 2;
+	position: relative;
+	width: calc( ${speedButton.width}px );
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	float: right;
+	max-width: 100%;
+}
+
+.ui.UI_Upload > .caption {
+	position: absolute;
+	padding: 0;
+	margin: 0;
+	width: calc( 100% - ${speedButton.width}px - 3px );
+	height: 100%;
+	top: 0px;
+	left: 0px;
+	bottom: 0px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	font-family: '${font.family}';
+	font-size: ${font.size}px;
+}
+
+.ui.UI_Upload > .speed {
+	position: absolute;
+	padding: 0;
+	margin: 0;
+	width: ${speedButton.width}px;
+	background-color: ${speedButton.background.normal};
+	border: 1px solid ${speedButton.borderColor};
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	text-align: center;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	font-family: '${font.family}';
+	font-size: ${font.size}px;
+}
+
+.ui.UI_Upload.focused {
+	background-color: ${background.enabled};
+}
+
+.ui.UI_Upload.focused > .focusring {
+	position: absolute;
+	display: block;
+	top: 2px;
+	bottom: 2px;
+	right: 2px;
+	width: calc( ${speedButton.width}px - 2px);
+	z-index: 4;
+	pointer-events: none;
+	-ms-pointer-events: none;
+	-moz-pointer-events: none;
+	-webkit-pointer-events: none;
+}
+
+.ui.UI_Upload.focused > .focusring {
+	outline: 1px dotted black;
+}

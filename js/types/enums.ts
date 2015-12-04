@@ -262,7 +262,8 @@ enum EEventType {
 	INPUT,
 	RESIZE,
 	LOAD,
-	ERROR
+	ERROR,
+	CHANGE
 
 }
 
@@ -273,4 +274,11 @@ enum ELayoutType {
 	NONE,
 	LEFT_TO_RIGHT,
 	TOP_TO_BOTTOM
+}
+
+/**
+ * File upload transport types
+ */
+enum EFileUploadTransportType {
+	SOCKFTPD
 }

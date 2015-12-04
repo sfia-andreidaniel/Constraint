@@ -1,20 +1,3 @@
-interface IQueryStruc {
-	[index: string]: string;
-}
-
-interface IUrlStruc {
-	protocol: string;
-	user: string;
-	password: string;
-	host: string;
-	port: number;
-	path: string;
-	file: string;
-	fullPath: string;
-	query: IQueryStruc;
-	hash: string;
-}
-
 class Utils_Path {
 
 	public static createURL( info: IUrlStruc ) {

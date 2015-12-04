@@ -70,7 +70,7 @@ class Utils_Event_Generic {
 		} catch(e) {}
 	}
 
-	get originalEvent(): any {
+	public get originalEvent(): any {
 		return this.event;
 	}
 

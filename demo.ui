@@ -112,6 +112,20 @@
 		right: 20;
 		bottom: 40;
 
+		@UI_Tab FileHandling {
+			caption: 'File handling';
+
+			@UI_Upload File1 {
+				left: 20;
+				top: 20;
+
+				// caption: 'Choose file';
+				multiple: true;
+
+				transport: 'sockftpd://anonymous@127.0.0.1:8080/?reconnectTimeout=60';
+			};
+		};
+
 		@UI_Tab FirstTab {
 			
 			caption: 'Other controls';

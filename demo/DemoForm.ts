@@ -4,7 +4,7 @@
 //            By doing so, constraint compiler will fail to 
 //            patch your files, and you will loose data.
 
-// @date:      Thu Nov 12 2015 14:36:16 GMT+0200 (GTB Standard Time)
+// @date:      Fri Dec 04 2015 16:16:50 GMT+0200 (GTB Standard Time)
 // @hostname:  BUC130220999
 // @nodejs:    v0.12.7
 // @generator: Constraint compiler ( https://github.com/sfia-andreidaniel/Constraint )
@@ -23,6 +23,8 @@ class DemoForm extends UI_Form {
     public Popup1: UI_Popup;
     public Toolbar: UI_Toolbar;
     public Tabs1: UI_TabsPanel;
+    public FileHandling: UI_Tab;
+    public File1: UI_Upload;
     public FirstTab: UI_Tab;
     public Combo1Label: UI_Label;
     public Combo1: UI_ComboBox;
@@ -72,6 +74,8 @@ class DemoForm extends UI_Form {
         this.Popup1 = new UI_Popup( this );
         this.Toolbar = new UI_Toolbar( this );
         this.Tabs1 = new UI_TabsPanel( this );
+        this.FileHandling = new UI_Tab( this.Tabs1 );
+        this.File1 = new UI_Upload( this.FileHandling );
         this.FirstTab = new UI_Tab( this.Tabs1 );
         this.Combo1Label = new UI_Label( this.FirstTab );
         this.Combo1 = new UI_ComboBox( this.FirstTab );
@@ -143,6 +147,13 @@ class DemoForm extends UI_Form {
         this.Tabs1.top = UI_Anchor_Literal.create({"alignment":3,"target":"Toolbar","distance":20});
         this.Tabs1.right = 20;
         this.Tabs1.bottom = 40;
+        
+        this.FileHandling.caption = "File handling";
+        
+        this.File1.left = 20;
+        this.File1.top = 20;
+        this.File1.multiple = true;
+        this.File1.transport = "sockftpd://anonymous@127.0.0.1:8080/?reconnectTimeout=60";
         
         this.FirstTab.caption = "Other controls";
         
@@ -246,8 +257,8 @@ class DemoForm extends UI_Form {
         this.Date1.left = 10;
         this.Date1.top = UI_Anchor_Literal.create({"alignment":3,"target":"DropDown1","distance":10});
         this.Date1.right = 240;
-        this.Date1.minDate = 1446122176512;
-        this.Date1.maxDate = 1455280576513;
+        this.Date1.minDate = 1448029010969;
+        this.Date1.maxDate = 1457101010969;
         
         this.Spin1.left = 10;
         this.Spin1.top = UI_Anchor_Literal.create({"alignment":3,"target":"Date1","distance":10});

@@ -451,6 +451,41 @@
 		};
 	};
 
+	@Theme UI_Upload {
+		defaultWidth: 100;
+		defaultHeight: 25;
+		
+		background: {
+			enabled: $enabledControlBackgroundColor;
+			disabled: $disabledControlBackgroundColor;
+			inactive: $enabledInactiveControlBackgroundColor;
+		};
+
+		border: {
+			color: $enabledControlBorderColor;
+		};
+
+		color: {
+			disabled: $disabledFontColor;
+		};
+
+		font: {
+			size: $fontSize;
+			family: $fontFamily;
+		};
+
+		speedButton: {
+			width: 50;
+			background: {
+				normal: $object3dColor;
+				pressed: #e8e8e8;
+				disabled: $disabledControlBackgroundColor;
+			};
+			borderColor: $enabledControlBorderColor;
+		};
+	};
+
+
 	@Theme UI_DateBox {
 		defaults: {
 			width: 100;

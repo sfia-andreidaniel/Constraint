@@ -93,6 +93,15 @@
 /// <reference path="UI/Text.ts" />
 /// <reference path="UI/Div.ts" />
 /// <reference path="UI/ProgressBar.ts" />
+/// <reference path="UI/Upload.ts" />
+/// <reference path="UI/Upload/Transport.ts" />
+/// <reference path="UI/Upload/Transport/SockFTPD.ts" />
+/// <reference path="UI/Upload/Transport/SockFTPD/Command.ts" />
+/// <reference path="UI/Upload/Transport/SockFTPD/Command/Login.ts" />
+/// <reference path="UI/Upload/Transport/SockFTPD/Command/Ls.ts" />
+/// <reference path="UI/Upload/Transport/SockFTPD/Command/Put.ts" />
+/// <reference path="UI/Upload/Transport/SockFTPD/Command/PutBase64.ts" />
+
 
 /// <reference path="UI/DateBox.ts" />
 /// <reference path="UI/DateBox/DigitGroup.ts" />

@@ -112,6 +112,11 @@ class Utils_Event {
 				evType = 'generic';
 				break;
 
+			case EEventType.CHANGE:
+				evName = 'change';
+				evType = 'generic';
+				break;
+
 			default:
 				throw new Error('Invalid event type');
 				break;
