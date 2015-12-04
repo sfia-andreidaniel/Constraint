@@ -1013,7 +1013,7 @@ class UI_Upload_Transport_SockFTPD extends UI_Upload_Transport {
 		}
 
 		if ( info.protocol != 'sockftpd' ) {
-			throw new Error('Bad sockFTPD scheme. Required "sockftpd"');
+			throw new Error('Bad sockFTPD transport scheme. Required "sockftpd"');
 		}
 
 		if ( info.host ) {
@@ -1056,7 +1056,7 @@ class UI_Upload_Transport_SockFTPD extends UI_Upload_Transport {
 							break;
 
 						default:
-							throw new Error('Bad query argument: ' + queryArg);
+							throw new Error('Bad SockFTPD transport query argument: ' + queryArg);
 							break;
 					}
 				}
