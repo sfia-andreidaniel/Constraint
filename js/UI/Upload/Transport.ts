@@ -37,5 +37,8 @@ class UI_Upload_Transport extends UI_Event {
 
 	}
 
+	public toString(): string {
+		return 'transport://';
+	}
 
 }

@@ -27,6 +27,10 @@ class UI_Upload_Transport_SockFTPD extends UI_Upload_Transport {
 	private   neverAttemptedToConnect: boolean = true;
 	private   closedByMe: boolean = false;
 
+	public toString(): string {
+		return 'sockftpd://' + this._host + ':' + this._port + '/?autoAuth=' + ~~this._autoAuth + '&reconnectTimeout=' + ~~this._reconnectTimeout + '&autoConnect=' + ~~this._autoConnect + '&autoDisconnect=' + ~~this._autoDisconnect;
+	}
+
 	constructor( url: string ) {
 		super(url);
 		this._type = EFileUploadTransportType.SOCKFTPD;
@@ -1033,7 +1037,8 @@ class UI_Upload_Transport_SockFTPD extends UI_Upload_Transport {
 		if ( info.query ) {
 			for ( queryArg in info.query ) {
 				if ( info.query.hasOwnProperty( queryArg ) ) {
-					switch ( info.query[ queryArg ] ) {
+					
+					switch ( queryArg ) {
 						case 'autoAuth':
 							this._autoAuth = !!~~info.query[queryArg];
 							break;
@@ -1045,9 +1050,11 @@ class UI_Upload_Transport_SockFTPD extends UI_Upload_Transport {
 						case 'autoConnect':
 							this._autoConnect = !!~~info.query[queryArg];
 							break;
+
 						case 'autoDisconnect':
 							this._autoDisconnect = !!~~info.query[queryArg];
 							break;
+
 						default:
 							throw new Error('Bad query argument: ' + queryArg);
 							break;
