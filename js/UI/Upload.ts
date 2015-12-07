@@ -257,6 +257,10 @@ class UI_Upload extends UI implements IFocusable {
 		})(this);
 	}
 
+	public get files(): File[] {
+		return this._files;
+	}
+
 }
 
 Mixin.extend('UI_Upload', 'MFocusable');
