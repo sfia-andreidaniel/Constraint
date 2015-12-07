@@ -1,0 +1,11 @@
+[
+	{
+		"name": "*",
+		"args": [
+			{
+				"name": "sender",
+				"type": "UI_Event"
+			}
+		]
+	}
+]

@@ -392,6 +392,22 @@ class Constraint {
 		Constraint.defs.push( def );
 	}
 
+	public static registerClassEvents( className: string, events: IClassEvent[] ) {
+		var classDef: IClass = Constraint.getClassByName(className);
+		if ( classDef === null ) {
+			throw new Error('Cannot register events for class "' + className + ': Class is not registered!');
+		}
+		classDef.events = events;
+	}
+
+	public static getClassEventArgs( className: string, eventName: string ): string {
+		return 'sender: UI_Event';
+	}
+
+	public static getClassEventInvocationArgs( className: string, eventName: string ): string {
+		return 'sender';
+	}
+
 	public static getClassByName( className: string ): IClass {
 		for ( var i=0, len = Constraint.defs.length; i<len; i++ ) {
 			if ( Constraint.defs[i].name == className ) {

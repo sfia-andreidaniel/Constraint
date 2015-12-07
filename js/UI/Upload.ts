@@ -83,11 +83,17 @@ class UI_Upload extends UI implements IFocusable {
 
 				(function(me: UI_Upload) {
 					
+					me._transport.on('log', function(...args: any[]) {
+						console.log('LOG: ', JSON.stringify(args));
+					});
+
 					me._transport.on('error', function(reason: string) {
 						me.fire('error', reason);
 					});
 
 					me._transport.on('upload', function(f: File) {
+
+						console.log('dbg: uploda: ', f);
 
 						if ( me._files ) {
 							
@@ -116,6 +122,7 @@ class UI_Upload extends UI implements IFocusable {
 					});
 
 					me._transport.on('progress', function(f: File, percent: number ) {
+						console.log('progress: ', f.name, percent);
 						me.fire('progress', f, percent);
 					});
 
@@ -190,6 +197,8 @@ class UI_Upload extends UI implements IFocusable {
 				var files: File[] = me._dom.file.files ? Array.prototype.slice.call( me._dom.file.files, 0 ) : [];
 
 				me._files = files && files.length ? files : null;
+
+				console.log('set files: ', me._files);
 
 				me._dom.caption.textContent = me._files
 					? me._files.length == 1

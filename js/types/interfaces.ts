@@ -37,12 +37,23 @@ interface IClassProperty {
 	type: string;
 }
 
+interface IClassEventArgs {
+	name: string;
+	type: string;
+};
+
+interface IClassEvent {
+	name: string;
+	args: IClassEventArgs[];
+};
+
 interface IClass {
 	name: string;
 	extends?: string;
 	acceptsOnly?: string[];
 	parentTypeOnly?: string[];
 	properties: IClassProperty[];
+	events?: IClassEvent[];
 }
 
 interface IPoint {

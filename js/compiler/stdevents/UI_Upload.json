@@ -1,0 +1,33 @@
+[
+	{
+		"name": "error",
+		"args": [
+			{
+				"name": "reason",
+				"type": "string"
+			}
+		]
+	},
+	{
+		"name": "upload",
+		"args": [
+			{
+				"name": "file",
+				"type": "File"
+			}
+		]
+	},
+	{
+		"name": "progress",
+		"args": [
+			{
+				"name": "file",
+				"type": "File"
+			},
+			{
+				"name": "percent",
+				"type": "number"
+			}
+		]
+	}
+]
