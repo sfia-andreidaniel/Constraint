@@ -123,6 +123,7 @@
 				multiple: true;
 
 				transport: 'sockftpd://anonymous@127.0.0.1:8080/?reconnectTimeout=60';
+				width: 400;
 			};
 		};
 

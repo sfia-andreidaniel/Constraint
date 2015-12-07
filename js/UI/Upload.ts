@@ -12,7 +12,11 @@ class UI_Upload extends UI implements IFocusable {
 		// the speed button (browse)
 		speed: Utils.dom.create('div', 'speed'),
 		// the dotted focusring
-		focusRing: Utils.dom.create('div', 'focusring')
+		focusRing: Utils.dom.create('div', 'focusring'),
+		// placeholder for the file label
+		label: Utils.dom.create('div', 'label'),
+		// placeholder for the speed button caption
+		bLabel: Utils.dom.create('div', 'blabel')
 	};
 
 	//FILE UPLOAD PROPERTIES
@@ -75,6 +79,49 @@ class UI_Upload extends UI implements IFocusable {
 				this._transport = UI_Upload_Transport.create(url);
 			}
 
+			if ( this._transport ) {
+
+				(function(me: UI_Upload) {
+					
+					me._transport.on('error', function(reason: string) {
+						me.fire('error', reason);
+					});
+
+					me._transport.on('upload', function(f: File) {
+
+						if ( me._files ) {
+							
+							for (var i = 0, len = me._files.length; i < len; i++ ) {
+								if ( me._files[i].name == f.name && me._files[i].size == f.size ) {
+									me._files.splice(i, 1);
+									break;
+								}
+							}
+							
+							if ( me._files.length == 0 ) {
+								me._files = null;
+							}
+
+						}
+
+						me._dom.caption.textContent =
+							me._files
+								? me._files.length == 1
+									? me._files[0].name
+									: String(me._files.length) + ' files'
+								: '';
+
+						me.fire('upload', f);
+
+					});
+
+					me._transport.on('progress', function(f: File, percent: number ) {
+						me.fire('progress', f, percent);
+					});
+
+				})(this);
+			}
+
 			this.fire('transportChanged');
 		}
 	}
@@ -106,7 +153,7 @@ class UI_Upload extends UI implements IFocusable {
 		caption = String(caption || '') || 'Browse';
 		if ( caption != this._caption ) {
 			this._caption = caption;
-			this._dom.speed.textContent = caption;
+			this._dom.bLabel.textContent = caption;
 		}
 	}
 
@@ -125,8 +172,14 @@ class UI_Upload extends UI implements IFocusable {
 	protected _initDom_() {
 		this._dom.file.setAttribute('type', 'file');
 		this._root.appendChild(this._dom.file);
-		this._root.appendChild(this._dom.caption);
-		this._dom.speed.textContent = this._caption;
+		
+		this._root.appendChild(this._dom.label);
+		this._dom.label.appendChild(this._dom.caption);
+		
+		this._dom.speed.appendChild(this._dom.bLabel);
+
+		this._dom.bLabel.textContent = this._caption;
+
 		this._root.appendChild(this._dom.speed);
 		this._root.appendChild(this._dom.focusRing);
 
@@ -147,6 +200,8 @@ class UI_Upload extends UI implements IFocusable {
 				if ( !me.disabled && !me.active ) {
 					me.active = true;
 				}
+
+				me.fire('change');
 
 			}, false);
 
@@ -180,6 +235,23 @@ class UI_Upload extends UI implements IFocusable {
 
 			me.on('disabled', function(on: boolean) {
 				me._dom.file.disabled = on;
+			});
+
+			me.on('change', function() {
+				if ( me.disabled ) {
+					return;
+				}
+
+				if ( !me._transport ) {
+					return;
+				}
+
+				if ( me._files ) {
+					for (var i = 0, len = me._files.length; i < len; i++ ) {
+						me._transport.upload(me._files[i]);
+					}
+				}
+
 			});
 
 		})(this);

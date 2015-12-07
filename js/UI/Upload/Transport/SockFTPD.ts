@@ -402,6 +402,12 @@ class UI_Upload_Transport_SockFTPD extends UI_Upload_Transport {
 
 	}
 
+	public upload( f: File ) {
+		if ( f ) {
+			this.put(f);
+		}
+	}
+
 	public put(
 		f: File,
 		success: () => void = null,
@@ -421,14 +427,17 @@ class UI_Upload_Transport_SockFTPD extends UI_Upload_Transport {
 				success || function() {
 					// note that "this" In the context of the callback is the command itself.
 					me.log('PUT "' + this.fname + '": OK.');
+					me.fire('upload', f );
 				},
 				error || function(reason: string) {
 					// note that "this" in the context of the callback is the command itself.
 					me.error('PUT "' + this.fname + '": ERROR: ' + (reason || 'Unknown upload error'));
+					me.fire('error', f, reason || 'Unknown upload error');
 				},
 				progress || function(percent: number, name: string) {
 					// note that "this" in the context of the callback is the command itself
 					me.log('PUT "' + this.fname + '": ' + percent + '%');
+					me.fire('progress', f, percent );
 				}
 			);
 

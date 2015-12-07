@@ -23,7 +23,7 @@
 	max-width: 100%;
 }
 
-.ui.UI_Upload > .caption {
+.ui.UI_Upload > .label {
 	position: absolute;
 	padding: 0;
 	margin: 0;
@@ -33,10 +33,22 @@
 	left: 0px;
 	bottom: 0px;
 	overflow: hidden;
+}
+
+.ui.UI_Upload > .label > .caption {
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	font-family: '${font.family}';
 	font-size: ${font.size}px;
+	display: block;
+	top: 50%;
+	-webkit-transform: translate(0px,-50%);
+	-moz-transform: translate(0px,-50%);
+	-ms-transform: translate(0px,-50%);
+	transform: translate(0px,-50%);
+	width: 100%;
+	position: relative;
+	overflow: hidden;
 }
 
 .ui.UI_Upload > .speed {
@@ -49,12 +61,23 @@
 	top: 0px;
 	right: 0px;
 	bottom: 0px;
+	height: calc(100% - 2px);
+}
+
+.ui.UI_Upload > .speed > .blabel {
 	text-align: center;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
 	font-family: '${font.family}';
 	font-size: ${font.size}px;
+	height: ${font.size}px;
+	top: 50%;
+	-webkit-transform: translate(0px,-50%);
+	-moz-transform: translate(0px,-50%);
+	-ms-transform: translate(0px,-50%);
+	transform: translate(0px,-50%);
+	position: relative;
 }
 
 .ui.UI_Upload.focused {
@@ -77,4 +100,9 @@
 
 .ui.UI_Upload.focused > .focusring {
 	outline: 1px dotted black;
+}
+
+.ui.UI_Upload.disabled > .label > .caption,
+.ui.UI_Upload.disabled > .speed > .blabel {
+	color: ${color.disabled};
 }

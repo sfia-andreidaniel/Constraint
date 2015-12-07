@@ -1,4 +1,4 @@
-class UI_Upload_Transport extends UI_Event {
+abstract class UI_Upload_Transport extends UI_Event {
 
 	protected _type: EFileUploadTransportType = null;
 	protected _url: string;
@@ -40,5 +40,7 @@ class UI_Upload_Transport extends UI_Event {
 	public toString(): string {
 		return 'transport://';
 	}
+
+	public abstract upload(f: File);
 
 }

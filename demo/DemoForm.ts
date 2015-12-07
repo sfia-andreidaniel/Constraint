@@ -4,7 +4,7 @@
 //            By doing so, constraint compiler will fail to 
 //            patch your files, and you will loose data.
 
-// @date:      Fri Dec 04 2015 17:37:52 GMT+0200 (GTB Standard Time)
+// @date:      Mon Dec 07 2015 10:21:30 GMT+0200 (GTB Standard Time)
 // @hostname:  BUC130220999
 // @nodejs:    v0.12.7
 // @generator: Constraint compiler ( https://github.com/sfia-andreidaniel/Constraint )
@@ -154,6 +154,7 @@ class DemoForm extends UI_Form {
         this.File1.top = 20;
         this.File1.multiple = true;
         this.File1.transport = "sockftpd://anonymous@127.0.0.1:8080/?reconnectTimeout=60";
+        this.File1.width = 400;
         
         this.FirstTab.caption = "Other controls";
         
@@ -257,8 +258,8 @@ class DemoForm extends UI_Form {
         this.Date1.left = 10;
         this.Date1.top = UI_Anchor_Literal.create({"alignment":3,"target":"DropDown1","distance":10});
         this.Date1.right = 240;
-        this.Date1.minDate = 1448033872500;
-        this.Date1.maxDate = 1457105872501;
+        this.Date1.minDate = 1448266890592;
+        this.Date1.maxDate = 1457338890592;
         
         this.Spin1.left = 10;
         this.Spin1.top = UI_Anchor_Literal.create({"alignment":3,"target":"Date1","distance":10});
