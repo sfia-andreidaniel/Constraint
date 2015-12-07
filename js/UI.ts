@@ -344,7 +344,7 @@ class UI extends UI_Event {
 	 * Return the current "window" ( aka. form or dialog) in which this element is inserted.
 	 */
 	get form(): UI_Form { 
-		return this._owner ? this._owner.form : <UI_Form>this; 
+		return this._owner ? this._owner.form : <any>this; 
 	}
 
 	/**

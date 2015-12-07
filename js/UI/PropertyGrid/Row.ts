@@ -172,7 +172,7 @@ class UI_PropertyGrid_Row extends UI_Event {
 		if ( expanderPadding && ( splitWidth > padding + expanderPadding + 15 ) ) {
 			
 			UI_Resource.createSprite(
-				UI_PropertyGrid._theme.expander[ (<UI_PropertyGrid_Row_Group>this).expanded ? 'expanded' : 'collapsed' ]
+				UI_PropertyGrid._theme.expander[ (<any>this).expanded ? 'expanded' : 'collapsed' ]
 			).paintWin( ctx, x + padding + ~~( expanderPadding / 2 ) - 10, ~~( y + height / 2 - 10 ) );
 
 		}

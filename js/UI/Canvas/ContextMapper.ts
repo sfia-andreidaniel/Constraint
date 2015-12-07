@@ -787,7 +787,7 @@ class UI_Canvas_ContextMapper extends UI_Event {
 	*/
 
 	get fillStyle(): string {
-		return this.ctx.fillStyle;
+		return <string>this.ctx.fillStyle;
 	}
 
 	set fillStyle( fillStyle: string ) {
@@ -795,7 +795,7 @@ class UI_Canvas_ContextMapper extends UI_Event {
 	}
 
 	get strokeStyle(): string {
-		return this.ctx.strokeStyle;
+		return <string>this.ctx.strokeStyle;
 	}
 
 	set strokeStyle( strokeStyle: string ) {
